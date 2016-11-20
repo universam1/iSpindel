@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>iSpindel by universam1</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>iSpindel</h1>
+        <h2>DIY elektronische Bierspindel | electronic Hydrometer</h2>
+        <a href="https://github.com/universam1/iSpindel" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="ispindel" class="anchor" href="#ispindel" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>iSpindel</h1>
+
+<p><strong>DIY elektronische Bierspindel | electronic Hydrometer</strong></p>
+
+<blockquote>
+<p>Die <code>iSpindel</code> befindet sich zur Zeit mitten in der Entwicklung, siehe dazu <a href="http://hobbybrauer.de/forum/viewtopic.php?f=7&amp;t=11235">den Hobbybrauer.de Thread</a>. Mitthilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.</p>
+</blockquote>
+
+<p><img src="docs/floating.jpg" alt="Spindel im Reinwasser">
+<img src="docs/Dashboard.jpg" alt="Dashboard"></p>
+
+<h2>
+<a id="inhaltverzeichnis" class="anchor" href="#inhaltverzeichnis" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Inhaltverzeichnis</h2>
+
+<ul>
+<li><a href="#Lizenz">Lizenz</a></li>
+<li>
+<a href="#Prinzip">Prinzip</a>
+
+<ul>
+<li><a href="#Metazentrum">Metazentrum</a></li>
+</ul>
+</li>
+<li>
+<a href="#Aufbau">Aufbau</a>
+
+<ul>
+<li><a href="#Bauteile">Bauteile</a></li>
+<li><a href="#Bauteile">Bauteile</a></li>
+<li><a href="#Platine">Platine</a></li>
+</ul>
+</li>
+<li>
+<a href="#Konfiguration">Konfiguration</a>
+
+<ul>
+<li><a href="#Portal">Portal</a></li>
+<li><a href="#Ubitdots">Ubitdots</a></li>
+</ul>
+</li>
+<li><a href="#Software">Software</a></li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="lizenz" class="anchor" href="#lizenz" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Lizenz</h2>
+
+<blockquote>
+<p>Jeglicher kommerzieller Nachbau oder Verwendung ist prinzipiell untersagt. Geltende Patente werden verletzt.</p>
+
+<p>All rights reserverd, any commercial use is hereby prohibited and will violate applicable patents.</p>
+</blockquote>
+
+<hr>
+
+<h2>
+<a id="prinzip" class="anchor" href="#prinzip" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prinzip</h2>
+
+<p>Angetrieben von dem Thread <a href="http://hobbybrauer.de/forum/viewtopic.php?f=7&amp;t=11157&amp;view=unread#p170499">Alternative zu Spindel</a> kam die Idee geboren die kommerziell erhältliche elektronische Bierspindel nachzubauen.</p>
+
+<p>Die Idee des krängende Zylinders ist genial wie einfach - man braucht keine externe Referenz (außer der Erde) und der Zylinder ist extrem leicht sauber zu halten. Der Neigungswinkel ändert sich im Verhältnis zum Auftrieb und damit im direkten Zusammenhang mit dem Zuckergehalt.
+Kein unnötiges Öffnen zum spindeln und evtl. Kontaminieren!</p>
+
+<p><img src="docs/kraengung.jpg" alt="Kränung"></p>
+
+<p>Daher die Idee, ein IoT device mit Wifi zusammen mit einem Beschleunigungssensor und Temperatursensor in einen schwimmenden Zylinder zu legen. Dort wacht er alle bsp. 5min auf, verbindet sich mit meinem Wlan und sendet seinen Neigungswinkel, Temperatur und Akkuspannung an einen Cloudservice. </p>
+
+<h3>
+<a id="metazentrum" class="anchor" href="#metazentrum" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><em>Metazentrum</em>
+</h3>
+
+<p>Eigentlich dreht es sich hier um das "Metazentrum", der Zylinder wird solange rotieren bis das Metazentrum im Lot zum Auftriebspunkt ist. Diesen Wert messen wir.</p>
+
+<p>Man kann insofern trimmen, dass man am Boden ein paar Gramm hinzufügt, damit stellt sich der Zylinder mehr auf, oder am Deckel, damit krängt er mehr. </p>
+
+<p>In der Software berechnent man aus den XYZ Beschleunigungswerten den Euler Winkel für X und Y und bildet daraus den Absolutwinkel. Diesen verrechnen wir mit den kalibrierten Eckwerten zum °Plato.</p>
+
+<hr>
+
+<h2>
+<a id="aufbau" class="anchor" href="#aufbau" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Aufbau</h2>
+
+<blockquote>
+<p><strong><em>ACHTUNG: dies entspricht Stand 20.11.2016</em></strong></p>
+</blockquote>
+
+<h3>
+<a id="bauteile" class="anchor" href="#bauteile" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bauteile</h3>
+
+<ul>
+<li><a href="https://www.wemos.cc/product/d1-mini.html">Wemos D1 mini</a></li>
+<li>
+<code>GY-521</code> Gyro &amp; Beschleunigungssensor (MPU-6050 auf passendem breakout Board)</li>
+<li><a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html">DS18B20 Temperatursensor</a></li>
+<li>Lochrasterplatine 3x4cm</li>
+<li>Widerstände
+
+<ul>
+<li>4k7 Ohm</li>
+<li>220k Ohm</li>
+<li>470 Ohm</li>
+</ul>
+</li>
+<li>Mikro Schalter</li>
+<li>
+<code>18650 LiIo Zelle</code> (z.B. <code>Panasonic NCR18650B</code> <strong>geschützt</strong> oder ohne <strong>PCB</strong>) <strong><em>UNGETESTED</em></strong>
+</li>
+<li>Lipo Lademodul <code>TP4056</code> <strong><em>UNGETESTED</em></strong>
+</li>
+<li>Kunstoff Zylinder <code>Petling</code> (z.B. <a href="http://cachers-world.de/de/Petling-XL">http://cachers-world.de/de/Petling-XL</a>)</li>
+<li>Kunstoff Schlitten (Vorlage zum 3D drucken im repo)
+
+<ul>
+<li>alternativ (Lochraster) Platine <strong><em>UNGETESTED</em></strong>)</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="schlitten" class="anchor" href="#schlitten" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Schlitten</h3>
+
+<p><img src="docs/Schlitten_cad.jpg" alt="Schlitten">
+<img src="docs/assembled2.jpg" alt="Zusammenbau">
+<img src="docs/assembled.jpg" alt="Zusammenbau"></p>
+
+<h3>
+<a id="platine" class="anchor" href="#platine" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Platine</h3>
+
+<p><strong><em>(TODO)</em></strong></p>
+
+<hr>
+
+<h2>
+<a id="konfiguration" class="anchor" href="#konfiguration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Konfiguration</h2>
+
+<h3>
+<a id="portal" class="anchor" href="#portal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Portal</h3>
+
+<p>Durch mehrmaliges Drücken der <code>Reset Taste</code> erstellt der Wemos einen AccessPoint, mit dem verbunden man die nötigen Einstellugen vornehmen kann:</p>
+
+<p><img src="docs/AP.png" alt="AccessPoint"><img src="docs/Portal.png" alt="Portal"><img src="docs/setup.png" alt="Setup"><img src="docs/info.png" alt="Info"></p>
+
+<h3>
+<a id="ubitdots" class="anchor" href="#ubitdots" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ubitdots</h3>
+
+<p><strong><em>(TODO)</em></strong></p>
+
+<hr>
+
+<h2>
+<a id="software" class="anchor" href="#software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Software</h2>
+
+<p><strong><em>(TODO)</em></strong></p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/universam1/iSpindel/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/universam1/iSpindel/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/universam1/iSpindel"></a> is maintained by <a href="https://github.com/universam1">universam1</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
