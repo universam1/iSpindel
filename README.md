@@ -1,6 +1,8 @@
 iSpindel
 ===================
 
+***https://universam1.github.io/iSpindel/***
+
 **DIY elektronische Bierspindel | electronic Hydrometer**
 
 > Die ```iSpindel``` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mitthilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
@@ -34,7 +36,7 @@ iSpindel
 
 ## Prinzip
 
-Angetrieben von dem Thread [Alternative zu Spindel](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499) kam die Idee geboren die kommerziell erhältliche elektronische Bierspindel nachzubauen.
+Angetrieben von dem Thread [Alternative zu Spindel](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499) wurde die Idee geboren die kommerziell erhältliche elektronische Bierspindel nachzubauen.
 
 Die Idee des krängende Zylinders ist genial wie einfach - man braucht keine externe Referenz (außer der Erde) und der Zylinder ist extrem leicht sauber zu halten. Der Neigungswinkel ändert sich im Verhältnis zum Auftrieb und damit im direkten Zusammenhang mit dem Zuckergehalt.
 Kein unnötiges Öffnen zum spindeln und evtl. Kontaminieren!
@@ -106,4 +108,7 @@ Durch mehrmaliges Drücken der ```Reset Taste``` erstellt der Wemos einen Access
 
 ***(TODO)***
 
+***Wenn es dir gefällt, spendiere mir doch ein Bier***  :beers:
+
+[![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
