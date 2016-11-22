@@ -13,6 +13,7 @@ iSpindel
 
 ## Inhaltverzeichnis
 - [Lizenz](#Lizenz)
+
 - [Prinzip](#Prinzip)
   - [Metazentrum](#Metazentrum)
 - [Aufbau](#Aufbau)
@@ -29,7 +30,7 @@ iSpindel
 
 ## Lizenz
 > Jeglicher kommerzieller Nachbau oder Verwendung ist prinzipiell untersagt. Geltende Patente werden verletzt.
-
+>
 > All rights reserverd, any commercial use is hereby prohibited and will violate applicable patents.
 
 ***
