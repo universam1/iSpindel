@@ -73,15 +73,25 @@ In der Software berechnent man aus den XYZ Beschleunigungswerten den Euler Winke
 - Mikro Schalter
 - ```18650 LiIo Zelle``` (z.B. ```Panasonic NCR18650B``` **geschützt** oder ohne **PCB**) ***UNGETESTED***
 - Lipo Lademodul ```TP4056``` ***UNGETESTED***
-- Kunstoff Zylinder ```Petling``` (z.B. http://cachers-world.de/de/Petling-XL)
 - Kunstoff Schlitten (Vorlage zum 3D drucken im repo)
   - alternativ (Lochraster) Platine ***UNGETESTED***)
+
+- Kunstoff Zylinder ```Petling```
+
+> ## Info
+> Der Anbieter [cachers-world.de](http://cachers-world.de/de/Petling-XL) unsterstützt dieses Projekt indem er nachhaltig den passenden Petling liefern möchte und über den Gutschein-Code "```HOBBYBRAUER```"  (Großschreibung!) 20% Rabatt gewährt. 
+Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedruckten Schlitten.
+
+***
 
 ### Schlitten
 
 ![Schlitten](docs/Schlitten_cad.jpg)
 ![Zusammenbau](docs/assembled2.jpg)
 ![Zusammenbau](docs/assembled.jpg)
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=gpVarh8BxhQ" target="_blank"><img src="http://img.youtube.com/vi/gpVarh8BxhQ/0.jpg" 
+alt="Druck" width="240" height="180" border="10" /></a>
 
 ### Platine 
 
@@ -108,7 +118,7 @@ Durch mehrmaliges Drücken der ```Reset Taste``` erstellt der Wemos einen Access
 
 ***(TODO)***
 
-***Wenn es dir gefällt, spendiere mir doch ein Bier***  :beers:
+***Gefällt es dir, na dann spende mir halt ein Bier***  :beers:
 
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
