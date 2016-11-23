@@ -3,6 +3,8 @@ iSpindel
 
 ***https://universam1.github.io/iSpindel/***
 
+> Update 23.11.16: Schaltplan und Firmware
+
 **DIY elektronische Bierspindel | electronic Hydrometer**
 
 > Die ```iSpindel``` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mitthilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
@@ -19,7 +21,7 @@ iSpindel
 - [Aufbau](#Aufbau)
   - [Bauteile](#Bauteile)
   - [Bauteile](#Bauteile)
-  - [Platine](#Platine)
+  - [Schaltplan](docs/Schaltplan.md)
 - [Konfiguration](#Konfiguration)
   - [Portal](#Portal)
   - [Ubitdots](#Ubitdots)
@@ -85,6 +87,8 @@ Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedru
 >
 >Info: *"Ist im Moment dann nur 1,44 EUR ab 2017 werden es dann 1,52 EUR sein, weil der Artikel 10ct hoch geht."*
 
+>Info 2: Zur Zeit ausverkauft, nachbestellt.
+
 ***
 
 ### Schlitten
@@ -96,9 +100,6 @@ Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedru
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=gpVarh8BxhQ" target="_blank"><img src="http://img.youtube.com/vi/gpVarh8BxhQ/0.jpg" 
 alt="Druck" width="240" height="180" border="10" /></a>
 
-### Platine 
-
-***(TODO)***
 
 
 ***
@@ -119,7 +120,7 @@ Durch mehrmaliges Drücken der ```Reset Taste``` erstellt der Wemos einen Access
 
 ## Software 
 
-***(TODO)***
+[Firmware flashen](docs/Firmware.md)
 
 ***Gefällt es dir, na dann spende mir halt ein Bier***  :beers:
 
