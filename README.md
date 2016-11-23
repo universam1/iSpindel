@@ -1,11 +1,11 @@
 iSpindel
 ===================
 
+**DIY elektronische Bierspindel | electronic Hydrometer**
 ***https://universam1.github.io/iSpindel/***
 
 > Update 23.11.16: Schaltplan und Firmware
 
-**DIY elektronische Bierspindel | electronic Hydrometer**
 
 > Die ```iSpindel``` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mitthilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
@@ -120,10 +120,14 @@ Durch mehrmaliges Drücken der ```Reset Taste``` erstellt der Wemos einen Access
 
 ## Software 
 
+### Firmware flashen
+
 [Firmware flashen](docs/Firmware.md)
 
-Benutzte Bibliotheken
-- https://github.com/tzapu/WiFiManager zum Herstellen der Verbindung
+### Benutzte Bibliotheken
+
+- https://github.com/tzapu/WiFiManager zum Herstellen der Verbindung (verändert)
+- https://github.com/bblanchon/ArduinoJson
 
 ***Gefällt es dir, na dann spende mir halt ein Bier***  :beers:
 
