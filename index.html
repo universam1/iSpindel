@@ -1,41 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <meta charset="UTF-8">
+    <title>iSpindel by universam1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <title>iSpindel by universam1</title>
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>iSpindel</h1>
-        <h2>DIY elektronische Bierspindel | electronic Hydrometer</h2>
-        <a href="https://github.com/universam1/iSpindel" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+    <section class="page-header">
+      <h1 class="project-name">iSpindel</h1>
+      <h2 class="project-tagline">DIY elektronische Bierspindel | electronic Hydrometer</h2>
+      <a href="https://github.com/universam1/iSpindel" class="btn">View on GitHub</a>
+      <a href="https://github.com/universam1/iSpindel/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/universam1/iSpindel/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
+    <section class="main-content">
+      <h1>
 <a id="ispindel" class="anchor" href="#ispindel" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>iSpindel</h1>
 
-<p><strong><em><a href="https://universam1.github.io/iSpindel/">https://universam1.github.io/iSpindel/</a></em></strong></p>
-
-<p><strong>DIY elektronische Bierspindel | electronic Hydrometer</strong></p>
+<p><strong>DIY elektronische Bierspindel | electronic Hydrometer</strong>
+<strong><em><a href="https://universam1.github.io/iSpindel/">https://universam1.github.io/iSpindel/</a></em></strong></p>
 
 <blockquote>
+<p>Update 23.11.16: Schaltplan und Firmware</p>
+
 <p>Die <code>iSpindel</code> befindet sich zur Zeit mitten in der Entwicklung, siehe dazu <a href="http://hobbybrauer.de/forum/viewtopic.php?f=7&amp;t=11235">den Hobbybrauer.de Thread</a>. Mitthilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.</p>
 </blockquote>
 
@@ -60,7 +52,7 @@
 <ul>
 <li><a href="#Bauteile">Bauteile</a></li>
 <li><a href="#Bauteile">Bauteile</a></li>
-<li><a href="#Platine">Platine</a></li>
+<li><a href="docs/Schaltplan.md">Schaltplan</a></li>
 </ul>
 </li>
 <li>
@@ -159,6 +151,8 @@ Kein unnötiges Öffnen zum spindeln und evtl. Kontaminieren!</p>
 Dieser <a href="http://cachers-world.de/de/Petling-XL">Petling-XL</a> passt zu dem 3D gedruckten Schlitten.</p>
 
 <p>Info: <em>"Ist im Moment dann nur 1,44 EUR ab 2017 werden es dann 1,52 EUR sein, weil der Artikel 10ct hoch geht."</em></p>
+
+<p>Info 2: Zur Zeit ausverkauft, nachbestellt.</p>
 </blockquote>
 
 <hr>
@@ -171,11 +165,6 @@ Dieser <a href="http://cachers-world.de/de/Petling-XL">Petling-XL</a> passt zu d
 <img src="docs/assembled.jpg" alt="Zusammenbau"></p>
 
 <p><a href="http://www.youtube.com/watch?feature=player_embedded&amp;v=gpVarh8BxhQ"><img src="http://img.youtube.com/vi/gpVarh8BxhQ/0.jpg" alt="Druck" width="240" height="180" border="10"></a></p>
-
-<h3>
-<a id="platine" class="anchor" href="#platine" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Platine</h3>
-
-<p><strong><em>(TODO)</em></strong></p>
 
 <hr>
 
@@ -199,29 +188,31 @@ Dieser <a href="http://cachers-world.de/de/Petling-XL">Petling-XL</a> passt zu d
 <h2>
 <a id="software" class="anchor" href="#software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Software</h2>
 
-<p><strong><em>(TODO)</em></strong></p>
+<h3>
+<a id="firmware-flashen" class="anchor" href="#firmware-flashen" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Firmware flashen</h3>
+
+<p><a href="docs/Firmware.md">Firmware flashen</a></p>
+
+<h3>
+<a id="benutzte-bibliotheken" class="anchor" href="#benutzte-bibliotheken" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Benutzte Bibliotheken</h3>
+
+<ul>
+<li>
+<a href="https://github.com/tzapu/WiFiManager">https://github.com/tzapu/WiFiManager</a> zum Herstellen der Verbindung (verändert)</li>
+<li><a href="https://github.com/bblanchon/ArduinoJson">https://github.com/bblanchon/ArduinoJson</a></li>
+</ul>
 
 <p><strong><em>Gefällt es dir, na dann spende mir halt ein Bier</em></strong>  <g-emoji alias="beers" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f37b.png" ios-version="6.0">🍻</g-emoji></p>
 
 <p><a href="https://www.paypal.me/universam"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" alt="Donate"></a></p>
-        </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/universam1/iSpindel/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/universam1/iSpindel/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/universam1/iSpindel">iSpindel</a> is maintained by <a href="https://github.com/universam1">universam1</a>.</span>
 
-          <p class="repo-owner"><a href="https://github.com/universam1/iSpindel"></a> is maintained by <a href="https://github.com/universam1">universam1</a>.</p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+    </section>
 
   
   </body>
