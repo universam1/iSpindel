@@ -122,6 +122,9 @@ Durch mehrmaliges Drücken der ```Reset Taste``` erstellt der Wemos einen Access
 
 [Firmware flashen](docs/Firmware.md)
 
+Benutzte Bibliotheken
+- https://github.com/tzapu/WiFiManager zum Herstellen der Verbindung
+
 ***Gefällt es dir, na dann spende mir halt ein Bier***  :beers:
 
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
