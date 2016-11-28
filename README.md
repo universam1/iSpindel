@@ -2,8 +2,13 @@ iSpindel
 ===================
 
 **DIY elektronische Bierspindel | electronic Hydrometer**
-***https://universam1.github.io/iSpindel/***
+***https://universam1.github.io/iSpindel***
 
+***Unterstützung des Projekts***  :beers:
+[![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
+
+
+> Update 28.11.16: Ubidots Einrichtung  
 > Update 23.11.16: Schaltplan und Firmware
 
 
@@ -23,8 +28,8 @@ iSpindel
   - [Bauteile](#Bauteile)
   - [Schaltplan](docs/Schaltplan.md)
 - [Konfiguration](#Konfiguration)
-  - [Portal](#Portal)
   - [Ubitdots](#Ubitdots)
+  - [Portal](#Portal)
 - [Software](#Software)
 
 
@@ -106,15 +111,43 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
 ## Konfiguration
 
+### Ubitdots
+
+- Zu Beginn muss ein kostenloser Account bei [Ubidots.com](https://ubidots.com) erstellt werden
+- In diesem Account erstellt man nun ein neues ```Data Source``` und benennt seine iSpindel bsp. "iSpindel001" 
+
+  ![UbiDS](docs/UbiDS.jpg)
+
+- In diesem Device erstellt man nun 3  ```Variable``` das den 3 Datenquellen entspricht die durch geliefert werden
+  - Neigung (wird später zu °Plato umgerechnet)
+  - Temperatur (fließt auch in °Plato ein)
+  - Batterie Spannung 
+
+  ***Notieren dieser 3 ```ID's``` die man über das  ```i``` Icon erhält***
+
+  ![IDs](docs/UbiIDs.jpg)
+
+- Im Menü  ```API Credentials``` erhält man sein ```Token``` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält. ***Diesen ebenfalls notieren.***
+  ![Token](docs/UbiToken.jpg)
+
+
 ### Portal
 
 Durch mehrmaliges Drücken der ```Reset Taste``` erstellt der Wemos einen AccessPoint, mit dem verbunden man die nötigen Einstellugen vornehmen kann:
+- Der Ubidots  ```Token``` und die  ```IDs```, welche man oben notiert hat, werden nun an dieser Stelle eingetragen.
 
-![AccessPoint](docs/AP.png)![Portal](docs/Portal.png)![Setup](docs/setup.png)![Info](docs/info.png)
+   ![Setup](docs/setup.png)
 
-### Ubitdots
 
-***(TODO)***
+- Man erreicht es über
+
+   ![AccessPoint](docs/AP.png)![Portal](docs/Portal.png)
+
+
+- Eine Übersicht der Daten kann man über den ```Info``` Menüpunkt einsehen
+
+  ![Info](docs/info.png)
+
 
 ***
 
