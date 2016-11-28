@@ -25,11 +25,12 @@
 <p><strong>DIY elektronische Bierspindel | electronic Hydrometer</strong>
 <strong><em><a href="https://universam1.github.io/iSpindel">https://universam1.github.io/iSpindel</a></em></strong></p>
 
-<p><strong><em>Unterstützung des Projekts</em></strong>  <g-emoji alias="beers" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f37b.png" ios-version="6.0">🍻</g-emoji>
+<p><strong><em>Unterstützung des Projekts</em></strong> 
 <a href="https://www.paypal.me/universam"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" alt="Donate"></a></p>
 
 <blockquote>
-<p>Update 28.11.16: Ubidots Einrichtung<br>
+<p>Update 28.11.16: Firmware v.2.0 - Ubidots Auto-Konfiguration<br>
+Update 28.11.16: Ubidots Einrichtung<br>
 Update 23.11.16: Schaltplan und Firmware</p>
 
 <p>Die <code>iSpindel</code> befindet sich zur Zeit mitten in der Entwicklung, siehe dazu <a href="http://hobbybrauer.de/forum/viewtopic.php?f=7&amp;t=11235">den Hobbybrauer.de Thread</a>. Mitthilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.</p>
@@ -187,26 +188,36 @@ Dieser <a href="http://cachers-world.de/de/Petling-XL">Petling-XL</a> passt zu d
 
 <ul>
 <li>Zu Beginn muss ein kostenloser Account bei <a href="https://ubidots.com">Ubidots.com</a> erstellt werden</li>
+<li>Im Menü  <code>API Credentials</code> erhält man seinen <code>Token</code> durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.<br>
+<strong><em>Diesen notieren.</em></strong><br>
+<img src="docs/UbiToken.jpg" alt="Token"><br>
+</li>
+</ul>
+
+<blockquote>
+<p>Update 28.11.16: Durch Auto - Konfiguration sind folgende Schritte nicht mehr nötig</p>
+</blockquote>
+
+<ul>
 <li>
-<p>In diesem Account erstellt man nun ein neues <code>Data Source</code> und benennt seine iSpindel bsp. "iSpindel001" </p>
+<p><del>In diesem Account erstellt man nun ein neues <code>Data Source</code> und benennt seine iSpindel bsp. "iSpindel001"</del> </p>
 
 <p><img src="docs/UbiDS.jpg" alt="UbiDS"></p>
 </li>
 <li>
-<p>In diesem Device erstellt man nun 3  <code>Variable</code> das den 3 Datenquellen entspricht die durch geliefert werden</p>
+<p><del>In diesem Device erstellt man nun 3  <code>Variable</code> das den 3 Datenquellen entspricht die geliefert werden</del></p>
 
 <ul>
-<li>Neigung (wird später zu °Plato umgerechnet)</li>
-<li>Temperatur (fließt auch in °Plato ein)</li>
-<li>Batterie Spannung </li>
+<li><del>Neigung (wird später zu °Plato umgerechnet)</del></li>
+<li><del>Temperatur (fließt auch in °Plato ein)</del></li>
+<li>
+<del>Batterie Spannung</del> </li>
 </ul>
 
-<p><strong><em>Notieren dieser 3 <code>ID's</code> die man über das  <code>i</code> Icon erhält</em></strong></p>
+<p><del><strong><em>Notieren dieser 3 <code>ID's</code> die man über das  <code>i</code> Icon erhält</em></strong></del></p>
 
-<p><img src="docs/UbiIDs.jpg" alt="IDs"></p>
+<p><img src="docs/UbiIDs.jpg" alt="IDs">~~</p>
 </li>
-<li><p>Im Menü  <code>API Credentials</code> erhält man sein <code>Token</code> durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält. <strong><em>Diesen ebenfalls notieren.</em></strong>
-<img src="docs/UbiToken.jpg" alt="Token"></p></li>
 </ul>
 
 <h3>
@@ -220,11 +231,11 @@ Man verlässt den <em>Konfiguration-Modus</em> durch speichern seiner Einstellun
 </blockquote>
 
 <ul>
-<li><p>Der Ubidots  <code>Token</code> und die  <code>IDs</code>, welche man oben notiert hat, werden nun an dieser Stelle eingetragen.  </p></li>
+<li><p>Der Ubidots  <code>Token</code> <del>und die  <code>IDs</code></del>, welche man oben notiert hat, werden nun an dieser Stelle eingetragen.  </p></li>
 <li>
 <p>Ebenfalls stellt man hier den <code>Intervall</code> ein in dem sie Daten liefert. Dies hat direkt mit der Akku Lebensdauer zu tun. Es empfiehlt sich in der Praxis etwa <code>1800</code> Sekunden (= 30 Minuten) Takt zu wählen.</p>
 
-<p><img src="docs/setup.png" alt="Setup"></p>
+<p><img src="docs/setup.jpg" alt="Setup"></p>
 </li>
 <li>
 <p>Man erreicht es über</p>
@@ -237,6 +248,12 @@ Man verlässt den <em>Konfiguration-Modus</em> durch speichern seiner Einstellun
 <p><img src="docs/info.png" alt="Info"></p>
 </li>
 </ul>
+
+<blockquote>
+<p>Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.<br>
+Auf der Ubidots Weboberfläche wird man nun unter <code>Sources</code> sehen dass die Daten aktualisiert werden.<br>
+Nun kann man im <code>Dashboard</code> sich seine Graphen nach Belieben zusammenstellen.</p>
+</blockquote>
 
 <hr>
 
