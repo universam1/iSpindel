@@ -7,7 +7,7 @@ iSpindel
 ***Unterstützung des Projekts*** 
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
-
+> Update 28.11.16: Firmware v.2.0 - Ubidots Auto-Konfiguration  
 > Update 28.11.16: Ubidots Einrichtung  
 > Update 23.11.16: Schaltplan und Firmware
 
@@ -118,25 +118,24 @@ alt="Druck" width="240" height="180" border="10" /></a>
 ### Ubitdots
 
 - Zu Beginn muss ein kostenloser Account bei [Ubidots.com](https://ubidots.com) erstellt werden
-- In diesem Account erstellt man nun ein neues ```Data Source``` und benennt seine iSpindel bsp. "iSpindel001" 
+- Im Menü  ```API Credentials``` erhält man seinen ```Token``` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.  
+***Diesen notieren.***  
+![Token](docs/UbiToken.jpg)  
+
+> Update 28.11.16: Durch Auto - Konfiguration sind folgende Schritte nicht mehr nötig
+
+- ~~In diesem Account erstellt man nun ein neues ```Data Source``` und benennt seine iSpindel bsp. "iSpindel001"~~ 
 
   ![UbiDS](docs/UbiDS.jpg)
 
-- In diesem Device erstellt man nun 3  ```Variable``` das den 3 Datenquellen entspricht die geliefert werden
-  - Neigung (wird später zu °Plato umgerechnet)
-  - Temperatur (fließt auch in °Plato ein)
-  - Batterie Spannung 
+- ~~In diesem Device erstellt man nun 3  ```Variable``` das den 3 Datenquellen entspricht die geliefert werden~~
+  - ~~Neigung (wird später zu °Plato umgerechnet)~~
+  - ~~Temperatur (fließt auch in °Plato ein)~~
+  - ~~Batterie Spannung~~ 
 
-  ***Notieren dieser 3 ```ID's``` die man über das  ```i``` Icon erhält***
+  ~~***Notieren dieser 3 ```ID's``` die man über das  ```i``` Icon erhält***~~
 
-  ![IDs](docs/UbiIDs.jpg)
-
-- Im Menü  ```API Credentials``` erhält man seinen ```Token``` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.  
-***Diesen ebenfalls notieren.***  
-
-  ![Token](docs/UbiToken.jpg)
-
-
+  ![IDs](docs/UbiIDs.jpg)~~
 
 
 ### Portal
@@ -146,11 +145,11 @@ Durch mehrmaliges Drücken der ```Reset Taste``` erstellt der Wemos einen Access
 > Die ```iSpindel``` signalisiert dass sie sich im *Konfiguration-Modus* druch permanentes Blinken im Sekundentakt.  
 Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, durch betätigen des Menüpunkts ```Start iSpindel``` oder durch warten von 5 Minuten. Danach befindet sie sich im *Betriebsmodus* d.h. sie sendet ihre Daten und geht daraufhin direkt in den "Deep Sleep" Standby Modus. Daher ist sie im normalen Modus nicht erreibar.
 
-- Der Ubidots  ```Token``` und die  ```IDs```, welche man oben notiert hat, werden nun an dieser Stelle eingetragen.  
+- Der Ubidots  ```Token``` ~~und die  ```IDs```~~, welche man oben notiert hat, werden nun an dieser Stelle eingetragen.  
 
 - Ebenfalls stellt man hier den ```Intervall``` ein in dem sie Daten liefert. Dies hat direkt mit der Akku Lebensdauer zu tun. Es empfiehlt sich in der Praxis etwa ```1800``` Sekunden (= 30 Minuten) Takt zu wählen.
 
-   ![Setup](docs/setup.png)
+   ![Setup](docs/setup.jpg)
 
 
 - Man erreicht es über
