@@ -122,7 +122,7 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
   ![UbiDS](docs/UbiDS.jpg)
 
-- In diesem Device erstellt man nun 3  ```Variable``` das den 3 Datenquellen entspricht die durch geliefert werden
+- In diesem Device erstellt man nun 3  ```Variable``` das den 3 Datenquellen entspricht die geliefert werden
   - Neigung (wird später zu °Plato umgerechnet)
   - Temperatur (fließt auch in °Plato ein)
   - Batterie Spannung 
@@ -131,8 +131,12 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
   ![IDs](docs/UbiIDs.jpg)
 
-- Im Menü  ```API Credentials``` erhält man sein ```Token``` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält. ***Diesen ebenfalls notieren.***
+- Im Menü  ```API Credentials``` erhält man seinen ```Token``` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.  
+***Diesen ebenfalls notieren.***  
+
   ![Token](docs/UbiToken.jpg)
+
+
 
 
 ### Portal
@@ -158,6 +162,9 @@ Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, du
 
   ![Info](docs/info.png)
 
+> Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.  
+Auf der Ubidots Weboberfläche wird man nun unter ```Sources``` sehen dass die Daten aktualisiert werden.  
+Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen.
 
 ***
 
