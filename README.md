@@ -19,18 +19,17 @@ iSpindel
 
 
 ## Inhaltverzeichnis
-- [Lizenz](#Lizenz)
-
-- [Prinzip](#Prinzip)
-  - [Metazentrum](#Metazentrum)
-- [Aufbau](#Aufbau)
-  - [Bauteile](#Bauteile)
-  - [Bauteile](#Bauteile)
-  - [Schaltplan](docs/Schaltplan.md)
-- [Konfiguration](#Konfiguration)
-  - [Ubitdots](#Ubitdots)
-  - [Portal](#Portal)
-- [Software](#Software)
+- [Lizenz](#lizenz)
+- [Prinzip](#prinzip)
+  - [Metazentrum](#metazentrum)
+- [Aufbau](#aufbau)
+  - [Bauteile](#bauteile)
+  - [Schaltplan](#schaltplan)
+  - [Schlitten](#schlitten)
+- [Konfiguration](#konfiguration)
+  - [Ubitdots](#ubitdots)
+  - [Portal](#portal)
+- [Software](#software)
 
 
 ***
@@ -93,6 +92,11 @@ Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedru
 >Info: *"Ist im Moment dann nur 1,44 EUR ab 2017 werden es dann 1,52 EUR sein, weil der Artikel 10ct hoch geht."*
 
 >Info 2: Zur Zeit ausverkauft, nachbestellt.
+
+***
+### Schaltplan
+
+***siehe [Schaltplan](docs/Schaltplan.md)***
 
 ***
 
