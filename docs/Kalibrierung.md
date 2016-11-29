@@ -6,9 +6,9 @@
 
 # Inhalt
 
-[Variante A (vereinfacht](#variante-a-(vereinfacht))
-[Variante B Schnellvergärung (genauer)](#variante-b-schnellvergärung-(genauer))
-[Formel Excel Tabelle](#formel)
+- [Variante A (vereinfacht](#variante-a-(vereinfacht))
+- [Variante B Schnellvergärung (genauer)](#variante-b-schnellvergärung-(genauer))
+- [Formel Excel Tabelle](#formel)
 
 ***
 
