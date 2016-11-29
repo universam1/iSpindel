@@ -4,6 +4,14 @@
 
 ***
 
+# Inhalt
+
+[Variante A (vereinfacht](#variante-a-(vereinfacht))
+[Variante B Schnellvergärung (genauer)](#variante-b-schnellvergärung-(genauer))
+[Formel Excel Tabelle](#formel)
+
+***
+
 ## Variante A (vereinfacht)
 
 > Zum Ablessen des Neigungswinkels empfiehlt es sich, die iSpindel mit Ubidots zu verbinden und einen sehr kurzen Intervall (20 Sekunden) zu setzen. Damit kann die Neigung über die Webseite verfolgt werden.  
@@ -24,7 +32,7 @@
 1. Wasser weiter verdünnen auf ca. 2,5 °Plato, ***Plato messen und Winkel notieren***   
 *Beispiel +2000ml Wasser hinzufügen*
 
-**gemessene Werte werden in das [Excel Sheet](#excel_funktion) eingetragen** 
+**gemessene Werte werden in das [Excel Sheet](#formel) eingetragen** 
 
 ***
 

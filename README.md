@@ -7,6 +7,7 @@ iSpindel
 ***Unterstützung des Projekts*** 
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
+> Update 29.11.16: Kalibrierung und Excel Tabelle  
 > Update 28.11.16: Firmware v.2.0 - Ubidots Auto-Konfiguration  
 > Update 28.11.16: Ubidots Einrichtung  
 > Update 23.11.16: Schaltplan und Firmware
@@ -31,7 +32,7 @@ iSpindel
   - [Portal](#portal)
 - [Anzeige](#anzeige)
   - [Kalibrierung der Spindel](#kalibrierung)
-  - [Ubidots Graphen](docs/Ubigraphs.md)
+  - [Ubidots Graphen](#ubidots-graphen)
   - [CraftBeerPi](#craftbeerpi)
 - [Software](#software)
 
