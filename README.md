@@ -29,6 +29,10 @@ iSpindel
 - [Konfiguration](#konfiguration)
   - [Ubitdots](#ubitdots)
   - [Portal](#portal)
+- [Anzeige](#anzeige)
+  - [Kalibrierung der Spindel](#kalibrierung)
+  - [Ubidots Graphen](docs/Ubigraphs.md)
+  - [CraftBeerPi](#craftbeerpi)
 - [Software](#software)
 
 
@@ -165,6 +169,22 @@ Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, du
 Auf der Ubidots Weboberfläche wird man nun unter ```Sources``` sehen dass die Daten aktualisiert werden.  
 Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen.
 
+***
+## Anzeige
+
+### Kalibrierung
+
+> Zur Umrechnung von Winkel ° in °Plato, SG, %mas o.Ä. ist es initial nötig eine Referenzkurve zu kalibrieren. Die gewonnenen Referenzen können dann vereinfacht über eine Excel Tabelle in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig durchführen.
+
+[siehe Kalibrierung durchführen](docs/Kalibrierung.md)
+
+### Ubidots Graphen
+
+***TODO***
+
+### CraftBeerPi
+
+[Work in Progress](https://github.com/universam1/iSpindel/issues/3)
 ***
 
 ## Software 
