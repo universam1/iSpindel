@@ -47,8 +47,11 @@
 *Beispiel 800ml Wasser + 200g Kristallzucker auflösen*
 1. Hefe hinzufügen und Spindel einlegen. ***Plato messen und Winkel notieren*** 
 1. bis x. :  Nun nimmt man regelmässig Plato Messwerte und den jeweilig korrelierenden Winkel und trägt dies in die Excel Tabelle ein. 
+> Achtung: Sollte man hier einen Refraktometer verwenden darf man die Korrektur dessen nicht vergessen: [Refraktometerrechner](http://www.maischemalzundmehr.de/index.php?inhaltmitte=toolsrefraktorechner)
 
-## Formel
+***
+
+# Formel
 
 > Obige Meßwerte können nun anhand dieser Excel Tabelle in eine annähernde Formel überführt werden.  
 Diese hinterlegt man in Ubidots um die Anzeige des °Plato zu erhalten.  
