@@ -181,7 +181,7 @@ Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen
 
 ### Ubidots Graphen
 
-***TODO***
+- [Plato Formel](docs/Kalibrierung.md#formel)
 
 ### CraftBeerPi
 
