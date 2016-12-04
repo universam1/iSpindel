@@ -1,6 +1,6 @@
 # Calibration
 
->The angle of the iSpindle floating in the wort can be converted into degrees Plato (ºPlato), density (SG) or other units. To be able to do so a reference should be made between the degrees of angle of the iSpindle and the chosen unit. Reference values will be measured and with the use of an Excel table a graph is made. Excel will calculate a function with the relation between the angle of the iSpindle and  Plato degrees, density or others. As each self built iSpindle will show little differences, the reference measurement is needed once for each individual iSpindle. 
+>The inclination of the iSpindle floating in the wort can be converted into degrees Plato (ºPlato), density (SG) or other units. To be able to do so a reference should be made between the degrees of angle of the iSpindle making with the wort or young beer and the chosen unit. Reference values will be measured and with the use of an Excel table a graph is made. Excel will calculate a function with the relation between the angle of the iSpindle and  Plato degrees, density or others. As each self built iSpindle will show little differences, the reference measurement is needed once for each individual iSpindle. 
 
 ***
 
