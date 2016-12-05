@@ -36,9 +36,9 @@ You are advised to connect the iSpindel with Ubidots for easy reading of the mea
 
 1. Dillute the solution from the point above till it reaches approximately 5 degrees Plato, SG 1.020 or 5 degrees Brix
 >*Example: Dillute the solution from point 5 with 333 ml of water*        
->***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel***     
+>***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel***   
 
-1.Dillute the solution from the point above till it reaches approximately 2.5 degrees Plato, SG 1.010 or 2.5 degrees Brix.     
+1. Dillute the solution from the point above till it reaches approximately 2.5 degrees Plato, SG 1.010 or 2.5 degrees Brix.     
 >*Example: Dillute the solution from point 6 with 2000 ml of water.*      
 >***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel        
 >Enter the measured points in the Excel sheet (see below). This Excel sheet will calculate the formula for the reference***
@@ -69,14 +69,14 @@ It is advised to connect the iSpindel with Ubidots in order te easily read the m
 
 ## Formula
 
-De meetwaarden kunnen aan de hand van de Excel tabel in een formule gezet worden die het verloop bij benadering kan berekenen. Deze formule wordt in Ubidots ingevoerd om de weergaven in graden Plato of SG te verkrijgen.
-Andere weergaven, zoals bijvoorbeeld de SVG of alcohol % zijn op vergelijkbare manier via een '''Derived variabele''' te berekenen.
+The measured values can be entered in the Excel sheet. This sheet will calculate a formula that will predict the density or the degrees of Plato given an inclination value. This formula has to be entered in Ubidots to be able to get readings in density or degrees Plato.
+Other reading, such as apparent attenuation or alcohol % can be obtained in similiar manners with the use of a '''Derived Variable'''.
 
-1. De hierboven verkregen meetwaarden invoeren in de Excel tabel.       
+1. First enter the measured values in Excel:    
 [Download Excel tabel](https://github.com/universam1/iSpindel/blob/master/docs/Kalibrierung.xlsm)
-2. Macro **Formule update** starten door op de button te klikken. De formule wordt dan bijgewerkt.      
+2. Start the macro **Formule update** by clicking on the button. The formula will be updated     
 ![](https://github.com/universam1/iSpindel/blob/master/docs/Excelcalc.jpg)
-3. In je account van Ubidots een **Derived Variabele** maken. Dat is een variabele die van andere gegevens afhankelijk is. Volg hiervoor de onderstaande stappen:
+3. In the account of Ubidots a **Derived Variable** has to be added. This is a variableIn je account van Ubidots een **Derived Variabele** maken. Dat is een variabele die van andere gegevens afhankelijk is. Volg hiervoor de onderstaande stappen:
 4. Ga in Ubidots naar Sources
 5. Kies de iSpindel als source (bron).
 6. (+) Add variable kiezen
