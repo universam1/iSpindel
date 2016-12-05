@@ -1,2 +1,3 @@
+V. 2.1.2: Improved Wifi connection, faster reconnect with difficult APs. Changed captive portal.
 V. 2.0.0: Added Ubidots Auto Config
 V. 1.3.2: implemented Median filter. Average of 3 median of 5x 200 rounds
