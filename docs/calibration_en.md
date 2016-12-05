@@ -18,7 +18,7 @@ You are advised to connect the iSpindel with Ubidots for easy reading of the mea
 1. Put the iSpindel in clean water (0 degrees Plato, SG 1.000).   
 > ***Write down the inclination of the iSpindel***
 
-1. Make a solution of sugar in water with the highest for the future forseeable density. If you are brewing strong beers with a high starting density you should have reference measurements in this high range. For most brewers a solution with a density around 1.085 or around 20 degrees Plato will do.      
+1. Make a solution of sugar in water with the highest in the future forseeable density. If you are brewing strong beers with a high starting density you should have reference measurements in this high range. For most brewers a solution with a density around 1.085 or around 20 degrees Plato will do.      
 > *Example for sugar soluion: 400 ml with 100 g sugar*     
 > ***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel***
 
@@ -54,23 +54,23 @@ It is advised to connect the iSpindel with Ubidots in order te easily read the m
 1. Put the iSpindel in clean (tap) water (0 º Plato or SG 1.000)      
 >***Write down the measured inclination of the iSpindel***
 
-1. Suikerwater maken met het hoogste voor de toekomst verwachtte bereik. Voor de meeste brouwers zal 20 ºplato of  SG 1,083 voldoende zijn.     
->*Voorbeeld: 800 ml water + 200 g kristalsuiker.*
+1. Make a solution of sugar in water with the highest in the future forseeable density. If you are brewing strong beers with a high starting density you should have reference measurements in this high range. For most brewers a solution with a density around 1.085 or around 20 degrees Plato will do.     
+>*Example: 800 ml of water + 200 g crystal sugar.*
 
-1. Gist toevoegen en de iSpinel in de vloeistof leggen.         
->***Meet je gemaakte oplossing (SG of Plato) en noteer met de bijbehorende hoek van de iSpindel.***
+1. Add yeast to the sugar solution and let the iSpindel float in the solution         
+>***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel***
 
-1. Tot het onderste bereik van de meetrange is bereikt regelmatig de vloeistof meten en de bijbehorende hoek noteren.       
->***De gemeten waarden invoeren in het Excel blad. Hieruit volgt direct de formule van de referentiegrafiek.***     
+1. Measure the density of the fluid and the corresponding inclination of the iSpindle at regular intervals till the end of fermentation has been reached.      
+>***Enter the measured values in the Excel sheet. This sheet will show the formula of the calibration curve.***     
 >
->****Opletten: bij een meting in Brix moet wel de correctie meegenomen worden.**** 
+>****Caution: if you measure in Brix value with a refractometer you have to recalculate the measured value to correct for the alcohol reading*** 
 
 ***
 
-## Formule
+## Formula
 
 De meetwaarden kunnen aan de hand van de Excel tabel in een formule gezet worden die het verloop bij benadering kan berekenen. Deze formule wordt in Ubidots ingevoerd om de weergaven in graden Plato of SG te verkrijgen.
-Andere weergaven, zoals bijvoorbeeld de SVG of alcohol % zijn op vergelijkbare manier via een **Derived variabele** te berekenen.
+Andere weergaven, zoals bijvoorbeeld de SVG of alcohol % zijn op vergelijkbare manier via een '''Derived variabele''' te berekenen.
 
 1. De hierboven verkregen meetwaarden invoeren in de Excel tabel.       
 [Download Excel tabel](https://github.com/universam1/iSpindel/blob/master/docs/Kalibrierung.xlsm)
