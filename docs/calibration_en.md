@@ -26,32 +26,33 @@ You are advised to connect the iSpindel with Ubidots for easy reading of the mea
 >*Example for sugar solution: dillute the solution of point 2 with 166 ml of water*     
 >***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel***        
 
-1. De oplossing van punt 3 met water verdunnen tot circa 10 graden Plato, SG 1,040 of 10 graden Brix.       
->*Voorbeeld: Oplossing van punt 3 met 333 ml water.*        
->***Meet de gemaakte oplossing (SG of Plato) en noteer met de bijbehorende hoek van de iSpindel.***     
+1. Dillute the solution from the point above till it reaches approximately 10 degrees Plato, SG 1.040 of 10 degrees Brix.       
+>*Example: Dillute the solution from point 3 with 333 ml of water.*        
+>***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel***     
 
-1. De oplossing van punt 4 met water verdunnen tot circa 7,5 graden Plato, SG 1,030 of 7,5 graden Brix.
->*Voorbeeld: Oplossing van punt 4 met 333 ml water.*        
->***Meet de gemaakte oplossing (SG of Plato) en noteer met de bijbehorende hoek van de iSpindel.***     
+1. Dillute the solution from the point above till it reaches approximately 7,5 degrees Plato, SG 1.030 or 7.5 degrees Brix.
+>*Example: Dillute the solution from point 4 with 333 ml of water.*        
+>***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel***     
 
-1. De oplossing van punt 5 met water verdunnen tot circa 5 graden Plato, SG 1,020 of 5 graden Brix
->*Voorbeeld: Oplossing van punt 5 met 666 ml water.*        
->***Meet de gemaakte oplossing (SG of Plato) en noteer met de bijbehorende hoek van de iSpindel.***     
+1. Dillute the solution from the point above till it reaches approximately 5 degrees Plato, SG 1.020 or 5 degrees Brix
+>*Example: Dillute the solution from point 5 with 333 ml of water*        
+>***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel***     
 
-1. De oplossing van punt 6 met water verdunnen tot circa 2,5 graden Plato, SG 1,010 of 2,5 graden Brix.     
->*Voorbeeld: Oplossing van punt 6  met 2000 ml water.*      
->***Meet de gemaakte oplossing (SG of Plato) en noteer met de bijbehorende hoek van de iSpindel.        
->De gemeten waarden invoeren in het Excel blad. Hieruit volgt direct de formule van de referentiegrafiek.***
+1.Dillute the solution from the point above till it reaches approximately 2.5 degrees Plato, SG 1.010 or 2.5 degrees Brix.     
+>*Example: Dillute the solution from point 6 with 2000 ml of water.*      
+>***Measure the density or the degrees Plato and write it down with the inclination of the iSpindel        
+>Enter the measured points in the Excel sheet (see below). This Excel sheet will calculate the formula for the reference***
 
 ***
  
-## Precieze methode via snelvergisting (Variant B)
+## Improved method using fast fermenting (II)
 
-Deze variant is preciezer, omdat er rekening wordt gehouden met de invloed van CO2 gedurende de vergisting.
+This method is more precize since it will take the influence of CO2 formed during fermenting into account.
 
-Voor het aflezen van de hellingshoek wordt aanbevolen om de iSpindel  via Ubidots te verbinden en de iSpindel in te stellen op een korte meetinval (20 seconden). Daardoor kan de helling van de sensor eenvoudig via een webpagina gevolgd worden.
-1. Ispindel in schoon water leggen (0 º Plato of SG 1,000)      
->***Noteer de hoek***
+It is advised to connect the iSpindel with Ubidots in order te easily read the measurement of the inclination of the iSpindel. Set the iSpindel with 20 seconds between readings on a short interval of measurement. The inclination can now be very easily found on the webpage of your Ubidots account.
+
+1. Put the iSpindel in clean (tap) water (0 º Plato or SG 1.000)      
+>***Write down the measured inclination of the iSpindel***
 
 1. Suikerwater maken met het hoogste voor de toekomst verwachtte bereik. Voor de meeste brouwers zal 20 ºplato of  SG 1,083 voldoende zijn.     
 >*Voorbeeld: 800 ml water + 200 g kristalsuiker.*
