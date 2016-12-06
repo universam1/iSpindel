@@ -1,12 +1,22 @@
-iSpindel
+iSpindel | iSpindle
 ===================
 
 **DIY elektronische Bierspindel | electronic Hydrometer**
 ***https://universam1.github.io/iSpindel***
 
+***
+
+## Documentation in other languages
+
+### [English Documentation (work in progress)](docs/README_en.md) :us:
+### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) [](#lang-nl)
+
+***
+
 ***Unterstützung des Projekts*** 
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
+> Update 03.12.16: Firmware 2.1.2 Wlan Verbesserungen  
 > Update 29.11.16: Kalibrierung und Excel Tabelle  
 > Update 28.11.16: Firmware v.2.0 - Ubidots Auto-Konfiguration  
 > Update 28.11.16: Ubidots Einrichtung  
@@ -202,4 +212,3 @@ Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen
 ***Gefällt es dir, na dann spende mir halt ein Bier***  :beers:
 
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
-
