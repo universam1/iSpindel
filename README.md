@@ -1,8 +1,17 @@
-iSpindel
+iSpindel | iSpindle
 ===================
 
 **DIY elektronische Bierspindel | electronic Hydrometer**
 ***https://universam1.github.io/iSpindel***
+
+***
+
+## Documentation in other languages
+
+### [English Documentation (work in progress)](docs/README_en.md) :us:
+### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) :nl:
+
+***
 
 ***Unterstützung des Projekts*** 
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
