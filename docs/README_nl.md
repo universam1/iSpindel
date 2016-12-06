@@ -11,7 +11,7 @@ iSpindel | iSpindle
 ## Documentation in other languages
 
 ### [English Documentation (work in progress)](docs/README_en.md) :us:
-### [Originele document](iSpndel/README.md) [](#lang-de)
+### [Originele document](iSpindel/README.md) [] :de:
 
 ***
 
