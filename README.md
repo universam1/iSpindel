@@ -9,7 +9,7 @@ iSpindel | iSpindle
 ## Documentation in other languages
 
 ### [English Documentation (work in progress)](docs/README_en.md) :us:
-### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) :nl:
+### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) [](#lang-nl)
 
 ***
 
