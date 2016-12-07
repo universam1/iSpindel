@@ -17,6 +17,7 @@ iSpindel | iSpindle
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
+> Update 07.12.16: Schaltplan  
 > Update 03.12.16: Firmware 2.1.2 Wlan Verbesserungen  
 > Update 29.11.16: Kalibrierung und Excel Tabelle  
 > Update 28.11.16: Firmware v.2.0 - Ubidots Auto-Konfiguration  
