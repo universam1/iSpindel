@@ -13,8 +13,9 @@ iSpindel | iSpindle
 
 ***
 
-***Unterstützung des Projekts*** 
-[![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
+***Please consider supporting this project***  
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
 > Update 03.12.16: Firmware 2.1.2 Wlan Verbesserungen  
 > Update 29.11.16: Kalibrierung und Excel Tabelle  
