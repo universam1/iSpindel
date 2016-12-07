@@ -74,14 +74,14 @@ Other reading, such as apparent attenuation or alcohol % can be obtained in simi
 
 1. First enter the measured values in Excel:    
 [Download Excel tabel](https://github.com/universam1/iSpindel/blob/master/docs/Kalibrierung.xlsm)
-2. Start the macro **Formule update** by clicking on the button. The formula will be updated     
+2. Start the macro **Formule update** by clicking on the button. The formula will be updated.     
 ![](https://github.com/universam1/iSpindel/blob/master/docs/Excelcalc.jpg)
-3. In the account of Ubidots a **Derived Variable** has to be added. This is a variableIn je account van Ubidots een **Derived Variabele** maken. Dat is een variabele die van andere gegevens afhankelijk is. Volg hiervoor de onderstaande stappen:
-4. Ga in Ubidots naar Sources
-5. Kies de iSpindel als source (bron).
-6. (+) Add variable kiezen
-7. Derived kiezen.      
+3. In the account of Ubidots a **Derived Variable** has to be added. This is a variable that is calculated with other variables as source. This can be done by following the next steps.
+4. In Ubidots go to **Source**
+5. Choose iSpindel as source
+6. Click on **(+) Add variable** 
+7. Choose **Derived**      
 ![](https://github.com/universam1/iSpindel/blob/master/docs/Ubiderived.jpg)
-8. Hier kan de Excel formule ingevoerd worden. De onderdelen ***(tilt)*** die uit Excel komen moet je hier vervangen door op ***insert Variable*** te klikken en tilt te kiezen. Geef de variabele een logische naam (Bijvoorbeeld SG of Plato)     
+8. Now you can fill in the formula from Excel. De parts in the formula shown as ***(tilt)*** has to be replaced. To do so click on ***insert variable*** and choose **tilt**. Give the newly created variable a name that does make sense, i.e. Density or Plato     
 ![](https://github.com/universam1/iSpindel/blob/master/docs/Ubiplato.jpg)
-9. Op het Dashboard kan je dan een nieuwe grafiek maken met als data bron je zojuist gemaakte variabele SG of Plato.
+9. Under **Dashboard** you can create graphical presentations of your data.
