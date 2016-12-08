@@ -28,25 +28,26 @@ iSpindel | iSpindle
 >De ````iSpindel```` bevindt zich op dit momen midden in de ontwikkeling. Op het forum Hobbybrouwen.nl is hier het nodige over te vinden. De ontwikkeling is ontstaan vanuit het Dutise forum Hobbybrauer.de zie hiervoor [Dit topic](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Hulp is van harte welkom. Veranderingen graag inbrengen met een **Pull request**. Grote dank aan alle die ondersteuning geven op wat voor manier dan ook.
 
 
-![Spindel im Reinwasser](docs/floating.jpg)
-![Dashboard](docs/Dashboard.jpg)
+![iSpindel in schoon water](https://github.com/universam1/iSpindel/blob/master/docs/floating.jpg)   
+
+![Weergave via het dashboard](https://github.com/universam1/iSpindel/blob/master/docs/Dashboard.jpg)
 
 
 ## Inhoudsopgave
 - [Licentie](#licentie)
 - [Principe](#principe)
-  - [Centrale zwaartepunt](#centrale-zwaartepunt)
+- [Centrale zwaartepunt](#centrale-zwaartepunt)
 - [Opbouw](#opbouw)
-  - [Onderdelen](#onderdelen)
-  - [Schema](#schema)
-  - [Componenten schuifhouder](#componenten-schuifhouder)
+- [Onderdelen](#onderdelen)
+- [Schema](#schema)
+- [Componenten schuifhouder](#componenten-schuifhouder)
 - [Configuratie](#configuratie)
-  - [Ubitdots](#ubitdots)
-  - [Toegangsportaal](#toegangsportaal)
+- [Ubitdots](#ubitdots)
+- [Toegangsportaal](#toegangsportaal)
 - [Weergave](#weergave)
-  - [Kalibreren van de  Spindel](#kalibrierung)
-  - [Ubidots grafieken](#ubidots-graphen)
-  - [CraftBeerPi](#craftbeerpi)
+- [Kalibreren van de  Spindel](#kalibrierung)
+- [Ubidots grafieken](#ubidots-graphen)
+- [CraftBeerPi](#craftbeerpi)
 - [Software](#software)
 
 
