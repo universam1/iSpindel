@@ -158,9 +158,12 @@ De *Configuratie modus* kan weer verlaten worden door het opslaan van de instell
    ![Setup](https://github.com/universam1/iSpindel/blob/master/docs/setup.jpg)
 
 
-- Dit wordt gedaan via:
+- Log zodra de iSpindel in de *Configuratie modus* zet eerst met een computer of telefoon in op het iSpindel-accesspoint
 
    ![AccessPoint](https://github.com/universam1/iSpindel/blob/master/docs/AP.png)
+   
+ - Vervolgens kan je via het toegangsportaal direct jouw gegevens en instellingen invoeren
+ 
    ![Portal](https://github.com/universam1/iSpindel/blob/master/docs/Portal.png)
 
 
