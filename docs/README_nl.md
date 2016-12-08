@@ -108,22 +108,24 @@ In de software berekent men uit de XYZ  waarden de euler hoeken voorX en Y en va
 > De aanbieder[cachers-world.de](http://cachers-world.de/de/Petling-XL) ondersteunt dit project. Gebruik hiervoor de tegoedbon-code "```HOBBYBRAUER```"  (met hoofdletters) om 20% korting te krijgen.
 Deze [Petling-XL](http://cachers-world.de/de/Petling-XL) past met de 3D gedrukte componenten-slede.
 >
->Info: *"Deze pettling kost slechts 1,44 EUR , vanaf 2017 wordt het 1,52 EUR . Geadviseerd wordt om goed te kijken omdat verzendkosten vanuit Duitsland hoog kunnen zijn"*
+>Info: *"Deze pettling kost slechts 1,44 EUR , vanaf 2017 wordt het 1,52 EUR .
+
+Geadviseerd wordt om goed te kijken en te vergelijken omdat verzendkosten vanuit Duitsland hoog kunnen zijn"*
 
 >Info 2: Op dit moment zijn de pettlingen uitverkocht, ze zijn nabesteld.
 
 ***
 ### Schema
 
-***zie [Schema](docs/Schaltplan.md)***
+***zie [Schema](https://github.com/universam1/iSpindel/blob/master/docs/Schaltplan.md)***
 
 ***
 
 ### Componenten schuifhouder
 
-![Componenten schuifhouder](docs/Schlitten_cad.jpg)
-![Samengesteld](docs/assembled2.jpg)
-![Samengesteld 2](docs/assembled.jpg)
+![Componenten schuifhouder](https://github.com/universam1/iSpindel/blob/master/docs/Schlitten_cad.jpg)
+![Samengesteld](https://github.com/universam1/iSpindel/blob/master/docs/assembled2.jpg)
+![Samengesteld 2](https://github.com/universam1/iSpindel/blob/master/docs/assembled.jpg)
 
 [Video 3D printen]<a href="http://www.youtube.com/watch?feature=player_embedded&v=gpVarh8BxhQ" target="_blank"><img src="http://img.youtube.com/vi/gpVarh8BxhQ/0.jpg" 
 alt="Druck" width="240" height="180" border="10" /></a>
@@ -139,9 +141,9 @@ alt="Druck" width="240" height="180" border="10" /></a>
 - Om te beginnen moet een gratis account bei [Ubidots.com](https://ubidots.com) geopend worden
 - In het menu  ```API Credentials``` kan je de ```Token``` vinden waarmee de iSpindel schrijfrechten voor de data krijgt.  
 ***Noteer deze!***  
-![Token](docs/UbiToken.jpg)  
+![Token](https://github.com/universam1/iSpindel/blob/master/docs/UbiToken.jpg)  
 
-  ![UbiDS](docs/UbiDS.jpg)
+  ![UbiDS](https://github.com/universam1/iSpindel/blob/master/docs/UbiDS.jpg)
 
 ### Toegangsportaal
 
@@ -153,17 +155,18 @@ De *Configuratie modus* kan weer verlaten worden door het opslaan van de instell
 
 - Daarnaast geef je hier het ```Interval``` op waarmee data worden verzameld. Dit heeft direkt invloed op de accuduur. Het wordt in de praktijk geadviseerd om ongeveer om de  ```1800``` seconden (= 30 Minuten) te meten.
 
-   ![Setup](docs/setup.jpg)
+   ![Setup](https://github.com/universam1/iSpindel/blob/master/docs/setup.jpg)
 
 
 - Dit wordt gedaan via:
 
-   ![AccessPoint](docs/AP.png)![Portal](docs/Portal.png)
+   ![AccessPoint](https://github.com/universam1/iSpindel/blob/master/docs/AP.png)
+   ![Portal](https://github.com/universam1/iSpindel/blob/master/docs/Portal.png)
 
 
 - Een overzicht van de gegevens van de iSpindel kan je via de  ```Info``` button opvragen
 
-  ![Info](docs/info.png)
+  ![Info](https://github.com/universam1/iSpindel/blob/master/docs/info.png)
 
 > Nadat men de bovenstaande gegevens heeft ingevoerd en heeft opgeslagen zal de iSpindel zich met het WiFi netwerk verbinden en data naar Ubidots versturen.
 Op de gebruikterspagina van Ubidots kan je onder ````Sources```` zien dat de data geaktualiseerd wrodt.
@@ -176,11 +179,11 @@ Onder ````Dashboard```` kunnen naar eigen inzicht grafieken en grafische weergav
 
 > Om de hoek van graden (§) in §plato, SG of vergelijkbare waren om te rekenen is het eerst nodig om een referentiegrafiek te kalibreren. De gevonden referentiewaarden kunnen dan met behulp van een Excel tabel in een wiskundige functie uitgedrukt worden. Deze functie wordt de bron van de omrekening. Omdat iedere zelfgebouwde iSpindel andere meetwaarden (meethoeken) zal geven moet dit proces voor iedere iSpindel eenmalig uitgevoerd worden.
 
-[Zie kalibreren](docs/Calibration_nl.md)
+[Zie kalibreren](https://github.com/universam1/iSpindel/blob/master/docs/Calibration_nl.md)
 
 ### Ubidots Grafieken
 
-- [Plato formule](docs/Kalibrierung.md#formel)
+- [Plato formule](https://github.com/universam1/iSpindel/blob/master/docs/Excelcalc.jpg)
 
 ### CraftBeerPi
 
