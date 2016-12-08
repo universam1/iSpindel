@@ -6,7 +6,6 @@ iSpindel | iSpindle
 
 ***
 
-***Dit document is op dit moment onder bewerking***
 
 ## Documentation in other languages
 
