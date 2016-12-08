@@ -68,7 +68,7 @@ Het idee van een scheef in de vloeistof drijvende cylinder is net zo geniaal als
 Geen onnodig openen van het gistvat, en de daarmee samenhangende kans op besmetting, om de densiteit te meten. 
 
 
-![Helling](docs/kraengung.jpg)
+![Helling](https://github.com/universam1/iSpindel/blob/master/docs/kraengung.jpg)
 
 Vandaar het idee om een IoT bordje te voorzien van WiFi, gecombineerd met een bewegingssensor en een temperatuursensor, en dat in een drijvende cylinder te plaatsen. De applicatie wordt iedere bijvoorbeeld 5 minuten wakker, verbindt met het netwerk en zendt de hellingshoek, temperatuur en accuspanning naar een Cloudservice.
 
