@@ -10,8 +10,8 @@ iSpindel | iSpindle
 
 ## Documentation in other languages
 
-### [English Documentation (work in progress)](docs/README_en.md) :us:
-### [Originaldokument](docs/README.md) :de:
+### [English Documentation (work in progress)](https://github.com/universam1/iSpindel/blob/master/docs/README_en.md) :us:
+### [Originaldokument](https://github.com/universam1/iSpindel/blob/master/README.md) :de:
 
 ***
 
