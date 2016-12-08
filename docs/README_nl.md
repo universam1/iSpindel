@@ -149,7 +149,7 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
 Door herhaaldelijk drukken op de ```Reset knop```` van de Wemos wordt een Access Point gestart. Men moet met dit Access Point verbinden  om de benodigde instellingen in de iSpindel te kunnen maken. 
 
-> De ```iSpindel``` geeft aan dat hij in de Configuratie modus zit door het permanente iedere seconde knipperen van de led.   
+> De ```iSpindel``` geeft aan dat hij in de *Configuratie modus* zit door het permanente iedere seconde knipperen van de led.   
 De *Configuratie modus* kan weer verlaten worden door het opslaan van de instellingen, door het drukken op de button ```Start iSpindel```of door 5 minuten te wachten. Daarna bevindt hij zich in de "bedrijfsmodus", hetgeen betekent dat hij de gemeten data verzendt en vervolgens direkt in een "Deep Sleep" standby modus keert tot de volgende meting. In bedrijfsmodus is de iSpindel niet bereikbaar via de computer of telefoon. 
 - Het Ubidots  ```Token``` die je boven genoteerd hebt wordt in dit toegangsportaal bij configuratie ingegeven.  
 
