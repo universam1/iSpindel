@@ -196,9 +196,9 @@ Onder ````Dashboard```` kunnen naar eigen inzicht grafieken en grafische weergav
 
 ### Firmware flashen
 
-[Firmware flashen](docs/Firmware.md)
+[Firmware flashen]https://github.com/universam1/iSpindel/blob/master/docs/Firmware.md)
 
-### Benutzte Bibliotheken
+### Gebruikte Bibliotheken
 
 - https://github.com/tzapu/WiFiManager zum Herstellen der Verbindung (gewijzigd)
 - https://github.com/bblanchon/ArduinoJson
