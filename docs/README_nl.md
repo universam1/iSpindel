@@ -11,7 +11,7 @@ iSpindel | iSpindle
 ## Documentation in other languages
 
 ### [English Documentation (work in progress)](docs/README_en.md) :us:
-### [Originaldokument](iSpindel/README.md) :de:
+### [Originaldokument](docs/README.md) :de:
 
 ***
 
@@ -53,7 +53,7 @@ iSpindel | iSpindle
 ***
 
 ## Licentie
->Iedere commerciële nabouw of toepassing is principieel niet toegestaan omdat hiermee geldende patenten worden overtreden.
+>Iedere commerci%le nabouw of toepassing is principieel niet toegestaan omdat hiermee geldende patenten worden overtreden.
 >
 > All rights reserverd, any commercial use is hereby prohibited and will violate applicable patents.
 
@@ -61,7 +61,7 @@ iSpindel | iSpindle
 
 ## Principe
 
-Voortgedreven door de foumdiscussie [Alternatief voor de hydrometer](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499) werd het iedee geboren om de commerciëel verkrijgbare elektronische hydrometer na te bouwen.
+Voortgedreven door de foumdiscussie [Alternatief voor de hydrometer](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499) werd het iedee geboren om de commerci%el verkrijgbare elektronische hydrometer na te bouwen.
 
 Het idee van een scheef in de vloeistof drijvende cylinder is net zo geniaal als eenvoudig.  De cylinder his onafhankelijk van een extern punt (behalve de aarde) en is extreem makkelijk schoon te houden. De hellingshoek verandert met de mate van drijven. Daardoor is er een direkte relatie met het suikergehalte in de vloeistof.
 Geen onnodig openen van het gistvat, en de daarmee samenhangende kans op besmetting, om de densiteit te meten. 
@@ -147,7 +147,7 @@ alt="Druck" width="240" height="180" border="10" /></a>
 Door herhaaldelijk drukken op de ```Reset knop```` van de Wemos wordt een Access Point gestart. Men moet met dit Access Point verbinden  om de benodigde instellingen in de iSpindel te kunnen maken. 
 
 > De ```iSpindel``` geeft aan dat hij in de Configuratie modus zit door het permanente iedere seconde knipperen van de led.   
-De *Configuratie modus* kan weer verlaten worden door het opslaan van de instellingen, door het drukken op de button ```Start iSpindel```of door 5 minuten te wachten. Daarna bevindt hij zich in de “bedrijfsmodus”, hetgeen betekent dat hij de gemeten data verzendt en vervolgens direkt in een “Deep Sleep” standby modus keert tot de volgende meting. In bedrijfsmodus is de iSpindel niet bereikbaar via de computer of telefoon. 
+De *Configuratie modus* kan weer verlaten worden door het opslaan van de instellingen, door het drukken op de button ```Start iSpindel```of door 5 minuten te wachten. Daarna bevindt hij zich in de "bedrijfsmodus", hetgeen betekent dat hij de gemeten data verzendt en vervolgens direkt in een "Deep Sleep" standby modus keert tot de volgende meting. In bedrijfsmodus is de iSpindel niet bereikbaar via de computer of telefoon. 
 - Het Ubidots  ```Token``` die je boven genoteerd hebt wordt in dit toegangsportaal bij configuratie ingegeven.  
 
 - Daarnaast geef je hier het ```Interval``` op waarmee data worden verzameld. Dit heeft direkt invloed op de accuduur. Het wordt in de praktijk geadviseerd om ongeveer om de  ```1800``` seconden (= 30 Minuten) te meten.
@@ -155,31 +155,31 @@ De *Configuratie modus* kan weer verlaten worden door het opslaan van de instell
    ![Setup](docs/setup.jpg)
 
 
-- Man erreicht es über
+- Dit wordt gedaan via:
 
    ![AccessPoint](docs/AP.png)![Portal](docs/Portal.png)
 
 
-- Eine Übersicht der Daten kann man über den ```Info``` Menüpunkt einsehen
+- Een overzicht van de gegevens van de iSpindel kan je via de  ```Info``` button opvragen
 
   ![Info](docs/info.png)
 
-> Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.  
-Auf der Ubidots Weboberfläche wird man nun unter ```Sources``` sehen dass die Daten aktualisiert werden.  
-Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen.
+> Nadat men de bovenstaande gegevens heeft ingevoerd en heeft opgeslagen zal de iSpindel zich met het WiFi netwerk verbinden en data naar Ubidots versturen.
+Op de gebruikterspagina van Ubidots kan je onder ````Sources```` zien dat de data geaktualiseerd wrodt.
+Onder ````Dashboard```` kunnen naar eigen inzicht grafieken en grafische weergaven worden aangemaakt.
 
 ***
-## Anzeige
+## Weergave
 
-### Kalibrierung
+### Kalibreren
 
-> Zur Umrechnung von Winkel ° in °Plato, SG, %mas o.Ä. ist es initial nötig eine Referenzkurve zu kalibrieren. Die gewonnenen Referenzen können dann vereinfacht über eine Excel Tabelle in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig durchführen.
+> Om de hoek van graden (§) in §plato, SG of vergelijkbare waren om te rekenen is het eerst nodig om een referentiegrafiek te kalibreren. De gevonden referentiewaarden kunnen dan met behulp van een Excel tabel in een wiskundige functie uitgedrukt worden. Deze functie wordt de bron van de omrekening. Omdat iedere zelfgebouwde iSpindel andere meetwaarden (meethoeken) zal geven moet dit proces voor iedere iSpindel eenmalig uitgevoerd worden.
 
-[siehe Kalibrierung durchführen](docs/Kalibrierung.md)
+[Zie kalibreren](docs/Calibration_nl.md)
 
-### Ubidots Graphen
+### Ubidots Grafieken
 
-- [Plato Formel](docs/Kalibrierung.md#formel)
+- [Plato formule](docs/Kalibrierung.md#formel)
 
 ### CraftBeerPi
 
@@ -194,10 +194,9 @@ Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen
 
 ### Benutzte Bibliotheken
 
-- https://github.com/tzapu/WiFiManager zum Herstellen der Verbindung (verändert)
+- https://github.com/tzapu/WiFiManager zum Herstellen der Verbindung (gewijzigd)
 - https://github.com/bblanchon/ArduinoJson
 
-***Gefällt es dir, na dann spende mir halt ein Bier***  :beers:
+***Bevalt het? Bied ons een biertje aan!***  :beers:
 
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
-
