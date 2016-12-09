@@ -25,13 +25,14 @@ iSpindel | iSpindle
 > Update 23.11.16: Schaltplan und Firmware
 
 
-> Die ```iSpindel``` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mitthilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
+> Die ```iSpindel``` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
 ![Spindel im Reinwasser](docs/floating.jpg)
 ![Dashboard](docs/Dashboard.jpg)
 
 
 ## Inhaltverzeichnis
+
 - [Lizenz](#lizenz)
 - [Prinzip](#prinzip)
   - [Metazentrum](#metazentrum)
@@ -52,6 +53,7 @@ iSpindel | iSpindle
 ***
 
 ## Lizenz
+
 > Jeglicher kommerzieller Nachbau oder Verwendung ist prinzipiell untersagt. Geltende Patente werden verletzt.
 >
 > All rights reserverd, any commercial use is hereby prohibited and will violate applicable patents.
@@ -103,6 +105,7 @@ In der Software berechnent man aus den XYZ Beschleunigungswerten den Euler Winke
 - Kunstoff Zylinder ```Petling```
 
 > ## Info
+
 > Der Anbieter [cachers-world.de](http://cachers-world.de/de/Petling-XL) unsterstützt dieses Projekt indem er nachhaltig den passenden Petling liefern möchte und über den Gutschein-Code "```HOBBYBRAUER```"  (Großschreibung!) 20% Rabatt gewährt. 
 Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedruckten Schlitten.
 >
