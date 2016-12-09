@@ -53,7 +53,7 @@ iSpindel | iSpindle
 ***
 
 ## Licentie
->Iedere commerci%le nabouw of toepassing is principieel niet toegestaan omdat hiermee geldende patenten worden overtreden.
+>Iedere commerciële nabouw of toepassing is principieel niet toegestaan omdat hiermee geldende patenten worden overtreden.
 >
 > All rights reserverd, any commercial use is hereby prohibited and will violate applicable patents.
 
@@ -61,23 +61,23 @@ iSpindel | iSpindle
 
 ## Principe
 
-Voortgedreven door de foumdiscussie [Alternatief voor de hydrometer](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499) werd het iedee geboren om de commerci%el verkrijgbare elektronische hydrometer na te bouwen.
+Voortgedreven door de fourmdiscussie [Alternatief voor de hydrometer](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499) werd het idee geboren om de commercieel verkrijgbare elektronische hydrometer na te bouwen.
 
-Het idee van een scheef in de vloeistof drijvende cylinder is net zo geniaal als eenvoudig.  De cylinder his onafhankelijk van een extern punt (behalve de aarde) en is extreem makkelijk schoon te houden. De hellingshoek verandert met de mate van drijven. Daardoor is er een direkte relatie met het suikergehalte in de vloeistof.
-Geen onnodig openen van het gistvat, en de daarmee samenhangende kans op besmetting, om de densiteit te meten. 
+Het idee van een scheef in de vloeistof drijvende cylinder is net zo geniaal als eenvoudig.  De cylinder is onafhankelijk van een extern punt (behalve de aarde) en is extreem makkelijk schoon te houden. De hellingshoek verandert met de mate van drijven. Daardoor is er een direkte relatie met het suikergehalte in de vloeistof.
+Geen onnodig openen van het gistvat om de densiteit te meten met de daarmee samenhangende kans op besmetting, . 
 
 
 ![Helling](https://github.com/universam1/iSpindel/blob/master/docs/kraengung.jpg)
 
-Vandaar het idee om een IoT bordje te voorzien van WiFi, gecombineerd met een bewegingssensor en een temperatuursensor, en dat in een drijvende cylinder te plaatsen. De applicatie wordt iedere bijvoorbeeld 5 minuten wakker, verbindt met het netwerk en zendt de hellingshoek, temperatuur en accuspanning naar een Cloudservice.
+Vandaar het idee om een IoT bordje voorzien van WiFi te combineren met een bewegingssensor en een temperatuursensor, en dat in een drijvende cylinder te plaatsen. De applicatie wordt (bijvoorbeeld) iedere 5 minuten wakker, verbindt met het netwerk en zendt de hellingshoek, temperatuur en accuspanning naar een Cloudservice.
 
 ### *Centrale zwaartepunt*
 
-Eigenlijk draait het om het centrale zwaartepunt. De cylinder zal net zolang reteren tot het centrale zwaartepunt in het centrum van het drijvende centrum is. Dat punt wordt gemeten.
+Eigenlijk draait het om het centrale zwaartepunt. De cilinder zal net zolang roteren tot het centrale zwaartepunt in het centrum van het drijvende centrum is. Dat punt wordt gemeten.
 
-Je kan de cylinder in enige mae trimmen door op de bodem een paar gram toe te voegen zodat de cylinder meer rechtop in de vloeistof drijft (hellingshoek kleiner). Door extra gewicht in het deksel aan te brengen  komt de cylinder schever in de vloeistof te liggen (hellingshoek is groter)
+Je kan de cilinder in enige mate trimmen door op de bodem van de cilinder wat gewicht (een paar gram) toe te voegen zodat de cilinder meer rechtop in de vloeistof drijft (hellingshoek kleiner). Door extra gewicht in het deksel aan te brengen komt de cllinder schever in de vloeistof te liggen (hellingshoek is groter)
 
-In de software berekent men uit de XYZ  waarden de euler hoeken voorX en Y en van daaruit de berekende absolute hoek. Vervolgens berekenen we uit een formule verkregen met de kalibratiewaarden  het aantal graden Plato of de densiteit (SG).
+In de software berekent men uit de XYZ  waarden de euler hoeken voor X en Y en van daaruit de berekende absolute hoek. Vervolgens berekenen we uit een formule, verkregen met de kalibratiewaarden, het aantal graden Plato of de densiteit (SG).
 
 
 ***
@@ -89,7 +89,7 @@ In de software berekent men uit de XYZ  waarden de euler hoeken voorX en Y en va
 ### Onderdelen
 
 - [Wemos D1 mini](https://www.wemos.cc/product/d1-mini.html)
-- ```GY-521``` Gyro & bewegingssonsor (MPU-6050 op een passend breakout board)
+- ```GY-521``` Gyro & bewegingssensor (MPU-6050 op een passend breakout board)
 - [DS18B20 Temperatursensor](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html)
 - Printplaat 3x4cm
 - Weerstanden
@@ -104,8 +104,8 @@ In de software berekent men uit de XYZ  waarden de euler hoeken voorX en Y en va
 - Kunstof cylinder ```Petling```
 
 > ## Info
-> De aanbieder[cachers-world.de](http://cachers-world.de/de/Petling-XL) ondersteunt dit project. Gebruik hiervoor de tegoedbon-code "```HOBBYBRAUER```"  (met hoofdletters) om 20% korting te krijgen.
-Deze [Petling-XL](http://cachers-world.de/de/Petling-XL) past met de 3D gedrukte componenten-slede.
+> De aanbieder [cachers-world.de](http://cachers-world.de/de/Petling-XL) ondersteunt dit project. Gebruik hiervoor de tegoedbon-code "```HOBBYBRAUER```"  (met hoofdletters) om 20% korting te krijgen.
+De 3D gedrukte componenten-slede pastin deze [Petling-XL](http://cachers-world.de/de/Petling-XL).
 >
 >Info: *"Deze pettling kost slechts 1,44 EUR , vanaf 2017 wordt het 1,52 EUR .
 
@@ -135,9 +135,9 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
 ## Configuratie
 
-### Ubitdots
+### Ubidots
 
-- Om te beginnen moet een gratis account bei [Ubidots.com](https://ubidots.com) geopend worden
+- Om te beginnen moet een gratis account bij [Ubidots.com](https://ubidots.com) geopend worden
 - In het menu  ```API Credentials``` kan je de ```Token``` vinden waarmee de iSpindel schrijfrechten voor de data krijgt.  
 ***Noteer deze!***  
 ![Token](https://github.com/universam1/iSpindel/blob/master/docs/UbiToken.jpg)  
@@ -171,7 +171,7 @@ De *Configuratie modus* kan weer verlaten worden door het opslaan van de instell
   ![Info](https://github.com/universam1/iSpindel/blob/master/docs/info.png)
 
 > Nadat men de bovenstaande gegevens heeft ingevoerd en heeft opgeslagen zal de iSpindel zich met het WiFi netwerk verbinden en data naar Ubidots versturen.
-Op de gebruikterspagina van Ubidots kan je onder ````Sources```` zien dat de data geaktualiseerd wrodt.
+Op de gebruikerspagina van Ubidots kan je onder ````Sources```` zien dat de data geactualiseerd wrodt.
 Onder ````Dashboard```` kunnen naar eigen inzicht grafieken en grafische weergaven worden aangemaakt.
 
 ***
@@ -179,7 +179,7 @@ Onder ````Dashboard```` kunnen naar eigen inzicht grafieken en grafische weergav
 
 ### Kalibreren
 
-> Om de hoek van graden (§) in §plato, SG of vergelijkbare waren om te rekenen is het eerst nodig om een referentiegrafiek te kalibreren. De gevonden referentiewaarden kunnen dan met behulp van een Excel tabel in een wiskundige functie uitgedrukt worden. Deze functie wordt de bron van de omrekening. Omdat iedere zelfgebouwde iSpindel andere meetwaarden (meethoeken) zal geven moet dit proces voor iedere iSpindel eenmalig uitgevoerd worden.
+> Om de hoek van graden (º) in ºPlato, SG of vergelijkbare waren om te rekenen is het eerst nodig om een referentiegrafiek te kalibreren. De gevonden referentiewaarden kunnen dan met behulp van een Excel tabel in een wiskundige functie uitgedrukt worden. Deze functie wordt de bron van de omrekening. Omdat iedere zelfgebouwde iSpindel andere meetwaarden (meethoeken) zal geven moet dit proces voor iedere iSpindel eenmalig uitgevoerd worden.
 
 [Zie kalibreren](https://github.com/universam1/iSpindel/blob/master/docs/Calibration_nl.md)
 
