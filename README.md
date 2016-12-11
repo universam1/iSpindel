@@ -52,6 +52,7 @@ iSpindel | iSpindle
   - [Kalibrierung der Spindel](#kalibrierung)
   - [Ubidots Graphen](#ubidots-graphen)
   - [CraftBeerPi](#craftbeerpi)
+  - [FHEM](#fhem)
 - [Software](#software)
 
 
