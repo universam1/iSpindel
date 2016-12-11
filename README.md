@@ -187,6 +187,8 @@ Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen
 
 ***
 ## Anzeige
+[siehe iSpindel upload zu FHEM](docs/iSpindel upload zu FHEM.md)
+
 
 ### Kalibrierung
 
