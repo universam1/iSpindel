@@ -10,6 +10,8 @@ Zielhost und Port (server:8083) sowie den Namen der Spindel (hier "iSpindel") m�
 
 In FHEM  (d.h. fhem.cfg) muss ein Device mit dem Namen der Spindel angelegt werden (hier: "iSpindel") sowie noch ein bisschen Perl-Logik, um den Datensatz in die Einzelwerte aufzutrennen. Die resultierenden Werte werden dem Device iSpindelData zugewiesen und können von dort weiterverarbeitet werden.
 
+
+ ```
     define iSpindel dummy
     define iSpindelData dummy
     
@@ -33,9 +35,11 @@ In FHEM  (d.h. fhem.cfg) muss ein Device mit dem Namen der Spindel angelegt werd
     
     define weblink_iSpindel SVG FileLog_iSpindel:SVG_FileLog_iSpindel_1:CURRENT
     attr weblink_iSpindel room Bier
+```
 
 Die Funktion CalcPlato(Neigung, Temperatur) kann man am besten in 99_MyUtils.pm ablegen:
 
+```
     sub CorrectPlato($$)  #(P, T)
     {
       my $mPlato=shift;
@@ -58,6 +62,7 @@ Die Funktion CalcPlato(Neigung, Temperatur) kann man am besten in 99_MyUtils.pm 
       my $mPlato=0.00438551*($tilt)*($tilt) + 0.13647658*($tilt) - 6.968821422;
       return CorrectPlato($mPlato,$Temp);
     }
+```
 
 Dir Formel für  $mPlato muss dem Kalibrierungsexcelsheet entnommen werden. Zusätzlich wird in CorrectPlato() noch eine Temperaturkorrektur des Platowertes durchgeführt  (Erfordert Kalibrierung bei 20 Grad). Die Temperaturkorrektur ist gültig für den Bereich von 5 bis 30 Grad Celsius.
 

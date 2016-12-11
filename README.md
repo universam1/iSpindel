@@ -17,15 +17,20 @@ iSpindel | iSpindle
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
-> Update 07.12.16: Schaltplan  
-> Update 03.12.16: Firmware 2.1.2 Wlan Verbesserungen  
-> Update 29.11.16: Kalibrierung und Excel Tabelle  
-> Update 28.11.16: Firmware v.2.0 - Ubidots Auto-Konfiguration  
-> Update 28.11.16: Ubidots Einrichtung  
-> Update 23.11.16: Schaltplan und Firmware
+***
 
+## News
 
-> Die ```iSpindel``` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
+> 11.12.16: FHEM upload documentation & firmware (thanks @MSBannert!)  
+> 07.12.16: Schematics  
+> 3.12.16: Firmware 2.1.2 Wifi improvements  
+> 9.11.16: Calibration and Excel sheet for conversion to Plato, SG etc.  
+
+***
+
+> The `iSpindle` is a pretty new project and under heavy development, see german [Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235).  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
+>
+> Die `iSpindel` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
 ![Spindel im Reinwasser](docs/floating.jpg)
 ![Dashboard](docs/Dashboard.jpg)
@@ -89,7 +94,7 @@ In der Software berechnent man aus den XYZ Beschleunigungswerten den Euler Winke
 ### Bauteile
 
 - [Wemos D1 mini](https://www.wemos.cc/product/d1-mini.html)
-- ```GY-521``` Gyro & Beschleunigungssensor (MPU-6050 auf passendem breakout Board)
+- `GY-521` Gyro & Beschleunigungssensor (MPU-6050 auf passendem breakout Board)
 - [DS18B20 Temperatursensor](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html)
 - Lochrasterplatine 3x4cm
 - Widerstände
@@ -97,16 +102,16 @@ In der Software berechnent man aus den XYZ Beschleunigungswerten den Euler Winke
   - 220k Ohm
   - 470 Ohm
 - Mikro Schalter
-- ```18650 LiIo Zelle``` (z.B. ```Panasonic NCR18650B``` **geschützt** oder ohne **PCB**) ***UNGETESTED***
-- Lipo Lademodul ```TP4056``` ***UNGETESTED***
+- `18650 LiIo Zelle` (z.B. `Panasonic NCR18650B` **geschützt** oder ohne **PCB**) ***UNGETESTED***
+- Lipo Lademodul `TP4056` ***UNGETESTED***
 - Kunstoff Schlitten (Vorlage zum 3D drucken im repo)
   - alternativ (Lochraster) Platine ***UNGETESTED***)
 
-- Kunstoff Zylinder ```Petling```
+- Kunstoff Zylinder `Petling`
 
 > ## Info
 
-> Der Anbieter [cachers-world.de](http://cachers-world.de/de/Petling-XL) unsterstützt dieses Projekt indem er nachhaltig den passenden Petling liefern möchte und über den Gutschein-Code "```HOBBYBRAUER```"  (Großschreibung!) 20% Rabatt gewährt. 
+> Der Anbieter [cachers-world.de](http://cachers-world.de/de/Petling-XL) unsterstützt dieses Projekt indem er nachhaltig den passenden Petling liefern möchte und über den Gutschein-Code "`HOBBYBRAUER`"  (Großschreibung!) 20% Rabatt gewährt. 
 Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedruckten Schlitten.
 >
 >Info: *"Ist im Moment dann nur 1,44 EUR ab 2017 werden es dann 1,52 EUR sein, weil der Artikel 10ct hoch geht."*
@@ -138,36 +143,21 @@ alt="Druck" width="240" height="180" border="10" /></a>
 ### Ubitdots
 
 - Zu Beginn muss ein kostenloser Account bei [Ubidots.com](https://ubidots.com) erstellt werden
-- Im Menü  ```API Credentials``` erhält man seinen ```Token``` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.  
+- Im Menü  `API Credentials` erhält man seinen `Token` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.  
 ***Diesen notieren.***  
-![Token](docs/UbiToken.jpg)  
 
-> Update 28.11.16: Durch Auto - Konfiguration sind folgende Schritte nicht mehr nötig
-
-- ~~In diesem Account erstellt man nun ein neues ```Data Source``` und benennt seine iSpindel bsp. "iSpindel001"~~ 
-
-  ![UbiDS](docs/UbiDS.jpg)
-
-- ~~In diesem Device erstellt man nun 3  ```Variable``` das den 3 Datenquellen entspricht die geliefert werden~~
-  - ~~Neigung (wird später zu °Plato umgerechnet)~~
-  - ~~Temperatur (fließt auch in °Plato ein)~~
-  - ~~Batterie Spannung~~ 
-
-  ~~***Notieren dieser 3 ```ID's``` die man über das  ```i``` Icon erhält***~~
-
-  ![IDs](docs/UbiIDs.jpg)~~
-
+![Token](docs/UbiToken.jpg)
 
 ### Portal
 
-Durch mehrmaliges Drücken der ```Reset Taste``` erstellt der Wemos einen AccessPoint, mit dem verbunden man die nötigen Einstellugen vornehmen kann.
+Durch mehrmaliges Drücken der `Reset Taste` erstellt der Wemos einen AccessPoint, mit dem verbunden man die nötigen Einstellugen vornehmen kann.
 
-> Die ```iSpindel``` signalisiert dass sie sich im *Konfiguration-Modus* druch permanentes Blinken im Sekundentakt.  
-Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, durch betätigen des Menüpunkts ```Start iSpindel``` oder durch warten von 5 Minuten. Danach befindet sie sich im *Betriebsmodus* d.h. sie sendet ihre Daten und geht daraufhin direkt in den "Deep Sleep" Standby Modus. Daher ist sie im normalen Modus nicht erreibar.
+> Die `iSpindel` signalisiert dass sie sich im *Konfiguration-Modus* druch permanentes Blinken im Sekundentakt.  
+Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, durch betätigen des Menüpunkts `Start iSpindel` oder durch warten von 5 Minuten. Danach befindet sie sich im *Betriebsmodus* d.h. sie sendet ihre Daten und geht daraufhin direkt in den "Deep Sleep" Standby Modus. Daher ist sie im normalen Modus nicht erreibar.
 
-- Der Ubidots  ```Token``` ~~und die  ```IDs```~~, welche man oben notiert hat, werden nun an dieser Stelle eingetragen.  
+- Der Ubidots  `Token` ~~und die  `IDs`~~, welche man oben notiert hat, werden nun an dieser Stelle eingetragen.  
 
-- Ebenfalls stellt man hier den ```Intervall``` ein in dem sie Daten liefert. Dies hat direkt mit der Akku Lebensdauer zu tun. Es empfiehlt sich in der Praxis etwa ```1800``` Sekunden (= 30 Minuten) Takt zu wählen.
+- Ebenfalls stellt man hier den `Intervall` ein in dem sie Daten liefert. Dies hat direkt mit der Akku Lebensdauer zu tun. Es empfiehlt sich in der Praxis etwa `1800` Sekunden (= 30 Minuten) Takt zu wählen.
 
    ![Setup](docs/setup.jpg)
 
@@ -177,18 +167,16 @@ Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, du
    ![AccessPoint](docs/AP.png)![Portal](docs/Portal.png)
 
 
-- Eine Übersicht der Daten kann man über den ```Info``` Menüpunkt einsehen
+- Eine Übersicht der Daten kann man über den `Info` Menüpunkt einsehen
 
   ![Info](docs/info.png)
 
 > Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.  
-Auf der Ubidots Weboberfläche wird man nun unter ```Sources``` sehen dass die Daten aktualisiert werden.  
-Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen.
+Auf der Ubidots Weboberfläche wird man nun unter `Sources` sehen dass die Daten aktualisiert werden.  
+Nun kann man im `Dashboard` sich seine Graphen nach Belieben zusammenstellen.
 
 ***
 ## Anzeige
-[siehe iSpindel upload zu FHEM](docs/iSpindel upload zu FHEM.md)
-
 
 ### Kalibrierung
 
@@ -202,7 +190,13 @@ Nun kann man im ```Dashboard``` sich seine Graphen nach Belieben zusammenstellen
 
 ### CraftBeerPi
 
-[Work in Progress](https://github.com/universam1/iSpindel/issues/3)
+- [Work in Progress](https://github.com/universam1/iSpindel/issues/3)
+
+### FHEM
+
+- [upload zu FHEM](docs/upload-FHEM.md)
+
+
 ***
 
 ## Software 
