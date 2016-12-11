@@ -21,7 +21,7 @@ iSpindel | iSpindle
 
 ## News
 
-> 11.12.16 Sources and drawer online
+> 11.12.16 Sources and drawer online  
 > 11.12.16: FHEM upload documentation & firmware (thanks @MSBannert!)  
 > 07.12.16: Schematics  
 > 3.12.16: Firmware 2.1.2 Wifi improvements  
