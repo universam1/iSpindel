@@ -73,7 +73,7 @@ The measured values can be entered in the Excel sheet. This sheet will calculate
 Other reading, such as apparent attenuation or alcohol % can be obtained in similiar manners with the use of a '''Derived Variable'''.
 
 1. First enter the measured values in Excel:    
-[Download Excel tabel](https://github.com/universam1/iSpindel/blob/master/docs/Kalibrierung.xlsm)
+[Download Excel table](https://github.com/universam1/iSpindel/blob/master/docs/Kalibrierung.xlsm)
 2. Start the macro **Formule update** by clicking on the button. The formula will be updated.     
 ![](https://github.com/universam1/iSpindel/blob/master/docs/Excelcalc.jpg)
 3. In the account of Ubidots a **Derived Variable** has to be added. This is a variable that is calculated with other variables as source. This can be done by following the next steps.

@@ -21,6 +21,7 @@ iSpindel | iSpindle
 
 ## News
 
+> 11.12.16 Sources and drawer online
 > 11.12.16: FHEM upload documentation & firmware (thanks @MSBannert!)  
 > 07.12.16: Schematics  
 > 3.12.16: Firmware 2.1.2 Wifi improvements  
@@ -103,12 +104,12 @@ In der Software berechnent man aus den XYZ Beschleunigungswerten den Euler Winke
   - 220k Ohm
   - 470 Ohm
 - Mikro Schalter
-- `18650 LiIo Zelle` (z.B. `Panasonic NCR18650B` **geschützt** oder ohne **PCB**) ***UNGETESTED***
-- Lipo Lademodul `TP4056` ***UNGETESTED***
-- Kunstoff Schlitten (Vorlage zum 3D drucken im repo)
+- `18650 LiIo Zelle` (z.B. `Panasonic NCR18650B` **geschützt** oder ohne **PCB**) 
+- Lipo Lademodul `TP4056` (6 pin recommended)
+- Kunstoff Schlitten [download](https://github.com/universam1/iSpindel/raw/master/drawer/)
   - alternativ (Lochraster) Platine ***UNGETESTED***)
 
-- Kunstoff Zylinder `Petling`
+- Kunstoff Zylinder `Petling` [Petling-XL](http://cachers-world.de/de/Petling-XL)
 
 > ## Info
 
@@ -204,12 +205,16 @@ Nun kann man im `Dashboard` sich seine Graphen nach Belieben zusammenstellen.
 
 ### Firmware flashen
 
-[Firmware flashen](docs/Firmware.md)
+***Getestet***
 
-### Benutzte Bibliotheken
+- [Firmware flashen](docs/Firmware.md)
 
-- https://github.com/tzapu/WiFiManager zum Herstellen der Verbindung (verändert)
-- https://github.com/bblanchon/ArduinoJson
+### Compile from Source
+
+***Development***
+> The sources represent the current development state thus being untested or at times even broken. Use the provided .bin files for your brew.
+
+- [Compile from source](docs/compile.md)
 
 ***Gefällt es dir, na dann spende mir halt ein Bier***  :beers:
 
