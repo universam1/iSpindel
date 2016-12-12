@@ -40,17 +40,29 @@
 
 <hr>
 
-<p><strong><em>Unterstützung des Projekts</em></strong> 
-<a href="https://www.paypal.me/universam"><img src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" alt="Donate"></a></p>
+<p><strong><em>Please consider supporting this project</em></strong>  </p>
+
+<p><a href="https://www.paypal.me/universam"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="Donate"></a></p>
+
+<hr>
+
+<h2>
+<a id="news" class="anchor" href="#news" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>News</h2>
 
 <blockquote>
-<p>Update 03.12.16: Firmware 2.1.2 Wlan Verbesserungen<br>
-Update 29.11.16: Kalibrierung und Excel Tabelle<br>
-Update 28.11.16: Firmware v.2.0 - Ubidots Auto-Konfiguration<br>
-Update 28.11.16: Ubidots Einrichtung<br>
-Update 23.11.16: Schaltplan und Firmware</p>
+<p>11.12.16 Sources and drawer online<br>
+11.12.16: FHEM upload documentation &amp; firmware (thanks <a href="https://github.com/MSBannert" class="user-mention">@MSBannert</a>!)<br>
+07.12.16: Schematics<br>
+3.12.16: Firmware 2.1.2 Wifi improvements<br>
+9.11.16: Calibration and Excel sheet for conversion to Plato, SG etc.  </p>
+</blockquote>
 
-<p>Die <code>iSpindel</code> befindet sich zur Zeit mitten in der Entwicklung, siehe dazu <a href="http://hobbybrauer.de/forum/viewtopic.php?f=7&amp;t=11235">den Hobbybrauer.de Thread</a>. Mitthilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.</p>
+<hr>
+
+<blockquote>
+<p>The <code>iSpindle</code> is a pretty new project and under heavy development, see german <a href="http://hobbybrauer.de/forum/viewtopic.php?f=7&amp;t=11235">Hobbybrauer.de Thread</a>.  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a <code>pull request</code>.  </p>
+
+<p>Die <code>iSpindel</code> befindet sich zur Zeit mitten in der Entwicklung, siehe dazu <a href="http://hobbybrauer.de/forum/viewtopic.php?f=7&amp;t=11235">den Hobbybrauer.de Thread</a>. Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.</p>
 </blockquote>
 
 <p><img src="docs/floating.jpg" alt="Spindel im Reinwasser">
@@ -92,6 +104,7 @@ Update 23.11.16: Schaltplan und Firmware</p>
 <li><a href="#kalibrierung">Kalibrierung der Spindel</a></li>
 <li><a href="#ubidots-graphen">Ubidots Graphen</a></li>
 <li><a href="#craftbeerpi">CraftBeerPi</a></li>
+<li><a href="#fhem">FHEM</a></li>
 </ul>
 </li>
 <li><a href="#software">Software</a></li>
@@ -160,18 +173,16 @@ Kein unnötiges Öffnen zum spindeln und evtl. Kontaminieren!</p>
 </li>
 <li>Mikro Schalter</li>
 <li>
-<code>18650 LiIo Zelle</code> (z.B. <code>Panasonic NCR18650B</code> <strong>geschützt</strong> oder ohne <strong>PCB</strong>) <strong><em>UNGETESTED</em></strong>
-</li>
-<li>Lipo Lademodul <code>TP4056</code> <strong><em>UNGETESTED</em></strong>
-</li>
+<code>18650 LiIo Zelle</code> (z.B. <code>Panasonic NCR18650B</code> <strong>geschützt</strong> oder ohne <strong>PCB</strong>) </li>
+<li>Lipo Lademodul <code>TP4056</code> (6 pin recommended)</li>
 <li>
-<p>Kunstoff Schlitten (Vorlage zum 3D drucken im repo)</p>
+<p>Kunstoff Schlitten <a href="https://github.com/universam1/iSpindel/raw/master/drawer/">download</a></p>
 
 <ul>
 <li>alternativ (Lochraster) Platine <strong><em>UNGETESTED</em></strong>)</li>
 </ul>
 </li>
-<li><p>Kunstoff Zylinder <code>Petling</code></p></li>
+<li><p>Kunstoff Zylinder <code>Petling</code> <a href="http://cachers-world.de/de/Petling-XL">Petling-XL</a></p></li>
 </ul>
 
 <blockquote>
@@ -216,35 +227,10 @@ Dieser <a href="http://cachers-world.de/de/Petling-XL">Petling-XL</a> passt zu d
 <li>Zu Beginn muss ein kostenloser Account bei <a href="https://ubidots.com">Ubidots.com</a> erstellt werden</li>
 <li>Im Menü  <code>API Credentials</code> erhält man seinen <code>Token</code> durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.<br>
 <strong><em>Diesen notieren.</em></strong><br>
-<img src="docs/UbiToken.jpg" alt="Token"><br>
 </li>
 </ul>
 
-<blockquote>
-<p>Update 28.11.16: Durch Auto - Konfiguration sind folgende Schritte nicht mehr nötig</p>
-</blockquote>
-
-<ul>
-<li>
-<p><del>In diesem Account erstellt man nun ein neues <code>Data Source</code> und benennt seine iSpindel bsp. "iSpindel001"</del> </p>
-
-<p><img src="docs/UbiDS.jpg" alt="UbiDS"></p>
-</li>
-<li>
-<p><del>In diesem Device erstellt man nun 3  <code>Variable</code> das den 3 Datenquellen entspricht die geliefert werden</del></p>
-
-<ul>
-<li><del>Neigung (wird später zu °Plato umgerechnet)</del></li>
-<li><del>Temperatur (fließt auch in °Plato ein)</del></li>
-<li>
-<del>Batterie Spannung</del> </li>
-</ul>
-
-<p><del><strong><em>Notieren dieser 3 <code>ID's</code> die man über das  <code>i</code> Icon erhält</em></strong></del></p>
-
-<p><img src="docs/UbiIDs.jpg" alt="IDs">~~</p>
-</li>
-</ul>
+<p><img src="docs/UbiToken.jpg" alt="Token"></p>
 
 <h3>
 <a id="portal" class="anchor" href="#portal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Portal</h3>
@@ -305,7 +291,16 @@ Nun kann man im <code>Dashboard</code> sich seine Graphen nach Belieben zusammen
 <h3>
 <a id="craftbeerpi" class="anchor" href="#craftbeerpi" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CraftBeerPi</h3>
 
-<p><a href="https://github.com/universam1/iSpindel/issues/3">Work in Progress</a></p>
+<ul>
+<li><a href="https://github.com/universam1/iSpindel/issues/3">Work in Progress</a></li>
+</ul>
+
+<h3>
+<a id="fhem" class="anchor" href="#fhem" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>FHEM</h3>
+
+<ul>
+<li><a href="docs/upload-FHEM.md">upload zu FHEM</a></li>
+</ul>
 
 <hr>
 
@@ -315,15 +310,23 @@ Nun kann man im <code>Dashboard</code> sich seine Graphen nach Belieben zusammen
 <h3>
 <a id="firmware-flashen" class="anchor" href="#firmware-flashen" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Firmware flashen</h3>
 
-<p><a href="docs/Firmware.md">Firmware flashen</a></p>
-
-<h3>
-<a id="benutzte-bibliotheken" class="anchor" href="#benutzte-bibliotheken" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Benutzte Bibliotheken</h3>
+<p><strong><em>Getestet</em></strong></p>
 
 <ul>
-<li>
-<a href="https://github.com/tzapu/WiFiManager">https://github.com/tzapu/WiFiManager</a> zum Herstellen der Verbindung (verändert)</li>
-<li><a href="https://github.com/bblanchon/ArduinoJson">https://github.com/bblanchon/ArduinoJson</a></li>
+<li><a href="docs/Firmware.md">Firmware flashen</a></li>
+</ul>
+
+<h3>
+<a id="compile-from-source" class="anchor" href="#compile-from-source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compile from Source</h3>
+
+<p><strong><em>Development</em></strong></p>
+
+<blockquote>
+<p>The sources represent the current development state thus being untested or at times even broken. Use the provided .bin files for your brew.</p>
+</blockquote>
+
+<ul>
+<li><a href="docs/compile.md">Compile from source</a></li>
 </ul>
 
 <p><strong><em>Gefällt es dir, na dann spende mir halt ein Bier</em></strong>  <g-emoji alias="beers" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f37b.png" ios-version="6.0">🍻</g-emoji></p>
