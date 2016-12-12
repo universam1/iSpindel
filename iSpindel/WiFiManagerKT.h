@@ -49,13 +49,18 @@ case "HTTP":
   url.setAttribute("type", "text");
   port.setAttribute("type", "number");
 case "CraftBeerPi":
-case "Tcontrol":
 	token.setAttribute("type", "hidden");
 	server.setAttribute("type", "text");	
   break;
- case "FHEM":
+case "FHEM":
   server.setAttribute("type", "text");
   port.setAttribute("type", "number");
+  token.setAttribute("type", "hidden");
+  url.setAttribute("type", "hidden");
+  break;
+case "Tcontrol":
+  server.setAttribute("type", "text");
+  port.setAttribute("type", "hidden");
   token.setAttribute("type", "hidden");
   url.setAttribute("type", "hidden");
   break;
@@ -69,6 +74,7 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=0>Ubidots</option>
 <option value=2>CraftBeerPi</option>
 <option value=3>HTTP</option>
+<option value=4>TControl</option>
 <option value=5>FHEM</option>
 </select>)V0G0N";
 

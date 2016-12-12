@@ -14,11 +14,12 @@
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "3.2.0"
+#define FIRMWAREVERSION "3.3.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
 #define API_GENERIC true
+#define API_TCONTROL true
 
 #define PORTALTIMEOUT 300
 #define LOWBATT 3.3
