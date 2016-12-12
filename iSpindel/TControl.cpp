@@ -39,7 +39,7 @@ bool TControl::sendUDP() {
     Serial.println(F("TConctrol UDP: sending"));
 
     Udp.beginPacket(_server, TCPort);
-    Udp.write(msg);
+    Udp.print(msg);
     Udp.endPacket();
 
     return true;
