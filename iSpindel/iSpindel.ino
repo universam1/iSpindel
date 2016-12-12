@@ -354,8 +354,6 @@ bool uploadData(uint8_t service) {
   return tcclient.sendUDP();
   }
 #endif // DATABASESYSTEM ==
-
-
 }
 
 void goodNight() {
