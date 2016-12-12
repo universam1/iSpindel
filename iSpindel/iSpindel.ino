@@ -31,6 +31,9 @@ All rights reserverd by S.Lang <universam@web.de>
 #endif
 #ifdef API_FHEM
 #include "FHEM.h"
+#endif
+#ifdef API_TCONTROL
+#include "TControl.h"
 #endif // DATABASESYSTEM ==
 #ifndef DEBUG
 #define DEBUG 1 // uncomment this line to enable serial diagnostic messages
@@ -342,7 +345,15 @@ bool uploadData(uint8_t service) {
   return fhemclient.sendHTTP();
   }
 #endif // DATABASESYSTEM ==
-
+#ifdef API_TCONTROL
+  if (service == DTTcontrol) {
+  TControl tcclient(my_name, my_server, my_port);
+  tcclient.add("T", Temperatur);
+  tcclient.add("D", Tilt);
+  tcclient.add("U", Volt);
+  return tcclient.sendUDP();
+  }
+#endif // DATABASESYSTEM ==
 
 
 }
