@@ -58,6 +58,7 @@ char my_url[TKIDSIZE];
 uint8_t my_api;
 uint32_t my_sleeptime = 15;
 uint16_t my_port = 80;
+float my_vfact = 1.0;
 
 uint32_t DSreqTime;
 float pitch, roll;
@@ -84,18 +85,6 @@ template <typename T> void SerialOut(const T aValue, bool newLine = true) {
 }
 
 void SerialOut() { SerialOut(""); }
-
-char *replace_char(char *input, char find, char replace) {
-  char *output = (char *)malloc(strlen(input));
-  for (int i = 0; i < strlen(input); i++) {
-    if (input[i] == find)
-      output[i] = replace;
-    else
-      output[i] = input[i];
-  }
-  output[strlen(input)] = '\0';
-  return output;
-}
 
 // callback notifying us of the need to save config
 void saveConfigCallback() {
@@ -139,6 +128,8 @@ bool readConfig() {
             my_port = json["Port"];
           if (json.containsKey("URL"))
             strcpy(my_url, json["URL"]);
+          if (json.containsKey("Vfact"))
+            my_vfact = json["Vfact"];
 
           SerialOut(F("parsed config:"));
           if (isDebugEnabled)
@@ -229,9 +220,12 @@ bool startConfiguration() {
                                    TYPE_HIDDEN, WFM_NO_LABEL);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE,
                                   TYPE_HIDDEN, WFM_NO_LABEL);
+  WiFiManagerParameter custom_vfact("vfact", "Battery correction factor",
+                                    String(my_vfact).c_str(), 5);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
+  wifiManager.addParameter(&custom_vfact);
 
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
@@ -248,9 +242,14 @@ bool startConfiguration() {
   validateInput(custom_token.getValue(), my_token);
   validateInput(custom_server.getValue(), my_server);
   my_sleeptime = String(custom_sleep.getValue()).toInt();
+  
   my_api = String(custom_api.getValue()).toInt();
   my_port = String(custom_port.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
+
+  String tmp = String(custom_vfact.getValue());
+  tmp.trim();  tmp.replace(',', '.');
+  my_vfact = tmp.toFloat();
 
   // save the custom parameters to FS
   if (shouldSaveConfig) {
@@ -275,6 +274,7 @@ bool startConfiguration() {
     json["API"] = my_api;
     json["Port"] = my_port;
     json["URL"] = my_url;
+    json["Vfact"] = my_vfact;
 
     File configFile = SPIFFS.open(CFGFILE, "w+");
     if (!configFile) {
@@ -463,7 +463,7 @@ void flash() {
 }
 
 float getBattery() {
-	return analogRead(A0) / ADCDIVISOR;
+	return analogRead(A0) / ADCDIVISOR * my_vfact;
 }
 
 bool isSafeMode(float _volt)  {
