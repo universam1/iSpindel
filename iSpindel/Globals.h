@@ -14,7 +14,7 @@
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "3.3.1"
+#define FIRMWAREVERSION "3.3.2"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -46,7 +46,6 @@
 // Number of seconds after reset during which a 
 // subseqent reset will be considered a double reset.
 #define DRD_TIMEOUT 1
-
 // RTC Memory Address for the DoubleResetDetector to use
 #define DRD_ADDRESS 0
 

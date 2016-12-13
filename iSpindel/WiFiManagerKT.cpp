@@ -773,13 +773,13 @@ void WiFiManager::handleiSpindel() {
   page += FPSTR(HTTP_HEAD_END);
   page += F("<h1>Info</h1><hr>");
   page += F("<h2><table>");
-  page += F("<tr><td>Winkel:</td><td>");
+  page += F("<tr><td>Tilt:</td><td>");
   page += Tilt;
   page += F("&deg;</td></tr>");  
-  page += F("<tr><td>Temperatur:</td><td>");
+  page += F("<tr><td>Temperature:</td><td>");
   page += Temperatur;
   page += F("&deg;C</td></tr>");  
-  page += F("<tr><td>Batterie:</td><td>");
+  page += F("<tr><td>Battery:</td><td>");
   page += Volt;
   page += F("V</td></tr>");    
   page += F("</table></h2>");

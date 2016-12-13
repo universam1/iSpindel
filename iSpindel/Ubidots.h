@@ -37,7 +37,8 @@ Made by Mateo Velez - Metavix for Ubidots Inc
 #include <ESP8266WiFi.h>
 #include "WiFiUdp.h"
 #include <ArduinoJson.h>         //https://github.com/bblanchon/ArduinoJson
-#define JSONARRAY 200
+#define JSONARRAY 150
+#define CONNTIMEOUT 5000
 
 #define TIME_SERVER (PSTR("pool.ntp.org"))
 

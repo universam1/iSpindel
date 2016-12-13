@@ -328,7 +328,6 @@ bool uploadData(uint8_t service) {
   }
 
   genericHTTP genclient(my_name, my_server, port, url);
-  genclient.add("ID", ESP.getChipId());
   genclient.add("angle", Tilt);
   genclient.add("temperature", Temperatur);
   genclient.add("battery", Volt);
