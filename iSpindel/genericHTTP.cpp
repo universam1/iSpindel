@@ -28,12 +28,13 @@ void genericHTTP::add(char *variable_id, float value) {
 
 bool genericHTTP::sendHTTP() {
     uint16_t i;
-    String msg;
+    String msg, json;
     
     StaticJsonBuffer<JSONARRAY> jsonBuffer;
     JsonObject& data = jsonBuffer.createObject();
 
     data["name"] = _device;
+    data["ID"] = String(ESP.getChipId());
 
     for (i = 0; i < currentValue; ) {
         data[String((val + i)->id)] = (val+i)->value_id;
@@ -51,7 +52,7 @@ bool genericHTTP::sendHTTP() {
         msg += String(_device);
         msg += String(F("\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: "));
         msg += String(data.measureLength());
-        //msg += String("\r\n");
+        msg += String("\r\n");
 
         _client.println(msg);
         data.printTo(_client);
@@ -60,12 +61,20 @@ bool genericHTTP::sendHTTP() {
         Serial.println(msg);
         data.printTo(Serial);
 
+        // msg += String("\r\n");
+
+        // String json;
+        // data.printTo(json);
+        // msg += json + String("\r\n");
+        // _client.println(msg);
+        // Serial.println(msg);
+
     } else {
         Serial.println(F("\nERROR genericHTTP: couldnt connect"));
     }
 
     int timeout = 0;
-    while(!_client.available() && timeout < 5000) {
+    while(!_client.available() && timeout < CONNTIMEOUT) {
         timeout++;
         delay(1);
     }

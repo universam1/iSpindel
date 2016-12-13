@@ -59,7 +59,7 @@ bool FhemHttp::sendHTTP() {
 
     }
     int timeout = 0;
-    while(!_client.available() && timeout < 5000) {
+    while(!_client.available() && timeout < CONNTIMEOUT) {
         timeout++;
         delay(1);
     }

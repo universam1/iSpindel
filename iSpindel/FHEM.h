@@ -12,6 +12,7 @@
 #include <ESP8266WiFi.h>
 
 
+#define CONNTIMEOUT 3000
 
 class FhemHttp {
  public:

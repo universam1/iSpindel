@@ -181,45 +181,9 @@ bool Ubidots::sendTLATE() {
     currentValue = 0;
     return true;
 }
+
 bool Ubidots::sendHTTP() {
-//     uint16_t i;
-//     String all;
-//     String str;
-//     all = "[";
-//     for (i = 0; i < currentValue; ) {
-//         str = String(((val+i)->value_id), 4);
-//         all += "{\"variable\": \"";
-//         all += String((val + i)->id);
-//         all += "\", \"value\":";
-//         all += str;
-//         all += "}";
-//         i++;
-//         if (i < currentValue) {
-//             all += ", "; 
-//         }
-//     }
-//     all += "]";
-//     i = all.length();
-//     if (_client.connect(HTTPSERVER, HTTPPORT)) {
-//         Serial.println(F("Posting your variables"));
-//         _client.println(F("POST /api/v1.6/collections/values/?force=true HTTP/1.1"));
-//         _client.println(F("Host: things.ubidots.com"));
-//         _client.println(F("User-Agent: "));
-//         _client.println(_agent);
-//         _client.print(F("X-Auth-Token: "));
-//         _client.println(_token);
-//         _client.println(F("Connection: close"));
-//         _client.println(F("Content-Type: application/json"));
-//         _client.print(F("Content-Length: "));
-//         _client.println(String(i));
-//         _client.println();
-//         _client.println(all);
-//         _client.println();
-
-// Serial.println(all);
-    // }
-
-     uint16_t i;
+    uint8_t i;
     String msg;
     
     StaticJsonBuffer<JSONARRAY> jsonBuffer;
@@ -233,19 +197,19 @@ bool Ubidots::sendHTTP() {
     if (_client.connect(HTTPSERVER, HTTPPORT)) {
         Serial.println(F("UBIDOTS: posting"));
 
-        msg = String("POST /api/v1.6/devices/");
+        msg = String(F("POST /api/v1.6/devices/"));
         msg += String(_agent);
-        msg += String("?token=");
+        msg += String(F("?token="));
         msg += String(_token);
-        msg += String(" HTTP/1.1\nHost: things.ubidots.com");
-        msg += String("\nUser-Agent: ");
+        msg += String(F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: "));
         msg += String(_agent);
-        msg += String("\nConnection: close\nContent-Type: application/json\nContent-Length: ");
+        msg += String(F("\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: "));
         msg += String(data.measureLength());
-        msg += String("\n");
+        msg += String("\r\n");
 
         _client.println(msg);
         data.printTo(_client);
+        _client.println();
         
         Serial.println(msg);
         data.printTo(Serial);
@@ -255,7 +219,7 @@ bool Ubidots::sendHTTP() {
     }
 
     int timeout = 0;
-    while(!_client.available() && timeout < 5000) {
+    while(!_client.available() && timeout < CONNTIMEOUT) {
         timeout++;
         delay(1);
     }
