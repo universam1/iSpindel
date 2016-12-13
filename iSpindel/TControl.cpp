@@ -36,11 +36,27 @@ bool TControl::sendUDP() {
         if (i < currentValue) msg += " ";
     }
 
-    Serial.println(F("TConctrol UDP: sending"));
+    // Serial.println(F("TConctrol UDP: sending"));
+    // Serial.println(String("server: ") + _server + String(" Port: ") + TCPort);
 
-    Udp.beginPacket(_server, TCPort);
-    Udp.print(msg);
-    Udp.endPacket();
+    // Udp.beginPacket(_server, TCPort);
+    // Udp.print(msg);
+    // delay(10);
+    // Udp.endPacket();
+    // delay(10);
+    // Serial.println(msg);
+
+    Serial.println(F("TConctrol TCP: sending"));
+    Serial.println(String("server: ") + _server + String(" Port: ") + TCPort);
+
+    if (_client.connect(_server, TCPort))
+    {
+        _client.print(msg);
+        Serial.println(msg);
+    } 
+    else {
+        Serial.println(F("\nERROR TConctrol: couldnt connect"));
+    }
 
     return true;
 }
