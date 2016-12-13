@@ -37,7 +37,7 @@ const char HTTP_SCRIPT[] PROGMEM = R"V0G0N(<script>
 function c(l){s.value=l.innerText||l.textContent;p.focus();}
 function sAPI(){
 	var sel = API.options[API.selectedIndex].textContent;
-	selAPI.value = API.options[API.selectedIndex].value;
+	selAPI.value = parseInt(API.options[API.selectedIndex].value);
 switch(sel) {
 case "Ubidots":
 	token.setAttribute("type", "text");
@@ -45,12 +45,23 @@ case "Ubidots":
 	url.setAttribute("type", "hidden");
 	port.setAttribute("type", "hidden");
   break;
+case "CraftBeerPi":
+  url.setAttribute("type", "hidden");
+  port.setAttribute("type", "hidden");
+	token.setAttribute("type", "hidden");
+	server.setAttribute("type", "text");	
+  break;
 case "HTTP":
   url.setAttribute("type", "text");
   port.setAttribute("type", "number");
-case "CraftBeerPi":
 	token.setAttribute("type", "hidden");
 	server.setAttribute("type", "text");	
+  break;
+case "TControl":
+  server.setAttribute("type", "text");
+  port.setAttribute("type", "hidden");
+  token.setAttribute("type", "hidden");
+  url.setAttribute("type", "hidden");
   break;
 case "FHEM":
   server.setAttribute("type", "text");
@@ -58,14 +69,8 @@ case "FHEM":
   token.setAttribute("type", "hidden");
   url.setAttribute("type", "hidden");
   break;
-case "Tcontrol":
-  server.setAttribute("type", "text");
-  port.setAttribute("type", "hidden");
-  token.setAttribute("type", "hidden");
-  url.setAttribute("type", "hidden");
-  break;
 }};
-window.onload = function(e){ API.value = selAPI.value;};
+window.onload = function(e){ API.value = selAPI.value; sAPI();};
 </script>)V0G0N";
 
 

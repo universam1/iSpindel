@@ -324,7 +324,7 @@ bool uploadData(uint8_t service) {
   } else if (service == DTCraftbeepPi) {
     SerialOut(F("\ncalling DTCraftbeepPi "));
     strcpy(url, CBP_ENDPOINT);
-    port = 80;
+    port = 5000;
   }
 
   genericHTTP genclient(my_name, my_server, port, url);
