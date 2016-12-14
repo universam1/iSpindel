@@ -40,34 +40,34 @@ function sAPI(){
 	selAPI.value = parseInt(API.options[API.selectedIndex].value);
 switch(sel) {
 case "Ubidots":
-	token.setAttribute("type", "text");
-	server.setAttribute("type", "hidden");
-	url.setAttribute("type", "hidden");
-	port.setAttribute("type", "hidden");
+	token.style.display = 'block'; token.labels[0].style.display = 'block';
+	server.style.display = 'none'; server.labels[0].style.display = 'none';
+	url.style.display = 'none'; url.labels[0].style.display = 'none';
+	port.style.display = 'none'; port.labels[0].style.display = 'none';
   break;
 case "CraftBeerPi":
-  url.setAttribute("type", "hidden");
-  port.setAttribute("type", "hidden");
-	token.setAttribute("type", "hidden");
-	server.setAttribute("type", "text");	
+  url.style.display = 'none'; url.labels[0].style.display = 'none';
+  port.style.display = 'none'; port.labels[0].style.display = 'none';
+	token.style.display = 'none'; token.labels[0].style.display = 'none';
+	server.style.display = 'block';	server.labels[0].style.display = 'block';
   break;
 case "HTTP":
-  url.setAttribute("type", "text");
-  port.setAttribute("type", "number");
-	token.setAttribute("type", "hidden");
-	server.setAttribute("type", "text");	
+  url.style.display = 'block'; url.labels[0].style.display = 'block';
+  port.style.display = 'block'; port.labels[0].style.display = 'block';
+	token.style.display = 'none'; token.labels[0].style.display = 'none';
+	server.style.display = 'block';	server.labels[0].style.display = 'block';
   break;
 case "TControl":
-  server.setAttribute("type", "text");
-  port.setAttribute("type", "hidden");
-  token.setAttribute("type", "hidden");
-  url.setAttribute("type", "hidden");
+  server.style.display = 'block'; server.labels[0].style.display = 'block';
+  port.style.display = 'none'; port.labels[0].style.display = 'none';
+  token.style.display = 'none'; token.labels[0].style.display = 'none';
+  url.style.display = 'none'; url.labels[0].style.display = 'none';
   break;
 case "FHEM":
-  server.setAttribute("type", "text");
-  port.setAttribute("type", "number");
-  token.setAttribute("type", "hidden");
-  url.setAttribute("type", "hidden");
+  server.style.display = 'block' ;server.labels[0].style.display = 'block';
+  port.style.display = 'block'; port.labels[0].style.display = 'block';
+  token.style.display = 'none'; token.labels[0].style.display = 'none';
+  url.style.display = 'none'; url.labels[0].style.display = 'none';
   break;
 }};
 window.onload = function(e){ API.value = selAPI.value; sAPI();};
@@ -84,6 +84,7 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[]  = "type=\"hidden\"";
+const char TYPE_NUMBER[]  = "type=\"number\"";
 
 const char HTTP_HEAD_END[] PROGMEM        = "</head><body><div class=\"container\">";
 const char HTTP_PORTAL_OPTIONS[] PROGMEM  = "<form action=\"/iSpindel\" method=\"get\"><button class=\"btn\">iSpindel Test</button></form><br/><form action=\"/wifi\" method=\"get\"><button class=\"btn\">Configuration</button></form><br/><form action=\"/i\" method=\"get\"><button class=\"btn\">Information</button></form><br/><form action=\"/close\" method=\"get\"><button class=\"btn\">Exit Portal</button></form><br/>";

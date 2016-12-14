@@ -58,7 +58,7 @@ char my_url[TKIDSIZE];
 uint8_t my_api;
 uint32_t my_sleeptime = 15;
 uint16_t my_port = 80;
-float my_vfact = 1.0;
+float my_vfact = ADCDIVISOR;
 
 uint32_t DSreqTime;
 float pitch, roll;
@@ -209,23 +209,24 @@ bool startConfiguration() {
   WiFiManagerParameter custom_name("name", "iSpindel Name", my_name,
                                    TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
-                                    String(my_sleeptime).c_str(), 5);
+                                    String(my_sleeptime).c_str(), 5,TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Ubidots Token", my_token,
-                                    TKIDSIZE, TYPE_HIDDEN, WFM_NO_LABEL);
+                                    TKIDSIZE);
   WiFiManagerParameter custom_server("server", "Server Address",
-                                     my_server, TKIDSIZE, TYPE_HIDDEN,
-                                     WFM_NO_LABEL);
+                                     my_server, TKIDSIZE);
   WiFiManagerParameter custom_port("port", "Server Port",
                                    String(my_port).c_str(), TKIDSIZE,
-                                   TYPE_HIDDEN, WFM_NO_LABEL);
-  WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE,
-                                  TYPE_HIDDEN, WFM_NO_LABEL);
-  WiFiManagerParameter custom_vfact("vfact", "Battery correction factor",
-                                    String(my_vfact).c_str(), 5);
+                                   TYPE_NUMBER);
+  WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
+  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
+                                    String(my_vfact).c_str(), 7,TYPE_NUMBER);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
   wifiManager.addParameter(&custom_vfact);
+
+  WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
+  wifiManager.addParameter(&custom_api_hint); 
 
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
@@ -250,6 +251,7 @@ bool startConfiguration() {
   String tmp = String(custom_vfact.getValue());
   tmp.trim();  tmp.replace(',', '.');
   my_vfact = tmp.toFloat();
+  if (my_vfact < ADCDIVISOR*0.8 || my_vfact > ADCDIVISOR*1.2) my_vfact = ADCDIVISOR;
 
   // save the custom parameters to FS
   if (shouldSaveConfig) {
@@ -371,8 +373,6 @@ void goodNight() {
   delay(500);
 }
 
-float getVolt() { return analogRead(A0) / ADCDIVISOR; }
-
 void initDS18B20() {
   // Start up the DS18B20
   DS18B20.begin();
@@ -455,7 +455,7 @@ void requestTemp() {
 
 void flash() {
   // triggers the LED
-  Volt = getVolt();
+  Volt = getBattery();
   getAccSample();
   Tilt = calculateTilt();
   Temperatur = getTemperature(false);
@@ -463,7 +463,7 @@ void flash() {
 }
 
 float getBattery() {
-	return analogRead(A0) / ADCDIVISOR * my_vfact;
+	return analogRead(A0) / my_vfact;
 }
 
 bool isSafeMode(float _volt)  {
