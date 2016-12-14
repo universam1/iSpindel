@@ -14,7 +14,7 @@
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "3.4.0"
+#define FIRMWAREVERSION "3.4.1"
 
 #define API_FHEM true
 #define API_UBIDOTS true
