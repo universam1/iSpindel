@@ -526,7 +526,7 @@ void setup() {
   int connRes = WiFi.waitForConnectResult();
   float waited = (millis() - startedAt);
   SerialOut(waited / 1000, false);
-  SerialOut(F(" secs in setup() connection result is "), false);
+  SerialOut(F(" s, result "), false);
   SerialOut(connRes);
 
   if (WiFi.status() == WL_CONNECTED) {
