@@ -13,13 +13,24 @@ iSpindel | iSpindle
 
 ***
 
-***Please consider supporting this project***  
-
+***If you like it say thanks with a beer*** :beers:
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
 
 ***
 
 ## News
+
+> 15.11.16 Firmware 3.4.2:
+>- Supporting now backends
+>   - CraftBeerPi
+>   - TControl
+>   - FHEM
+>   - generic HTTP
+>- major Portal rework, added labels for convenience
+>- upload speed improvements
+>- Power saving on empty battery
+>- added custom Battery conversion factor
+>- Bugfixes
 
 > 11.12.16 Sources and drawer online  
 > 11.12.16: FHEM upload documentation & firmware (thanks @MSBannert!)  
