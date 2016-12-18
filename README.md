@@ -188,7 +188,7 @@ Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, du
 Auf der Ubidots Weboberfläche wird man nun unter `Sources` sehen dass die Daten aktualisiert werden.  
 Nun kann man im `Dashboard` sich seine Graphen nach Belieben zusammenstellen.
 
-### Portal
+###Scripting
 
 Ubidots kann ausserdem an vielen Stellen per Script bedient werden. Eine Dokumentation zu den Funktionen findet sich direkt bei Ubidots. Hiermit können zum Beispiel nicht mehr benötigte Daten in Variablen gelöscht werden.
 
