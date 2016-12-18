@@ -193,7 +193,7 @@ Nun kann man im `Dashboard` sich seine Graphen nach Belieben zusammenstellen.
 
 Ubidots kann ausserdem an vielen Stellen per Script bedient werden. Eine Dokumentation zu den Funktionen findet sich direkt bei Ubidots. Hiermit können zum Beispiel nicht mehr benötigte Daten in Variablen gelöscht werden.
 
-![siehe Ubidots-Scripting](docs/UbidotsScripting.md)
+![siehe Ubidots-Scripting](docs/ubidotsscripting.md)
 
 ***
 ## Anzeige
