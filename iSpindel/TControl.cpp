@@ -49,14 +49,22 @@ bool TControl::sendUDP() {
     Serial.println(F("TConctrol TCP: sending"));
     Serial.println(String("server: ") + _server + String(" Port: ") + TCPort);
 
-    if (_client.connect(_server, TCPort))
-    {
-        _client.print(msg);
-        Serial.println(msg);
-    } 
-    else {
-        Serial.println(F("\nERROR TConctrol: couldnt connect"));
+    if (_client.connect(_server, TCPort)) {
+      _client.print(msg);
+      Serial.println(msg);
+
+    //   while (_client.connected()) {
+        while (_client.available()) {
+          char c = _client.read();
+          Serial.write(c);
+        }
+    //   }
+      
+    } else {
+      Serial.println(F("\nERROR TConctrol: couldnt connect"));
+      
     }
+    _client.stop();
 
     return true;
 }
