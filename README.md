@@ -40,7 +40,7 @@ iSpindel | iSpindle
 
 ***
 
-> The `iSpindle` is a pretty new project and under heavy development, see german [Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235).  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
+> The `iSpindle` is a young project and under heavy development, see german [Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235).  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
 >
 > Die `iSpindel` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
@@ -54,6 +54,7 @@ iSpindel | iSpindle
 - [Prinzip](#prinzip)
   - [Metazentrum](#metazentrum)
 - [Aufbau](#aufbau)
+  - [Varianten](#varianten)
   - [Bauteile](#bauteile)
   - [Schaltplan](#schaltplan)
   - [Schlitten](#schlitten)
@@ -103,23 +104,31 @@ In der Software berechnent man aus den XYZ Beschleunigungswerten den Euler Winke
 
 ## Aufbau
 
->***ACHTUNG: dies entspricht Stand 20.11.2016***
+### Varianten
+
+> Alle drei Varianten sind funktionell identisch
+
+1. [Variante A: Lochrasterplatine & Schlitten](docs/iSpindelbreadboard.md)  
+Die Lochrasterplatine ermöglicht den Nachbau jederzeit mit 'Hausmitteln' 
+1. [Variante B: nur Platine](docs/iSpindelPCB.md)  
+Die fertige Platine über die Sammelbestellung bringt einen komfortablen Aufbau
+1. [Variante C: Platine & Schlitten](docs/iSpindelPCB.md)  
+Die obige Platine kann (über Trenn-Schnitt) mit dem Kunstoff Schlitten in Kombination verwendet werden der einen spielfreien Sitz garantiert.
 
 ### Bauteile
 
 - [Wemos D1 mini](https://www.wemos.cc/product/d1-mini.html)
 - `GY-521` Gyro & Beschleunigungssensor (MPU-6050 auf passendem breakout Board)
 - [DS18B20 Temperatursensor](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html)
-- Lochrasterplatine 3x4cm
+- Lochrasterplatine 3x4cm oder Platine aus Sammelbestellung
 - Widerstände
   - 4k7 Ohm
   - 220k Ohm
   - 470 Ohm
-- Mikro Schalter
+- Mikro Schalter oder Reed Öffner
 - `18650 LiIo Zelle` (z.B. `Panasonic NCR18650B` **geschützt** oder ohne **PCB**) 
 - Lipo Lademodul `TP4056` (6 pin recommended)
 - Kunstoff Schlitten [download](https://github.com/universam1/iSpindel/raw/master/drawer/)
-  - alternativ (Lochraster) Platine ***UNGETESTED***)
 
 - Kunstoff Zylinder `Petling` [Petling-XL](http://cachers-world.de/de/Petling-XL)
 
@@ -141,14 +150,14 @@ Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedru
 
 ### Schlitten
 
+Kunstoff Schlitten [download](https://github.com/universam1/iSpindel/raw/master/drawer/)
+
 ![Schlitten](docs/Schlitten_cad.jpg)
 ![Zusammenbau](docs/assembled2.jpg)
 ![Zusammenbau](docs/assembled.jpg)
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=gpVarh8BxhQ" target="_blank"><img src="http://img.youtube.com/vi/gpVarh8BxhQ/0.jpg" 
 alt="Druck" width="240" height="180" border="10" /></a>
-
-
 
 ***
 
