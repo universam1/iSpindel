@@ -49,6 +49,8 @@ bool TControl::sendUDP() {
     Serial.println(F("TConctrol TCP: sending"));
     Serial.println(String("server: ") + _server + String(" Port: ") + TCPort);
 
+    _client.setNoDelay(true); // test if solves dropped frames
+
     if (_client.connect(_server, TCPort)) {
       _client.print(msg);
       Serial.println(msg);
@@ -64,6 +66,7 @@ bool TControl::sendUDP() {
       Serial.println(F("\nERROR TConctrol: couldnt connect"));
       
     }
+    _client.flush(); // test if solves dropped frames
     _client.stop();
 
     return true;
