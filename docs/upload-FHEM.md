@@ -51,7 +51,7 @@ Die Funktion CalcPlato(Neigung, Temperatur) kann man am besten in 99_MyUtils.pm 
       if ($mPlato>=20){  @k=(97.052,    -2.7729,    -0.10596);};
     
       my $cPlato=$k[0]+$k[1]*$Temp+$k[2]*$Temp*$Temp;
-      return $cPlato;
+      return $mPlato-$cPlato/100;
     }
     
     sub CalcPlato($$)   #(Angle, T)
