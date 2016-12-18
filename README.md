@@ -20,6 +20,7 @@ iSpindel | iSpindle
 
 ## News
 
+> 18.12.16 FAQ und Ubidots tool
 > 15.11.16 Firmware 3.4.2:
 >- Supporting now backends
 >   - CraftBeerPi
@@ -67,6 +68,7 @@ iSpindel | iSpindle
   - [Ubidots Graphen](#ubidots-graphen)
   - [CraftBeerPi](#craftbeerpi)
   - [FHEM](#fhem)
+- [FAQ](docs/FAQ.md)
 - [Software](#software)
 
 
