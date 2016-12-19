@@ -352,7 +352,7 @@ bool uploadData(uint8_t service) {
   tcclient.add("T", Temperatur);
   tcclient.add("D", Tilt);
   tcclient.add("U", Volt);
-  return tcclient.sendUDP();
+  return tcclient.send();
   }
 #endif // DATABASESYSTEM ==
 }
