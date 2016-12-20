@@ -10,3 +10,5 @@ Um die Platine mit dem Schlitten zu verwenden, folgende Dinge berücksichtigen:
 Die Platine in den Falz einschieben, so dass der Wemos sich auf der Akku abgewandten Seite befindet (im schwimmenden Zustand oben).
 
 ## Variante B: nur Platine
+
+***TODO***
