@@ -14,7 +14,7 @@
 #include <ArduinoJson.h>         //https://github.com/bblanchon/ArduinoJson
 #include <WiFiUdp.h>
 
-#define CONNTIMEOUT 3000/500
+#define CONNTIMEOUT 3000/100
 
 #define TCPort 4968
 
