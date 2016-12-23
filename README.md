@@ -20,6 +20,7 @@ iSpindel | iSpindle
 
 ## News
 
+> 23.12.16 CraftBeerPi Info & FW.3.4.4
 > 18.12.16 FAQ und Ubidots tool
 > 15.11.16 Firmware 3.4.2:
 >- Supporting now backends
@@ -221,7 +222,11 @@ Ubidots kann ausserdem an vielen Stellen per Script bedient werden. Eine Dokumen
 
 ### CraftBeerPi
 
-- [Work in Progress](https://github.com/universam1/iSpindel/issues/3)
+> Beschreibung von @not:  
+*Wenn Du die neueste Firmware auf Deine iSpindel geflasht hast musst Du auch craftbeerpi updaten: dazu brauchst Du den branch "hydrometer". Wenn Du die Spindel dann konfigurierst, gibst Du neben den Einstellungen für Dein WLAN im Dropdown-Menu "CraftbeerPi" an und darunter die IP Adresse Deines im selben Netzwerk gelegenen Craftbeerpi-Servers.
+Danach sendet die Spindel an den Raspberry Pi -Rechner und Craftbeerpi registriert die Spindel automatisch . Wenn die Verbindung klappt, findest Du die Spindel "wie von Geisterhand" in der Hardware-Konfiguration von CBP.
+Du siehst, dass Daten ankomen, wenn Du Deine Fermentation / Gärung im CBP anschaust, da sind dann nicht nur die Temperatur (ist und soll) , sondern auch Spindeltemperatur und Plato zu sehen (siehe Screenshot oben) mit letztem Zeitstempel.*  
+`git clone -b hydrometer https://github.com/Manuel83/craftbeerpi.git`
 
 ### FHEM
 

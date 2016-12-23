@@ -77,8 +77,8 @@ bool TControl::send(uint8_t count) {
     int timeout = 0;
     while(!_client.available() && timeout < CONNTIMEOUT) {
         timeout++;
-        Serial.println("delay");
-        delay(500);
+        Serial.println("wait");
+        delay(100);
     }
     while (_client.available()) {
         char c = _client.read();
@@ -90,5 +90,5 @@ bool TControl::send(uint8_t count) {
         }
     }
     _client.stop();
-    return send(count--);
+    return send(--count);
 }
