@@ -20,6 +20,7 @@ iSpindel | iSpindle
 
 ## News
 
+> 25.12.16 Kit
 > 23.12.16 CraftBeerPi Info, FW.3.4.4, Combo-Schlitten
 > 18.12.16 FAQ und Ubidots tool
 > 15.11.16 Firmware 3.4.2:
@@ -120,47 +121,15 @@ Die obige Platine kann (über Trenn-Schnitt) mit dem Kunstoff Schlitten in Kombi
 
 ### Bauteile
 
-- [Wemos D1 mini](https://www.wemos.cc/product/d1-mini.html)
-- `GY-521` Gyro & Beschleunigungssensor (MPU-6050 auf passendem breakout Board)
-- [DS18B20 Temperatursensor](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html)
-- Lochrasterplatine 3x4cm oder Platine aus Sammelbestellung
-- Widerstände
-  - 4k7 Ohm
-  - 220k Ohm
-  - 470 Ohm
-- Mikro Schalter oder Reed Öffner
-- `18650 LiIo Zelle` (z.B. `Panasonic NCR18650B` **geschützt** oder ohne **PCB**) 
-- Lipo Lademodul `TP4056` (6 pin recommended)
-- Kunstoff Schlitten [download](https://github.com/universam1/iSpindel/raw/master/drawer/)
+***siehe [Bauteile](docs/Parts.md)***
 
-- Kunstoff Zylinder `Petling` [Petling-XL](http://cachers-world.de/de/Petling-XL)
-
-> ## Info
-
-> Der Anbieter [cachers-world.de](http://cachers-world.de/de/Petling-XL) unsterstützt dieses Projekt indem er nachhaltig den passenden Petling liefern möchte und über den Gutschein-Code "`HOBBYBRAUER`"  (Großschreibung!) 20% Rabatt gewährt. 
-Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedruckten Schlitten.
->
->Info: *"Ist im Moment dann nur 1,44 EUR ab 2017 werden es dann 1,52 EUR sein, weil der Artikel 10ct hoch geht."*
-
->Info 2: Zur Zeit ausverkauft, nachbestellt.
-
-***
 ### Schaltplan
 
 ***siehe [Schaltplan](docs/Schaltplan.md)***
 
-***
-
 ### Schlitten
 
-Kunstoff Schlitten [download](https://github.com/universam1/iSpindel/raw/master/drawer/)
-
-![Schlitten](docs/Schlitten_cad.jpg)
-![Zusammenbau](docs/assembled2.jpg)
-![Zusammenbau](docs/assembled.jpg)
-
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=gpVarh8BxhQ" target="_blank"><img src="http://img.youtube.com/vi/gpVarh8BxhQ/0.jpg" 
-alt="Druck" width="240" height="180" border="10" /></a>
+***siehe [Bauteile](docs/Parts.md)***
 
 ***
 
