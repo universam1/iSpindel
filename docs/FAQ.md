@@ -18,3 +18,8 @@ Man kann die Spindel im Normalbetrieb _nicht_ erreichen, sie sendet ausschließl
 Der kritische Teil der Laufzeit ist dass die iSpindel so kurz wie nur möglich aktiv ist und sich die maximale Zeit im `deep sleep`  befindet! Der Wemos im Aktiv - Betrieb hat einen über 300x Energiebedarf, um daher die Laufzeit zu erreichen ist dieser Trick unumgänglich.
 - ***Die Micro USBBuchse ist für Programmaktualisierungen?***
 Korrekt, siehe Firmwareaktualisierung
+- ***Wie kann ich die Spannungsanzeige kalibrieren?***
+Ab Firmware 3 kann man den Umrechnungfaktor anpassen. Standardmässig ist der Faktor 191.8, diesen umrechnen:
+```
+angezeigte Spannung / gemessene Spannung  * jetziger Faktor (191.8) = neuer Faktor
+```
