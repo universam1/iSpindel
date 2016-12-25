@@ -20,9 +20,9 @@ iSpindel | iSpindle
 
 ## News
 
-> 25.12.16 Kit
-> 23.12.16 CraftBeerPi Info, FW.3.4.4, Combo-Schlitten
-> 18.12.16 FAQ und Ubidots tool
+> 25.12.16 Kit   
+> 23.12.16 CraftBeerPi Info, FW.3.4.4, Combo-Schlitten   
+> 18.12.16 FAQ und Ubidots tool  
 > 15.11.16 Firmware 3.4.2:
 >- Supporting now backends
 >   - CraftBeerPi
