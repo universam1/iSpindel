@@ -361,6 +361,11 @@ void goodNight() {
 
   drd.loop();
 
+    // workaround for DS not floating
+  pinMode(ONE_WIRE_BUS, OUTPUT);
+  digitalWrite(ONE_WIRE_BUS, LOW);
+  
+
   // survive - 60min sleep time
   if (isSafeMode(Volt)) my_sleeptime = 60 * 60e6;
 
@@ -374,6 +379,16 @@ void goodNight() {
 }
 
 void initDS18B20() {
+
+  // workaround for DS not enough power to boot
+  // pinMode(ONE_WIRE_BUS, OUTPUT);
+  // digitalWrite(ONE_WIRE_BUS, LOW);
+  // delay(200);
+  // digitalWrite(ONE_WIRE_BUS, HIGH);
+  // delay(500);
+  // oneWire.reset();
+  
+
   // Start up the DS18B20
   DS18B20.begin();
   DS18B20.setWaitForConversion(false);
@@ -385,6 +400,7 @@ void initDS18B20() {
 void initAccel() {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin(D3, D4);
+  Wire.setClockStretchLimit(2*230);
 
   // init the Accel
   accelgyro.initialize();
@@ -421,7 +437,15 @@ float getTilt() {
   return samples.getAverage(MEDIANAVRG);
 }
 
-void getAccSample() { accelgyro.getAcceleration(&ax, &az, &ay); }
+void getAccSample() { 
+  uint8_t res = Wire.status();
+  if (res == I2C_OK)
+    accelgyro.getAcceleration(&ax, &az, &ay); 
+  else {
+    SerialOut("I2C ERROR: ", false);
+    SerialOut(res, true);
+  }
+}
 
 float getTemperature(bool block = false) {
   // we need to wait for DS18b20 to finish conversion
@@ -439,6 +463,15 @@ float getTemperature(bool block = false) {
         t == 85.0)                    // we read 85 uninitialized
     {
       SerialOut(F("ERROR: OW DISCONNECTED"));
+        pinMode(ONE_WIRE_BUS, OUTPUT);
+  digitalWrite(ONE_WIRE_BUS, LOW);
+  delay(200);
+  digitalWrite(ONE_WIRE_BUS, HIGH);
+  delay(500);
+  oneWire.reset();
+  
+      SerialOut(F("Pull up"));
+      delay(1000);
     }
   }
   return t;
@@ -463,6 +496,7 @@ void flash() {
 }
 
 float getBattery() {
+  analogRead(A0); // drop first read
 	return analogRead(A0) / my_vfact;
 }
 
@@ -480,13 +514,14 @@ void setup() {
   SerialOut("\nFW " FIRMWAREVERSION);
   SerialOut(ESP.getSdkVersion());
 
+  initAccel();
   initDS18B20();
 
-  initAccel();
+  
 
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig()) {
-    flasher.attach(1, flash);
+    flasher.attach(2, flash);
     startConfiguration();
     flasher.detach();
   }
