@@ -166,8 +166,10 @@ Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, du
 
   ![Info](docs/info.png)
 
-> Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.  
+Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.  
+Falls noch nicht vorhanden, wird selbständig ein neues `Device` erstellt und die Sensoren angelegt.  
 Auf der Ubidots Weboberfläche wird man nun unter `Sources` sehen dass die Daten aktualisiert werden.  
+
 Nun kann man im `Dashboard` sich seine Graphen nach Belieben zusammenstellen.
 
 ### Scripting
