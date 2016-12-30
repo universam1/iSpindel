@@ -381,9 +381,9 @@ void goodNight() {
 void initDS18B20() {
 
   // workaround for DS not enough power to boot
-  // pinMode(ONE_WIRE_BUS, OUTPUT);
-  // digitalWrite(ONE_WIRE_BUS, LOW);
-  // delay(200);
+  pinMode(ONE_WIRE_BUS, OUTPUT);
+  digitalWrite(ONE_WIRE_BUS, LOW);
+  delay(100);
   // digitalWrite(ONE_WIRE_BUS, HIGH);
   // delay(500);
   // oneWire.reset();
@@ -400,6 +400,7 @@ void initDS18B20() {
 void initAccel() {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin(D3, D4);
+  Wire.setClock(100000);
   Wire.setClockStretchLimit(2*230);
 
   // init the Accel
@@ -439,11 +440,12 @@ float getTilt() {
 
 void getAccSample() { 
   uint8_t res = Wire.status();
-  if (res == I2C_OK)
+  uint8_t con = accelgyro.testConnection();
+  if (res == I2C_OK && con == true)
     accelgyro.getAcceleration(&ax, &az, &ay); 
   else {
-    SerialOut("I2C ERROR: ", false);
-    SerialOut(res, true);
+    SerialOut(String("I2C ERROR: ") + res + String(" con:") + con);
+    
   }
 }
 
@@ -455,7 +457,7 @@ float getTemperature(bool block = false) {
   while (block && (millis() - DSreqTime <= OWinterval))
     yield();
 
-  if (millis() - DSreqTime > OWinterval) {
+  if (millis() - DSreqTime >= OWinterval) {
     t = DS18B20.getTempCByIndex(0);
     DSrequested = false;
 
@@ -463,15 +465,21 @@ float getTemperature(bool block = false) {
         t == 85.0)                    // we read 85 uninitialized
     {
       SerialOut(F("ERROR: OW DISCONNECTED"));
-        pinMode(ONE_WIRE_BUS, OUTPUT);
-  digitalWrite(ONE_WIRE_BUS, LOW);
-  delay(200);
-  digitalWrite(ONE_WIRE_BUS, HIGH);
-  delay(500);
-  oneWire.reset();
-  
-      SerialOut(F("Pull up"));
-      delay(1000);
+      pinMode(ONE_WIRE_BUS, OUTPUT);
+      digitalWrite(ONE_WIRE_BUS, LOW);
+      delay(200);
+      // digitalWrite(ONE_WIRE_BUS, HIGH);
+      // delay(500);
+      oneWire.reset();
+
+      if (block) {
+        SerialOut(F("OW Retry"));
+        initDS18B20();
+        delay(OWinterval+100);
+        t = getTemperature(false);
+      }
+
+
     }
   }
   return t;
@@ -521,7 +529,7 @@ void setup() {
 
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig()) {
-    flasher.attach(2, flash);
+    flasher.attach(0.5, flash);
     startConfiguration();
     flasher.detach();
   }
