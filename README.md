@@ -47,8 +47,8 @@ iSpindel | iSpindle
 >
 > Die `iSpindel` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
-![Spindel im Reinwasser](docs/floating.jpg)
-![Dashboard](docs/Dashboard.jpg)
+![Spindel im Reinwasser](pics/floating.jpg)
+![Dashboard](pics/Dashboard.jpg)
 
 
 ## Inhaltverzeichnis
@@ -91,7 +91,7 @@ Angetrieben von dem Thread [Alternative zu Spindel](http://hobbybrauer.de/forum/
 Die Idee des krängende Zylinders ist genial wie einfach - man braucht keine externe Referenz (außer der Erde) und der Zylinder ist extrem leicht sauber zu halten. Der Neigungswinkel ändert sich im Verhältnis zum Auftrieb und damit im direkten Zusammenhang mit dem Zuckergehalt.
 Kein unnötiges Öffnen zum spindeln und evtl. Kontaminieren!
 
-![Kränung](docs/kraengung.jpg)
+![Kränung](pics/kraengung.jpg)
 
 Daher die Idee, ein IoT device mit Wifi zusammen mit einem Beschleunigungssensor und Temperatursensor in einen schwimmenden Zylinder zu legen. Dort wacht er alle bsp. 5min auf, verbindet sich mit meinem Wlan und sendet seinen Neigungswinkel, Temperatur und Akkuspannung an einen Cloudservice. 
 
@@ -141,7 +141,7 @@ Die obige Platine kann (über Trenn-Schnitt) mit dem Kunstoff Schlitten in Kombi
 - Im Menü  `API Credentials` erhält man seinen `Token` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.  
 ***Diesen notieren.***  
 
-![Token](docs/UbiToken.jpg)
+![Token](pics/UbiToken.jpg)
 
 ### Portal
 
@@ -154,17 +154,17 @@ Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, du
 
 - Ebenfalls stellt man hier den `Intervall` ein in dem sie Daten liefert. Dies hat direkt mit der Akku Lebensdauer zu tun. Es empfiehlt sich in der Praxis etwa `1800` Sekunden (= 30 Minuten) Takt zu wählen.
 
-   ![Setup](docs/setup.jpg)
+   ![Setup](pics/setup.jpg)
 
 
 - Man erreicht es über
 
-   ![AccessPoint](docs/AP.png)![Portal](docs/Portal.png)
+   ![AccessPoint](pics/AP.png)![Portal](pics/Portal.png)
 
 
 - Eine Übersicht der Daten kann man über den `Info` Menüpunkt einsehen
 
-  ![Info](docs/info.png)
+  ![Info](pics/info.png)
 
 > Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.  
 Auf der Ubidots Weboberfläche wird man nun unter `Sources` sehen dass die Daten aktualisiert werden.  
