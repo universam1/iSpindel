@@ -1,3 +1,4 @@
+3.4.6 OneWire stability improvements
 3.4.4 fixes for TControl
 3.4.2: Added CraftBeerPi, TControl, FHEM, generic HTTP
         major Portal rework, added labels

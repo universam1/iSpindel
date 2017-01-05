@@ -1,6 +1,6 @@
 # Schaltplan
 
-![Schaltplan](Schematic.jpg)
+![Schaltplan](../pics/Schematic.jpg)
 
 ## Anschlussbelegung
 
