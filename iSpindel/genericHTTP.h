@@ -26,6 +26,7 @@ class genericHTTP {
  public:
     genericHTTP(char* device, char* server, uint16_t port, char* url);
     bool sendHTTP();
+    bool sendTCP();
     void add(char *variable_id, float value);
     ~genericHTTP();
     

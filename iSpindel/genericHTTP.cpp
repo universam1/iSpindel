@@ -61,14 +61,6 @@ bool genericHTTP::sendHTTP() {
         Serial.println(msg);
         data.printTo(Serial);
 
-        // msg += String("\r\n");
-
-        // String json;
-        // data.printTo(json);
-        // msg += json + String("\r\n");
-        // _client.println(msg);
-        // Serial.println(msg);
-
     } else {
         Serial.println(F("\nERROR genericHTTP: couldnt connect"));
     }
@@ -85,4 +77,46 @@ bool genericHTTP::sendHTTP() {
     currentValue = 0;
     _client.stop();
     return true;
+}
+
+bool genericHTTP::sendTCP() {
+  uint16_t i;
+  String msg, json;
+
+  StaticJsonBuffer<JSONARRAY> jsonBuffer;
+  JsonObject &data = jsonBuffer.createObject();
+
+  data["name"] = _device;
+  data["ID"] = String(ESP.getChipId());
+
+  for (i = 0; i < currentValue;) {
+    data[String((val + i)->id)] = (val + i)->value_id;
+    i++;
+  }
+
+  if (_client.connect(_server, _port)) {
+    Serial.println(F("genericTCP: sending"));
+    Serial.println(String("server: ") + _server + String(" Port: ") + _port);
+
+    data.printTo(_client);
+    data.printTo(Serial);
+
+    int timeout = 0;
+    while (!_client.available() && timeout < CONNTIMEOUT / 100) {
+      timeout++;
+      Serial.println("wait");
+      delay(100);
+    }
+    while (_client.available()) {
+      char c = _client.read();
+      Serial.write(c);
+    }
+
+  } else {
+    Serial.println(F("\nERROR genericTCP: couldnt connect"));
+  }
+
+  currentValue = 0;
+  _client.stop();
+  return true;
 }

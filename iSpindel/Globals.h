@@ -14,7 +14,7 @@
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "3.4.6"
+#define FIRMWAREVERSION "3.5.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -42,6 +42,7 @@
 #define DTHTTP 3
 #define DTTcontrol 4
 #define DTFHEM  5
+#define DTTCP  6
 
 // Number of seconds after reset during which a 
 // subseqent reset will be considered a double reset.

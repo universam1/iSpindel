@@ -74,6 +74,12 @@ case "FHEM":
   set('token',0);
   set('url',0);
   break;
+case "TCP":
+  set('server',1);
+  set('port',1);
+  set('token',0);
+  set('url',0);
+  break;
 }};
 window.onload = function(e){ 
  for (var i = 0; i < labels.length; i++) {
@@ -91,6 +97,7 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=3>HTTP</option>
 <option value=4>TControl</option>
 <option value=5>FHEM</option>
+<option value=6>TCP</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[]  = "type=\"hidden\"";
