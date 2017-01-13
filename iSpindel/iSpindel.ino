@@ -317,26 +317,35 @@ bool uploadData(uint8_t service) {
 #endif
 
 #ifdef API_GENERIC
-  if ( (service == DTHTTP)||(service == DTCraftbeepPi) ) {
+  if ((service == DTHTTP) || (service == DTCraftbeepPi) || (service == DTTCP)) {
 
-  if (service == DTHTTP) {
-    SerialOut(F("\ncalling DTHTTP "));
-    strcpy(url, my_url);
-    port = my_port;
-  } else if (service == DTCraftbeepPi) {
-    SerialOut(F("\ncalling DTCraftbeepPi "));
-    strcpy(url, CBP_ENDPOINT);
-    port = 5000;
-  }
+    if (service == DTHTTP) {
+      SerialOut(F("\ncalling DTHTTP "));
+      strcpy(url, my_url);
+      port = my_port;
+    } else if (service == DTCraftbeepPi) {
+      SerialOut(F("\ncalling DTCraftbeepPi "));
+      strcpy(url, CBP_ENDPOINT);
+      port = 5000;
+    } else if (service == DTTCP) {
+      SerialOut(F("\ncalling DTTCP "));
+      port = my_port;
+      strcpy(url, "");
+    }
 
-  genericHTTP genclient(my_name, my_server, port, url);
-  genclient.add("angle", Tilt);
-  genclient.add("temperature", Temperatur);
-  genclient.add("battery", Volt);
-  return genclient.sendHTTP();
+    genericHTTP genclient(my_name, my_server, port, url);
+    genclient.add("angle", Tilt);
+    genclient.add("temperature", Temperatur);
+    genclient.add("battery", Volt);
+    
+    if (service == DTTCP) {
+      return genclient.sendTCP();
+    } else {
+      return genclient.sendHTTP();
+    }
   }
 #endif // DATABASESYSTEM
-  
+
 #ifdef API_FHEM
   if (service == DTFHEM) {
   FhemHttp fhemclient(my_name, my_server, my_port);
