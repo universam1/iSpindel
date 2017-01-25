@@ -27,14 +27,14 @@
 
 ### Wemos
 
-- Eingangs - Diode entfernen (Kurzschluss über Lipomodul)
-- Wemos USB +5V (obiger Diodenpin) an Lipomodul ```+IN``` verbinden
-- Schalter / Reed zwischen +5V und Lipomodul ```+OUT```
+- Eingangs - Diode entfernen (Kurzschluss über Lipomodul!)
+- Wemos USB +5V (obiger Diodenpin) an Lipomodul `+IN` verbinden (optional um über den Wemos zu laden)
+- Schalter / Reed zwischen +5V und Lipomodul `+OUT`
 - GND --> GND
 
 ### Lipo Lademodul
 
-- Akku direkt an ```+OUT``` und ```-OUT```
+- Akku an `B+` und `B-`
 - GND --> GND
-- ```+OUT``` Schalter zu +5V Wemos
-- ```+IN``` an USB +5V des Wemos
+- `+OUT` Schalter zu +5V Wemos
+- `+IN` an USB +5V des Wemos (optional)
