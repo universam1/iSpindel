@@ -14,7 +14,7 @@
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "3.5.0"
+#define FIRMWAREVERSION "4.0.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -22,7 +22,6 @@
 #define API_TCONTROL true
 
 #define PORTALTIMEOUT 300
-#define LOWBATT 3.3
 
 #define ADCDIVISOR 191.8
 #define ONE_WIRE_BUS D6  // DS18B20 on ESP pin12
@@ -49,6 +48,15 @@
 #define DRD_TIMEOUT 1
 // RTC Memory Address for the DoubleResetDetector to use
 #define DRD_ADDRESS 0
+
+#define WIFIENADDR 1
+#define WIFIRFENTOKEN 1234
+
+// sleep management
+#define RTCSLEEPADDR 5
+#define MAXSLEEPTIME 3600 //TODO
+#define EMERGENCYSLEEP (my_sleeptime*3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime*3)
+#define LOWBATT 3.3
 
 extern int16_t ax, ay, az;
 extern float Volt, Temperatur, Tilt;

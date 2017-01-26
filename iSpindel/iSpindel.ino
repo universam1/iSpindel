@@ -366,25 +366,51 @@ bool uploadData(uint8_t service) {
 #endif // DATABASESYSTEM ==
 }
 
-void goodNight() {
+void sleepManager() {
+  uint32_t left2sleep;
+  ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
 
-  drd.loop();
+  // check if we have to incarnate again
+  if (left2sleep != 0 && !drd.detectDoubleReset()) {
+    SerialOut(F("have to step sleep"));
+    goodNight(left2sleep);
+  }
+  else {
+    SerialOut(F("Worker run!"));    
+  }
+}
+
+void goodNight(uint32_t seconds) {
+
+  uint32_t _seconds = seconds;
+  uint32_t left2sleep = 0;
+
+  drd.stop();
 
     // workaround for DS not floating
   pinMode(ONE_WIRE_BUS, OUTPUT);
   digitalWrite(ONE_WIRE_BUS, LOW);
-  
 
-  // survive - 60min sleep time
-  if (isSafeMode(Volt)) my_sleeptime = 60 * 60e6;
-
-  SerialOut(F("\nsleeping: "), false);
-  SerialOut(my_sleeptime, false);
-  SerialOut(F("sec"));
-  // WAKE_RF_DEFAULT --> auto reconnect after wakeup
-  ESP.deepSleep(my_sleeptime * 1000UL * 1000UL, WAKE_RF_DEFAULT);
-  // workaround proper power state init
-  delay(500);
+  // we need another incarnation before work run
+  if (_seconds > MAXSLEEPTIME) {
+    left2sleep = _seconds - MAXSLEEPTIME;
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + String("s; left: ") + left2sleep);
+    ESP.deepSleep(MAXSLEEPTIME * 1000UL * 1000UL, WAKE_RF_DISABLED );
+    // workaround proper power state init
+    delay(500);
+  }
+  // regular sleep with RF enabled after wakeup
+  else {
+    // clearing RTC to mark next wake
+    left2sleep = 0;
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+    SerialOut(String(F("\nFinal-sleep: ")) + _seconds);
+    // WAKE_RF_DEFAULT --> auto reconnect after wakeup
+    ESP.deepSleep(_seconds * 1000UL * 1000UL, WAKE_RF_DEFAULT);
+    // workaround proper power state init
+    delay(500);
+  }
 }
 
 void initDS18B20() {
@@ -531,15 +557,33 @@ void setup() {
   SerialOut("\nFW " FIRMWAREVERSION);
   SerialOut(ESP.getSdkVersion());
 
+  sleepManager();
+
   initAccel();
   initDS18B20();
 
-  
-
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig()) {
+    uint32_t tmp;
+    ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
+
+    // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
+    if (tmp != WIFIRFENTOKEN) {
+      tmp = WIFIRFENTOKEN;
+      ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
+      ESP.deepSleep(1, WAKE_RFCAL);
+    }
+    else {
+      tmp = 0;
+      ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
+    }
+
     flasher.attach(0.5, flash);
+    
     startConfiguration();
+    uint32_t left2sleep = 0;
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+    
     flasher.detach();
   }
   // to make sure we wake up with STA but AP
@@ -589,7 +633,9 @@ void setup() {
     SerialOut("failed to connect");
   }
 
-  goodNight();
+  // survive - 60min sleep time
+  if (isSafeMode(Volt)) my_sleeptime = EMERGENCYSLEEP;
+  goodNight(my_sleeptime);
 }
 
 void loop() { 
