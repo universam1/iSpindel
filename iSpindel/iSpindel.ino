@@ -367,12 +367,12 @@ bool uploadData(uint8_t service) {
 }
 
 void sleepManager() {
-  uint32_t left2sleep;
+  uint32_t left2sleep, validflag;
   ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+  ESP.rtcUserMemoryRead(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
 
   // check if we have to incarnate again
-  if (left2sleep != 0 && !drd.detectDoubleReset()) {
-    SerialOut(F("have to step sleep"));
+  if (left2sleep != 0 && !drd.detectDoubleReset() && validflag==RTCVALIDFLAG) {
     goodNight(left2sleep);
   }
   else {
@@ -384,6 +384,7 @@ void goodNight(uint32_t seconds) {
 
   uint32_t _seconds = seconds;
   uint32_t left2sleep = 0;
+  uint32_t validflag = RTCVALIDFLAG;
 
   drd.stop();
 
@@ -395,6 +396,7 @@ void goodNight(uint32_t seconds) {
   if (_seconds > MAXSLEEPTIME) {
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
     SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + String("s; left: ") + left2sleep);
     ESP.deepSleep(MAXSLEEPTIME * 1000UL * 1000UL, WAKE_RF_DISABLED );
     // workaround proper power state init
@@ -405,6 +407,7 @@ void goodNight(uint32_t seconds) {
     // clearing RTC to mark next wake
     left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
     SerialOut(String(F("\nFinal-sleep: ")) + _seconds);
     // WAKE_RF_DEFAULT --> auto reconnect after wakeup
     ESP.deepSleep(_seconds * 1000UL * 1000UL, WAKE_RF_DEFAULT);
@@ -568,8 +571,8 @@ void setup() {
     ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
 
     // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
-    if (tmp != WIFIRFENTOKEN) {
-      tmp = WIFIRFENTOKEN;
+    if (tmp != RTCVALIDFLAG) {
+      tmp = RTCVALIDFLAG;
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
       ESP.deepSleep(1, WAKE_RFCAL);
     }
