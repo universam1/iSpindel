@@ -14,7 +14,7 @@
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "4.0.0"
+#define FIRMWAREVERSION "4.0.1"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -50,7 +50,7 @@
 #define DRD_ADDRESS 0
 
 #define WIFIENADDR 1
-#define WIFIRFENTOKEN 1234
+#define RTCVALIDFLAG 0xCAFEBABE
 
 // sleep management
 #define RTCSLEEPADDR 5
