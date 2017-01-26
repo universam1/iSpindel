@@ -19,9 +19,15 @@ iSpindel | iSpindle
 ***
 
 ## News
-
+> 26.02.17 Firmware 4.0.0
+>- inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps   
+>- Wifi RF calibration introduced when calling configuration   
+>- fixed bug of emergency interval   
+>- fixed UI numeric formating   
+>  
 > 25.02.17 Firmware 3.5.0: genericTCP  
-Python Skript um lokal die Daten in eine CSV Datei zu schreiben (thanks to Tozzi)    
+>- Python Skript um lokal die Daten in eine CSV Datei zu schreiben (thanks to Tozzi)  
+>  
 > 25.12.16 Kit   
 > 23.12.16 CraftBeerPi Info, FW.3.4.4, Combo-Schlitten   
 > 18.12.16 FAQ und Ubidots tool  
