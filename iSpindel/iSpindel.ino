@@ -581,7 +581,7 @@ void setup() {
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
     }
 
-    flasher.attach(0.5, flash);
+    flasher.attach(1, flash);
     
     startConfiguration();
     uint32_t left2sleep = 0;

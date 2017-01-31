@@ -19,7 +19,8 @@ iSpindel | iSpindle
 ***
 
 ## News
-> 26.02.17 Firmware 4.0
+> 31.01.17 Bilder Aufbau Platinenvariante   
+> 26.01.17 Firmware 4.0   
 >- inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps   
 >- Wifi RF calibration introduced when calling configuration   
 >- fixed bug of emergency interval   
