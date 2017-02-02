@@ -56,7 +56,7 @@ char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
 uint8_t my_api;
-uint32_t my_sleeptime = 15;
+uint32_t my_sleeptime = 15*60;
 uint16_t my_port = 80;
 float my_vfact = ADCDIVISOR;
 
@@ -88,8 +88,8 @@ void SerialOut() { SerialOut(""); }
 
 // callback notifying us of the need to save config
 void saveConfigCallback() {
-  SerialOut(F("Should save config"));
-  WiFi.setAutoReconnect(true);
+  // SerialOut(F("Should save config"));
+  // WiFi.setAutoReconnect(true);
   shouldSaveConfig = true;
 }
 bool readConfig() {
@@ -272,6 +272,8 @@ bool startConfiguration() {
     json["Name"] = my_name;
     json["Token"] = my_token;
     json["Sleep"] = my_sleeptime;
+    // first reboot is for test 
+    my_sleeptime = 1;
     json["Server"] = my_server;
     json["API"] = my_api;
     json["Port"] = my_port;
