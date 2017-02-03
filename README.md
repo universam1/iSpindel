@@ -102,7 +102,7 @@ Kein unnötiges Öffnen zum spindeln und evtl. Kontaminieren!
 
 ![Kränung](pics/kraengung.jpg)
 
-Daher die Idee, ein IoT device mit Wifi zusammen mit einem Beschleunigungssensor und Temperatursensor in einen schwimmenden Zylinder zu legen. Dort wacht er alle bsp. 5min auf, verbindet sich mit meinem Wlan und sendet seinen Neigungswinkel, Temperatur und Akkuspannung an einen Cloudservice. 
+Daher die Idee, ein IoT device mit Wifi zusammen mit einem Beschleunigungssensor und Temperatursensor in einen schwimmenden Zylinder zu legen. Dort wacht er alle bsp. 5min auf, verbindet sich mit meinem Wlan und sendet seinen Neigungswinkel, Temperatur und Akkuspannung an einen Cloudservice wie [Ubidots](www.ubidots.com) oder einen lokalen Server.
 
 ### *Metazentrum*
 
@@ -190,11 +190,9 @@ Ubidots kann ausserdem an vielen Stellen per Script bedient werden. Eine Dokumen
 ***
 ## Anzeige
 
-### Kalibrierung
+Die `iSpindel` kann ihre Daten an verschieden backends senden. Es empfiehlt sich mit dem Cloudservice [Ubidots](www.Ubidots.com) zu beginnen, dort kann man sich einen kostenlosen Account erstellen und die Graphen sich darstellen. Man kann auch weitere Abwandlungen der Daten vornehmen, wie den Plato / SG Wert errechnen, den EVG usw.
+Folgende backends werden mittlerweile unterstützt:
 
-> Zur Umrechnung von Winkel ° in °Plato, SG, %mas o.Ä. ist es initial nötig eine Referenzkurve zu kalibrieren. Die gewonnenen Referenzen können dann vereinfacht über eine Excel Tabelle in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig durchführen.
-
-[siehe Kalibrierung durchführen](docs/Kalibrierung.md)
 
 ### Ubidots Graphen
 
@@ -212,6 +210,17 @@ Du siehst, dass Daten ankomen, wenn Du Deine Fermentation / Gärung im CBP ansch
 
 - [upload zu FHEM](docs/upload-FHEM.md)
 
+### Tozzi's Python Skript
+
+- [generic-TCP](https://github.com/universam1/iSpindel/tree/master/tools/generic-TCP)
+
+***
+
+## Kalibrierung
+
+> Zur Umrechnung von Winkel ° in °Plato, SG, %mas o.Ä. ist es initial nötig eine Referenzkurve zu kalibrieren. Die gewonnenen Referenzen können dann vereinfacht über eine Excel Tabelle in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig durchführen.
+
+[siehe Kalibrierung durchführen](docs/Kalibrierung.md)
 
 ***
 
