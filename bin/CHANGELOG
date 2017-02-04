@@ -1,3 +1,10 @@
+4.0.1   inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps
+        Wifi RF calibration introduced when calling configuration
+        fixed bug of emergency interval
+        fixed UI numeric formating
+3.5.0 genericTCP
+3.4.6 OneWire stability improvements
+3.4.4 fixes for TControl
 3.4.2: Added CraftBeerPi, TControl, FHEM, generic HTTP
         major Portal rework, added labels
         upload speed improvements

@@ -24,9 +24,19 @@ void TControl::add(char *variable_id, float value) {
     currentValue++;
 }
 
-bool TControl::sendUDP() {
+bool TControl::send() {
+    return send(3);
+}
+
+bool TControl::send(uint8_t count) {
     uint16_t i;
     String msg;
+
+    if (count == 0) return false;
+
+    _client.setNoDelay(true); // test if solves dropped frames
+
+    if (_client.connect(_server, TCPort)) {
 
     for (i = 0; i < currentValue; ) {
         msg += String((val + i)->id);
@@ -49,14 +59,36 @@ bool TControl::sendUDP() {
     Serial.println(F("TConctrol TCP: sending"));
     Serial.println(String("server: ") + _server + String(" Port: ") + TCPort);
 
-    if (_client.connect(_server, TCPort))
-    {
-        _client.print(msg);
-        Serial.println(msg);
-    } 
-    else {
-        Serial.println(F("\nERROR TConctrol: couldnt connect"));
+      _client.println(msg);
+      Serial.println(msg);
+
+    //   while (_client.connected()) {
+        while (_client.available()) {
+          char c = _client.read();
+          Serial.write(c);
+        }
+    //   }
+      
+    } else {
+      Serial.println(F("\nERROR TConctrol: couldnt connect"));
+      
     }
 
-    return true;
+    int timeout = 0;
+    while(!_client.available() && timeout < CONNTIMEOUT) {
+        timeout++;
+        Serial.println("wait");
+        delay(100);
+    }
+    while (_client.available()) {
+        char c = _client.read();
+        Serial.write(c);
+        if (c == 'T') {
+            _client.stop();
+            Serial.println("response ok");
+            return true;
+        }
+    }
+    _client.stop();
+    return send(--count);
 }

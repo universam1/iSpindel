@@ -14,6 +14,8 @@
 #include <ArduinoJson.h>         //https://github.com/bblanchon/ArduinoJson
 #include <WiFiUdp.h>
 
+#define CONNTIMEOUT 3000/100
+
 #define TCPort 4968
 
 typedef struct TCValue {
@@ -25,7 +27,8 @@ typedef struct TCValue {
 class TControl {
  public:
     TControl(char* device, char* server, uint16_t port);
-    bool sendUDP();
+    bool send();
+    bool send(uint8_t count);
     void add(char *variable_id, float value);
     ~TControl();
     

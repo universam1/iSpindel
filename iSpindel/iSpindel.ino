@@ -56,7 +56,7 @@ char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
 uint8_t my_api;
-uint32_t my_sleeptime = 15;
+uint32_t my_sleeptime = 15*60;
 uint16_t my_port = 80;
 float my_vfact = ADCDIVISOR;
 
@@ -88,8 +88,8 @@ void SerialOut() { SerialOut(""); }
 
 // callback notifying us of the need to save config
 void saveConfigCallback() {
-  SerialOut(F("Should save config"));
-  WiFi.setAutoReconnect(true);
+  // SerialOut(F("Should save config"));
+  // WiFi.setAutoReconnect(true);
   shouldSaveConfig = true;
 }
 bool readConfig() {
@@ -272,6 +272,8 @@ bool startConfiguration() {
     json["Name"] = my_name;
     json["Token"] = my_token;
     json["Sleep"] = my_sleeptime;
+    // first reboot is for test 
+    my_sleeptime = 1;
     json["Server"] = my_server;
     json["API"] = my_api;
     json["Port"] = my_port;
@@ -317,26 +319,35 @@ bool uploadData(uint8_t service) {
 #endif
 
 #ifdef API_GENERIC
-  if ( (service == DTHTTP)||(service == DTCraftbeepPi) ) {
+  if ((service == DTHTTP) || (service == DTCraftbeepPi) || (service == DTTCP)) {
 
-  if (service == DTHTTP) {
-    SerialOut(F("\ncalling DTHTTP "));
-    strcpy(url, my_url);
-    port = my_port;
-  } else if (service == DTCraftbeepPi) {
-    SerialOut(F("\ncalling DTCraftbeepPi "));
-    strcpy(url, CBP_ENDPOINT);
-    port = 5000;
-  }
+    if (service == DTHTTP) {
+      SerialOut(F("\ncalling DTHTTP "));
+      strcpy(url, my_url);
+      port = my_port;
+    } else if (service == DTCraftbeepPi) {
+      SerialOut(F("\ncalling DTCraftbeepPi "));
+      strcpy(url, CBP_ENDPOINT);
+      port = 5000;
+    } else if (service == DTTCP) {
+      SerialOut(F("\ncalling DTTCP "));
+      port = my_port;
+      strcpy(url, "");
+    }
 
-  genericHTTP genclient(my_name, my_server, port, url);
-  genclient.add("angle", Tilt);
-  genclient.add("temperature", Temperatur);
-  genclient.add("battery", Volt);
-  return genclient.sendHTTP();
+    genericHTTP genclient(my_name, my_server, port, url);
+    genclient.add("angle", Tilt);
+    genclient.add("temperature", Temperatur);
+    genclient.add("battery", Volt);
+    
+    if (service == DTTCP) {
+      return genclient.sendTCP();
+    } else {
+      return genclient.sendHTTP();
+    }
   }
 #endif // DATABASESYSTEM
-  
+
 #ifdef API_FHEM
   if (service == DTFHEM) {
   FhemHttp fhemclient(my_name, my_server, my_port);
@@ -352,28 +363,72 @@ bool uploadData(uint8_t service) {
   tcclient.add("T", Temperatur);
   tcclient.add("D", Tilt);
   tcclient.add("U", Volt);
-  return tcclient.sendUDP();
+  return tcclient.send();
   }
 #endif // DATABASESYSTEM ==
 }
 
-void goodNight() {
+void sleepManager() {
+  uint32_t left2sleep, validflag;
+  ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+  ESP.rtcUserMemoryRead(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
 
-  drd.loop();
+  // check if we have to incarnate again
+  if (left2sleep != 0 && !drd.detectDoubleReset() && validflag==RTCVALIDFLAG) {
+    goodNight(left2sleep);
+  }
+  else {
+    SerialOut(F("Worker run!"));    
+  }
+}
 
-  // survive - 60min sleep time
-  if (isSafeMode(Volt)) my_sleeptime = 60 * 60e6;
+void goodNight(uint32_t seconds) {
 
-  SerialOut(F("\nsleeping: "), false);
-  SerialOut(my_sleeptime, false);
-  SerialOut(F("sec"));
-  // WAKE_RF_DEFAULT --> auto reconnect after wakeup
-  ESP.deepSleep(my_sleeptime * 1000UL * 1000UL, WAKE_RF_DEFAULT);
-  // workaround proper power state init
-  delay(500);
+  uint32_t _seconds = seconds;
+  uint32_t left2sleep = 0;
+  uint32_t validflag = RTCVALIDFLAG;
+
+  drd.stop();
+
+    // workaround for DS not floating
+  pinMode(ONE_WIRE_BUS, OUTPUT);
+  digitalWrite(ONE_WIRE_BUS, LOW);
+
+  // we need another incarnation before work run
+  if (_seconds > MAXSLEEPTIME) {
+    left2sleep = _seconds - MAXSLEEPTIME;
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
+    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + String("s; left: ") + left2sleep);
+    ESP.deepSleep(MAXSLEEPTIME * 1000UL * 1000UL, WAKE_RF_DISABLED );
+    // workaround proper power state init
+    delay(500);
+  }
+  // regular sleep with RF enabled after wakeup
+  else {
+    // clearing RTC to mark next wake
+    left2sleep = 0;
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
+    SerialOut(String(F("\nFinal-sleep: ")) + _seconds);
+    // WAKE_RF_DEFAULT --> auto reconnect after wakeup
+    ESP.deepSleep(_seconds * 1000UL * 1000UL, WAKE_RF_DEFAULT);
+    // workaround proper power state init
+    delay(500);
+  }
 }
 
 void initDS18B20() {
+
+  // workaround for DS not enough power to boot
+  pinMode(ONE_WIRE_BUS, OUTPUT);
+  digitalWrite(ONE_WIRE_BUS, LOW);
+  delay(100);
+  // digitalWrite(ONE_WIRE_BUS, HIGH);
+  // delay(500);
+  // oneWire.reset();
+  
+
   // Start up the DS18B20
   DS18B20.begin();
   DS18B20.setWaitForConversion(false);
@@ -385,6 +440,8 @@ void initDS18B20() {
 void initAccel() {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin(D3, D4);
+  Wire.setClock(100000);
+  Wire.setClockStretchLimit(2*230);
 
   // init the Accel
   accelgyro.initialize();
@@ -421,7 +478,16 @@ float getTilt() {
   return samples.getAverage(MEDIANAVRG);
 }
 
-void getAccSample() { accelgyro.getAcceleration(&ax, &az, &ay); }
+void getAccSample() { 
+  uint8_t res = Wire.status();
+  uint8_t con = accelgyro.testConnection();
+  if (res == I2C_OK && con == true)
+    accelgyro.getAcceleration(&ax, &az, &ay); 
+  else {
+    SerialOut(String("I2C ERROR: ") + res + String(" con:") + con);
+    
+  }
+}
 
 float getTemperature(bool block = false) {
   // we need to wait for DS18b20 to finish conversion
@@ -431,7 +497,7 @@ float getTemperature(bool block = false) {
   while (block && (millis() - DSreqTime <= OWinterval))
     yield();
 
-  if (millis() - DSreqTime > OWinterval) {
+  if (millis() - DSreqTime >= OWinterval) {
     t = DS18B20.getTempCByIndex(0);
     DSrequested = false;
 
@@ -439,6 +505,21 @@ float getTemperature(bool block = false) {
         t == 85.0)                    // we read 85 uninitialized
     {
       SerialOut(F("ERROR: OW DISCONNECTED"));
+      pinMode(ONE_WIRE_BUS, OUTPUT);
+      digitalWrite(ONE_WIRE_BUS, LOW);
+      delay(200);
+      // digitalWrite(ONE_WIRE_BUS, HIGH);
+      // delay(500);
+      oneWire.reset();
+
+      if (block) {
+        SerialOut(F("OW Retry"));
+        initDS18B20();
+        delay(OWinterval+100);
+        t = getTemperature(false);
+      }
+
+
     }
   }
   return t;
@@ -463,6 +544,7 @@ void flash() {
 }
 
 float getBattery() {
+  analogRead(A0); // drop first read
 	return analogRead(A0) / my_vfact;
 }
 
@@ -480,14 +562,33 @@ void setup() {
   SerialOut("\nFW " FIRMWAREVERSION);
   SerialOut(ESP.getSdkVersion());
 
-  initDS18B20();
+  sleepManager();
 
   initAccel();
+  initDS18B20();
 
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig()) {
+    uint32_t tmp;
+    ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
+
+    // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
+    if (tmp != RTCVALIDFLAG) {
+      tmp = RTCVALIDFLAG;
+      ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
+      ESP.deepSleep(1, WAKE_RFCAL);
+    }
+    else {
+      tmp = 0;
+      ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
+    }
+
     flasher.attach(1, flash);
+    
     startConfiguration();
+    uint32_t left2sleep = 0;
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+    
     flasher.detach();
   }
   // to make sure we wake up with STA but AP
@@ -537,7 +638,9 @@ void setup() {
     SerialOut("failed to connect");
   }
 
-  goodNight();
+  // survive - 60min sleep time
+  if (isSafeMode(Volt)) my_sleeptime = EMERGENCYSLEEP;
+  goodNight(my_sleeptime);
 }
 
 void loop() { 

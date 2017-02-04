@@ -19,11 +19,23 @@ iSpindel | iSpindle
 ***
 
 ## News
-
+> 31.01.17 Bilder Aufbau Platinenvariante   
+> 26.01.17 Firmware 4.0   
+>- inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps   
+>- Wifi RF calibration introduced when calling configuration   
+>- fixed bug of emergency interval   
+>- fixed UI numeric formating   
+>  
+> 25.02.17 Firmware 3.5.0: genericTCP  
+>- Python Skript um lokal die Daten in eine CSV Datei zu schreiben (thanks to Tozzi)  
+>  
+> 25.12.16 Kit   
+> 23.12.16 CraftBeerPi Info, FW.3.4.4, Combo-Schlitten   
+> 18.12.16 FAQ und Ubidots tool  
 > 15.11.16 Firmware 3.4.2:
 >- Supporting now backends
 >   - CraftBeerPi
->   - TControl
+>   - TControl> 25.12.16 Kit   
 >   - FHEM
 >   - generic HTTP
 >- major Portal rework, added labels for convenience
@@ -40,12 +52,12 @@ iSpindel | iSpindle
 
 ***
 
-> The `iSpindle` is a pretty new project and under heavy development, see german [Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235).  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
+> The `iSpindle` is a young project and under heavy development, see german [Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235).  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
 >
 > Die `iSpindel` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
-![Spindel im Reinwasser](docs/floating.jpg)
-![Dashboard](docs/Dashboard.jpg)
+![Spindel im Reinwasser](pics/floating.jpg)
+![Dashboard](pics/Dashboard.jpg)
 
 
 ## Inhaltverzeichnis
@@ -54,17 +66,20 @@ iSpindel | iSpindle
 - [Prinzip](#prinzip)
   - [Metazentrum](#metazentrum)
 - [Aufbau](#aufbau)
+  - [Varianten](#varianten)
   - [Bauteile](#bauteile)
   - [Schaltplan](#schaltplan)
   - [Schlitten](#schlitten)
 - [Konfiguration](#konfiguration)
   - [Ubitdots](#ubitdots)
   - [Portal](#portal)
+  - [Scripting](#scripting)
 - [Anzeige](#anzeige)
   - [Kalibrierung der Spindel](#kalibrierung)
   - [Ubidots Graphen](#ubidots-graphen)
   - [CraftBeerPi](#craftbeerpi)
   - [FHEM](#fhem)
+- [FAQ](docs/FAQ.md)
 - [Software](#software)
 
 
@@ -85,9 +100,9 @@ Angetrieben von dem Thread [Alternative zu Spindel](http://hobbybrauer.de/forum/
 Die Idee des krängende Zylinders ist genial wie einfach - man braucht keine externe Referenz (außer der Erde) und der Zylinder ist extrem leicht sauber zu halten. Der Neigungswinkel ändert sich im Verhältnis zum Auftrieb und damit im direkten Zusammenhang mit dem Zuckergehalt.
 Kein unnötiges Öffnen zum spindeln und evtl. Kontaminieren!
 
-![Kränung](docs/kraengung.jpg)
+![Kränung](pics/kraengung.jpg)
 
-Daher die Idee, ein IoT device mit Wifi zusammen mit einem Beschleunigungssensor und Temperatursensor in einen schwimmenden Zylinder zu legen. Dort wacht er alle bsp. 5min auf, verbindet sich mit meinem Wlan und sendet seinen Neigungswinkel, Temperatur und Akkuspannung an einen Cloudservice. 
+Daher die Idee, ein IoT device mit Wifi zusammen mit einem Beschleunigungssensor und Temperatursensor in einen schwimmenden Zylinder zu legen. Dort wacht er alle bsp. 5min auf, verbindet sich mit meinem Wlan und sendet seinen Neigungswinkel, Temperatur und Akkuspannung an einen Cloudservice wie [Ubidots](www.ubidots.com) oder einen lokalen Server.
 
 ### *Metazentrum*
 
@@ -102,52 +117,28 @@ In der Software berechnent man aus den XYZ Beschleunigungswerten den Euler Winke
 
 ## Aufbau
 
->***ACHTUNG: dies entspricht Stand 20.11.2016***
+### Varianten
+
+> Alle drei Varianten sind funktionell identisch
+
+1. [Variante A: Lochrasterplatine & Schlitten](docs/iSpindelbreadboard.md)  
+Die Lochrasterplatine ermöglicht den Nachbau jederzeit mit 'Hausmitteln' 
+1. [Variante B: nur Platine](docs/iSpindelPCB.md)  
+Die fertige Platine über die Sammelbestellung bringt einen komfortablen Aufbau
+1. [Variante C: Platine & Schlitten](docs/iSpindelPCB.md)  
+Die obige Platine kann (über Trenn-Schnitt) mit dem Kunstoff Schlitten in Kombination verwendet werden der einen spielfreien Sitz garantiert.
 
 ### Bauteile
 
-- [Wemos D1 mini](https://www.wemos.cc/product/d1-mini.html)
-- `GY-521` Gyro & Beschleunigungssensor (MPU-6050 auf passendem breakout Board)
-- [DS18B20 Temperatursensor](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html)
-- Lochrasterplatine 3x4cm
-- Widerstände
-  - 4k7 Ohm
-  - 220k Ohm
-  - 470 Ohm
-- Mikro Schalter
-- `18650 LiIo Zelle` (z.B. `Panasonic NCR18650B` **geschützt** oder ohne **PCB**) 
-- Lipo Lademodul `TP4056` (6 pin recommended)
-- Kunstoff Schlitten [download](https://github.com/universam1/iSpindel/raw/master/drawer/)
-  - alternativ (Lochraster) Platine ***UNGETESTED***)
+***siehe [Bauteile](docs/Parts.md)***
 
-- Kunstoff Zylinder `Petling` [Petling-XL](http://cachers-world.de/de/Petling-XL)
-
-> ## Info
-
-> Der Anbieter [cachers-world.de](http://cachers-world.de/de/Petling-XL) unsterstützt dieses Projekt indem er nachhaltig den passenden Petling liefern möchte und über den Gutschein-Code "`HOBBYBRAUER`"  (Großschreibung!) 20% Rabatt gewährt. 
-Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedruckten Schlitten.
->
->Info: *"Ist im Moment dann nur 1,44 EUR ab 2017 werden es dann 1,52 EUR sein, weil der Artikel 10ct hoch geht."*
-
->Info 2: Zur Zeit ausverkauft, nachbestellt.
-
-***
 ### Schaltplan
 
 ***siehe [Schaltplan](docs/Schaltplan.md)***
 
-***
-
 ### Schlitten
 
-![Schlitten](docs/Schlitten_cad.jpg)
-![Zusammenbau](docs/assembled2.jpg)
-![Zusammenbau](docs/assembled.jpg)
-
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=gpVarh8BxhQ" target="_blank"><img src="http://img.youtube.com/vi/gpVarh8BxhQ/0.jpg" 
-alt="Druck" width="240" height="180" border="10" /></a>
-
-
+***siehe [Bauteile](docs/Parts.md)***
 
 ***
 
@@ -159,7 +150,7 @@ alt="Druck" width="240" height="180" border="10" /></a>
 - Im Menü  `API Credentials` erhält man seinen `Token` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.  
 ***Diesen notieren.***  
 
-![Token](docs/UbiToken.jpg)
+![Token](pics/UbiToken.jpg)
 
 ### Portal
 
@@ -172,30 +163,36 @@ Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, du
 
 - Ebenfalls stellt man hier den `Intervall` ein in dem sie Daten liefert. Dies hat direkt mit der Akku Lebensdauer zu tun. Es empfiehlt sich in der Praxis etwa `1800` Sekunden (= 30 Minuten) Takt zu wählen.
 
-   ![Setup](docs/setup.jpg)
+   ![Setup](pics/setup.jpg)
 
 
 - Man erreicht es über
 
-   ![AccessPoint](docs/AP.png)![Portal](docs/Portal.png)
+   ![AccessPoint](pics/AP.png)![Portal](pics/Portal.png)
 
 
 - Eine Übersicht der Daten kann man über den `Info` Menüpunkt einsehen
 
-  ![Info](docs/info.png)
+  ![Info](pics/info.png)
 
-> Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.  
+Nach dem man obige Daten eingetragen und gespeichert hat, wird die Spindel sich mit dem Wlan und Ubidots verbinden und die Daten übertragen.  
+Falls noch nicht vorhanden, wird selbständig ein neues `Device` erstellt und die Sensoren angelegt.  
 Auf der Ubidots Weboberfläche wird man nun unter `Sources` sehen dass die Daten aktualisiert werden.  
+
 Nun kann man im `Dashboard` sich seine Graphen nach Belieben zusammenstellen.
+
+### Scripting
+
+Ubidots kann ausserdem an vielen Stellen per Script bedient werden. Eine Dokumentation zu den Funktionen findet sich direkt bei Ubidots. Hiermit können zum Beispiel nicht mehr benötigte Daten in Variablen gelöscht werden.
+
+- [siehe Ubidots-Scripting](docs/ubidotsscripting.md)
 
 ***
 ## Anzeige
 
-### Kalibrierung
+Die `iSpindel` kann ihre Daten an verschieden backends senden. Es empfiehlt sich mit dem Cloudservice [Ubidots](www.Ubidots.com) zu beginnen, dort kann man sich einen kostenlosen Account erstellen und die Graphen sich darstellen. Man kann auch weitere Abwandlungen der Daten vornehmen, wie den Plato / SG Wert errechnen, den EVG usw.
+Folgende backends werden mittlerweile unterstützt:
 
-> Zur Umrechnung von Winkel ° in °Plato, SG, %mas o.Ä. ist es initial nötig eine Referenzkurve zu kalibrieren. Die gewonnenen Referenzen können dann vereinfacht über eine Excel Tabelle in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig durchführen.
-
-[siehe Kalibrierung durchführen](docs/Kalibrierung.md)
 
 ### Ubidots Graphen
 
@@ -203,12 +200,27 @@ Nun kann man im `Dashboard` sich seine Graphen nach Belieben zusammenstellen.
 
 ### CraftBeerPi
 
-- [Work in Progress](https://github.com/universam1/iSpindel/issues/3)
+> Beschreibung von @not:  
+*Wenn Du die neueste Firmware auf Deine iSpindel geflasht hast musst Du auch craftbeerpi updaten: dazu brauchst Du den branch "hydrometer". Wenn Du die Spindel dann konfigurierst, gibst Du neben den Einstellungen für Dein WLAN im Dropdown-Menu "CraftbeerPi" an und darunter die IP Adresse Deines im selben Netzwerk gelegenen Craftbeerpi-Servers.
+Danach sendet die Spindel an den Raspberry Pi -Rechner und Craftbeerpi registriert die Spindel automatisch . Wenn die Verbindung klappt, findest Du die Spindel "wie von Geisterhand" in der Hardware-Konfiguration von CBP.
+Du siehst, dass Daten ankomen, wenn Du Deine Fermentation / Gärung im CBP anschaust, da sind dann nicht nur die Temperatur (ist und soll) , sondern auch Spindeltemperatur und Plato zu sehen (siehe Screenshot oben) mit letztem Zeitstempel.*  
+`git clone -b hydrometer https://github.com/Manuel83/craftbeerpi.git`
 
 ### FHEM
 
 - [upload zu FHEM](docs/upload-FHEM.md)
 
+### Tozzi's Python Skript
+
+- [generic-TCP](https://github.com/universam1/iSpindel/tree/master/tools/generic-TCP)
+
+***
+
+## Kalibrierung
+
+> Zur Umrechnung von Winkel ° in °Plato, SG, %mas o.Ä. ist es initial nötig eine Referenzkurve zu kalibrieren. Die gewonnenen Referenzen können dann vereinfacht über eine Excel Tabelle in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig durchführen.
+
+[siehe Kalibrierung durchführen](docs/Kalibrierung.md)
 
 ***
 
