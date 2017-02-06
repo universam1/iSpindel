@@ -23,7 +23,7 @@ Die Platine in den Falz einschieben, so dass der Wemos sich auf der Akku abgewan
 09-Jumper ![09-Jumper.JPG](../pics/PCB/09-Jumper.JPG)
 10-Widerstaende ![10-Widerstaende.JPG](../pics/PCB/10-Widerstaende.JPG)
 11-SMD-Widerstaende ![11-SMD-Widerstaende.JPG](../pics/PCB/11-SMD-Widerstaende.JPG)
-12-GY521Vorbereitung ![12-GY521Vorbereitung.JPG](../pics/PCB/12-GY521Vorbereitung.JPG)
+12-LED-beim-GY521-entfernt ![12-LED-beim-GY521-entfernt.JPG](../pics/PCB/12-LED-beim-GY521-entfernt.JPG)
 13-GYVerschraubung ![13-GYVerschraubung.JPG](../pics/PCB/13-GYVerschraubung.JPG)
 14-GYPinleiste ![14-GYPinleiste.JPG](../pics/PCB/14-GYPinleiste.JPG)
 15-WemosVorbereitung ![15-WemosVorbereitung.JPG](../pics/PCB/15-WemosVorbereitung.JPG)

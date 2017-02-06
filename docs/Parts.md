@@ -35,9 +35,5 @@ Diese wird auch von einem Online Versand angeboten
 oder bei Platine [Reed Wechsler](http://www.reichelt.de/Reedrelais/KSK-1C90/3/index.html?ACTION=3&LA=446&ARTICLE=27696&GROUPID=7617&artnr=KSK+1C90&SEARCH=KSK%2B1C90)   
 - Lipo Lademodul `TP4056` (6 pin recommended)
 
-**Obige Bauteile werden auch als Set von einem Online Versand angeboten**  
-
-***https://3d-mechatronics.de/de/diy-projekte/ispindel_10956391065/***
-> ***Es besteht kein geschäftliches Verhältnis zwischen mir und dem Anbieter, dies ist eine reine Hilfestellung.***
 
 

@@ -399,7 +399,7 @@ void goodNight(uint32_t seconds) {
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
-    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + String("s; left: ") + left2sleep);
+    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + String("s; left: ") + left2sleep + String("s; RT:") + millis());
     ESP.deepSleep(MAXSLEEPTIME * 1000UL * 1000UL, WAKE_RF_DISABLED );
     // workaround proper power state init
     delay(500);
@@ -410,7 +410,7 @@ void goodNight(uint32_t seconds) {
     left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
-    SerialOut(String(F("\nFinal-sleep: ")) + _seconds);
+    SerialOut(String(F("\nFinal-sleep: ")) + _seconds + String("s; RT:") + millis());
     // WAKE_RF_DEFAULT --> auto reconnect after wakeup
     ESP.deepSleep(_seconds * 1000UL * 1000UL, WAKE_RF_DEFAULT);
     // workaround proper power state init
