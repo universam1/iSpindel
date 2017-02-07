@@ -1,2 +1,6 @@
 .vscode/
 drawer/drawer.scad
+*.vcxproj
+*.filters
+iSpindel/Debug/
+iSpindel/__vm/
