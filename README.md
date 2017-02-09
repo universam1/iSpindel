@@ -19,6 +19,7 @@ iSpindel | iSpindle
 ***
 
 ## News
+> 09.02.17 Firmware 4.1.6   
 > 31.01.17 Bilder Aufbau Platinenvariante   
 > 26.01.17 Firmware 4.0   
 >- inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps   
@@ -29,13 +30,12 @@ iSpindel | iSpindle
 > 25.02.17 Firmware 3.5.0: genericTCP  
 >- Python Skript um lokal die Daten in eine CSV Datei zu schreiben (thanks to Tozzi)  
 >  
-> 25.12.16 Kit   
 > 23.12.16 CraftBeerPi Info, FW.3.4.4, Combo-Schlitten   
 > 18.12.16 FAQ und Ubidots tool  
 > 15.11.16 Firmware 3.4.2:
 >- Supporting now backends
 >   - CraftBeerPi
->   - TControl> 25.12.16 Kit   
+>   - TControl   
 >   - FHEM
 >   - generic HTTP
 >- major Portal rework, added labels for convenience
