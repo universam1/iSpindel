@@ -19,6 +19,7 @@ iSpindel | iSpindle
 ***
 
 ## News
+> 09.02.17 Firmware 4.0.6   
 > 31.01.17 Bilder Aufbau Platinenvariante   
 > 26.01.17 Firmware 4.0   
 >- inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps   

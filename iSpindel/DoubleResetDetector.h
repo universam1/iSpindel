@@ -26,14 +26,14 @@ public:
 	bool doubleResetDetected;
 	void loop();
 	void stop();
+	void clearRecentlyResetFlag();
+	void setRecentlyResetFlag();
 	
 private:
 	int timeout;
 	int address;
 	bool waitingForDoubleReset;
 	bool detectRecentlyResetFlag();
-	void clearRecentlyResetFlag();
-	void setRecentlyResetFlag();
 	uint32_t doubleResetDetectorFlag;
 };
 #endif // DoubleResetDetector_H__

@@ -1,3 +1,6 @@
+4.0.6   New routine to restore Wifi credentials from Flash.
+        Double reset fixed which was not caught in RC_Cal restart
+        Connection improvements
 4.0.1   inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps
         Wifi RF calibration introduced when calling configuration
         fixed bug of emergency interval
