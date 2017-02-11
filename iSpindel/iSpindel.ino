@@ -165,6 +165,12 @@ bool shouldStartConfig() {
   // RESET button
   // ensure this was called
 
+	String _bm = ESP.getResetReason();
+  SerialOut("Boot-Mode: ", false); SerialOut(_bm);
+  bool _poweredOnOffOn = _bm == "External System";
+  if (_poweredOnOffOn)
+	  SerialOut("power-cycle detected, config mode");
+
   bool _dblreset = drd.detectDoubleReset();
   if (_dblreset)
     SerialOut("\nDouble Reset detected");
@@ -187,7 +193,7 @@ bool shouldStartConfig() {
   if (!_wifiCred)
     SerialOut("\nERROR no Wifi credentials");
 
-  if (_validConf && !_dblreset && _wifiCred) {
+  if (_validConf && !_dblreset && _wifiCred && ! _poweredOnOffOn) {
     SerialOut(F("\nwoken from deepsleep, normal mode"));
     return false;
   }
