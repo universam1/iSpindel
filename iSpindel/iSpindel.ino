@@ -55,6 +55,8 @@ char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
+String my_ssid;
+String my_psk;
 uint8_t my_api;
 uint32_t my_sleeptime = 15*60;
 uint16_t my_port = 80;
@@ -130,6 +132,15 @@ bool readConfig() {
             strcpy(my_url, json["URL"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
+
+          // if (json.containsKey("SSID"))
+          //   strcpy(my_ssid, json["SSID"]);
+          // if (json.containsKey("PSK"))
+          //   strcpy(my_psk, json["PSK"]);
+          if (json.containsKey("SSID"))
+            my_ssid = json["SSID"].asString();
+          if (json.containsKey("PSK"))
+            my_psk = json["PSK"].asString();
 
           SerialOut(F("parsed config:"));
           if (isDebugEnabled)
@@ -279,6 +290,11 @@ bool startConfiguration() {
     json["Port"] = my_port;
     json["URL"] = my_url;
     json["Vfact"] = my_vfact;
+
+    // Store current Wifi credentials
+    json["SSID"] = WiFi.SSID();
+    json["PSK"] = WiFi.psk();
+
 
     File configFile = SPIFFS.open(CFGFILE, "w+");
     if (!configFile) {
@@ -574,6 +590,7 @@ void setup() {
 
     // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
     if (tmp != RTCVALIDFLAG) {
+      drd.setRecentlyResetFlag();
       tmp = RTCVALIDFLAG;
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
       ESP.deepSleep(1, WAKE_RFCAL);
@@ -585,7 +602,16 @@ void setup() {
 
     flasher.attach(1, flash);
     
-    startConfiguration();
+    // rescue if wifi credentials lost because of power loss
+    if (!startConfiguration()) {
+      // test if ssid exists
+      if (WiFi.SSID() == "" &&
+          my_ssid != "" && my_psk != "") {
+        WiFi.begin(my_ssid.c_str(), my_psk.c_str());
+        SerialOut(F("Rescue Wifi credentials"));
+        delay(100);
+      }
+    }
     uint32_t left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     
