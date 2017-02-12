@@ -165,11 +165,16 @@ bool shouldStartConfig() {
   // RESET button
   // ensure this was called
 
-	String _bm = ESP.getResetReason();
-  SerialOut("Boot-Mode: ", false); SerialOut(_bm);
-  bool _poweredOnOffOn = _bm == "External System";
+	rst_info* _reset_info = ESP.getResetInfoPtr();
+	uint8_t _reset_reason = _reset_info->reason;
+
+  // The ESP reset info is sill buggy. see http://www.esp8266.com/viewtopic.php?f=32&t=8411
+  // The reset reason is "5" (woken from deep-sleep) in most cases (also after a power-cycle)
+  // I added a single reset detection as workaround to enter the config-mode easier
+  SerialOut("Boot-Mode: ", false); SerialOut(_reset_reason);
+  bool _poweredOnOffOn = _reset_reason == REASON_DEFAULT_RST || _reset_reason == REASON_EXT_SYS_RST;
   if (_poweredOnOffOn)
-	  SerialOut("power-cycle detected, config mode");
+	  SerialOut("power-cycle or reset detected, config mode");
 
   bool _dblreset = drd.detectDoubleReset();
   if (_dblreset)
