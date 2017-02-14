@@ -67,7 +67,7 @@ Die Funktion CalcPlato(Neigung, Temperatur) kann man am besten in 99_MyUtils.pm 
 Dir Formel für  $mPlato muss dem Kalibrierungsexcelsheet entnommen werden. Zusätzlich wird in CorrectPlato() noch eine Temperaturkorrektur des Platowertes durchgeführt  (Erfordert Kalibrierung bei 20 Grad). Die Temperaturkorrektur ist gültig für den Bereich von 5 bis 30 Grad Celsius.
 
 Zuguterletzt muss nur noch das Diagramm für die Spindelwerte definiert werden; das geht mit dem FHEM -GPlot Editor kinderleicht und könnte in etwa so aussehen:
-![Definition iSpindel Diagramm](FHEM-iSpindel-gplot.png)
+![Definition iSpindel Diagramm](../pics/FHEM-iSpindel-gplot.png)
 
 Damit FHEM die Diagramme mit gleitendem Zeitbereich darstellt (anstatt alle 24 Std umzuschalten) muss noch folgendes in die fhem.cfg rein:
 

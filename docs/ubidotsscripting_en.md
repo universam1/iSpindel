@@ -1,5 +1,3 @@
-
-1808/5000
 # Scripting for Ubidots
 
 ## Curl

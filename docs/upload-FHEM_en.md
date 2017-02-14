@@ -1,7 +1,7 @@
 # Data upload to FHEM
 
 
-ISpindel can transfer the data to a local [FHEM] (http://fhem.de/fhem.html) server from where it can be visualized and further processed (for example, to control the fermentation temperature).
+ISpindel can transfer the data to a local [FHEM](http://fhem.de/fhem.html) server from where it can be visualized and further processed (for example, to control the fermentation temperature).
 FHEM expects data by Http Get request:
 
     http://server:8083/fhem?cmd.Test=set%20iSpindel%2011.5%2022.3%203.3&XHR=1
@@ -67,7 +67,7 @@ The function CalcPlato (slope, temperature) can be stored in 99_MyUtils.pm:
 The formula for $mPlato must be taken from the calibration sample sheet. CorrectPlato () is also used to perform a temperature correction of the Platower (requires calibration at 20 degrees). The temperature correction is valid for the range of 5 to 30 degrees Celsius.
 
 Lastly, only the diagram for the spindle values ​​has to be defined; This is very easy with the FHEM -GPlot editor and could look something like this:
-![Definition iSpindel Diagram](FHEM-iSpindel-gplot.png)
+![Definition iSpindel Diagram](../pics/FHEM-iSpindel-gplot.png)
 
 Definition iSpindel Diagram
 
