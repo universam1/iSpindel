@@ -165,6 +165,17 @@ bool shouldStartConfig() {
   // RESET button
   // ensure this was called
 
+	rst_info* _reset_info = ESP.getResetInfoPtr();
+	uint8_t _reset_reason = _reset_info->reason;
+
+  // The ESP reset info is sill buggy. see http://www.esp8266.com/viewtopic.php?f=32&t=8411
+  // The reset reason is "5" (woken from deep-sleep) in most cases (also after a power-cycle)
+  // I added a single reset detection as workaround to enter the config-mode easier
+  SerialOut("Boot-Mode: ", false); SerialOut(_reset_reason);
+  bool _poweredOnOffOn = _reset_reason == REASON_DEFAULT_RST || _reset_reason == REASON_EXT_SYS_RST;
+  if (_poweredOnOffOn)
+	  SerialOut("power-cycle or reset detected, config mode");
+
   bool _dblreset = drd.detectDoubleReset();
   if (_dblreset)
     SerialOut("\nDouble Reset detected");
@@ -187,7 +198,7 @@ bool shouldStartConfig() {
   if (!_wifiCred)
     SerialOut("\nERROR no Wifi credentials");
 
-  if (_validConf && !_dblreset && _wifiCred) {
+  if (_validConf && !_dblreset && _wifiCred && ! _poweredOnOffOn) {
     SerialOut(F("\nwoken from deepsleep, normal mode"));
     return false;
   }
