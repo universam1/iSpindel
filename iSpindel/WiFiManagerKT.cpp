@@ -528,7 +528,8 @@ void WiFiManager::handleWifi() {
       pitem = FPSTR(HTTP_FORM_PARAM);
     break;
   }
-
+  
+    String customHTML = reinterpret_cast<const __FlashStringHelper *>(_params[i]->getCustomHTML());
     if (_params[i]->getID() != NULL) {
       pitem.replace("{i}", _params[i]->getID());
       pitem.replace("{n}", _params[i]->getID());
@@ -536,9 +537,9 @@ void WiFiManager::handleWifi() {
       snprintf(parLength, 2, "%d", _params[i]->getValueLength());
       pitem.replace("{l}", parLength);
       pitem.replace("{v}", _params[i]->getValue());
-      pitem.replace("{c}", _params[i]->getCustomHTML());
+      pitem.replace("{c}", customHTML);
     } else {
-      pitem = _params[i]->getCustomHTML();
+      pitem = customHTML;
     }
 
     page += pitem;
