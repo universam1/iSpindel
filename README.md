@@ -19,6 +19,7 @@ iSpindel | iSpindle
 ***
 
 ## News
+> 14.02.17 English documentation added   
 > 09.02.17 Firmware 4.1.6   
 > 31.01.17 Bilder Aufbau Platinenvariante   
 > 26.01.17 Firmware 4.0   

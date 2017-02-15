@@ -1,14 +1,14 @@
-# Datenupload nach FHEM
+# Data upload to FHEM
 
 
-iSpindel kann die Daten an einen lokalen [FHEM](http://fhem.de/fhem.html) Server übertragen, von wo aus sie visualisiert und weiter verarbeitet werden können ( zum Beispiel zum Steuern der Gärtemperatur).
-FHEM erwartet Daten per Http Get request:
+ISpindel can transfer the data to a local [FHEM](http://fhem.de/fhem.html) server from where it can be visualized and further processed (for example, to control the fermentation temperature).
+FHEM expects data by Http Get request:
 
     http://server:8083/fhem?cmd.Test=set%20iSpindel%2011.5%2022.3%203.3&XHR=1
 
-Zielhost und Port (server:8083) sowie den Namen der Spindel (hier "iSpindel") müssen im KonfigurationsUI der Spindel gesetzt werden. Alle zu Übertragenden Daten werden in der Url mit einem Get übertragen.  Die Reihenfolge ist Neigung - Temperatur - Batterie. Leerzeichen müssen durch %20 ersetzt werden.
+The target host and port (server: 8083) as well as the name of the spindle (here "iSpindel") must be set in the configurationUI of the spindle. All data to be transferred are transferred in the Url with a Get. The order is tilt - temperature battery. Spaces must be replaced with% 20.
 
-In FHEM  (d.h. fhem.cfg) muss ein Device mit dem Namen der Spindel angelegt werden (hier: "iSpindel") sowie noch ein bisschen Perl-Logik, um den Datensatz in die Einzelwerte aufzutrennen. Die resultierenden Werte werden dem Device iSpindelData zugewiesen und können von dort weiterverarbeitet werden.
+In FHEM (ie fhem.cfg), a device with the name of the spindle (here: "iSpindel") and a bit of Perl logic must be created in order to split the data record into the individual values. The resulting values ​​are assigned to the device iSpindelData and can be further processed from there.
 
 
  ```
@@ -37,7 +37,7 @@ In FHEM  (d.h. fhem.cfg) muss ein Device mit dem Namen der Spindel angelegt werd
     attr weblink_iSpindel room Bier
 ```
 
-Die Funktion CalcPlato(Neigung, Temperatur) kann man am besten in 99_MyUtils.pm ablegen:
+The function CalcPlato (slope, temperature) can be stored in 99_MyUtils.pm:
 
 ```
     sub CorrectPlato($$)  #(P, T)
@@ -64,12 +64,12 @@ Die Funktion CalcPlato(Neigung, Temperatur) kann man am besten in 99_MyUtils.pm 
     }
 ```
 
-Dir Formel für  $mPlato muss dem Kalibrierungsexcelsheet entnommen werden. Zusätzlich wird in CorrectPlato() noch eine Temperaturkorrektur des Platowertes durchgeführt  (Erfordert Kalibrierung bei 20 Grad). Die Temperaturkorrektur ist gültig für den Bereich von 5 bis 30 Grad Celsius.
+The formula for $mPlato must be taken from the calibration sample sheet. CorrectPlato () is also used to perform a temperature correction of the Platower (requires calibration at 20 degrees). The temperature correction is valid for the range of 5 to 30 degrees Celsius.
 
-Zuguterletzt muss nur noch das Diagramm für die Spindelwerte definiert werden; das geht mit dem FHEM -GPlot Editor kinderleicht und könnte in etwa so aussehen:
-![Definition iSpindel Diagramm](../pics/FHEM-iSpindel-gplot.png)
+Lastly, only the diagram for the spindle values ​​has to be defined; This is very easy with the FHEM -GPlot editor and could look something like this:
+![Definition iSpindel Diagram](../pics/FHEM-iSpindel-gplot.png)
 
-Damit FHEM die Diagramme mit gleitendem Zeitbereich darstellt (anstatt alle 24 Std umzuschalten) muss noch folgendes in die fhem.cfg rein:
+Definition iSpindel Diagram
 
     attr WEB endPlotNow 1
 

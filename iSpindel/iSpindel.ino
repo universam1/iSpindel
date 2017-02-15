@@ -618,9 +618,7 @@ void setup() {
       // test if ssid exists
       if (WiFi.SSID() == "" &&
           my_ssid != "" && my_psk != "") {
-        WiFi.begin(my_ssid.c_str(), my_psk.c_str());
-        SerialOut(F("Rescue Wifi credentials"));
-        delay(100);
+            connectBackupCredentials();
       }
     }
     uint32_t left2sleep = 0;
@@ -661,17 +659,23 @@ void setup() {
 
   unsigned long startedAt = millis();
   SerialOut(F("After waiting "), false);
-  int connRes = WiFi.waitForConnectResult();
+  // int connRes = WiFi.waitForConnectResult();
+  uint8_t wait = 0;
+  while(WiFi.status() == WL_DISCONNECTED) {
+      delay(100);
+      wait++;
+      if (wait > 50) break;
+  }
   float waited = (millis() - startedAt);
   SerialOut(waited / 1000, false);
   SerialOut(F(" s, result "), false);
-  SerialOut(connRes);
+  SerialOut(WiFi.status());
 
   if (WiFi.status() == WL_CONNECTED) {
     SerialOut(WiFi.localIP());
     uploadData(my_api);
   } else {
-    WiFi.reconnect();
+    connectBackupCredentials();
     SerialOut("failed to connect");
   }
 
@@ -682,4 +686,11 @@ void setup() {
 
 void loop() { 
 	SerialOut(F("should never be here!"));
+}
+
+bool connectBackupCredentials() {
+  WiFi.disconnect();       
+  WiFi.begin(my_ssid.c_str(), my_psk.c_str());
+  SerialOut(F("Rescue Wifi credentials"));
+  delay(100);
 }
