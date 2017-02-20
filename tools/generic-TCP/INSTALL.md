@@ -9,7 +9,7 @@ Der Raspi 3 schafft das sowieso problemlos.
 Wer auf phpmyadmin verzichten will, also auf die Möglichkeit, die Datenbank mit einer html Oberfläche zu administrieren, kann den Apache2 und phpmyadmin problemlos auch weglassen.
 
 ###Raspbian vorbereiten
-raspi-config: ssh einschalten
+raspi-config: ssh einschalten     
 Verbinden mit putty (Windows) oder Terminal (Mac OS X, Linux) und ssh:
 
 	ssh pi@[ip-adresse oder hostname] 
