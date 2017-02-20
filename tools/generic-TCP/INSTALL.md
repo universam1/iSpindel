@@ -11,10 +11,12 @@ Wer auf phpmyadmin verzichten will, also auf die Möglichkeit, die Datenbank mit
 ###Raspbian vorbereiten
 raspi-config: ssh einschalten
 Verbinden mit putty (Windows) oder Terminal (Mac OS X, Linux) und ssh:
+
 	ssh pi@[ip-adresse oder hostname] 
 	Passwort: raspberry (ändern)
 
 System auf neuesten Stand bringen:
+
 	sudo apt-get update
 	sudo apt-get dist-upgrade
 
