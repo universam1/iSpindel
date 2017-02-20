@@ -26,11 +26,11 @@ System auf neuesten Stand bringen:
 
 	sudo apt-get install apache2 mysql-server mysql-client php5-mysql python-mysql.connector
 
-Passwort für Datenbank root Benutzer eingeben
+Passwort für Datenbank root Benutzer eingeben.
 
 	sudo apt-get install phpmyadmin
 
-pache2 als Webserver auswählen, Datenbank root Passwort wieder eingeben.
+Apache2 als Webserver auswählen, Datenbank root Passwort wieder eingeben.
 MySQL kann nun über http://[meinraspi]/phpmyadmin erreicht werden.
 
 Die folgenden Schritte lassen sich über phpadmin im Browser erledigen (dazu als root einloggen und oben den Reiter "SQL" anklicken) oder über die Kommandozeile machen, dazu einfach aus dem Terminal aufrufen:
