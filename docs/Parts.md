@@ -12,7 +12,7 @@ Dieser [Petling-XL](http://cachers-world.de/de/Petling-XL) passt zu dem 3D gedru
 - Kunstoff Schlitten [download](https://github.com/universam1/iSpindel/raw/master/drawer/)
 
 Diese wird auch von einem Online Versand angeboten  
-***https://3d-mechatronics.de/de/ispindel-bier-brauen_58.html***
+***https://3d-mechatronics.de/de/ispindel-diy-set-komplett_151.html***
 
 > ***Es besteht kein geschäftliches Verhältnis zwischen mir und dem Anbieter, dies ist eine reine Hilfestellung.***
 
