@@ -16,11 +16,11 @@ This [Petling-XL](http://cachers-world.de/en/Petling-XL) fits the 3D printed sle
 
 This is also offered by an online dispatch
 
-*** https://3d-mechatronics.de/de/ispindel-bier-brauen_58.html***
+***https://3d-mechatronics.de/en/ispindel-diy-set-komplett_151.html***
 
 > *** There is no business relationship between me and the provider, this is a pure help. ***
 
-![Sled](../pics/Schlitten_cad.jpg)
+![Sled](/pics/Schlitten_cad.jpg)
 ***
 ### Battery pack
 
