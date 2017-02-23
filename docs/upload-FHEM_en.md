@@ -67,7 +67,7 @@ The function CalcPlato (slope, temperature) can be stored in 99_MyUtils.pm:
 The formula for $mPlato must be taken from the calibration sample sheet. CorrectPlato () is also used to perform a temperature correction of the Platower (requires calibration at 20 degrees). The temperature correction is valid for the range of 5 to 30 degrees Celsius.
 
 Lastly, only the diagram for the spindle values ​​has to be defined; This is very easy with the FHEM -GPlot editor and could look something like this:
-![Definition iSpindel Diagram](../pics/FHEM-iSpindel-gplot.png)
+![Definition iSpindel Diagram](/pics/FHEM-iSpindel-gplot.png)
 
 Definition iSpindel Diagram
 

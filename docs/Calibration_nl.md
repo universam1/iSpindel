@@ -75,14 +75,14 @@ Andere weergaven, zoals bijvoorbeeld de SVG of alcohol % zijn op vergelijkbare m
 1. De hierboven verkregen meetwaarden invoeren in de Excel tabel.       
 [Download Excel tabel](https://github.com/universam1/iSpindel/blob/master/docs/Kalibrierung.xlsm)
 2. Macro **Formule update** starten door op de button te klikken. De formule wordt dan bijgewerkt.      
-![](../pics/Excelcalc.jpg)
+![Excelcalc](/pics/Excelcalc.jpg)
 3. In je account van Ubidots een **Derived Variabele** maken. Dat is een variabele die van andere gegevens afhankelijk is. Volg hiervoor de onderstaande stappen:
 4. Ga in Ubidots naar Sources
 5. Kies de iSpindel als source (bron).
 6. (+) Add variable kiezen
 7. Derived kiezen.      
-![](../pics/Ubiderived.jpg)
+![Ubiderived](/pics/Ubiderived.jpg)
 8. Hier kan de Excel formule ingevoerd worden. De onderdelen ***(tilt)*** die uit Excel komen moet je hier vervangen door op ***insert Variable*** te klikken en tilt te kiezen. Geef de variabele een logische naam (Bijvoorbeeld SG of Plato)     
-![](../pics/Ubiplato.jpg)
+![Ubiplato](/pics/Ubiplato.jpg)
 9. Op het Dashboard kan je dan een nieuwe grafiek maken met als data bron je zojuist gemaakte variabele SG of Plato.
 

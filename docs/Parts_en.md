@@ -20,7 +20,7 @@ This is also offered by an online dispatch
 
 > *** There is no business relationship between me and the provider, this is a pure help. ***
 
-![Sled](../pics/Schlitten_cad.jpg)
+![Sled](/pics/Schlitten_cad.jpg)
 ***
 ### Battery pack
 
