@@ -60,13 +60,13 @@ Diese hinterlegt man in Ubidots um die Anzeige des °Plato zu erhalten.
 1. Die obigen Meßwerte in die Excel Tabelle eintragen  
   [Download Excel Tabelle](Kalibrierung.xlsm)
 1. ```Formel update``` Macro durch den Button starten, stellt die Trendlinie als Formal dar  
-![Formel update](../pics/Excelcalc.jpg)
+![Formel update](/pics/Excelcalc.jpg)
 1. Ubidots eine ```Derived``` Variable erstellen, d.h. eine berechnete die auf anderen Daten aufbaut.  
 1. Bei Ubidots auf Sources gehen
 1. Source ISpindel wählen
 1. (+) Add variable wählen
-1. Derived wählen ![](../pics/Ubiderived.jpg)
+1. Derived wählen ![](/pics/Ubiderived.jpg)
 1. Dort kann dann die Excel Formel eingetragen werden.  
 ```tilt``` ersetzt man durch ```instert Variable``` und wählt dort ```tilt``` aus 
-![Plato](../pics/Ubiplato.jpg)
+![Plato](/pics/Ubiplato.jpg)
 1. Im ```Dashboard``` erstellt man dann einen neuen Graphen mit den Datenquelle ```Plato```

@@ -16,7 +16,7 @@ Diese wird auch von einem Online Versand angeboten
 
 > ***Es besteht kein geschäftliches Verhältnis zwischen mir und dem Anbieter, dies ist eine reine Hilfestellung.***
 
-![Schlitten](../pics/Schlitten_cad.jpg)
+![Schlitten](/pics/Schlitten_cad.jpg)
 ***
 ### Akku
 - `18650 LiIo Zelle` (z.B. `Panasonic NCR18650B`)
