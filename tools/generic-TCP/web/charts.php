@@ -12,7 +12,7 @@ include_once("include/common_db_query.php");
 if(!isset($_GET['hours'])) $_GET['hours'] = 24; else $_GET['hours'] = $_GET['hours'];
 if(!isset($_GET['name'])) $_GET['name'] = 'iSpindel000'; else $_GET['name'] = $_GET['name'];
 
-list($hour, $angle, $temperature, $battery) = getChartValues($_GET['name'], $_GET['hours']);
+list($angle, $temperature) = getChartValues($_GET['name'], $_GET['hours']);
 
 ?>
 

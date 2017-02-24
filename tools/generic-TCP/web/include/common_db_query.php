@@ -23,7 +23,7 @@ function delLastChar($string="")
 // Get values from database for selected spindle, between now and timeframe in hours ago
 function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=24)
 {
-  $q_sql = mysql_query("SELECT Timestamp, UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle, battery
+  $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
                           FROM Data
                           WHERE Name = '".$iSpindleID."' AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) and Timestamp <= NOW()
                           ORDER BY Timestamp ASC") or die(mysql_error());
@@ -33,27 +33,21 @@ function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=24)
   $rows = mysql_num_rows($q_sql);
   if ($rows > 0)
   {
-    $valHour = '';
     $valAngle = '';
     $valTemperature = '';
-    $valBattery = '';
     
     // retrieve and store the values as CSV lists for HighCharts
     while($r_row = mysql_fetch_array($q_sql))
     {
       $jsTime = $r_row['unixtime'] * 1000;
-      $valHour          .= $r_row['Timestamp'].',';
       $valAngle         .= '['.$jsTime.', '.$r_row['angle'].'],';
       $valTemperature   .= '['.$jsTime.', '.$r_row['temperature'].'],';
-      $valBattery       .= $r_row['battery'].',';
     }
     
     // remove last comma from each CSV
-    $valHour          = delLastChar($valHour);     
     $valAngle         = delLastChar($valAngle);
     $valTemperature   = delLastChar($valTemperature);
-    $valBattery       = delLastChar($valBattery);
-    return array($valHour, $valAngle, $valTemperature, $valBattery);
+    return array($valAngle, $valTemperature);
   }
 } 
 ?>
