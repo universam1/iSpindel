@@ -31,7 +31,13 @@ $(function ()
   var chart;
  
   $(document).ready(function() 
-  {        
+  { 
+    Highcharts.setOptions({
+      global: {
+	timezoneOffset: -(1 * 60) // !!!TODO: has to be manually adjusted for DST; not ideal...
+      }
+    });
+       
     chart = new Highcharts.Chart(
     {
       chart: 
