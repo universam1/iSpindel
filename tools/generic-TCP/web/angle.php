@@ -55,18 +55,23 @@ $(function ()
       xAxis: 
       {
 	type: 'datetime',
+	gridLineWidth: 1,
 	title:
         {
           text: 'Uhrzeit'
         }
       },      
       yAxis: [
-      {   
-        title: 
+      {  
+	startOnTick: false,
+	endOnTick: false, 
+        min: 0,
+	max: 90,
+	title: 
         {
           text: 'Winkel'         
         },      
-        labels: 
+	labels: 
         {
           align: 'left',
           x: 3,
@@ -78,8 +83,12 @@ $(function ()
         },
 	showFirstLabel: false
       },{
-         linkedTo: 0,
-         gridLineWidth: 0,
+         // linkedTo: 0,
+	 startOnTick: false,
+	 endOnTick: false,
+	 min: 0,
+	 max: 35,
+	 gridLineWidth: 0,
          opposite: true,
          title: {
             text: 'Temperatur'
@@ -140,6 +149,7 @@ $(function ()
           },
 	  {
           name: 'Temperatur', 
+	  yAxis: 1,
 	  color: '#0000FF',
           data: [<?php echo $temperature;?>],
           marker: 
@@ -168,7 +178,7 @@ $(function ()
  
 <div id="wrapper">
   <script src="include/highcharts.js"></script>
-  <div id="container" style="width: 760px; height: 360px; margin: 0 auto"></div>
+  <div id="container" style="width:100%; height:100%; position:absolute"></div>
 </div>
  
 </body>

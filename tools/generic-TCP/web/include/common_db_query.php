@@ -49,5 +49,25 @@ function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=24)
     $valTemperature   = delLastChar($valTemperature);
     return array($valAngle, $valTemperature);
   }
-} 
+}
+
+// Get current values (angle, temperature, battery)
+function getCurrentValues($iSpindleID='iSpindel000')
+{
+   $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle, battery
+			    FROM Data
+			    WHERE Name = '".$iSpindleID."'
+			    ORDER BY Timestamp DESC LIMIT 1") or die (mysql_error());
+
+  $rows = mysql_num_rows($q_sql);                                                                                         
+  if ($rows > 0)                                                                                                          
+  {
+    $r_row = mysql_fetch_array($q_sql);
+    $valTime = $r_row['unixtime'];
+    $valTemperature = $r_row['temperature'];
+    $valAngle = $r_row['angle'];
+    $valBattery = $r_row['battery'];
+    return array($valTime, $valTemperature, $valAngle, $valBattery);  
+  }
+}
 ?>
