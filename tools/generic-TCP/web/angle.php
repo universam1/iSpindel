@@ -86,7 +86,7 @@ $(function ()
          // linkedTo: 0,
 	 startOnTick: false,
 	 endOnTick: false,
-	 min: 0,
+	 min: -5,
 	 max: 35,
 	 gridLineWidth: 0,
          opposite: true,
