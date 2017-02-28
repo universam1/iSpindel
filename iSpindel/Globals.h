@@ -11,6 +11,10 @@
 #define _GLOBALS_H
 
 #include <Arduino.h>
+#include "MPU6050.h"
+#include "OneWire.h"
+#include "Wire.h"
+#include "I2Cdev.h"
 // #include <stdint.h>
 
 // defines go here
@@ -60,5 +64,7 @@
 
 extern int16_t ax, ay, az;
 extern float Volt, Temperatur, Tilt;
+
+extern MPU6050 accelgyro;
 
 #endif

@@ -19,6 +19,9 @@
  **************************************************************/
 
 #include "WiFiManagerKT.h"
+#include "MPUOffset.h"
+
+MPUOffset offset;
 
 WiFiManagerParameter::WiFiManagerParameter(const char *custom) {
   _id = NULL;
@@ -27,7 +30,7 @@ WiFiManagerParameter::WiFiManagerParameter(const char *custom) {
   _value = NULL;
   _labelPlacement = WFM_LABEL_BEFORE;
 
-  _customHTML = custom;
+  _customHTML = custom;    
 }
 
 WiFiManagerParameter::WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue, int length) {
@@ -146,6 +149,8 @@ void WiFiManager::setupConfigPortal() {
   server->on("/r", std::bind(&WiFiManager::handleReset, this));
   server->on("/state", std::bind(&WiFiManager::handleState, this));
   server->on("/scan", std::bind(&WiFiManager::handleScan, this));
+  server->on("/mnt", std::bind(&WiFiManager::handleMnt, this));
+  server->on("/offset", std::bind(&WiFiManager::handleOffset, this));
   server->onNotFound (std::bind(&WiFiManager::handleNotFound, this));
   server->begin(); // Web server start
   DEBUG_WM(F("HTTP server started"));
@@ -797,7 +802,65 @@ void WiFiManager::handleiSpindel() {
 
   server->send(200, "text/html", page);
 
-  DEBUG_WM(F("Sent info page"));
+  DEBUG_WM(F("Sent iSpindel info page"));
+}
+
+/** Handle the info page */
+void WiFiManager::handleMnt() {
+  DEBUG_WM(F("Maintenance page"));
+
+  // we reset the timeout
+  _configPortalStart = millis();
+
+  String page = FPSTR(HTTP_HEAD);
+  page.replace("{v}", "Maintenance");
+  // page += FPSTR(HTTP_SCRIPT);
+  page += FPSTR(HTTP_STYLE);
+  // page += _customHeadElement;
+  // page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"5\">");
+  page += FPSTR(HTTP_HEAD_END);
+  page += F("<h1>Maintenance</h1><hr>");
+
+  page += F("<form action=\"/offset\" method=\"get\"><button class=\"btn\">calibrate Offset</button></form><br/>");
+
+  page += FPSTR(HTTP_END);
+
+  server->send(200, "text/html", page);
+
+  DEBUG_WM(F("Sent iSpindel info page"));
+}
+
+/** Handle the info page */
+void WiFiManager::handleOffset() {
+  DEBUG_WM(F("offset"));
+
+  // we reset the timeout
+  _configPortalStart = millis();
+
+  if (offset.getStatus() == "idle") offset.calibrate();
+  server->sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  server->sendHeader("Pragma", "no-cache");
+  server->sendHeader("Expires", "-1");
+
+  String page = FPSTR(HTTP_HEAD);
+  page.replace("{v}", "calibrate Offset");
+  page += FPSTR(HTTP_SCRIPT);
+  page += FPSTR(HTTP_STYLE);
+  page += _customHeadElement;
+
+  if (offset.getStatus() != "done!") 
+    page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"5\">");
+  page += FPSTR(HTTP_HEAD_END);
+  page += F("<h1>calibrate Offset</h1><hr>");
+  page += F("<table>");
+  page += F("<tr><td>");
+  page += offset.getStatus();
+  page += F("</td></tr>");    
+  page += F("</table>");
+  
+  page += FPSTR(HTTP_END);
+
+  server->send(200, "text/html", page);
 }
 
 /** Handle the state page */

@@ -255,6 +255,8 @@ class WiFiManager
     void          handleScan();
     void          handleReset();
     void          handleNotFound();
+    void          handleMnt();
+    void          handleOffset();
     boolean       captivePortal();
     void          reportStatus(String &page);
 

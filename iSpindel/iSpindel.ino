@@ -9,13 +9,9 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "DallasTemperature.h"
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
 #include "Globals.h"
-#include "I2Cdev.h"
-#include "MPU6050.h"
-#include "OneWire.h"
 #include "RunningMedian.h"
 #include "Ubidots.h"
 #include "WiFiManagerKT.h"
-#include "Wire.h"
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
