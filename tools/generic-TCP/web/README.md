@@ -12,7 +12,7 @@ Da habe ich bisher nur an der äußersten Schicht gekratzt.
 Weiterhin verwende ich jQuery (jquery.com), um eventuell noch eine richtig gute AJAX Implementierung hinzubekommen, sowie moment.js (momentjs.com) für die Zeitzonen Problematik.      
 Die Sommerzeit Umstellung sollte also automatisch berücksichtigt werden, werden wir ja bald sehen ob das gut funktioniert so.
 
-Ansonsten immer noch treu dem Motto, so einfach aber effektiv wie möglich... ;)
+Ansonsten immer noch treu dem Motto, so einfach aber effektiv wie möglich... ;)      
 Es steckt nach wie vor wahrlich kein Hexenwerk dahinter.
 
 Ich habe insgesamt 4 verschiedene Diagramme implementiert:
@@ -90,5 +90,6 @@ Am besten die Werte mit phpMyAdmin eintragen, oder:
 Die Spindel Hardware ID kann aus der Daten Tabelle ermittelt werden, sie wird von der Spindel mitgeschickt.    
 
 Viel Spaß,     
-Tozzi <stephan@sschreiber.de>
+Tozzi       
+<stephan@sschreiber.de>
 
