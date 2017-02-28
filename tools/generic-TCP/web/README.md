@@ -16,17 +16,17 @@ Ansonsten immer noch treu dem Motto, so einfach aber effektiv wie möglich... ;)
 Es steckt nach wie vor wahrlich kein Hexenwerk dahinter.
 
 Ich habe insgesamt 4 verschiedene Diagramme implementiert:
-..*
-1. angle.php - zeigt Winkel und Temperatur für vergangene X Stunden
-2. plato.php - zeigt Restextrakt und Temperatur für vergangene X Stunden bei **kalibrierter** iSpindel
-3. battery.php - zeigt den Ladezustand einer Spindel
-4. status.php - zeigt Ladezustand, Winkel und Temperatur einer Spindel, wie aktuell gemessen
+
+* angle.php - zeigt Winkel und Temperatur für vergangene X Stunden
+* plato.php - zeigt Restextrakt und Temperatur für vergangene X Stunden bei **kalibrierter** iSpindel
+* battery.php - zeigt den Ladezustand einer Spindel
+* status.php - zeigt Ladezustand, Winkel und Temperatur einer Spindel, wie aktuell gemessen
 
 Um das entsprechende Diagramm aufzurufen werden die Parameter per GET Methode übergeben.
 Beispiele:
-..*
-1. http://meinraspi/iSpindle/angle.php?name=MeineSpindel1&hours=24
-2. http://meinraspi/iSpindle/status.php?name=MeineSpindel2
+
+* http://meinraspi/iSpindle/angle.php?name=MeineSpindel1&hours=24
+* http://meinraspi/iSpindle/status.php?name=MeineSpindel2
 
 Dafür kann man dann Lesezeichen anlegen und so auch auf einem Touchscreen schnell zur gewünschten Ansicht kommen.     
 
@@ -51,11 +51,11 @@ Ich mache das mittels Symlink auf mein GIT Arbeitsverzeichnis, somit ist der Web
 ####Datenbankschnittstelle:
 Um die Verbindung zur Datenbank herzustellen, muss die Datei include/common_db.php editiert werden:
 
-        // configure your database connection here:
-        define('DB_SERVER',"localhost");
-        define('DB_NAME',"iSpindle");
-        define('DB_USER',"iSpindle");
-        define('DB_PASSWORD',"xxxx");
+      // configure your database connection here:
+      define('DB_SERVER',"localhost");
+      define('DB_NAME',"iSpindle");
+      define('DB_USER',"iSpindle");
+      define('DB_PASSWORD',"xxxx");
 
 ####Kalibrierung (Hier kann sich noch viel ändern...)
 Um plato.php nutzen zu können, und den umgerechneten Restextrakt auszugeben, muss für jede iSpindel ein Datensatz hinterlegt werden.    
@@ -87,8 +87,8 @@ Am besten die Werte mit phpMyAdmin eintragen, oder:
     INSERT INTO Calibration (ID, const1, const2, const3)
     VALUES ('123456', 0.013355798, 0.776391729, 11.34675255);
 
-Die Spindel Hardware ID kann aus der Daten Tabelle ermittelt werden, sie wird von der Spindel mitgeschickt.
+Die Spindel Hardware ID kann aus der Daten Tabelle ermittelt werden, sie wird von der Spindel mitgeschickt.    
 
-Viel Spaß,
+Viel Spaß,     
 Tozzi <stephan@sschreiber.de>
 
