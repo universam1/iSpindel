@@ -120,7 +120,7 @@ $(function ()
     },
 
     series: [{
-        name: 'battery',
+        name: 'Spannung',
         data: [<?php echo $battery;?>],
         tooltip: {
             valueSuffix: ' Volt'

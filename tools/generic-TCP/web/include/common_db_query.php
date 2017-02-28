@@ -9,7 +9,7 @@
  
   For the original project itself, see: https://github.com/universam1/iSpindel  
   
-  Tozzi (stephan@sschreiber.de), Feb 22 2017 
+  Tozzi (stephan@sschreiber.de), Feb 27 2017
 */
 
 
@@ -70,4 +70,62 @@ function getCurrentValues($iSpindleID='iSpindel000')
     return array($valTime, $valTemperature, $valAngle, $valBattery);  
   }
 }
+                        
+// Get calibrated values from database for selected spindle, between now and [number of hours] ago
+function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=24)
+{
+    $isCalibrated = 0;  // is there a calbration record for this iSpindle?
+    $valAngle = '';
+    $valTemperature = '';
+    $valDens = '';
+    $const1 = 0;
+    $const2 = 0;
+    $const3 = 0;
+
+    $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
+                         FROM Data
+                         WHERE Name = '".$iSpindleID."' AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) and Timestamp <= NOW()
+                         ORDER BY Timestamp ASC") or die(mysql_error());
+                     
+    // retrieve number of rows
+    $rows = mysql_num_rows($q_sql);
+    if ($rows > 0)
+    {
+     // get unique hardware ID for calibration
+     $u_sql = mysql_query("SELECT ID FROM Data WHERE Name = '".$iSpindleID."' ORDER BY Timestamp DESC LIMIT 1") or die(mysql_error());
+     $rowsID = mysql_num_rows($u_sql);
+     if ($rowsID > 0)
+     {
+        // try to get calibration for iSpindle hardware ID
+        $r_id = mysql_fetch_array($u_sql);
+        $uniqueID = $r_id['ID'];
+        $f_sql = mysql_query("SELECT const1, const2, const3 FROM Calibration WHERE ID = ".$uniqueID) or die(mysql_error());
+        $rows_cal = mysql_num_rows($f_sql);
+        if ($rows_cal > 0)
+        {
+            $isCalibrated = 1;
+            $r_cal = mysql_fetch_array($f_sql);
+            $const1 = $r_cal['const1'];
+            $const2 = $r_cal['const2'];
+            $const3 = $r_cal['const3'];
+        }
+     }
+     // retrieve and store the values as CSV lists for HighCharts
+     while($r_row = mysql_fetch_array($q_sql))
+     {
+         $jsTime = $r_row['unixtime'] * 1000;
+         $angle = $r_row['angle'];
+         $dens = $const1 * $angle ** 2 - $const2 * $angle + $const3;   // complete polynome from database
+                         
+         $valAngle         .= '['.$jsTime.', '.$angle.'],';
+         $valDens          .= '['.$jsTime.', '.$dens.'],';
+         $valTemperature   .= '['.$jsTime.', '.$r_row['temperature'].'],';
+     }
+     // remove last comma from each CSV
+     $valAngle         = delLastChar($valAngle);
+     $valTemperature   = delLastChar($valTemperature);
+     return array($isCalibrated, $valDens, $valTemperature, $valAngle);
+    }
+ }
 ?>
+

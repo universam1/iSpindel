@@ -24,6 +24,8 @@ list($angle, $temperature) = getChartValues($_GET['name'], $_GET['hours']);
   <meta name="Keywords" content="iSpindle, iSpindel, Chart, genericTCP">
   <meta name="Description" content="iSpindle Fermentation Chart">
   <script src="include/jquery-3.1.1.min.js"></script>
+  <script src="include/moment.min.js"></script>
+  <script src="include/moment-timezone-with-data.js"></script>
 
 <script type="text/javascript">
 $(function () 
@@ -34,7 +36,7 @@ $(function ()
   { 
     Highcharts.setOptions({
       global: {
-	timezoneOffset: -(1 * 60) // !!!TODO: has to be manually adjusted for DST; not ideal...
+      	timezone: 'Europe/Berlin'
       }
     });
        
