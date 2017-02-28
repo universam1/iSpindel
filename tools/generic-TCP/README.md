@@ -1,9 +1,11 @@
 #genericTCP
 ####(iSpindle.py Version 0.2.1)
 
+**Neu: Diagramme, siehe:**
+[Charts Readme](web/README.md)
 
-Es folgt hier auch etwas "Technobabble", bitte lasst euch davon aber nicht abschrecken, der Einsatz des Skripts ist wirklich einfach zu realisieren.
-Die Grundeinstellungen sind leicht anzupassen und mit Standard Einstellungen ist auch kein Sicherheitsrisiko zu befürchten.
+**Installations Anleitung für Raspbian:**
+[INSTALL.md](INSTALL.md)
 
 Dieses in Python geschriebene Server Skript dient dazu, von der iSpindel kommende Rohdaten über eine generische TCP Verbindung zu empfangen.
 Auf zusätzlichen, unnötigen Overhead durch Protokolle wie http wird hierbei bewusst verzichtet, um den Stromverbrauch der iSpindel so gut es geht zu minimieren.
