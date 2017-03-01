@@ -338,21 +338,17 @@ $(function ()
       }]
     }); // chart_temp   
   });  
-
-
-
-
 });
 </script>
 </head>
 <body>
  
-<div id="wrapper" style="width:100%; height:100%; position:absolute">
+<div id="wrapper" style="width:97%; height:96%; position:absolute">
 <script src="include/highcharts.js"></script>
 <script src="include/highcharts-more.js"></script>
-<div id="battery" style="width:33%; height:100%; float:left"></div>
-<div id="angle" style="width:33%; height:100%; float:right"></div>
-<div id="temperature" style="width:33%; height:100%; margin-left: 33%; margin-right: 33%"></div>
+<div id="battery" style="width:32%; height:96%; float:left"></div>
+<div id="angle" style="width:32%; height:96%; float:right"></div>
+<div id="temperature" style="width:32%; height:96%; margin-left: 32%; margin-right: 32%"></div>
 </div>
  
 </body>

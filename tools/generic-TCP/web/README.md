@@ -77,7 +77,7 @@ Das Schema der neuen Tabelle:
      COLLATE=ascii_bin COMMENT='iSpindle Calibration Data';
 
 
-ID ist die Hardware ID der Spindel. Diese wird mit übermittelt und gespeichert.
+ID ist die Hardware ID der Spindel. Diese wird mit übermittelt und gespeichert.     
 const1, 2 und 3 sind die drei Koeffizienten des ermittelten Polynoms:
 
 const1 * winkel<sup>2</sup> - const2 * winkel + const3
@@ -92,4 +92,3 @@ Die Spindel Hardware ID kann aus der Daten Tabelle ermittelt werden, sie wird vo
 Viel Spaß,     
 Tozzi       
 <stephan@sschreiber.de>
-
