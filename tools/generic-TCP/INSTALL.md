@@ -75,7 +75,7 @@ Das Server Skript hierzu wie im [README](./README.md) beschrieben anpassen und n
 
 ###Optional: Samba installieren (empfohlen):
 
-	sudo apt-get samba samba-common-bin
+	sudo apt-get install samba samba-common-bin
 
 ####Home Verzeichnis im Netzwerk freigeben:
 
@@ -131,6 +131,8 @@ Dann wieder auf dem Raspi im ssh Terminal eingeben:
 
 	sudo mv ~./iSpindle.py /usr/local/bin
 	sudo mv ~/ispindle-srv /etc/init.d
+	sudo chmod 755 /usr/local/bin/iSpindle.py
+	sudo chmod 755 /etc/init.d/iSpindle-srv
 	sudo insserv ispindle-srv
 	sudo service ispindle-srv start
 
