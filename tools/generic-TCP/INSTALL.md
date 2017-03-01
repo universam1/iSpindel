@@ -5,12 +5,13 @@
 Es mag so aussehen, als würde hier viel zu viel Ballast installiert, das geht alles auch schlanker.
 Stimmt.
 Aber die meisten werden ja Raspbian verwenden, und das ist schon so aufgebläht dass ich da kein schlechtes Gewissen habe, noch Apache, Samba und MySQL mit draufzupacken.
-Der Raspi 3 schafft das sowieso problemlos.
-Wer auf phpmyadmin verzichten will, also auf die Möglichkeit, die Datenbank mit einer html Oberfläche zu administrieren, kann den Apache2 und phpmyadmin problemlos auch weglassen.
+Der Raspi 3 schafft das sowieso problemlos, aber auch die kleineren Modelle sollten klarkommen.
+Die ganze Installation braucht gute 5GB, also eine SD mit 8 GB sollte reichen, ab 16GB reicht der Speicherplatz auf jeden Fall.
+Wer auf die Diagramme und auf phpmyadmin verzichten will, also auf die Möglichkeit, die Datenbank mit einer html Oberfläche zu administrieren, kann den Apache2 und phpmyadmin auch weglassen.
 
 ###Raspbian vorbereiten
-raspi-config: ssh einschalten     
-Verbinden mit putty (Windows) oder Terminal (Mac OS X, Linux) und ssh:
+- raspi-config: ssh einschalten, Netzwerkverbindung herstellen (hierfür braucht man einmalig eine Tastatur und einen HDMI Bildschirm)             
+- Verbinden mit putty (Windows) oder Terminal (Mac OS X, Linux) und ssh:
 
 	ssh pi@[ip-adresse oder hostname] 
 	Passwort: raspberry (ändern)
@@ -20,7 +21,7 @@ System auf neuesten Stand bringen:
 	sudo apt-get update
 	sudo apt-get dist-upgrade
 
-###Optional: MySQL
+###MySQL Datenbank, Apache2 Webserver und phpMyAdmin Datenbank GUI 
 
 ####Installieren:
 
@@ -37,14 +38,18 @@ Die folgenden Schritte lassen sich über phpadmin im Browser erledigen (dazu als
 
 	mysql -u root -p
 
-Ihr werdet aufgefordert, das obige Passwort wieder einzugeben.
+Ihr werdet aufgefordert, das obige Passwort wieder einzugeben.        
 Danach landet Ihr auf einem **mysql>** Prompt.
 
 ####Datenbank erstellen und auswählen:
 	CREATE DATABASE iSpindle;
 	USE iSpindle;
 
-####Tabelle anlegen:
+####Tabelle(n) anlegen:
+
+Am besten gleich beide Tabellen (Daten und Kalibrierung) anlegen.       
+[Hier](./MySQL_CreateTables.sql) ist ein [SQL Skript](./MySQL_CreateTables.sql) für beide.        
+Die Datentabelle folgt diesem Schema:      
 
 	CREATE TABLE `Data` (
  		`Timestamp` datetime NOT NULL,
@@ -56,6 +61,7 @@ Danach landet Ihr auf einem **mysql>** Prompt.
  	PRIMARY KEY (`Timestamp`,`Name`,`ID`)
 	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data'
 
+(Im Feld ID wird die Hardware ID abgelegt, welche wir zum Hinterlegen der Kalibrierung benötigen.)     
 
 ####Benutzer anlegen und berechtigen (und ihm ein eigenes Passwort geben):
 
@@ -63,8 +69,8 @@ Danach landet Ihr auf einem **mysql>** Prompt.
 	GRANT USAGE ON *.* TO 'iSpindle';
 	GRANT ALL PRIVILEGES ON `iSpindle`.* TO 'iSpindle' WITH GRANT OPTION;
 
-Ab sofort steht die MySQL Datenbank für die iSpindel zur Verfügung.
-Das Server Skript hierzu wie in README beschrieben anpassen und neu starten.
+Ab sofort steht die MySQL Datenbank für die iSpindel zur Verfügung.        
+Das Server Skript hierzu wie im [README](./README.md) beschrieben anpassen und neu starten.
 
 
 ###Optional: Samba installieren (empfohlen):
@@ -136,7 +142,7 @@ Nach erneuter Verbindung sollte nun "ps -ax | grep iSpindle" einen laufenden iSp
 
 Ihr habt jetzt die längstmögliche Batterielaufzeit für die iSpindel und habt Eure Daten auch lokal vorhanden, falls Ubidots mal aussetzen sollte oder Ihr Eure eigenen Visualisierungen machen wollt.
 
-Auch von mir wird da sicher noch was kommen.
+Ein paar (für mich ausreichende) Diagramme habe ich [hier](/web) bereitgestellt.
 
 Euer Tozzi (stephan@sschreiber.de)
 
