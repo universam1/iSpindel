@@ -338,13 +338,6 @@ $(function ()
       }]
     }); // chart_temp   
   });  
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> 1de7e788dc81f82d3019590be2cf139ef58c639f
 });
 </script>
 </head>
