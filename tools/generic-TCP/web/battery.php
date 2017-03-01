@@ -134,7 +134,7 @@ $(function ()
 <div id="wrapper">
 <script src="include/highcharts.js"></script>
 <script src="include/highcharts-more.js"></script>
-<div id="battery" style="width: 100%; height: 100%; position: absolute"></div>
+<div id="battery" style="width: 98%; height: 98%; position: absolute"></div>
 </div>
  
 </body>

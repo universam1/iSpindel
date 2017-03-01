@@ -87,7 +87,7 @@ $(function ()
                         y: 16,
                         formatter: function()
                         {
-                            return this.value +'°P'
+                            return this.value + '˚P'
                         }
                     },
                     showFirstLabel: false
@@ -122,7 +122,7 @@ $(function ()
                     if(this.series.name == 'Temperatur') {
                         return '<b>'+ this.series.name +' </b>um '+ Highcharts.dateFormat('%H:%M', new Date(this.x)) +' Uhr:  '+ this.y +'°C';
                     } else {
-                        return '<b>'+ this.series.name +' </b>um '+ Highcharts.dateFormat('%H:%M', new Date(this.x)) +' Uhr:  '+ this.y +'°P';
+                        return '<b>'+ this.series.name +' </b>um '+ Highcharts.dateFormat('%H:%M', new Date(this.x)) +' Uhr:  '+ Math.round(this.y * 100) / 100 +'°P';
                     }
                 }
             },  
@@ -187,7 +187,7 @@ $(function ()
  
 <div id="wrapper">
   <script src="include/highcharts.js"></script>
-  <div id="container" style="width:100%; height:100%; position:absolute"></div>
+  <div id="container" style="width:98%; height:98%; position:absolute"></div>
 </div>
  
 </body>

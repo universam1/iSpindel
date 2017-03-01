@@ -180,7 +180,7 @@ $(function ()
  
 <div id="wrapper">
   <script src="include/highcharts.js"></script>
-  <div id="container" style="width:100%; height:100%; position:absolute"></div>
+  <div id="container" style="width:98%; height:98%; position:absolute"></div>
 </div>
  
 </body>
