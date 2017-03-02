@@ -13,9 +13,9 @@ If you don't need phpmyadmin and the visualization charts you can safely omit bo
 ###Prepare Raspbian 
 - raspi-config: activate ssh, establish network connection (via Ethernet or WiFi). You'll probably need a keyboard and an HDMI capable display for this step.      
 - connect via putty (Windows) or Terminal and SSH (Mac OS X, Linux):
-
-	ssh pi@[ip-address or hostname] 
-	Passwort: raspberry (change this)
+           
+	   ssh pi@[ip-address or hostname] 
+	   Password: raspberry (change this)
 
 Update your system:
 
@@ -150,7 +150,7 @@ You should be able to see the script running now:
 
 Done.
 If everything is configured correctly, the database should receive the iSpindle data and your device(s) should show up in Ubidots, if you have enabled forwarding.    
-[Here](/web) are some charts I made for visualization I found essential.    
+[Here](/web/README_en.md) are some charts I made for visualization I found essential.    
 
 Have fun!
 
