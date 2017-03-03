@@ -1,5 +1,7 @@
 #Diagramme vom lokalen Server 
 
+[English Version](README_en.md)
+
 OK, der lokale Server ist im Einsatz und funktioniert, jetzt wollen wir auch die Daten darstellen können, notfalls auch ohne Internetverbindung.     
 Zu was war das Ganze sonst gut?  
 Man kann zwar jederzeit per Excel eine CSV Datei importieren oder auch über ODBC auf die Datenbank zugreifen, aber das ist ein wenig umständlich.

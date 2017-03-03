@@ -1,6 +1,8 @@
 #Installationsanleitung für Raspberry Pi (Raspbian)
 ###Schritt-für-Schritt
 
+[English Version](INSTALL_en.md)
+
 ###Vorbemerkung:
 Es mag so aussehen, als würde hier viel zu viel Ballast installiert, das geht alles auch schlanker.
 Stimmt.
@@ -132,7 +134,9 @@ Dann wieder auf dem Raspi im ssh Terminal eingeben:
 	sudo mv ~./iSpindle.py /usr/local/bin
 	sudo mv ~/ispindle-srv /etc/init.d
 	sudo chmod 755 /usr/local/bin/iSpindle.py
-	sudo chmod 755 /etc/init.d/iSpindle-srv
+	sudo chmod 755 /etc/init.d/ispindle-srv
+	cd /etc/init.d
+	sudo systemctl deamon-reload
 	sudo insserv ispindle-srv
 	sudo service ispindle-srv start
 

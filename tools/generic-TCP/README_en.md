@@ -1,11 +1,8 @@
 #genericTCP
 ####(iSpindle.py Version 0.2.1)
 
-
-Please don't mind the "Technobabble" in the following documentation, and just ignore whatever you don't understand.    
-This server-side script is very easy to install and use, but I'll also explain why you'll want to, and that's where it gets technical.
-
-When using standard configuration, you'll have it up and running in no time, and you won't have to be afraid of any security risks.
+[Install Instructions](INSTALL_en.md)      
+[Charts](web/README_en.md)
 
 This script was written in Python and its purpose is to accept raw data from an iSpindle via a generic TCP connection, usually in a local network environment.
 It purposely avoids unneccessary higher-level protocols such as http, in order to maximize the battery lifetime of the iSpindle and generally make things more easy and transparent, also for you fellow developers out there.
