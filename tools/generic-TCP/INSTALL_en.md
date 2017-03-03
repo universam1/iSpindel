@@ -14,8 +14,8 @@ If you don't need phpmyadmin and the visualization charts you can safely omit bo
 - raspi-config: activate ssh, establish network connection (via Ethernet or WiFi). You'll probably need a keyboard and an HDMI capable display for this step.      
 - connect via putty (Windows) or Terminal and SSH (Mac OS X, Linux):
 ```           
-	   ssh pi@[ip-address or hostname] 
-	   Password: raspberry (change this)
+   ssh pi@[ip-address or hostname] 
+   Password: raspberry (change this)
 ```
 Update your system:
 

@@ -2,6 +2,7 @@
 
 While exporting CSVs or directly accessing the database via ODBC from, for example, Excel, is fine for data analysis, we'll definitely also want a quick way to take a glance at the current fermentation.
 So, here are a few essential charts, developed using [highcharts](http://www.highcharts.com), browser accessible.
+Especially nice in Firefox fullscreen mode on a Raspi touch display. Just put some bookmarks on the Raspi Desktop.
 
 We'll need a working [install](../INSTALL_en.md) of the backend, including mySQL and Apache2.
 
@@ -20,7 +21,7 @@ In order to show these charts we pass arguments via GET in order to be able to b
 * http://raspi/iSpindle/status.php?name=MySpindle2
 
 I hope I've built sort of a foundation with templates for lots of future enhancements.
-I am aware that there's probably a ton of things I could have solved more elegantly and there's room for improvement galore.
+I am aware that there's probably a ton of things I could have solved more elegantly and there's room for improvement galore.     
 Contributions are by all means welcome. Looking forward!
 
 
@@ -42,8 +43,8 @@ You'll need to configure the database connection, found in include/common_db.php
       define('DB_USER',"iSpindle");
       define('DB_PASSWORD',"password");
 
-####Calibration (Angle:Density)
-Before you can use plato.php to display the calculated density (%w/w) in Plato degrees, you'll need enter the [calibration results](../../../docs/Calibration_en.md) and add them to the database.      
+####Calibration (Angle:Gravity)
+Before you can use plato.php to display the calculated gravity (%w/w) in Plato degrees, you'll need enter the [calibration results](../../../docs/Calibration_en.md) and add them to the database.      
 The reference being used is the spindle's unique hardware id, stored as "ID" in the 'Data' table.    
 First, if you haven't done that before, you'll need to create a second table now:
      
@@ -60,7 +61,7 @@ First, if you haven't done that before, you'll need to create a second table now
 ID is the iSpindel's unique hardware ID as shown in the 'Data' table.
 const1, 2, 3 are the three coefficients of the polynom you have got as a result of calibrating your iSpindel:
 
-const1 * winkel<sup>2</sup> - const2 * winkel + const3
+     const1 * winkel<sup>2</sup> - const2 * winkel + const3
 
 You could enter these using phpMyAdmin, or on a mysql prompt, you'd do:
 
