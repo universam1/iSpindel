@@ -1,6 +1,8 @@
 #genericTCP
 ####(iSpindle.py Version 0.2.1)
 
+[English Version](README_en.md)
+
 **Neu: Diagramme, siehe:**
 [Charts Readme](web/README.md)
 
