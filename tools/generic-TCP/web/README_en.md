@@ -61,7 +61,7 @@ First, if you haven't done that before, you'll need to create a second table now
 ID is the iSpindel's unique hardware ID as shown in the 'Data' table.
 const1, 2, 3 are the three coefficients of the polynom you have got as a result of calibrating your iSpindel:
 
-gravity = const1 * winkel<sup>2</sup> - const2 * winkel + const3
+gravity = const1 * tilt<sup>2</sup> - const2 * tilt + const3
 
 You could enter these using phpMyAdmin, or on a mysql prompt, you'd do:
 
