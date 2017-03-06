@@ -67,7 +67,7 @@ Die Datentabelle folgt diesem Schema:
 
 ####Benutzer anlegen und berechtigen (und ihm ein eigenes Passwort geben):
 
-	CREATE USER 'iSpindle' IDENTIFIED BY 'xxxxxxxxxx'
+	CREATE USER 'iSpindle' IDENTIFIED BY 'xxxxxxxxxx';
 	GRANT USAGE ON *.* TO 'iSpindle';
 	GRANT ALL PRIVILEGES ON `iSpindle`.* TO 'iSpindle' WITH GRANT OPTION;
 
