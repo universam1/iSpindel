@@ -67,7 +67,7 @@ Die Datentabelle folgt diesem Schema:
 
 ####Benutzer anlegen und berechtigen (und ihm ein eigenes Passwort geben):
 
-	CREATE USER 'iSpindle' IDENTIFIED BY 'xxxxxxxxxx'
+	CREATE USER 'iSpindle' IDENTIFIED BY 'xxxxxxxxxx';
 	GRANT USAGE ON *.* TO 'iSpindle';
 	GRANT ALL PRIVILEGES ON `iSpindle`.* TO 'iSpindle' WITH GRANT OPTION;
 
@@ -144,7 +144,10 @@ Ein guter Zeitpunkt, den Raspi neu zu starten (ist aber nicht nötig):
 
 	sudo reboot
 
-Nach erneuter Verbindung sollte nun "ps -ax | grep iSpindle" einen laufenden iSpindle.py Prozess anzeigen.
+Nach erneuter Verbindung sollte nun "ps -ax | grep iSpindle" einen laufenden iSpindle.py Prozess anzeigen, so in der Art:     
+
+	23826 ?        S      0:00 python2.7 /usr/local/bin/iSpindle.py
+	23845 pts/0    R+     0:00 grep iSpindle
 
 Ihr habt jetzt die längstmögliche Batterielaufzeit für die iSpindel und habt Eure Daten auch lokal vorhanden, falls Ubidots mal aussetzen sollte oder Ihr Eure eigenen Visualisierungen machen wollt.
 
