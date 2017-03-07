@@ -66,7 +66,7 @@ The field "ID" stores the iSpindle's unique hardware ID, which we'll need in ord
 
 ####Create a Database User, Grant Permissions, Set Password):
 
-	CREATE USER 'iSpindle' IDENTIFIED BY 'password'
+	CREATE USER 'iSpindle' IDENTIFIED BY 'password';
 	GRANT USAGE ON *.* TO 'iSpindle';
 	GRANT ALL PRIVILEGES ON `iSpindle`.* TO 'iSpindle' WITH GRANT OPTION;
 
