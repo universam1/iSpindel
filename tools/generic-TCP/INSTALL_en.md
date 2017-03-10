@@ -11,7 +11,7 @@ The whole install will use roughly 5 GB on the sd card, so a 8 GB one should suf
 If you don't need phpmyadmin and the visualization charts you can safely omit both mySql and Apache, of course.
 
 ###Prepare Raspbian 
-- raspi-config: activate ssh, establish network connection (via Ethernet or WiFi). You'll probably need a keyboard and an HDMI capable display for this step.      
+- raspi-config: activate ssh, establish network connection (via Ethernet or WiFi). You'll probably need a keyboard and an HDMI capable display for this step. Or you create an empty file called "ssh" in the boot directory of the SD card prior to booting the Raspi from it.
 - connect via putty (Windows) or Terminal and SSH (Mac OS X, Linux):
 ```           
    ssh pi@[ip-address or hostname] 

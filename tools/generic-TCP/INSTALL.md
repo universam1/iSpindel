@@ -13,6 +13,7 @@ Wer auf die Diagramme und auf phpmyadmin verzichten will, also auf die Möglichk
 
 ###Raspbian vorbereiten
 - raspi-config: ssh einschalten, Netzwerkverbindung herstellen (hierfür braucht man einmalig eine Tastatur und einen HDMI Bildschirm)             
+- Oder: Beim Vorbereiten der SD Karte im /boot Verzeichnis eine leere Datei "ssh" anlegen. Dann kann man sich direkt über einen anderen Rechner im Netzwerk per SSH einloggen und braucht weder Bildschirm noch Tastatur am Raspi).
 - Verbinden mit putty (Windows) oder Terminal (Mac OS X, Linux) und ssh:
 
 	ssh pi@[ip-adresse oder hostname] 
