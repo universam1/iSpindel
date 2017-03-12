@@ -91,6 +91,7 @@ Um die Tabelle mit den grundlegenden Feldern anzulegen, verwendet man am besten 
 		'Angle' double NOT NULL,
 		'Temperature' double NOT NULL,
 		'Battery' double NOT NULL,
+		'ResetFlag' boolean,
 		PRIMARY KEY ('Timestamp', 'Name', 'ID')
 	) 
 	ENGINE=InnoDB DEFAULT CHARSET=ascii 

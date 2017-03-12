@@ -15,4 +15,5 @@ if(is_resource($conn))
 }
  
 define("defaultTimePeriod", 24); // Timeframe for chart
+define("defaultReset",  false);  // Flag for Timeframe for chart, 
 ?>

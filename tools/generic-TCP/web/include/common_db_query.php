@@ -21,14 +21,25 @@ function delLastChar($string="")
 }
  
 // Get values from database for selected spindle, between now and timeframe in hours ago
-function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=24)
+function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePeriod, $reset=defaultReset)
 {
-  $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
-                          FROM Data
-                          WHERE Name = '".$iSpindleID."' AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) and Timestamp <= NOW()
-                          ORDER BY Timestamp ASC") or die(mysql_error());
-                          
-
+   if ($reset)
+   {
+   $where="WHERE Name = '".$iSpindleID."' 
+                  AND Timestamp >= (Select max(Timestamp) FROM data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
+   }  
+   else
+   {
+  $where ="WHERE Name = '".$iSpindleID."' 
+            AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) 
+            and Timestamp <= NOW()";
+   }  
+   $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
+                         FROM Data " 
+                         .$where 
+                         ." ORDER BY Timestamp ASC") 
+                        or die(mysql_error());
+   
   // retrieve number of rows
   $rows = mysql_num_rows($q_sql);
   if ($rows > 0)
@@ -55,9 +66,9 @@ function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=24)
 function getCurrentValues($iSpindleID='iSpindel000')
 {
    $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle, battery
-			    FROM Data
-			    WHERE Name = '".$iSpindleID."'
-			    ORDER BY Timestamp DESC LIMIT 1") or die (mysql_error());
+                FROM Data
+                WHERE Name = '".$iSpindleID."'
+                ORDER BY Timestamp DESC LIMIT 1") or die (mysql_error());
 
   $rows = mysql_num_rows($q_sql);                                                                                         
   if ($rows > 0)                                                                                                          
@@ -72,7 +83,7 @@ function getCurrentValues($iSpindleID='iSpindel000')
 }
                         
 // Get calibrated values from database for selected spindle, between now and [number of hours] ago
-function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=24)
+function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePeriod, $reset=defaultReset)
 {
     $isCalibrated = 0;  // is there a calbration record for this iSpindle?
     $valAngle = '';
@@ -82,10 +93,22 @@ function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=24)
     $const2 = 0;
     $const3 = 0;
 
-    $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
-                         FROM Data
-                         WHERE Name = '".$iSpindleID."' AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) and Timestamp <= NOW()
-                         ORDER BY Timestamp ASC") or die(mysql_error());
+   if ($reset)
+   {
+   $where="WHERE Name = '".$iSpindleID."' 
+                  AND Timestamp >= (Select max(Timestamp) FROM data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
+   }  
+   else
+   {
+  $where ="WHERE Name = '".$iSpindleID."' 
+            AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) 
+            and Timestamp <= NOW()";
+   }  
+   $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
+                           FROM Data " 
+                           .$where 
+                           ." ORDER BY Timestamp ASC")
+                           or die(mysql_error());
                      
     // retrieve number of rows
     $rows = mysql_num_rows($q_sql);
