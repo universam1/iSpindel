@@ -1,6 +1,15 @@
 #Installation Guide for Raspbian 
 ###Step-by-Step
 
+
+###Update to Firmware 5.x:
+If you already have this running and want to update to the new firmware, you'll need to add a new column to the Data table:
+
+	USE iSpindle;
+	ALTER TABLE Data ADD Gravity double;
+
+This is already taken into account if you newly install this and follow the instructions below.
+
 ###Preliminary Remarks:
 
 These recommended software requirements might seem like overkill, but this solution is highly flexible and wide open for future enhancements.    
@@ -59,6 +68,7 @@ Otherwise, the main data table will suffice:
  		`Angle` double NOT NULL,
  		`Temperature` double NOT NULL,
  		`Battery` double NOT NULL,
+		`Gravity` double,
  	PRIMARY KEY (`Timestamp`,`Name`,`ID`)
 	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data'
 

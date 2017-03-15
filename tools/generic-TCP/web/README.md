@@ -17,10 +17,11 @@ Die Sommerzeit Umstellung sollte also automatisch berücksichtigt werden, werden
 Ansonsten immer noch treu dem Motto, so einfach aber effektiv wie möglich... ;)      
 Es steckt nach wie vor wahrlich kein Hexenwerk dahinter.
 
-Ich habe insgesamt 4 verschiedene Diagramme implementiert:
+Ich habe insgesamt folgende verschiedene Diagramme implementiert:
 
 * angle.php - zeigt Winkel und Temperatur für vergangene X Stunden
-* plato.php - zeigt Restextrakt und Temperatur für vergangene X Stunden bei **kalibrierter** iSpindel
+* plato.php - zeigt Restextrakt und Temperatur für vergangene X Stunden bei **kalibrierter** iSpindel (ab Firmware 5.x)
+* plato4.php - zeigt Restextrakt und Temperatur für vergangene X Stunden bei **nach alter Methode kalibrierter iSpindel** (Firmware 4.x)
 * battery.php - zeigt den Ladezustand einer Spindel
 * status.php - zeigt Ladezustand, Winkel und Temperatur einer Spindel, wie aktuell gemessen
 
@@ -59,8 +60,8 @@ Um die Verbindung zur Datenbank herzustellen, muss die Datei include/common_db.p
       define('DB_USER',"iSpindle");
       define('DB_PASSWORD',"xxxx");
 
-####Kalibrierung (Hier kann sich noch viel ändern...)
-Um plato.php nutzen zu können, und den umgerechneten Restextrakt auszugeben, muss für jede iSpindel ein Datensatz hinterlegt werden.    
+####Kalibrierung nach "alter" Methode (Firmware < 5.0.1) 
+Um plato4.php nutzen zu können, und den umgerechneten Restextrakt auszugeben, muss für jede iSpindel ein Datensatz hinterlegt werden.    
 Die Verknüpfung erfolgt nicht über den Namen der Spindel, sondern über ihre Hardware ID, bleibt also erhalten wenn man die iSpindel umbenennt.    
 
 Dazu brauchen wir erst eine neue Tabelle in der Datenbank.    

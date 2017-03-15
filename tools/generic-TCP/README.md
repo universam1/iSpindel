@@ -9,6 +9,9 @@
 **Installations Anleitung für Raspbian:**
 [INSTALL.md](INSTALL.md)
 
+**Achtung: Update auf Firmware 5.x:**
+Bitte die [Installations Anleitung](INSTALL.md) beachten.      
+
 Dieses in Python geschriebene Server Skript dient dazu, von der iSpindel kommende Rohdaten über eine generische TCP Verbindung zu empfangen.
 Auf zusätzlichen, unnötigen Overhead durch Protokolle wie http wird hierbei bewusst verzichtet, um den Stromverbrauch der iSpindel so gut es geht zu minimieren.
 Die empfangenen Daten können als CSV (“Comma Separated Values”, also durch Kommas getrennte Werte) in Textdateien gespeichert (und so zum Beispiel in Excel leicht importiert) werden.
@@ -91,6 +94,7 @@ Um die Tabelle mit den grundlegenden Feldern anzulegen, verwendet man am besten 
 		'Angle' double NOT NULL,
 		'Temperature' double NOT NULL,
 		'Battery' double NOT NULL,
+		'Gravity' double,
 		PRIMARY KEY ('Timestamp', 'Name', 'ID')
 	) 
 	ENGINE=InnoDB DEFAULT CHARSET=ascii 

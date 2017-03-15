@@ -3,6 +3,15 @@
 
 [English Version](INSTALL_en.md)
 
+###Update auf Firmware Version 5.x:
+Um die neue Firmware einsetzen zu können, bitte das Skript auf die neueste Version aktualisieren.     
+Falls die Datenbank schon besteht, muss in die Tabelle "Data" ein neues Feld eingefügt werden:
+
+	USE iSpindle;
+	ALTER TABLE Data ADD Gravity double;
+
+Bei einer Neuinstallation ist dies bereits im Folgenden berücksichtigt.
+
 ###Vorbemerkung:
 Es mag so aussehen, als würde hier viel zu viel Ballast installiert, das geht alles auch schlanker.
 Stimmt.
@@ -61,6 +70,7 @@ Die Datentabelle folgt diesem Schema:
  		`Angle` double NOT NULL,
  		`Temperature` double NOT NULL,
  		`Battery` double NOT NULL,
+		`Gravity` double,
  	PRIMARY KEY (`Timestamp`,`Name`,`ID`)
 	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data'
 

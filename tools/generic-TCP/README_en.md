@@ -4,6 +4,8 @@
 [Install Instructions](INSTALL_en.md)      
 [Charts](web/README_en.md)
 
+NOTE: If you are updating from Firmware < 5.x please see [Install Instructions](INSTALL_en.md).
+
 This script was written in Python and its purpose is to accept raw data from an iSpindle via a generic TCP connection, usually in a local network environment.
 It purposely avoids unneccessary higher-level protocols such as http, in order to maximize the battery lifetime of the iSpindle and generally make things more easy and transparent, also for you fellow developers out there.
 
@@ -92,6 +94,7 @@ In order to create a table inside your MySQL database accordingly, use this SQL 
 		'Angle' double NOT NULL,
 		'Temperature' double NOT NULL,
 		'Battery' double NOT NULL,
+		'Gravity' double,
 		PRIMARY KEY ('Timestamp', 'Name', 'ID')
 	) 
 	ENGINE=InnoDB DEFAULT CHARSET=ascii 
