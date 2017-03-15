@@ -18,6 +18,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
 #include <Ticker.h>
+#include "tinyexpr.h"
 
 #ifdef API_UBIDOTS
 #include "Ubidots.h"
@@ -51,6 +52,8 @@ char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
+char my_polynominal[70];
+// uint8_t my_polynominal_temp = 20;
 String my_ssid;
 String my_psk;
 uint8_t my_api;
@@ -62,7 +65,7 @@ uint32_t DSreqTime;
 float pitch, roll;
 
 int16_t ax, ay, az;
-float Volt, Temperatur, Tilt;
+float Volt, Temperatur, Tilt, Gravity;
 
 bool DSrequested = false;
 
@@ -90,6 +93,7 @@ void saveConfigCallback() {
   // WiFi.setAutoReconnect(true);
   shouldSaveConfig = true;
 }
+
 bool readConfig() {
   SerialOut(F("mounting FS..."), false);
 
@@ -137,6 +141,10 @@ bool readConfig() {
             my_ssid = json["SSID"].asString();
           if (json.containsKey("PSK"))
             my_psk = json["PSK"].asString();
+          if (json.containsKey("POLY"))
+            strcpy(my_polynominal, json["POLY"]);
+          // if (json.containsKey("POLYTEMP"))
+          //   my_polynominal_temp =  json["POLYTEMP"];
 
           SerialOut(F("parsed config:"));
           if (isDebugEnabled)
@@ -253,9 +261,19 @@ bool startConfiguration() {
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_url);
+  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+  wifiManager.addParameter(&custom_polynom_lbl);
+  // f.e. '0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96'
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", my_polynominal, 70, WFM_NO_LABEL);
+  wifiManager.addParameter(&custom_polynom);
+  // WiFiManagerParameter custom_polynom_temp("POLYTEMP", "calibration Temperatur C", String(my_polynominal_temp).c_str(), 5, TYPE_NUMBER);
+  // wifiManager.addParameter(&custom_polynom_temp);
 
-  wifiManager.startConfigPortal("iSpindel");
   SerialOut(F("started Portal"));
+  wifiManager.startConfigPortal("iSpindel");
+
+  strcpy(my_polynominal, custom_polynom.getValue());
+  // my_polynominal_temp = String(custom_polynom_temp.getValue()).toInt();
 
   validateInput(custom_name.getValue(), my_name);
   validateInput(custom_token.getValue(), my_token);
@@ -302,6 +320,8 @@ bool startConfiguration() {
     json["SSID"] = WiFi.SSID();
     json["PSK"] = WiFi.psk();
 
+    json["POLY"] = my_polynominal;
+    // json["POLYTEMP"] = my_polynominal_temp;
 
     File configFile = SPIFFS.open(CFGFILE, "w+");
     if (!configFile) {
@@ -335,6 +355,7 @@ bool uploadData(uint8_t service) {
     ubiclient.add("tilt", Tilt);
     ubiclient.add("temperature", Temperatur);
     ubiclient.add("battery", Volt);
+    ubiclient.add("gravity", Gravity);
     // This creates a new Device, only with TCP transmission
     ubiclient.setDataSourceName(my_name);
     return ubiclient.sendAll(false);
@@ -362,7 +383,8 @@ bool uploadData(uint8_t service) {
     genclient.add("angle", Tilt);
     genclient.add("temperature", Temperatur);
     genclient.add("battery", Volt);
-    
+    genclient.add("gravity", Gravity);
+
     if (service == DTTCP) {
       return genclient.sendTCP();
     } else {
@@ -377,6 +399,7 @@ bool uploadData(uint8_t service) {
   fhemclient.add("angle", Tilt);
   fhemclient.add("temperature", Temperatur);
   fhemclient.add("battery", Volt);
+  fhemclient.add("gravity", Gravity);
   return fhemclient.sendHTTP();
   }
 #endif // DATABASESYSTEM ==
@@ -386,6 +409,7 @@ bool uploadData(uint8_t service) {
   tcclient.add("T", Temperatur);
   tcclient.add("D", Tilt);
   tcclient.add("U", Volt);
+  tcclient.add("G", Gravity);
   return tcclient.send();
   }
 #endif // DATABASESYSTEM ==
@@ -563,6 +587,7 @@ void flash() {
   getAccSample();
   Tilt = calculateTilt();
   Temperatur = getTemperature(false);
+  Gravity = calculateGravity();
   requestTemp();
 }
 
@@ -582,6 +607,7 @@ bool isSafeMode(float _volt)  {
 void setup() {
 
   Serial.begin(115200);
+
   SerialOut("\nFW " FIRMWAREVERSION);
   SerialOut(ESP.getSdkVersion());
 
@@ -607,10 +633,102 @@ void setup() {
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
     }
 
-    flasher.attach(1, flash);
+
+    // double _tilt, _temp;
+    // te_variable vars[] = {{"tilt", &_tilt}, {"temp", &_temp}};
+
+    // int err;
+    // String txt = String(my_polynominal);
+    // Serial.println(txt);
+    // te_expr *expr = te_compile(txt.c_str(), vars, 2, &err);
+
+    // if (expr)
+    // {
+      
+    //   for (_tilt = 4; _tilt < 90; _tilt += 2)
+    //   {
+    //     Serial.print(String("tilt=") + _tilt + String(" = "));
+    //     // x = 5; y = 12;
+    //     const double h2 = te_eval(expr); /* Returns 13. */
+    //     Serial.println(h2);
+    //   }
+
+    //   uint8_t i = 0;
+    //   uint32_t start = micros();
+    //   for (_tilt = 4; _tilt < 90; _tilt += 2)
+    //   {
+    //     i++;
+    //     // Serial.print(String("tilt=") + _tilt + String(" = "));
+    //     // x = 5; y = 12;
+    //     const double h2 = te_eval(expr); /* Returns 13. */
+    //     // Serial.println(h2);
+    //   }
+    //   uint32_t end = micros();
+
+    //   Serial.println(String("took ") + String(end - start) + String("us for ") + String(i) + String("x =") + String((end - start)/i));
+    //       te_free(expr);
+    // }
+    // else
+    // {
+    //   Serial.printf("Parse error at %d\n", err);
+    // }
+
+  //  txt = String("0.00005759 * (temp - 4) ^ 3 - 0.00783198 * (temp - 4) ^ 2 - 0.00011688 * (temp - 4) + 999.97");
+  //   Serial.println(txt);
+  //   expr = te_compile(txt.c_str(), vars, 2, &err);
+
+  //   if (expr)
+  //   {
+
+  //     for (_temp = 0; _temp < 90; _temp += 2)
+  //     {
+  //       Serial.print(String("_temp=") + _temp + String(" = "));
+  //       // x = 5; y = 12;
+  //       const double h2 = te_eval(expr); /* Returns 13. */
+  //       Serial.println(h2);
+  //     }
+
+  //     uint8_t i = 0;
+  //     uint32_t start = micros();
+  //     for (_temp = 0; _temp < 90; _temp += 2)
+  //     {
+  //       i++;
+  //       // Serial.print(String("tilt=") + _tilt + String(" = "));
+  //       // x = 5; y = 12;
+  //       const double h2 = te_eval(expr); /* Returns 13. */
+  //       // Serial.println(h2);
+  //     }
+  //     uint32_t end = micros();
+
+    //   Serial.println(String("_temp took ") + String(end - start) + String("us for ") + String(i) + String("x =") + String((end - start) / i));
+    //   te_free(expr);
+
+    //   i = 0;
+    //   start = micros();
+    //   for (_temp = 0; _temp < 90; _temp += 2)
+    //   {
+    //     i++;
+    //     // Serial.print(String("tilt=") + _tilt + String(" = "));
+    //     // x = 5; y = 12;
+    //     const double h2 = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97; /* Returns 13. */
+    //     // Serial.println(h2);
+    //   }
+    //    end = micros();
+
+    //   Serial.println(String("_temp compiled took ") + String(end - start) + String("us for ") + String(i) + String("x =") + String((end - start) / i));
+    // }
+    // else
+    // {
+    //   Serial.printf("Parse error at %d\n", err);
+    // }
+
     
-    // rescue if wifi credentials lost because of power loss
-    if (!startConfiguration()) {
+
+        flasher.attach(1, flash);
+
+        // rescue if wifi credentials lost because of power loss
+        if (!startConfiguration())
+    {
       // test if ssid exists
       if (WiFi.SSID() == "" &&
           my_ssid != "" && my_psk != "") {
@@ -651,7 +769,19 @@ void setup() {
   // call as late as possible since DS needs converge time
   Temperatur = getTemperature(true);
   SerialOut(F("\towT: "), false);
-  SerialOut(Temperatur);
+  SerialOut(Temperatur, false);
+
+  // water anomaly correction
+  float _temp = Temperatur - 4; // polynominal at 4
+  float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
+  Tilt = Tilt * wfact / 1000;
+  SerialOut(F("\tcorrTilt: "), false);
+  SerialOut(Tilt, false);
+
+  // calc gravity on user defined polynominal
+  Gravity = calculateGravity();
+  SerialOut(F("\tGravity: "), false);
+  SerialOut(Gravity, true);
 
   unsigned long startedAt = millis();
   SerialOut(F("After waiting "), false);
@@ -689,4 +819,36 @@ bool connectBackupCredentials() {
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
   SerialOut(F("Rescue Wifi credentials"));
   delay(100);
+}
+
+float calculateGravity() {
+  double _tilt = Tilt;
+  float _gravity = 0;
+  te_variable vars[] = {{"tilt", &_tilt}};
+
+  int err;
+
+  te_expr *expr = te_compile(my_polynominal, vars, 2, &err);
+
+  if (expr)
+  {
+
+    _gravity = te_eval(expr); 
+    // Serial.println(_gravity);
+
+    // for (_tilt = 4; _tilt < 90; _tilt += 2)
+    // {
+    //   Serial.print(String("tilt=") + _tilt + String(" = "));
+    //   // x = 5; y = 12;
+    //   double h2 = te_eval(expr); /* Returns 13. */
+    //   Serial.println(h2);
+    // }
+    // Serial.println(String("took ") + String(end - start) + String("us for ") + String(i) + String("x =") + String((end - start)/i));
+    te_free(expr);
+    }
+    else
+    {
+      Serial.println(String("Parse error at ") + err);
+    }
+    return _gravity;
 }

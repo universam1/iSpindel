@@ -13,7 +13,7 @@
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>         //https://github.com/bblanchon/ArduinoJson
 
-#define JSONARRAY 150
+#define GHTTPJSONARRAY 200
 #define CONNTIMEOUT 3000
 
 typedef struct genValue {
@@ -28,14 +28,14 @@ class genericHTTP {
     bool sendHTTP();
     bool sendTCP();
     void add(char *variable_id, float value);
-    ~genericHTTP();
+    // ~genericHTTP();
     
  private:
     char* _device;
     char* _server;
     char* _url;
     uint16_t _port;
-    uint8_t maxValues;
+    const uint8_t ghmaxValues = 11;
     uint8_t currentValue;
     gValue * val;
     WiFiClient _client;

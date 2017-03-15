@@ -15,10 +15,12 @@
 #include "OneWire.h"
 #include "Wire.h"
 #include "I2Cdev.h"
+#include <Ticker.h>
+extern Ticker flasher;
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "4.1.7"
+#define FIRMWAREVERSION "5.0.1"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -63,7 +65,7 @@
 #define LOWBATT 3.3
 
 extern int16_t ax, ay, az;
-extern float Volt, Temperatur, Tilt;
+extern float Volt, Temperatur, Tilt, Gravity;
 
 extern MPU6050 accelgyro;
 

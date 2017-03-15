@@ -151,10 +151,91 @@ void WiFiManager::setupConfigPortal() {
   server->on("/scan", std::bind(&WiFiManager::handleScan, this));
   server->on("/mnt", std::bind(&WiFiManager::handleMnt, this));
   server->on("/offset", std::bind(&WiFiManager::handleOffset, this));
+  server->on("/update", HTTP_POST, std::bind(&WiFiManager::handleUpdateDone, this), std::bind(&WiFiManager::handleUpdating, this));
   server->onNotFound (std::bind(&WiFiManager::handleNotFound, this));
   server->begin(); // Web server start
   DEBUG_WM(F("HTTP server started"));
 
+}
+
+void WiFiManager::handleUpdating()
+{
+  // handler for the file upload, get's the sketch bytes, and writes
+  // them through the Update object
+
+    flasher.detach();
+
+  HTTPUpload &upload = server->upload();
+  if (upload.status == UPLOAD_FILE_START)
+  {
+    Serial.setDebugOutput(true);
+
+    WiFiUDP::stopAll();
+    Serial.printf("Update: %s\n", upload.filename.c_str());
+    uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+    if (!Update.begin(maxSketchSpace))
+    { //start with max available size
+      Update.printError(Serial);
+    }
+  }
+  else if (upload.status == UPLOAD_FILE_WRITE)
+  {
+    Serial.printf(".");
+    if (Update.write(upload.buf, upload.currentSize) != upload.currentSize)
+    {
+      Update.printError(Serial);
+    }
+  }
+  else if (upload.status == UPLOAD_FILE_END)
+  {
+    if (Update.end(true))
+    { //true to set the size to the current progress
+      Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+    }
+    else
+    {
+      Update.printError(Serial);
+    }
+    Serial.setDebugOutput(false);
+  }
+  else if (upload.status == UPLOAD_FILE_ABORTED)
+  {
+    Update.end();
+    Serial.println("Update was aborted");
+  }
+  delay(0);
+}
+
+void WiFiManager::handleUpdateDone()
+{
+  DEBUG_WM(F("Handle update done"));
+  if (captivePortal())
+  { // If caprive portal redirect instead of displaying the page.
+    return;
+  }
+  String page = FPSTR(HTTP_HEAD);
+  page.replace("{v}", "Options");
+  page += FPSTR(HTTP_SCRIPT);
+  page += FPSTR(HTTP_STYLE);
+  page += _customHeadElement;
+  page += FPSTR(HTTP_HEAD_END);
+  page += "<h1>";
+  page += _apName;
+  page += "</h1>";
+  if (Update.hasError())
+  {
+    page += FPSTR(HTTP_UPDATE_FAI);
+    Serial.println("update failed");
+  }
+  else
+  {
+    page += FPSTR(HTTP_UPDATE_SUC);
+    Serial.println("update done");
+  }
+  page += FPSTR(HTTP_END);
+  server->send(200, "text/html", page);
+  delay(1000); // send page
+  ESP.restart();
 }
 
 boolean WiFiManager::autoConnect() {
@@ -693,7 +774,7 @@ void WiFiManager::handleInfo() {
   page += _customHeadElement;
   page += FPSTR(HTTP_HEAD_END);
   page += F("<h2>WiFi Information</h2>");
-  page += F("Android app from <a href=\"https://play.google.com/store/apps/details?id=au.com.umranium.espconnect\">https://play.google.com/store/apps/details?id=au.com.umranium.espconnect</a> provides easier ESP WiFi configuration.<p/>");
+  // page += F("Android app from <a href=\"https://play.google.com/store/apps/details?id=au.com.umranium.espconnect\">https://play.google.com/store/apps/details?id=au.com.umranium.espconnect</a> provides easier ESP WiFi configuration.<p/>");
   reportStatus(page);
   page += F("<h3>Device Data</h3>");
   page += F("<table class=\"table\">");
@@ -787,14 +868,17 @@ void WiFiManager::handleiSpindel() {
   page += F("&deg;C</td></tr>");  
   page += F("<tr><td>Battery:</td><td>");
   page += Volt;
-  page += F("V</td></tr>");    
+  page += F("V</td></tr>");
+  page += F("<tr><td>Gravity:</td><td>");
+  page += Gravity;
+  page += F("</td></tr>");
   page += F("</table></h2>");
   page += F("<hr><dl>");
   page += F("<dt><h3>Firmware</h3></dt>");
   page += F("<dd>Version: ");
   page += FIRMWAREVERSION;
   page += F("</dd>");
-  page += F("<dd>Datum: ");
+  page += F("<dd>Date: ");
   page += __DATE__  " "  __TIME__;
   page += F("</dd></dl><br>Firmware update:<br><a href=\"https://universam1.github.io/iSpindel\">universam1.github.io/iSpindel</a><hr>");
   page += F("</dl>");
@@ -820,9 +904,21 @@ void WiFiManager::handleMnt() {
   // page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"5\">");
   page += FPSTR(HTTP_HEAD_END);
   page += F("<h1>Maintenance</h1><hr>");
+  page += F("<h2>Offset Calibration</h2><br>Before proceeding with calibration make sure the iSpindel is leveled exactly at 0&deg; horizontally and vertically, according to this picture:<br>");
+  page += FPSTR(HTTP_ISPINDEL_IMG);
 
-  page += F("<form action=\"/offset\" method=\"get\"><button class=\"btn\">calibrate Offset</button></form><br/>");
+  page += F("<br><form action=\"/offset\" method=\"get\"><button class=\"btn\">calibrate</button></form><br/>");
 
+  page += F("<hr><h2>Firmware Update</h2><br>Firmware updates:<br><a href=\"https://universam1.github.io/iSpindel\">universam1.github.io/iSpindel</a>");
+  page += F("Current Firmware installed:<br><dl>");
+  // page += F("<dt><h3>Firmware</h3></dt>");
+  page += F("<dd>Version: ");
+  page += FIRMWAREVERSION;
+  page += F("</dd>");
+  page += F("<dd>Date: ");
+  page += __DATE__ " " __TIME__;
+  page += F("</dd></dl><br>");
+  page += F("<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><br><input type='submit' class=\"btn\" value='update'></form>");
   page += FPSTR(HTTP_END);
 
   server->send(200, "text/html", page);
@@ -830,14 +926,16 @@ void WiFiManager::handleMnt() {
   DEBUG_WM(F("Sent iSpindel info page"));
 }
 
+
 /** Handle the info page */
 void WiFiManager::handleOffset() {
   DEBUG_WM(F("offset"));
 
+  flasher.detach();
+
   // we reset the timeout
   _configPortalStart = millis();
 
-  if (offset.getStatus() == "idle") offset.calibrate();
   server->sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   server->sendHeader("Pragma", "no-cache");
   server->sendHeader("Expires", "-1");
@@ -849,18 +947,21 @@ void WiFiManager::handleOffset() {
   page += _customHeadElement;
 
   if (offset.getStatus() != "done!") 
-    page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"5\">");
+    page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"120;url=http://192.168.4.1/\">");
   page += FPSTR(HTTP_HEAD_END);
   page += F("<h1>calibrate Offset</h1><hr>");
   page += F("<table>");
   page += F("<tr><td>");
-  page += offset.getStatus();
+  page += F("...calibration in progress...<br><h2>DO NOT MOVE OR SHAKE!</h2><br>It takes ~2min to complete. Once complete the iSpindel will restart and the blue LED will switch from continous to blinking");
+  // page += offset.getStatus();
   page += F("</td></tr>");    
   page += F("</table>");
   
   page += FPSTR(HTTP_END);
 
   server->send(200, "text/html", page);
+  if (offset.getStatus() == "idle") offset.calibrate();
+  ESP.reset();
 }
 
 /** Handle the state page */
