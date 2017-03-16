@@ -82,7 +82,7 @@ def handler(clientsock,addr):
                 battery = jinput['battery']
 		try:
 		   gravity = jinput['gravity']
-		except Exc as e:
+		except:
 		   # using old firmware < 5.0.1
 		   gravity = 0
                 # looks like everything went well :)
