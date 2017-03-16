@@ -9,7 +9,7 @@
  
   For the original project itself, see: https://github.com/universam1/iSpindel  
   
-  Tozzi (stephan@sschreiber.de), Feb 27 2017
+  Tozzi (stephan@sschreiber.de), Mar 15 2017
 */
 
 

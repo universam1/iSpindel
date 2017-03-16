@@ -132,7 +132,7 @@ def handler(clientsock,addr):
                 import mysql.connector
                 dbgprint(repr(addr) + ' - writing to database')
                 # standard field definitions:
-                fieldlist = ['Timestamp', 'Name', 'ID', 'Angle', 'Temperature', 'Battery', 'Gravity']
+                fieldlist = ['timestamp', 'name', 'ID', 'angle', 'temperature', 'battery', 'gravity']
                 valuelist = [datetime.now(), spindle_name, spindle_id, angle, temperature, battery, gravity]
                 # establish database connection
                 cnx = mysql.connector.connect(user=SQL_USER, password=SQL_PASSWORD, host=SQL_HOST, database=SQL_DB)
