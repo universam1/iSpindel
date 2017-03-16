@@ -5,7 +5,7 @@ CREATE TABLE `Data` (
        `Angle` double NOT NULL,
        `Temperature` double NOT NULL,
        `Battery` double NOT NULL,
-       `Gravity` double,
+       `Gravity` double NOT NULL DEFAULT 0,
 	PRIMARY KEY (`Timestamp`, `Name`, `ID`)
 	) 
 ENGINE=InnoDB DEFAULT CHARSET=ascii 
