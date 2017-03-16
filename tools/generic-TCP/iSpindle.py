@@ -1,10 +1,10 @@
 #!/usr/bin/env python2.7
 
-# Version: 0.2.1 - experimental (dynamically add fields to mysql data table)
+# Version: 1.0.0 - Firmware 5.0.1
 # Generic TCP Server for iSpindel (https://github.com/universam1/iSpindel)
 # Receives iSpindel data as JSON via TCP socket and writes it to a CSV file, Database and/or Ubidots
 # This is my first Python script ever, so please bear with me for now.
-# Stephan Schreiber <stephan@sschreiber.de>, 2017-02-02
+# Stephan Schreiber <stephan@sschreiber.de>, 2017-03-15
 
 from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
 from datetime import datetime
@@ -57,6 +57,7 @@ def handler(clientsock,addr):
     angle = 0.0
     temperature = 0.0
     battery = 0.0
+    gravity = 0.0
     while 1:
         data = clientsock.recv(BUFF)
         if not data: break  # client closed connection
@@ -79,6 +80,11 @@ def handler(clientsock,addr):
                 angle = jinput['angle']
                 temperature = jinput['temperature']
                 battery = jinput['battery']
+		try:
+		   gravity = jinput['gravity']
+		except:
+		   # using old firmware < 5.0.1
+		   gravity = 0
                 # looks like everything went well :)
                 clientsock.send(ACK)
                 success = True
@@ -110,7 +116,8 @@ def handler(clientsock,addr):
                     outstr += spindle_id + DELIMITER
                     outstr += str(angle) + DELIMITER
                     outstr += str(temperature) + DELIMITER
-                    outstr += str(battery)
+                    outstr += str(battery) + DELIMITER
+		    outstr += str(gravity)
                     if DATETIME == 1:
                         cdt = datetime.now()
                         outstr += DELIMITER + cdt.strftime('%x %X')
@@ -125,8 +132,8 @@ def handler(clientsock,addr):
                 import mysql.connector
                 dbgprint(repr(addr) + ' - writing to database')
                 # standard field definitions:
-                fieldlist = ['timestamp', 'name', 'ID', 'angle', 'temperature', 'battery']
-                valuelist = [datetime.now(), spindle_name, spindle_id, angle, temperature, battery]
+                fieldlist = ['timestamp', 'name', 'ID', 'angle', 'temperature', 'battery', 'gravity']
+                valuelist = [datetime.now(), spindle_name, spindle_id, angle, temperature, battery, gravity]
                 # establish database connection
                 cnx = mysql.connector.connect(user=SQL_USER, password=SQL_PASSWORD, host=SQL_HOST, database=SQL_DB)
                 cur = cnx.cursor()
@@ -177,7 +184,8 @@ def handler(clientsock,addr):
                 outdata = {
                     'tilt' : angle,
                     'temperature' : temperature,
-                    'battery' : battery
+                    'battery' : battery,
+		    'gravity' : gravity
                 }
                 out = json.dumps(outdata)
                 dbgprint(repr(addr) + ' - sending: ' + out)

@@ -9,7 +9,7 @@
  
   For the original project itself, see: https://github.com/universam1/iSpindel  
   
-  Tozzi (stephan@sschreiber.de), Feb 27 2017
+  Tozzi (stephan@sschreiber.de), Mar 15 2017
 */
 
 
@@ -51,6 +51,40 @@ function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=24)
   }
 }
 
+// Get values from database including gravity (Fw 5.0.1 required) for selected spindle, between now and timeframe in hours ago
+function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=24)
+{
+  $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle, gravity
+                          FROM Data
+                          WHERE Name = '".$iSpindleID."' AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) and Timestamp <= NOW()
+                          ORDER BY Timestamp ASC") or die(mysql_error());
+
+
+  // retrieve number of rows
+  $rows = mysql_num_rows($q_sql);
+  if ($rows > 0)
+  {
+    $valAngle = '';
+    $valTemperature = '';
+    $valGravity = '';
+
+    // retrieve and store the values as CSV lists for HighCharts
+    while($r_row = mysql_fetch_array($q_sql))
+    {
+      $jsTime = $r_row['unixtime'] * 1000;
+      $valAngle         .= '['.$jsTime.', '.$r_row['angle'].'],';
+      $valTemperature   .= '['.$jsTime.', '.$r_row['temperature'].'],';
+      $valGravity 	.= '['.$jsTime.', '.$r_row['gravity'].'],';
+    }
+
+    // remove last comma from each CSV
+    $valAngle         = delLastChar($valAngle);
+    $valTemperature   = delLastChar($valTemperature);
+    $valGravity	      = delLastChar($valGravity);
+    return array($valAngle, $valTemperature, $valGravity);
+  }
+}
+
 // Get current values (angle, temperature, battery)
 function getCurrentValues($iSpindleID='iSpindel000')
 {
@@ -72,7 +106,8 @@ function getCurrentValues($iSpindleID='iSpindel000')
 }
                         
 // Get calibrated values from database for selected spindle, between now and [number of hours] ago
-function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=24)
+// Old Method for Firmware before 5.x
+function getChartValuesPlato4($iSpindleID='iSpindel000', $timeFrameHours=24)
 {
     $isCalibrated = 0;  // is there a calbration record for this iSpindle?
     $valAngle = '';
