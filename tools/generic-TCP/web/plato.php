@@ -34,13 +34,6 @@ $(function ()
  
   $(document).ready(function() 
   {
-                    
-    if ('<?php echo $isCalib;?>' == '0')
-    {
-        document.write('<h2>iSpindel \'<?php echo $_GET['name'];?>\' ist nicht kalibriert.</h2>');
-    }
-    else
-    {
         Highcharts.setOptions({
               global: {
                   timezone: 'Europe/Berlin'
@@ -178,7 +171,6 @@ $(function ()
                 }
             ] //series      
             });
-    }
   });
 });
 </script>

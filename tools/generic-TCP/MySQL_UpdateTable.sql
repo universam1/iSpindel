@@ -1,1 +1,1 @@
-ALTER TABLE Data ADD Gravity double;
+ALTER TABLE Data ADD Gravity double NOT NULL DEFAULT 0;

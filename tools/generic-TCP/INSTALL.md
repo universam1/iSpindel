@@ -8,7 +8,7 @@ Um die neue Firmware einsetzen zu können, bitte das Skript auf die neueste Vers
 Falls die Datenbank schon besteht, muss in die Tabelle "Data" ein neues Feld eingefügt werden:
 
 	USE iSpindle;
-	ALTER TABLE Data ADD Gravity double;
+	ALTER TABLE Data ADD Gravity double NOT NULL DEFAULT 0;
 
 Bei einer Neuinstallation ist dies bereits im Folgenden berücksichtigt.
 

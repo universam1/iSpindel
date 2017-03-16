@@ -94,7 +94,7 @@ In order to create a table inside your MySQL database accordingly, use this SQL 
 		'Angle' double NOT NULL,
 		'Temperature' double NOT NULL,
 		'Battery' double NOT NULL,
-		'Gravity' double,
+		'Gravity' double NOT NULL,
 		PRIMARY KEY ('Timestamp', 'Name', 'ID')
 	) 
 	ENGINE=InnoDB DEFAULT CHARSET=ascii 

@@ -6,7 +6,7 @@
 If you already have this running and want to update to the new firmware, you'll need to add a new column to the Data table:
 
 	USE iSpindle;
-	ALTER TABLE Data ADD Gravity double;
+	ALTER TABLE Data ADD Gravity double NOT NULL DEFAULT 0;
 
 This is already taken into account if you newly install this and follow the instructions below.
 
