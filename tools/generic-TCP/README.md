@@ -1,5 +1,5 @@
-#genericTCP
-####(iSpindle.py Version 0.2.1)
+# genericTCP
+#### (iSpindle.py Version 0.2.1)
 
 [English Version](README_en.md)
 
@@ -40,9 +40,9 @@ Mit `chmod 755 iSpindle.py` macht man es ausführbar und startet es mit `./iSpin
 Alternativ (z.B. unter Windows) startet man es mit `python iSpindle.py`.
 Wenn alles funktioniert, beendet man das Skript, setzt `DEBUG = 0` und startet es im Hintergrund neu mit `./iSpindle.py &`.
 
-###Konfiguration:
+### Konfiguration:
 
-####Allgemeines:
+#### Allgemeines:
 
 	DEBUG = 0      
 	PORT = 9501    
@@ -55,7 +55,7 @@ Falls der TCP **Port** 9501 bereits belegt ist (was unwahrscheinlich ist), kann 
 Am besten lässt man das auf der Voreinstellung, also keine Einschränkungen.    
 Von außerhalb des eigenen Netzwerks ist Port 9501 normalerweise sowieso nicht zu erreichen, es sei denn man konfiguriert den Router entsprechend (Port Forwarding).
 
-####CSV:
+#### CSV:
 
 	CSV = 0
 	OUTPATH = '/home/pi/iSpindel'
@@ -71,7 +71,7 @@ Wenn OUTPATH im Netzwerk freigegeben ist kann man sehr leicht eine solche Datei 
 Für UNIX Systeme (Linux, Mac OS X) wählt man besser '\n'.   
 **DATETIME** legt fest, ob das aktuelle Datum und Uhrzeit mit in die CSV Datei geschrieben werden sollen. Normalerweise dürfte das der Fall sein.
 
-####MySQL
+#### MySQL
 
 	SQL = 1
 	SQL_HOST = '127.0.0.1'
@@ -111,7 +111,7 @@ Hierzu wird **ENABLE\_ADDCOLS** = 1 gesetzt. Für den Normalbetrieb ist egal, ob
 Falls der Server nach außen offen ist (z.B. extern gehostet), empfehle ich aber (in dieser Version des Skripts) ENABLE\_ADDCOLS auf 0 zu setzen um eventuelle SQL Injections zu verhindern(!).
 
 
-####Ubidots Anbindung
+#### Ubidots Anbindung
 
 	UBIDOTS = 1
 	UBI_TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'

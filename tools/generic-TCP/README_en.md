@@ -1,5 +1,5 @@
-#genericTCP
-####(iSpindle.py Version 0.2.1)
+# genericTCP
+#### (iSpindle.py Version 0.2.1)
 
 [Install Instructions](INSTALL_en.md)      
 [Charts](web/README_en.md)
@@ -39,9 +39,9 @@ Alternatively (or when using Windows), you can start it by typing `python iSpind
 Once it all works, set DEBUG to 0, restart it in the background and enjoy.
 
 
-###Configuration:
+### Configuration:
 
-####General:
+#### General:
 
 	DEBUG = 0      
 	PORT = 9501    
@@ -55,7 +55,7 @@ If TCP **Port** is already in use (unlikely), you can change it here to another 
 Port 9501 is usually not reachable from the (potentially hostile) outside unless you are explicitly forwarding it through your router (firewall settings: port forwarding), so, no worries there, usually.
 And if you've read this far, you'll probably know what you're doing, anyway... ;)
 
-####CSV:
+#### CSV:
 
 	CSV = 0
 	OUTPATH = '/home/pi/iSpindel'
@@ -70,7 +70,7 @@ Set **CSV** to 1 if you want CSV files to be generated.
 **DATETIME** should be left at its default setting of 1, unless for some reason you don't want timestamps being added to the data output.
 
 
-####MySQL
+#### MySQL
 
 	SQL = 1
 	SQL_HOST = '127.0.0.1'
@@ -113,7 +113,7 @@ In its current version I cannot guarantee the script is not vulnerable to SQL In
 If unsure, set it to 0.
 
 
-####Ubidots Forwarding
+#### Ubidots Forwarding
 
 	UBIDOTS = 1
 	UBI_TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
