@@ -12,7 +12,7 @@ include_once("include/common_db_query.php");
 if(!isset($_GET['hours'])) $_GET['hours'] = 24; else $_GET['hours'] = $_GET['hours'];
 if(!isset($_GET['name'])) $_GET['name'] = 'iSpindel000'; else $_GET['name'] = $_GET['name'];
 
-list($angle, $temperature, $dens) = getChartValuesPlato($_GET['name'], $_GET['hours']);
+list($isCalib, $dens, $temperature, $angle) = getChartValuesPlato4($_GET['name'], $_GET['hours']);
 
 ?>
 
@@ -34,6 +34,13 @@ $(function ()
  
   $(document).ready(function() 
   {
+                    
+    if ('<?php echo $isCalib;?>' == '0')
+    {
+        document.write('<h2>iSpindel \'<?php echo $_GET['name'];?>\' ist nicht kalibriert.</h2>');
+    }
+    else
+    {
         Highcharts.setOptions({
               global: {
                   timezone: 'Europe/Berlin'
@@ -171,6 +178,7 @@ $(function ()
                 }
             ] //series      
             });
+    }
   });
 });
 </script>
