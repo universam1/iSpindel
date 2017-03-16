@@ -1,5 +1,5 @@
 # genericTCP
-#### (iSpindle.py Version 0.2.1)
+#### (iSpindle.py Version 1.0.0)
 
 [English Version](README_en.md)
 
