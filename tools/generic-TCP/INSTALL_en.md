@@ -1,7 +1,16 @@
-#Installation Guide for Raspbian 
-###Step-by-Step
+# Installation Guide for Raspbian 
+### Step-by-Step
 
-###Preliminary Remarks:
+
+### Update to Firmware 5.x:
+If you already have this running and want to update to the new firmware, you'll need to add a new column to the Data table:
+
+	USE iSpindle;
+	ALTER TABLE Data ADD Gravity double NOT NULL DEFAULT 0;
+
+This is already taken into account if you newly install this and follow the instructions below.
+
+### Preliminary Remarks:
 
 These recommended software requirements might seem like overkill, but this solution is highly flexible and wide open for future enhancements.    
 Most Raspberry owners will use Raspbian, but you should be able to get this to work just fine under any other Linux based distribution.    
@@ -10,8 +19,8 @@ I am using MySQL and Apache because they're quite standard and there's a lot of 
 The whole install will use roughly 5 GB on the sd card, so a 8 GB one should suffice, 16 GB being just perfect.
 If you don't need phpmyadmin and the visualization charts you can safely omit both mySql and Apache, of course.
 
-###Prepare Raspbian 
-- raspi-config: activate ssh, establish network connection (via Ethernet or WiFi). You'll probably need a keyboard and an HDMI capable display for this step.      
+### Prepare Raspbian 
+- raspi-config: activate ssh, establish network connection (via Ethernet or WiFi). You'll probably need a keyboard and an HDMI capable display for this step. Or you create an empty file called "ssh" in the boot directory of the SD card prior to booting the Raspi from it.
 - connect via putty (Windows) or Terminal and SSH (Mac OS X, Linux):
 ```           
    ssh pi@[ip-address or hostname] 
@@ -22,9 +31,9 @@ Update your system:
 	sudo apt-get update
 	sudo apt-get dist-upgrade
 
-###MySQL, Apache2 and phpMyAdmin database GUI 
+### MySQL, Apache2 and phpMyAdmin database GUI 
 
-####Install:
+#### Install:
 
 	sudo apt-get install apache2 mysql-server mysql-client php5-mysql python-mysql.connector
 
@@ -42,11 +51,11 @@ You can now complete the following steps either by using phpmyadmin (logging in 
 You'll have to enter the root user's password again.    
 Now you should see a **mysql>** prompt.
 
-####Create and Select the Database:
+#### Create and Select the Database:
 	CREATE DATABASE iSpindle;
 	USE iSpindle;
 
-####Create Tables:
+#### Create Tables:
 
 If you wish to use the charts with density calibration, you should create both tables now.    
 [Here](./MySQL_CreateTables.sql) you can find scripts with both definitions.
@@ -59,13 +68,17 @@ Otherwise, the main data table will suffice:
  		`Angle` double NOT NULL,
  		`Temperature` double NOT NULL,
  		`Battery` double NOT NULL,
+<<<<<<< HEAD
 		`ResetFlag` boolean,
+=======
+		`Gravity` double NOT NULL DEFAULT 0,
+>>>>>>> refs/remotes/universam1/master
  	PRIMARY KEY (`Timestamp`,`Name`,`ID`)
 	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data'
 
 The field "ID" stores the iSpindle's unique hardware ID, which we'll need in order to use calibration.
 
-####Create a Database User, Grant Permissions, Set Password):
+#### Create a Database User, Grant Permissions, Set Password):
 
 	CREATE USER 'iSpindle' IDENTIFIED BY 'password';
 	GRANT USAGE ON *.* TO 'iSpindle';
@@ -76,11 +89,11 @@ Configure it as explained here: [README](./README_en.md).
 See section below on how to install it.
 
 
-###Optional: Install Samba (Recommended):
+### Optional: Install Samba (Recommended):
 
 	sudo apt-get install samba samba-common-bin
 
-####Share pi User's Home Directory and Log Files:
+#### Share pi User's Home Directory and Log Files:
 
 /etc/samba/smb.conf:
 
@@ -120,14 +133,14 @@ See section below on how to install it.
     	force user = root
     	browseable = yes
 
-####Start Samba Daemon:
+#### Start Samba Daemon:
 
 	sudo insserv smbd
 	sudo service smbd start
 
 The pi user's home and system log directories are now being shared and you should be able to see them in Explorer/Finder.
 
-###Install the Python Server Script for genericTCP:
+### Install the Python Server Script for genericTCP:
 Configure the script as explained here: [README](./README_en.md).
 If you're not too familiar with Unix and the shell, you could follow this guide below:
 

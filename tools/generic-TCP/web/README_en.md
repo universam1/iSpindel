@@ -1,4 +1,4 @@
-#Charts From Local Server 
+# Charts From Local Server 
 
 While exporting CSVs or directly accessing the database via ODBC from, for example, Excel, is fine for data analysis, we'll definitely also want a quick way to take a glance at the current fermentation.
 So, here are a few essential charts, developed using [highcharts](http://www.highcharts.com), browser accessible.
@@ -8,10 +8,11 @@ We'll need a working [install](../INSTALL_en.md) of the backend, including mySQL
 
 My goal was to implement a solution as simple yet effective as possible.
 
-I've implemented these 4 basic charts:
+I've implemented these basic charts:
 
 * angle.php - tilt and temperature over the past x hours
-* plato.php - gravity and temperature over the past x hours (calibration record required as explained below)
+* plato4.php - deprecated as per firmware 5.x - gravity and temperature over the past x hours (calibration record required as explained below)
+* plato.php - gravity and temperature over the past x hours, requires firmware 5.x
 * battery.php - current battery voltage
 * status.php - battery, tilt and temperature of the specified iSpindle
 
@@ -29,8 +30,8 @@ I am aware that there's probably a ton of things I could have solved more elegan
 Contributions are by all means welcome. Looking forward!
 
 
-###A Few Hints Regarding Installation:
-####Apache2:
+### A Few Hints Regarding Installation:
+#### Apache2:
 In order for apache to "see" the charts, they'll have to be somewhere in **/var/www/html**.
 (This might vary in distributions other than Raspbian).
 I achieve that by simply creating a symlink there, pointing towards my work directory.
@@ -38,7 +39,7 @@ I achieve that by simply creating a symlink there, pointing towards my work dire
       cd /var/www/html    
       sudo ln -s ~/iSpindel/tools/genericTCP/web/ iSpindle
 
-####Database Interface:
+#### Database Interface:
 You'll need to configure the database connection, found in include/common_db.php, so edit this file section:
 
       // configure your database connection here:
@@ -47,8 +48,12 @@ You'll need to configure the database connection, found in include/common_db.php
       define('DB_USER',"iSpindle");
       define('DB_PASSWORD',"password");
 
-####Calibration (Angle:Gravity)
-Before you can use plato.php to display the calculated gravity (%w/w) in Plato degrees, you'll need enter the [calibration results](../../../docs/Calibration_en.md) and add them to the database.      
+#### Calibration (Angle:Gravity)
+Note: This is deprecated as per firmware 5.0.1.      
+The iSpindle now has its own algorithm for density/gravity output.      
+The following applies if you are still using an older firmware version.      
+
+Before you can use plato4.php to display the calculated gravity (%w/w) in Plato degrees, you'll need enter the [calibration results](../../../docs/Calibration_en.md) and add them to the database.      
 The reference being used is the spindle's unique hardware id, stored as "ID" in the 'Data' table.    
 First, if you haven't done that before, you'll need to create a second table now:
      

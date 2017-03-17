@@ -1,9 +1,18 @@
-#Installationsanleitung für Raspberry Pi (Raspbian)
-###Schritt-für-Schritt
+# Installationsanleitung für Raspberry Pi (Raspbian)
+### Schritt-für-Schritt
 
 [English Version](INSTALL_en.md)
 
-###Vorbemerkung:
+### Update auf Firmware Version 5.x:
+Um die neue Firmware einsetzen zu können, bitte das Skript auf die neueste Version aktualisieren.     
+Falls die Datenbank schon besteht, muss in die Tabelle "Data" ein neues Feld eingefügt werden:
+
+	USE iSpindle;
+	ALTER TABLE Data ADD Gravity double NOT NULL DEFAULT 0;
+
+Bei einer Neuinstallation ist dies bereits im Folgenden berücksichtigt.
+
+### Vorbemerkung:
 Es mag so aussehen, als würde hier viel zu viel Ballast installiert, das geht alles auch schlanker.
 Stimmt.
 Aber die meisten werden ja Raspbian verwenden, und das ist schon so aufgebläht dass ich da kein schlechtes Gewissen habe, noch Apache, Samba und MySQL mit draufzupacken.
@@ -11,8 +20,9 @@ Der Raspi 3 schafft das sowieso problemlos, aber auch die kleineren Modelle soll
 Die ganze Installation braucht gute 5GB, also eine SD mit 8 GB sollte reichen, ab 16GB reicht der Speicherplatz auf jeden Fall.
 Wer auf die Diagramme und auf phpmyadmin verzichten will, also auf die Möglichkeit, die Datenbank mit einer html Oberfläche zu administrieren, kann den Apache2 und phpmyadmin auch weglassen.
 
-###Raspbian vorbereiten
+### Raspbian vorbereiten
 - raspi-config: ssh einschalten, Netzwerkverbindung herstellen (hierfür braucht man einmalig eine Tastatur und einen HDMI Bildschirm)             
+- Oder: Beim Vorbereiten der SD Karte im /boot Verzeichnis eine leere Datei "ssh" anlegen. Dann kann man sich direkt über einen anderen Rechner im Netzwerk per SSH einloggen und braucht weder Bildschirm noch Tastatur am Raspi.
 - Verbinden mit putty (Windows) oder Terminal (Mac OS X, Linux) und ssh:
 
 	ssh pi@[ip-adresse oder hostname] 
@@ -23,9 +33,9 @@ System auf neuesten Stand bringen:
 	sudo apt-get update
 	sudo apt-get dist-upgrade
 
-###MySQL Datenbank, Apache2 Webserver und phpMyAdmin Datenbank GUI 
+### MySQL Datenbank, Apache2 Webserver und phpMyAdmin Datenbank GUI 
 
-####Installieren:
+#### Installieren:
 
 	sudo apt-get install apache2 mysql-server mysql-client php5-mysql python-mysql.connector
 
@@ -43,11 +53,11 @@ Die folgenden Schritte lassen sich über phpadmin im Browser erledigen (dazu als
 Ihr werdet aufgefordert, das obige Passwort wieder einzugeben.        
 Danach landet Ihr auf einem **mysql>** Prompt.
 
-####Datenbank erstellen und auswählen:
+#### Datenbank erstellen und auswählen:
 	CREATE DATABASE iSpindle;
 	USE iSpindle;
 
-####Tabelle(n) anlegen:
+#### Tabelle(n) anlegen:
 
 Am besten gleich beide Tabellen (Daten und Kalibrierung) anlegen.       
 [Hier](./MySQL_CreateTables.sql) ist ein [SQL Skript](./MySQL_CreateTables.sql) für beide.        
@@ -60,13 +70,17 @@ Die Datentabelle folgt diesem Schema:
  		`Angle` double NOT NULL,
  		`Temperature` double NOT NULL,
  		`Battery` double NOT NULL,
+<<<<<<< HEAD
 		`ResetFlag` boolean,
+=======
+		`Gravity` double NOT NULL DEFAULT 0,
+>>>>>>> refs/remotes/universam1/master
  	PRIMARY KEY (`Timestamp`,`Name`,`ID`)
 	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data'
 
 (Im Feld ID wird die Hardware ID abgelegt, welche wir zum Hinterlegen der Kalibrierung benötigen.)     
 
-####Benutzer anlegen und berechtigen (und ihm ein eigenes Passwort geben):
+#### Benutzer anlegen und berechtigen (und ihm ein eigenes Passwort geben):
 
 	CREATE USER 'iSpindle' IDENTIFIED BY 'xxxxxxxxxx';
 	GRANT USAGE ON *.* TO 'iSpindle';
@@ -76,11 +90,11 @@ Ab sofort steht die MySQL Datenbank für die iSpindel zur Verfügung.
 Das Server Skript hierzu wie im [README](./README.md) beschrieben anpassen und neu starten.
 
 
-###Optional: Samba installieren (empfohlen):
+### Optional: Samba installieren (empfohlen):
 
 	sudo apt-get install samba samba-common-bin
 
-####Home Verzeichnis im Netzwerk freigeben:
+#### Home Verzeichnis im Netzwerk freigeben:
 
 /etc/samba/smb.conf:
 
@@ -120,14 +134,14 @@ Das Server Skript hierzu wie im [README](./README.md) beschrieben anpassen und n
     	force user = root
     	browseable = yes
 
-####Samba daemon (smbd) starten
+#### Samba daemon (smbd) starten
 
 	sudo insserv smbd
 	sudo service smbd start
 
 Das pi Home Verzeichnis ist nun im Heimnetzwerk freigegeben und Ihr könnt es im Explorer/Finder Eures Computers sehen.
 
-###Das genericTCP Skript installieren
+### Das genericTCP Skript installieren
 Zunächst das Skript konfigurieren, wie im README beschrieben.    
 Die Dateien iSpindle.py und ispindle-srv in das mit Samba freigegebene Verzeichnis kopieren.    
 Dann wieder auf dem Raspi im ssh Terminal eingeben:
