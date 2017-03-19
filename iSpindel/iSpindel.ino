@@ -534,7 +534,7 @@ float getTemperature(bool block = false) {
       SerialOut(F("ERROR: OW DISCONNECTED"));
       pinMode(ONE_WIRE_BUS, OUTPUT);
       digitalWrite(ONE_WIRE_BUS, LOW);
-      delay(200);
+      delay(100);
       // digitalWrite(ONE_WIRE_BUS, HIGH);
       // delay(500);
       oneWire.reset();
