@@ -6,6 +6,13 @@ iSpindel | iSpindle
 
 ***
 
+If you like that project please vote for the [Hackaday.io *2017 Prize List*](https://hackaday.io/project/20421-ispindel)
+===================
+
+Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/
+
+***
+
 ## Documentation in other languages
 
 ### [English Documentation (work in progress)](docs/README_en.md) :us:
@@ -20,6 +27,7 @@ iSpindel | iSpindle
 
 ## News
 
+> 01.03.2017 Mentioned in hackaday.com http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/   
 > 23.02.17 English documentation added   
 > 14.02.17 English documentation added   
 > 09.02.17 Firmware 4.1.6   
