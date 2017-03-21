@@ -37,7 +37,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #endif          // !DEBUG 1
 
 // definitions go here
-MPU6050 accelgyro;
+MPU6050_Base accelgyro;
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature DS18B20(&oneWire);
 DeviceAddress tempDeviceAddress;
@@ -45,6 +45,27 @@ Ticker flasher;
 RunningMedian samples = RunningMedian(MEDIANROUNDS);
 
 DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
+
+#ifdef USE_DMP
+#include "MPU6050.h"
+
+// MPU control/status vars
+bool dmpReady = false;  // set true if DMP init was successful
+uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
+uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
+uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+uint16_t fifoCount;     // count of all bytes currently in FIFO
+uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+// orientation/motion vars
+Quaternion q;        // [w, x, y, z]         quaternion container
+VectorInt16 aa;      // [x, y, z]            accel sensor measurements
+VectorInt16 aaReal;  // [x, y, z]            gravity-free accel sensor measurements
+VectorInt16 aaWorld; // [x, y, z]            world-frame accel sensor measurements
+VectorFloat gravity; // [x, y, z]            gravity vector
+float euler[3];      // [psi, theta, phi]    Euler angle container
+float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+#endif
 
 bool shouldSaveConfig = false;
 
@@ -65,7 +86,7 @@ uint32_t DSreqTime;
 float pitch, roll;
 
 int16_t ax, ay, az;
-float Volt, Temperatur, Tilt, Gravity;
+float Volt, Temperatur, Tilt, Gravity, corrGravity ;
 
 bool DSrequested = false;
 
@@ -132,19 +153,15 @@ bool readConfig() {
             strcpy(my_url, json["URL"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
-
-          // if (json.containsKey("SSID"))
-          //   strcpy(my_ssid, json["SSID"]);
-          // if (json.containsKey("PSK"))
-          //   strcpy(my_psk, json["PSK"]);
+            
           if (json.containsKey("SSID"))
             my_ssid = json["SSID"].asString();
           if (json.containsKey("PSK"))
             my_psk = json["PSK"].asString();
           if (json.containsKey("POLY"))
             strcpy(my_polynominal, json["POLY"]);
-          // if (json.containsKey("POLYTEMP"))
-          //   my_polynominal_temp =  json["POLYTEMP"];
+          else
+            strcpy(my_polynominal, "-0.000305574*tilt^2+0.556985728*tilt-14.05426013");
 
           SerialOut(F("parsed config:"));
           if (isDebugEnabled)
@@ -353,6 +370,7 @@ bool uploadData(uint8_t service) {
   if (service == DTUbiDots) {
     Ubidots ubiclient(my_token, my_name);
     ubiclient.add("tilt", Tilt);
+    ubiclient.add("corrGravity", corrGravity);
     ubiclient.add("temperature", Temperatur);
     ubiclient.add("battery", Volt);
     ubiclient.add("gravity", Gravity);
@@ -494,6 +512,11 @@ void initAccel() {
   accelgyro.initialize();
   accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
   accelgyro.setTempSensorEnabled(true);
+#ifdef USE_DMP
+  accelgyro.setDMPEnabled(true);
+  packetSize = accelgyro.dmpGetFIFOPacketSize();
+#endif
+
 }
 
 float calculateTilt() {
@@ -633,97 +656,6 @@ void setup() {
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
     }
 
-
-    // double _tilt, _temp;
-    // te_variable vars[] = {{"tilt", &_tilt}, {"temp", &_temp}};
-
-    // int err;
-    // String txt = String(my_polynominal);
-    // Serial.println(txt);
-    // te_expr *expr = te_compile(txt.c_str(), vars, 2, &err);
-
-    // if (expr)
-    // {
-      
-    //   for (_tilt = 4; _tilt < 90; _tilt += 2)
-    //   {
-    //     Serial.print(String("tilt=") + _tilt + String(" = "));
-    //     // x = 5; y = 12;
-    //     const double h2 = te_eval(expr); /* Returns 13. */
-    //     Serial.println(h2);
-    //   }
-
-    //   uint8_t i = 0;
-    //   uint32_t start = micros();
-    //   for (_tilt = 4; _tilt < 90; _tilt += 2)
-    //   {
-    //     i++;
-    //     // Serial.print(String("tilt=") + _tilt + String(" = "));
-    //     // x = 5; y = 12;
-    //     const double h2 = te_eval(expr); /* Returns 13. */
-    //     // Serial.println(h2);
-    //   }
-    //   uint32_t end = micros();
-
-    //   Serial.println(String("took ") + String(end - start) + String("us for ") + String(i) + String("x =") + String((end - start)/i));
-    //       te_free(expr);
-    // }
-    // else
-    // {
-    //   Serial.printf("Parse error at %d\n", err);
-    // }
-
-  //  txt = String("0.00005759 * (temp - 4) ^ 3 - 0.00783198 * (temp - 4) ^ 2 - 0.00011688 * (temp - 4) + 999.97");
-  //   Serial.println(txt);
-  //   expr = te_compile(txt.c_str(), vars, 2, &err);
-
-  //   if (expr)
-  //   {
-
-  //     for (_temp = 0; _temp < 90; _temp += 2)
-  //     {
-  //       Serial.print(String("_temp=") + _temp + String(" = "));
-  //       // x = 5; y = 12;
-  //       const double h2 = te_eval(expr); /* Returns 13. */
-  //       Serial.println(h2);
-  //     }
-
-  //     uint8_t i = 0;
-  //     uint32_t start = micros();
-  //     for (_temp = 0; _temp < 90; _temp += 2)
-  //     {
-  //       i++;
-  //       // Serial.print(String("tilt=") + _tilt + String(" = "));
-  //       // x = 5; y = 12;
-  //       const double h2 = te_eval(expr); /* Returns 13. */
-  //       // Serial.println(h2);
-  //     }
-  //     uint32_t end = micros();
-
-    //   Serial.println(String("_temp took ") + String(end - start) + String("us for ") + String(i) + String("x =") + String((end - start) / i));
-    //   te_free(expr);
-
-    //   i = 0;
-    //   start = micros();
-    //   for (_temp = 0; _temp < 90; _temp += 2)
-    //   {
-    //     i++;
-    //     // Serial.print(String("tilt=") + _tilt + String(" = "));
-    //     // x = 5; y = 12;
-    //     const double h2 = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97; /* Returns 13. */
-    //     // Serial.println(h2);
-    //   }
-    //    end = micros();
-
-    //   Serial.println(String("_temp compiled took ") + String(end - start) + String("us for ") + String(i) + String("x =") + String((end - start) / i));
-    // }
-    // else
-    // {
-    //   Serial.printf("Parse error at %d\n", err);
-    // }
-
-    
-
         flasher.attach(1, flash);
 
         // rescue if wifi credentials lost because of power loss
@@ -747,7 +679,58 @@ void setup() {
   if (isSafeMode(Volt)) WiFi.setOutputPower(0);
   else WiFi.setOutputPower(20.5);
 
+#ifndef USE_DMP
   Tilt = getTilt();
+#else
+while (fifoCount < packetSize) {
+    //do stuff
+    Serial.println("wait DMP");
+    
+ fifoCount = accelgyro.getFIFOCount();
+  }
+  if (fifoCount == 1024) {
+    Serial.println("FIFO overflow");
+    accelgyro.resetFIFO();
+  }
+  else
+  {
+    fifoCount = accelgyro.getFIFOCount();
+
+    accelgyro.getFIFOBytes(fifoBuffer, packetSize);
+
+    accelgyro.resetFIFO();
+
+    fifoCount -= packetSize;
+
+    accelgyro.dmpGetQuaternion(&q, fifoBuffer);
+    accelgyro.dmpGetEuler(euler, &q);
+
+    /*     
+      for (int i = 1; i < 64; i++) {
+        Serial.print(fifoBuffer[i]);
+        Serial.print(" ");
+      }
+   */
+
+    Serial.print("euler\t");
+    Serial.print((euler[0] * 180 / M_PI));
+    Serial.print("\t");
+    Serial.print(euler[1] * 180 / M_PI);
+    Serial.print("\t");
+    Serial.println(euler[2] * 180 / M_PI);
+
+    ax = euler[0];
+    ay = euler[2];
+    az = euler[1];
+
+    float _ax = ax;
+    float _ay = ay;
+    float _az = az;
+    float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
+    float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
+    Tilt=  sqrt(pitch * pitch + roll * roll);
+  }
+#endif
 
   Temperatur = accelgyro.getTemperature() / 340.00 + 36.53;
   accelgyro.setSleepEnabled(true);
@@ -771,17 +754,17 @@ void setup() {
   SerialOut(F("\towT: "), false);
   SerialOut(Temperatur, false);
 
-  // water anomaly correction
-  float _temp = Temperatur - 4; // polynominal at 4
-  float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
-  Tilt = Tilt * wfact / 1000;
-  SerialOut(F("\tcorrTilt: "), false);
-  SerialOut(Tilt, false);
-
   // calc gravity on user defined polynominal
   Gravity = calculateGravity();
   SerialOut(F("\tGravity: "), false);
-  SerialOut(Gravity, true);
+  SerialOut(Gravity, false);
+
+  // water anomaly correction
+  float _temp = Temperatur - 4; // polynominal at 4
+  float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
+  corrGravity = Gravity - (1 - wfact / 1000) * 100;
+  SerialOut(F("\tcorrGravity: "), false);
+  SerialOut(corrGravity, true);
 
   unsigned long startedAt = millis();
   SerialOut(F("After waiting "), false);
@@ -823,8 +806,9 @@ bool connectBackupCredentials() {
 
 float calculateGravity() {
   double _tilt = Tilt;
+  double _temp = Temperatur;
   float _gravity = 0;
-  te_variable vars[] = {{"tilt", &_tilt}};
+  te_variable vars[] = {{"tilt", &_tilt} ,{"temp", &_temp}};
 
   int err;
 

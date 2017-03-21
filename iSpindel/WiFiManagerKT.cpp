@@ -904,7 +904,7 @@ void WiFiManager::handleMnt() {
   // page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"5\">");
   page += FPSTR(HTTP_HEAD_END);
   page += F("<h1>Maintenance</h1><hr>");
-  page += F("<h2>Offset Calibration</h2><br>Before proceeding with calibration make sure the iSpindel is leveled exactly at 0&deg; horizontally and vertically, according to this picture:<br>");
+  page += F("<h2>Offset Calibration</h2><br>Before proceeding with calibration make sure the iSpindel is leveled flat, exactly at 0&deg; horizontally and vertically, according to this picture:<br>");
   page += FPSTR(HTTP_ISPINDEL_IMG);
 
   page += F("<br><form action=\"/offset\" method=\"get\"><button class=\"btn\">calibrate</button></form><br/>");

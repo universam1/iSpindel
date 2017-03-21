@@ -10,17 +10,24 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
+//#define USE_DMP false
 #include <Arduino.h>
+#ifdef USE_DMP
+#include "MPU6050_6Axis_MotionApps20.h"
+// #include "I2Cdev.h"
+#else
+#include "I2Cdev.h"
 #include "MPU6050.h"
+#endif
 #include "OneWire.h"
 #include "Wire.h"
-#include "I2Cdev.h"
 #include <Ticker.h>
 extern Ticker flasher;
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "5.0.1"
+#define FIRMWAREVERSION "5.0.4"
+
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -67,6 +74,6 @@ extern Ticker flasher;
 extern int16_t ax, ay, az;
 extern float Volt, Temperatur, Tilt, Gravity;
 
-extern MPU6050 accelgyro;
+extern MPU6050_Base accelgyro;
 
 #endif
