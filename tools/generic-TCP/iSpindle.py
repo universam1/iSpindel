@@ -1,6 +1,5 @@
 #!/usr/bin/env python2.7
 
-
 # Generic TCP Server for iSpindel (https://github.com/universam1/iSpindel)
 # Version: 1.0.1 
 # Now Supports Firmware 5.0.1 
@@ -9,7 +8,6 @@
 # Receives iSpindel data as JSON via TCP socket and writes it to a CSV file, Database and/or Ubidots
 # This is my first Python script ever, so please bear with me for now.
 # Stephan Schreiber <stephan@sschreiber.de>, 2017-03-15
-
 
 from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
 from datetime import datetime
