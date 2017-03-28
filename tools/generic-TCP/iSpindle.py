@@ -1,10 +1,15 @@
 #!/usr/bin/env python2.7
 
-# Version: 1.0.0 - Firmware 5.0.1
+
 # Generic TCP Server for iSpindel (https://github.com/universam1/iSpindel)
+# Version: 1.0.1 
+# Now Supports Firmware 5.0.1 
+# Pre-Configured for Ready-to-Use Raspbian Image
+#
 # Receives iSpindel data as JSON via TCP socket and writes it to a CSV file, Database and/or Ubidots
 # This is my first Python script ever, so please bear with me for now.
 # Stephan Schreiber <stephan@sschreiber.de>, 2017-03-15
+
 
 from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
 from datetime import datetime
@@ -14,7 +19,7 @@ import json
 # CONFIG Start
 
 # General
-DEBUG = 1                               # Set to 1 to enable debug output on console
+DEBUG = 0                               # Set to 1 to enable debug output on console
 PORT = 9501                             # TCP Port to listen to
 HOST = '0.0.0.0'                        # Allowed IP range. Leave at 0.0.0.0 to allow connections from anywhere
 
@@ -26,16 +31,16 @@ NEWLINE='\r\n'                          # newline (\r\n for windows clients)
 DATETIME = 1                            # Leave this at 1 to include Excel compatible timestamp in CSV
 
 # MySQL
-SQL = 0                                 # 1 to enable output to MySQL database
+SQL = 1                                 # 1 to enable output to MySQL database. You'll usually want this.
 SQL_HOST = '127.0.0.1'                  # Database host name (default: localhost - 127.0.0.1 loopback interface)
 SQL_DB = 'iSpindle'                     # Database name
 SQL_TABLE = 'Data'                      # Table name
 SQL_USER = 'iSpindle'                   # DB user
-SQL_PASSWORD = 'xxxxxx'                 # DB user's password (change this)
+SQL_PASSWORD = 'ohyeah'                 # DB user's password (might want to change this)
 
-# Ubidots (using existing account)
-UBIDOTS = 1                                     # 1 to enable output to ubidots
-UBI_TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'    # ubidots token (change this)
+# Ubidots Forwarding (using existing account)
+UBIDOTS = 0                                     # change to 1 to enable output to ubidots and enter your token below
+UBI_TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'    # ubidots token (get this by registering with ubidots.com and then enter it here)
 
 # ADVANCED
 ENABLE_ADDCOLS = 0                              # Enable dynamic columns (configure pre-defined in lines 128-129)
@@ -83,7 +88,7 @@ def handler(clientsock,addr):
 		try:
 		   gravity = jinput['gravity']
 		except:
-		   # using old firmware < 5.0.1
+		   # probably using old firmware < 5.x
 		   gravity = 0
                 # looks like everything went well :)
                 clientsock.send(ACK)
@@ -92,7 +97,7 @@ def handler(clientsock,addr):
                 break # close connection
         except Exception as e:
             # something went wrong
-            # traceback.print_exc() # this would be too verbose, so let's do this instead:
+            # traceback.print_exc() # too verbose, so let's do this instead:
             dbgprint(repr(addr) + ' Error: ' + str(e))
             clientsock.send(NAK)
             dbgprint(repr(addr) + ' NAK sent.')
