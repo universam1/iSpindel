@@ -1,0 +1,4 @@
+<Files "common_db.php">
+Order Allow,Deny
+Deny from all
+</Files>
