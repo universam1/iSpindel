@@ -37,8 +37,7 @@ function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePe
    $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
                          FROM Data " 
                          .$where 
-                         ." ORDER BY Timestamp ASC") 
-                        or die(mysql_error());
+                         ." ORDER BY Timestamp ASC") or die(mysql_error());
    
   // retrieve number of rows
   $rows = mysql_num_rows($q_sql);
@@ -63,12 +62,24 @@ function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePe
 }
 
 // Get values from database including gravity (Fw 5.0.1 required) for selected spindle, between now and timeframe in hours ago
-function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=24)
+function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePeriod, $reset=defaultReset)
 {
+   if ($reset)
+   {
+   $where="WHERE Name = '".$iSpindleID."' 
+                  AND Timestamp >= (Select max(Timestamp) FROM data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
+   }  
+   else
+   {
+  $where ="WHERE Name = '".$iSpindleID."' 
+            AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) 
+            and Timestamp <= NOW()";
+   }  
+   
   $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle, gravity
-                          FROM Data
-                          WHERE Name = '".$iSpindleID."' AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) and Timestamp <= NOW()
-                          ORDER BY Timestamp ASC") or die(mysql_error());
+                          FROM Data " 
+                         .$where 
+                         ." ORDER BY Timestamp ASC") or die(mysql_error());
 
 
   // retrieve number of rows
@@ -85,13 +96,13 @@ function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=24)
       $jsTime = $r_row['unixtime'] * 1000;
       $valAngle         .= '['.$jsTime.', '.$r_row['angle'].'],';
       $valTemperature   .= '['.$jsTime.', '.$r_row['temperature'].'],';
-      $valGravity 	.= '['.$jsTime.', '.$r_row['gravity'].'],';
+      $valGravity       .= '['.$jsTime.', '.$r_row['gravity'].'],';
     }
 
     // remove last comma from each CSV
     $valAngle         = delLastChar($valAngle);
     $valTemperature   = delLastChar($valTemperature);
-    $valGravity	      = delLastChar($valGravity);
+    $valGravity       = delLastChar($valGravity);
     return array($valAngle, $valTemperature, $valGravity);
   }
 }
@@ -117,12 +128,8 @@ function getCurrentValues($iSpindleID='iSpindel000')
 }
                         
 // Get calibrated values from database for selected spindle, between now and [number of hours] ago
-<<<<<<< HEAD
-function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePeriod, $reset=defaultReset)
-=======
 // Old Method for Firmware before 5.x
-function getChartValuesPlato4($iSpindleID='iSpindel000', $timeFrameHours=24)
->>>>>>> refs/remotes/universam1/master
+function getChartValuesPlato4($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePeriod, $reset=defaultReset)
 {
     $isCalibrated = 0;  // is there a calbration record for this iSpindle?
     $valAngle = '';
@@ -146,8 +153,7 @@ function getChartValuesPlato4($iSpindleID='iSpindel000', $timeFrameHours=24)
    $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
                            FROM Data " 
                            .$where 
-                           ." ORDER BY Timestamp ASC")
-                           or die(mysql_error());
+                           ." ORDER BY Timestamp ASC") or die(mysql_error());
                      
     // retrieve number of rows
     $rows = mysql_num_rows($q_sql);
@@ -190,4 +196,3 @@ function getChartValuesPlato4($iSpindleID='iSpindel000', $timeFrameHours=24)
     }
  }
 ?>
-
