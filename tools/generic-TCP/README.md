@@ -94,11 +94,8 @@ Um die Tabelle mit den grundlegenden Feldern anzulegen, verwendet man am besten 
 		'Angle' double NOT NULL,
 		'Temperature' double NOT NULL,
 		'Battery' double NOT NULL,
-<<<<<<< HEAD
 		'ResetFlag' boolean,
-=======
 		'Gravity' double NOT NULL,
->>>>>>> refs/remotes/universam1/master
 		PRIMARY KEY ('Timestamp', 'Name', 'ID')
 	) 
 	ENGINE=InnoDB DEFAULT CHARSET=ascii 
