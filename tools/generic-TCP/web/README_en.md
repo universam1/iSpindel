@@ -21,7 +21,7 @@ In order to show these charts we pass arguments via GET in order to be able to b
 * http://raspi/iSpindle/angle.php?name=MySpindle1&hours=24
 * http://raspi/iSpindle/status.php?name=MySpindle2
 
-reset_now defines a timestamp (start of fermentation) festlegen and the graph shows only the entries after this timestamp:
+reset_now defines a timestamp (start of fermentation) and the graph shows only the entries after this timestamp:
 * http://meinraspi/iSpindle//reset_now.php?name=MeineSpindel2
 * http://meinraspi/iSpindle/angle.php?name=MeineSpindel2&reset=true
 
