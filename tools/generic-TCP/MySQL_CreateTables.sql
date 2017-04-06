@@ -5,11 +5,8 @@ CREATE TABLE `Data` (
        `Angle` double NOT NULL,
        `Temperature` double NOT NULL,
        `Battery` double NOT NULL,
-<<<<<<< HEAD
        `ResetFlag` boolean,
-=======
        `Gravity` double NOT NULL DEFAULT 0,
->>>>>>> refs/remotes/universam1/master
 	PRIMARY KEY (`Timestamp`, `Name`, `ID`)
 	) 
 ENGINE=InnoDB DEFAULT CHARSET=ascii 
