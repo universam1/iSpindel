@@ -32,7 +32,7 @@ Beispiele:
 * http://meinraspi/iSpindle/status.php?name=MeineSpindel2
 
 Mit reset_now kann man einen Zeitstempel (Beginn der Gärung) festlegen und bei der Grafik alle Werte nach diesem Zeitstempel anzeigen:
-* http://meinraspi/iSpindle//reset_now.php?name=MeineSpindel2
+* http://meinraspi/iSpindle/reset_now.php?name=MeineSpindel2
 * http://meinraspi/iSpindle/angle.php?name=MeineSpindel2&reset=true
 
 Dafür kann man dann Lesezeichen anlegen und so auch auf einem Touchscreen schnell zur gewünschten Ansicht kommen.     
