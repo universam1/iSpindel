@@ -83,6 +83,14 @@ Otherwise, the main data table will suffice:
 
 The field "ID" stores the iSpindle's unique hardware ID, which we'll need in order to use calibration.
 
+	CREATE TABLE `Calibration` (
+		`ID` varchar(64) COLLATE ascii_bin NOT NULL,
+		`const1` double NOT NULL,
+		`const2` double NOT NULL,
+		`const3` double NOT NULL,
+		PRIMARY KEY (`ID`)
+		) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Calibration Data';
+
 #### Create a Database User, Grant Permissions, Set Password):
 
 	CREATE USER 'iSpindle' IDENTIFIED BY 'password';
