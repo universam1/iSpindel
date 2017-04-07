@@ -81,7 +81,7 @@ Die Datentabelle folgt diesem Schema:
 		`ResetFlag` boolean,
 		`Gravity` double NOT NULL DEFAULT 0,
  	PRIMARY KEY (`Timestamp`,`Name`,`ID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data'
+	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data';
 
 (Im Feld ID wird die Hardware ID abgelegt, welche wir zum Hinterlegen der Kalibrierung benötigen.)     
 
