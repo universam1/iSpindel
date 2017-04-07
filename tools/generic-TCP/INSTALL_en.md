@@ -79,7 +79,7 @@ Otherwise, the main data table will suffice:
 		`ResetFlag` boolean,
 		`Gravity` double NOT NULL DEFAULT 0,
  	PRIMARY KEY (`Timestamp`,`Name`,`ID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data'
+	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data';
 
 The field "ID" stores the iSpindle's unique hardware ID, which we'll need in order to use calibration.
 
