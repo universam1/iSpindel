@@ -12,6 +12,14 @@ Falls die Datenbank schon besteht, muss in die Tabelle "Data" ein neues Feld ein
 
 Bei einer Neuinstallation ist dies bereits im Folgenden berücksichtigt.
 
+### Update für Resetflag bei Grafiken:
+Um bei den Grafiken das Resetflag nutzen zu können, muss, falls die Datenbank schon besteht, in die Tabelle "Data" ein neues Feld eingefügt werden:
+
+	USE iSpindle;
+	ALTER TABLE Data ADD ResetFlag boolean;
+
+Bei einer Neuinstallation ist dies bereits im Folgenden berücksichtigt.
+
 ### Vorbemerkung:
 Es mag so aussehen, als würde hier viel zu viel Ballast installiert, das geht alles auch schlanker.
 Stimmt.
