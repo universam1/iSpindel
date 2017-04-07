@@ -85,6 +85,14 @@ Die Datentabelle folgt diesem Schema:
 
 (Im Feld ID wird die Hardware ID abgelegt, welche wir zum Hinterlegen der Kalibrierung benötigen.)     
 
+	CREATE TABLE `Calibration` (
+		`ID` varchar(64) COLLATE ascii_bin NOT NULL,
+		`const1` double NOT NULL,
+		`const2` double NOT NULL,
+		`const3` double NOT NULL,
+		PRIMARY KEY (`ID`)
+		) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Calibration Data';
+
 #### Benutzer anlegen und berechtigen (und ihm ein eigenes Passwort geben):
 
 	CREATE USER 'iSpindle' IDENTIFIED BY 'xxxxxxxxxx';
