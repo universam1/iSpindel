@@ -38,6 +38,7 @@ function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePe
                          FROM Data " 
                          .$where 
                          ." ORDER BY Timestamp ASC") or die(mysql_error());
+                         
   // retrieve number of rows
   $rows = mysql_num_rows($q_sql);
   if ($rows > 0)
@@ -74,7 +75,6 @@ function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=defaultT
             AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) 
             and Timestamp <= NOW()";
    }  
-      
   $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle, gravity
                           FROM Data " 
                          .$where 
