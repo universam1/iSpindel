@@ -10,6 +10,14 @@ If you already have this running and want to update to the new firmware, you'll 
 
 This is already taken into account if you newly install this and follow the instructions below.
 
+### Update for Resetflag for charts:
+To use the charts with the parameter Resetflag, you'll need to add a new column to the Data table:
+
+	USE iSpindle;
+	ALTER TABLE Data ADD ResetFlag boolean;
+
+This is already taken into account if you newly install this and follow the instructions below.
+
 ### Preliminary Remarks:
 
 These recommended software requirements might seem like overkill, but this solution is highly flexible and wide open for future enhancements.    
