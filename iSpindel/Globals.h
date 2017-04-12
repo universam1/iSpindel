@@ -26,7 +26,7 @@ extern Ticker flasher;
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "5.0.4"
+#define FIRMWAREVERSION "5.1.0"
 
 
 #define API_FHEM true
@@ -71,9 +71,13 @@ extern Ticker flasher;
 #define EMERGENCYSLEEP (my_sleeptime*3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime*3)
 #define LOWBATT 3.3
 
+#define UNINIT 0xFFFF
+
 extern int16_t ax, ay, az;
 extern float Volt, Temperatur, Tilt, Gravity;
+extern int16_t my_aX, my_aY, my_aZ;
 
 extern MPU6050_Base accelgyro;
+extern bool saveConfig();
 
 #endif

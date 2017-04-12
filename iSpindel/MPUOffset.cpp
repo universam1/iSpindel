@@ -153,15 +153,17 @@ void MPUOffset::PullBracketsOut()
      } // keep going
   } // PullBracketOut
 
-void MPUOffset::SetAveraging(int NewN)
-  { N = NewN;
+  void MPUOffset::SetAveraging(int NewN)
+  {
+    N = NewN;
     Serial.print("averaging ");
     Serial.print(N);
     Serial.println(" readings each time");
-   } // SetAveraging
+  } // SetAveraging
 
-void MPUOffset::calibrate()
-  { boolean StillWorking;
+  void MPUOffset::calibrate()
+  {
+    boolean StillWorking;
     int NewOffset[6];
     boolean AllBracketsNarrow;
 
@@ -169,64 +171,83 @@ void MPUOffset::calibrate()
 
     Initialize();
     for (int i = iAx; i <= iGz; i++)
-      { // set targets and initial guesses
-        Target[i] = 0; // must fix for ZAccel 
-        HighOffset[i] = 0;
-        LowOffset[i] = 0;
-      } // set targets and initial guesses
+    {                // set targets and initial guesses
+      Target[i] = 0; // must fix for ZAccel
+      HighOffset[i] = 0;
+      LowOffset[i] = 0;
+    } // set targets and initial guesses
     Target[iAz] = 16384;
     SetAveraging(NFast);
-    
+
     Serial.println("expanding:");
     ForceHeader();
     PullBracketsOut();
-    
+
     Serial.println("\nclosing in:");
     AllBracketsNarrow = false;
     ForceHeader();
     StillWorking = true;
-    while (StillWorking) {
-        statustext = String(F("calibrating... [")) + String((millis()-starttime)/1000) + "s]";
-        StillWorking = false;
-        if (AllBracketsNarrow && (N == NFast))
-          { SetAveraging(NSlow); }
+    while (StillWorking)
+    {
+      statustext = String(F("calibrating... [")) + String((millis() - starttime) / 1000) + "s]";
+      StillWorking = false;
+      if (AllBracketsNarrow && (N == NFast))
+      {
+        SetAveraging(NSlow);
+      }
+      else
+      {
+        AllBracketsNarrow = true;
+      } // tentative
+      for (int i = iAx; i <= iGz; i++)
+      {
+        if (HighOffset[i] <= (LowOffset[i] + 1))
+        {
+          NewOffset[i] = LowOffset[i];
+        }
         else
-          { AllBracketsNarrow = true; }// tentative
-        for (int i = iAx; i <= iGz; i++)
-          { if (HighOffset[i] <= (LowOffset[i]+1))
-              { NewOffset[i] = LowOffset[i]; }
-            else
-              { // binary search
-                StillWorking = true;
-                NewOffset[i] = (LowOffset[i] + HighOffset[i]) / 2;
-                if (HighOffset[i] > (LowOffset[i] + 10))
-                  { AllBracketsNarrow = false; }
-              } // binary search
+        { // binary search
+          StillWorking = true;
+          NewOffset[i] = (LowOffset[i] + HighOffset[i]) / 2;
+          if (HighOffset[i] > (LowOffset[i] + 10))
+          {
+            AllBracketsNarrow = false;
           }
-        SetOffsets(NewOffset);
-        GetSmoothed();
-        for (int i = iAx; i <= iGz; i++)
-          { // closing in
-            if (Smoothed[i] > Target[i])
-              { // use lower half
-                HighOffset[i] = NewOffset[i];
-                HighValue[i] = Smoothed[i];
-              } // use lower half
-            else
-              { // use upper half
-                LowOffset[i] = NewOffset[i];
-                LowValue[i] = Smoothed[i];
-              } // use upper half
-          } // closing in
-        ShowProgress();
-      } // still working
+        } // binary search
+      }
+      SetOffsets(NewOffset);
+      GetSmoothed();
+      for (int i = iAx; i <= iGz; i++)
+      { // closing in
+        if (Smoothed[i] > Target[i])
+        { // use lower half
+          HighOffset[i] = NewOffset[i];
+          HighValue[i] = Smoothed[i];
+        } // use lower half
+        else
+        { // use upper half
+          LowOffset[i] = NewOffset[i];
+          LowValue[i] = Smoothed[i];
+        } // use upper half
+      }   // closing in
+      ShowProgress();
+    } // still working
     Serial.println("-------------- done --------------");
     statustext = "done!";
-        accelgyro.getAcceleration(&ax, &ay, &az);
-        Serial.print("a/g:\t");
-        Serial.print(ax); Serial.print("\t");
-        Serial.print(ay); Serial.print("\t");
-        Serial.print(az); Serial.println();
+    accelgyro.getAcceleration(&ax, &ay, &az);
+    Serial.print("a/g:\t");
+    Serial.print(ax);
+    Serial.print("\t");
+    Serial.print(ay);
+    Serial.print("\t");
+    Serial.print(az);
+    Serial.println();
+
+    my_aX = NewOffset[iAx];
+    my_aY = NewOffset[iAy];
+    my_aZ = NewOffset[iAz];
+    saveConfig();
+
   } // setup
 
   String MPUOffset::getStatus() {

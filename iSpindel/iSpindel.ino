@@ -73,24 +73,27 @@ char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
-char my_polynominal[70];
-// uint8_t my_polynominal_temp = 20;
+char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
+
 String my_ssid;
 String my_psk;
 uint8_t my_api;
-uint32_t my_sleeptime = 15*60;
+uint32_t my_sleeptime = 15 * 60;
 uint16_t my_port = 80;
 float my_vfact = ADCDIVISOR;
+int16_t my_aX = UNINIT, my_aY = UNINIT, my_aZ = UNINIT;
 
 uint32_t DSreqTime;
 float pitch, roll;
 
 int16_t ax, ay, az;
-float Volt, Temperatur, Tilt, Gravity, corrGravity ;
+float Volt, Temperatur, Tilt, Gravity;
+// , corrGravity;
 
 bool DSrequested = false;
 
-bool isDebugEnabled() {
+bool isDebugEnabled()
+{
 #ifdef DEBUG
   return true;
 #endif // DEBUG
@@ -98,7 +101,9 @@ bool isDebugEnabled() {
 }
 
 // generic serial output
-template <typename T> void SerialOut(const T aValue, bool newLine = true) {
+template <typename T>
+void SerialOut(const T aValue, bool newLine = true)
+{
   if (!isDebugEnabled())
     return;
   Serial.print(aValue);
@@ -109,22 +114,27 @@ template <typename T> void SerialOut(const T aValue, bool newLine = true) {
 void SerialOut() { SerialOut(""); }
 
 // callback notifying us of the need to save config
-void saveConfigCallback() {
+void saveConfigCallback()
+{
   // SerialOut(F("Should save config"));
   // WiFi.setAutoReconnect(true);
   shouldSaveConfig = true;
 }
 
-bool readConfig() {
+bool readConfig()
+{
   SerialOut(F("mounting FS..."), false);
 
-  if (SPIFFS.begin()) {
+  if (SPIFFS.begin())
+  {
     SerialOut(F(" mounted!"));
-    if (SPIFFS.exists(CFGFILE)) {
+    if (SPIFFS.exists(CFGFILE))
+    {
       // file exists, reading and loading
       SerialOut(F("reading config file"));
       File configFile = SPIFFS.open(CFGFILE, "r");
-      if (configFile) {
+      if (configFile)
+      {
         SerialOut(F("opened config file"));
         size_t size = configFile.size();
         // Allocate a buffer to store contents of the file.
@@ -134,7 +144,8 @@ bool readConfig() {
         DynamicJsonBuffer jsonBuffer;
         JsonObject &json = jsonBuffer.parseObject(buf.get());
 
-        if (json.success()) {
+        if (json.success())
+        {
           SerialOut(F("\nparsed json"));
 
           if (json.containsKey("Name"))
@@ -153,49 +164,65 @@ bool readConfig() {
             strcpy(my_url, json["URL"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
-            
+
           if (json.containsKey("SSID"))
             my_ssid = json["SSID"].asString();
           if (json.containsKey("PSK"))
             my_psk = json["PSK"].asString();
           if (json.containsKey("POLY"))
             strcpy(my_polynominal, json["POLY"]);
-          else
-            strcpy(my_polynominal, "-0.000305574*tilt^2+0.556985728*tilt-14.05426013");
+
+          my_aX = UNINIT;
+          my_aY = UNINIT;
+          my_aZ = UNINIT;
+
+          if (json.containsKey("aX"))
+            my_aX = json["aX"];
+          if (json.containsKey("aY"))
+            my_aY = json["aY"];
+          if (json.containsKey("aZ"))
+            my_aZ = json["aZ"];
+          applyOffset();
 
           SerialOut(F("parsed config:"));
           if (isDebugEnabled)
             json.printTo(Serial);
           return true;
-        } else {
+        }
+        else
+        {
           SerialOut(F("ERROR: failed to load json config"));
           return false;
         }
       }
       SerialOut(F("ERROR: unable to open config file"));
     }
-  } else {
+  }
+  else
+  {
     SerialOut(F(" ERROR: failed to mount FS!"));
     return false;
   }
 }
 
-bool shouldStartConfig() {
+bool shouldStartConfig()
+{
 
   // we make sure that configuration is properly set and we are not woken by
   // RESET button
   // ensure this was called
 
-	rst_info* _reset_info = ESP.getResetInfoPtr();
-	uint8_t _reset_reason = _reset_info->reason;
+  rst_info *_reset_info = ESP.getResetInfoPtr();
+  uint8_t _reset_reason = _reset_info->reason;
 
   // The ESP reset info is sill buggy. see http://www.esp8266.com/viewtopic.php?f=32&t=8411
   // The reset reason is "5" (woken from deep-sleep) in most cases (also after a power-cycle)
   // I added a single reset detection as workaround to enter the config-mode easier
-  SerialOut("Boot-Mode: ", false); SerialOut(_reset_reason);
+  SerialOut("Boot-Mode: ", false);
+  SerialOut(_reset_reason);
   bool _poweredOnOffOn = _reset_reason == REASON_DEFAULT_RST || _reset_reason == REASON_EXT_SYS_RST;
   if (_poweredOnOffOn)
-	  SerialOut("power-cycle or reset detected, config mode");
+    SerialOut("power-cycle or reset detected, config mode");
 
   bool _dblreset = drd.detectDoubleReset();
   if (_dblreset)
@@ -208,7 +235,8 @@ bool shouldStartConfig() {
   uint8_t c = 0;
   if (!_wifiCred)
     WiFi.begin();
-  while (!_wifiCred) {
+  while (!_wifiCred)
+  {
     if (c > 10)
       break;
     SerialOut('.', false);
@@ -219,25 +247,29 @@ bool shouldStartConfig() {
   if (!_wifiCred)
     SerialOut("\nERROR no Wifi credentials");
 
-  if (_validConf && !_dblreset && _wifiCred && ! _poweredOnOffOn) {
+  if (_validConf && !_dblreset && _wifiCred && !_poweredOnOffOn)
+  {
     SerialOut(F("\nwoken from deepsleep, normal mode"));
     return false;
   }
   // config mode
-  else {
+  else
+  {
     SerialOut(F("\ngoing to Config Mode"));
     return true;
   }
 }
 
-void validateInput(const char *input, char *output) {
+void validateInput(const char *input, char *output)
+{
   String tmp = String(input);
   tmp.trim();
   tmp.replace(' ', '_');
   tmp.toCharArray(output, tmp.length() + 1);
 }
 
-bool startConfiguration() {
+bool startConfiguration()
+{
 
   WiFiManager wifiManager;
 
@@ -252,7 +284,7 @@ bool startConfiguration() {
   WiFiManagerParameter custom_name("name", "iSpindel Name", my_name,
                                    TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
-                                    String(my_sleeptime).c_str(), 5,TYPE_NUMBER);
+                                    String(my_sleeptime).c_str(), 5, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Ubidots Token", my_token,
                                     TKIDSIZE);
   WiFiManagerParameter custom_server("server", "Server Address",
@@ -262,14 +294,14 @@ bool startConfiguration() {
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
-                                    String(my_vfact).c_str(), 7,TYPE_NUMBER);
+                                    String(my_vfact).c_str(), 7, TYPE_NUMBER);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
   wifiManager.addParameter(&custom_vfact);
 
   WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
-  wifiManager.addParameter(&custom_api_hint); 
+  wifiManager.addParameter(&custom_api_hint);
 
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
@@ -296,55 +328,78 @@ bool startConfiguration() {
   validateInput(custom_token.getValue(), my_token);
   validateInput(custom_server.getValue(), my_server);
   my_sleeptime = String(custom_sleep.getValue()).toInt();
-  
+
   my_api = String(custom_api.getValue()).toInt();
   my_port = String(custom_port.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
 
   String tmp = String(custom_vfact.getValue());
-  tmp.trim();  tmp.replace(',', '.');
+  tmp.trim();
+  tmp.replace(',', '.');
   my_vfact = tmp.toFloat();
-  if (my_vfact < ADCDIVISOR*0.8 || my_vfact > ADCDIVISOR*1.2) my_vfact = ADCDIVISOR;
+  if (my_vfact < ADCDIVISOR * 0.8 || my_vfact > ADCDIVISOR * 1.2)
+    my_vfact = ADCDIVISOR;
 
   // save the custom parameters to FS
-  if (shouldSaveConfig) {
-    SerialOut(F("saving config..."), false);
+  if (shouldSaveConfig)
+  {
+    // Wifi config
+    WiFi.setAutoConnect(true);
+    WiFi.setAutoReconnect(true);
 
-    // if SPIFFS is not usable
-    if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
-        !SPIFFS.open(CFGFILE, "w")) {
-      SerialOut(F("\nneed to format SPIFFS: "), false);
-      SPIFFS.end();
-      SPIFFS.begin();
-      SerialOut(SPIFFS.format());
-    }
+    return saveConfig();
+  }
+  return false;
+}
 
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject &json = jsonBuffer.createObject();
+bool saveConfig()
+{
+  SerialOut(F("saving config..."), false);
 
-    json["Name"] = my_name;
-    json["Token"] = my_token;
-    json["Sleep"] = my_sleeptime;
-    // first reboot is for test 
-    my_sleeptime = 1;
-    json["Server"] = my_server;
-    json["API"] = my_api;
-    json["Port"] = my_port;
-    json["URL"] = my_url;
-    json["Vfact"] = my_vfact;
+  // if SPIFFS is not usable
+  if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
+      !SPIFFS.open(CFGFILE, "w"))
+  {
+    SerialOut(F("\nneed to format SPIFFS: "), false);
+    SPIFFS.end();
+    SPIFFS.begin();
+    SerialOut(SPIFFS.format());
+  }
 
-    // Store current Wifi credentials
-    json["SSID"] = WiFi.SSID();
-    json["PSK"] = WiFi.psk();
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject &json = jsonBuffer.createObject();
 
-    json["POLY"] = my_polynominal;
-    // json["POLYTEMP"] = my_polynominal_temp;
+  json["Name"] = my_name;
+  json["Token"] = my_token;
+  json["Sleep"] = my_sleeptime;
+  // first reboot is for test
+  my_sleeptime = 1;
+  json["Server"] = my_server;
+  json["API"] = my_api;
+  json["Port"] = my_port;
+  json["URL"] = my_url;
+  json["Vfact"] = my_vfact;
 
-    File configFile = SPIFFS.open(CFGFILE, "w+");
-    if (!configFile) {
-      SerialOut(F("failed to open config file for writing"), true);
-    } else
-      SerialOut(F("saved successfully"), true);
+  // Store current Wifi credentials
+  json["SSID"] = WiFi.SSID();
+  json["PSK"] = WiFi.psk();
+
+  json["POLY"] = my_polynominal;
+  json["aX"] = my_aX;
+  json["aY"] = my_aY;
+  json["aZ"] = my_aZ;
+
+  File configFile = SPIFFS.open(CFGFILE, "w+");
+  if (!configFile)
+  {
+    SerialOut(F("failed to open config file for writing"), true);
+    SPIFFS.end();
+    return false;
+  }
+  else
+  {
+
+    SerialOut(F("saved successfully"), true);
 
     if (isDebugEnabled)
       json.printTo(Serial);
@@ -352,25 +407,21 @@ bool startConfiguration() {
     json.printTo(configFile);
     configFile.close();
     SPIFFS.end();
-
-    // Wifi config
-    WiFi.setAutoConnect(true);
-    WiFi.setAutoReconnect(true);
-    // end save
     return true;
   }
-  return false;
 }
 
-bool uploadData(uint8_t service) {
+bool uploadData(uint8_t service)
+{
   char url[TKIDSIZE];
   uint16_t port;
 
 #ifdef API_UBIDOTS
-  if (service == DTUbiDots) {
+  if (service == DTUbiDots)
+  {
     Ubidots ubiclient(my_token, my_name);
     ubiclient.add("tilt", Tilt);
-    ubiclient.add("corrGravity", corrGravity);
+    // ubiclient.add("corrGravity", corrGravity);
     ubiclient.add("temperature", Temperatur);
     ubiclient.add("battery", Volt);
     ubiclient.add("gravity", Gravity);
@@ -381,17 +432,23 @@ bool uploadData(uint8_t service) {
 #endif
 
 #ifdef API_GENERIC
-  if ((service == DTHTTP) || (service == DTCraftbeepPi) || (service == DTTCP)) {
+  if ((service == DTHTTP) || (service == DTCraftbeepPi) || (service == DTTCP))
+  {
 
-    if (service == DTHTTP) {
+    if (service == DTHTTP)
+    {
       SerialOut(F("\ncalling DTHTTP "));
       strcpy(url, my_url);
       port = my_port;
-    } else if (service == DTCraftbeepPi) {
+    }
+    else if (service == DTCraftbeepPi)
+    {
       SerialOut(F("\ncalling DTCraftbeepPi "));
       strcpy(url, CBP_ENDPOINT);
       port = 5000;
-    } else if (service == DTTCP) {
+    }
+    else if (service == DTTCP)
+    {
       SerialOut(F("\ncalling DTTCP "));
       port = my_port;
       strcpy(url, "");
@@ -403,51 +460,60 @@ bool uploadData(uint8_t service) {
     genclient.add("battery", Volt);
     genclient.add("gravity", Gravity);
 
-    if (service == DTTCP) {
+    if (service == DTTCP)
+    {
       return genclient.sendTCP();
-    } else {
+    }
+    else
+    {
       return genclient.sendHTTP();
     }
   }
 #endif // DATABASESYSTEM
 
 #ifdef API_FHEM
-  if (service == DTFHEM) {
-  FhemHttp fhemclient(my_name, my_server, my_port);
-  fhemclient.add("angle", Tilt);
-  fhemclient.add("temperature", Temperatur);
-  fhemclient.add("battery", Volt);
-  fhemclient.add("gravity", Gravity);
-  return fhemclient.sendHTTP();
+  if (service == DTFHEM)
+  {
+    FhemHttp fhemclient(my_name, my_server, my_port);
+    fhemclient.add("angle", Tilt);
+    fhemclient.add("temperature", Temperatur);
+    fhemclient.add("battery", Volt);
+    fhemclient.add("gravity", Gravity);
+    return fhemclient.sendHTTP();
   }
 #endif // DATABASESYSTEM ==
 #ifdef API_TCONTROL
-  if (service == DTTcontrol) {
-  TControl tcclient(my_name, my_server, my_port);
-  tcclient.add("T", Temperatur);
-  tcclient.add("D", Tilt);
-  tcclient.add("U", Volt);
-  tcclient.add("G", Gravity);
-  return tcclient.send();
+  if (service == DTTcontrol)
+  {
+    TControl tcclient(my_name, my_server, my_port);
+    tcclient.add("T", Temperatur);
+    tcclient.add("D", Tilt);
+    tcclient.add("U", Volt);
+    tcclient.add("G", Gravity);
+    return tcclient.send();
   }
 #endif // DATABASESYSTEM ==
 }
 
-void sleepManager() {
+void sleepManager()
+{
   uint32_t left2sleep, validflag;
   ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-  ESP.rtcUserMemoryRead(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
+  ESP.rtcUserMemoryRead(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
 
   // check if we have to incarnate again
-  if (left2sleep != 0 && !drd.detectDoubleReset() && validflag==RTCVALIDFLAG) {
+  if (left2sleep != 0 && !drd.detectDoubleReset() && validflag == RTCVALIDFLAG)
+  {
     goodNight(left2sleep);
   }
-  else {
-    SerialOut(F("Worker run!"));    
+  else
+  {
+    SerialOut(F("Worker run!"));
   }
 }
 
-void goodNight(uint32_t seconds) {
+void goodNight(uint32_t seconds)
+{
 
   uint32_t _seconds = seconds;
   uint32_t left2sleep = 0;
@@ -455,26 +521,28 @@ void goodNight(uint32_t seconds) {
 
   drd.stop();
 
-    // workaround for DS not floating
+  // workaround for DS not floating
   pinMode(ONE_WIRE_BUS, OUTPUT);
   digitalWrite(ONE_WIRE_BUS, LOW);
 
   // we need another incarnation before work run
-  if (_seconds > MAXSLEEPTIME) {
+  if (_seconds > MAXSLEEPTIME)
+  {
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-    ESP.rtcUserMemoryWrite(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
     SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + String("s; left: ") + left2sleep + String("s; RT:") + millis());
-    ESP.deepSleep(MAXSLEEPTIME * 1000UL * 1000UL, WAKE_RF_DISABLED );
+    ESP.deepSleep(MAXSLEEPTIME * 1000UL * 1000UL, WAKE_RF_DISABLED);
     // workaround proper power state init
     delay(500);
   }
   // regular sleep with RF enabled after wakeup
-  else {
+  else
+  {
     // clearing RTC to mark next wake
     left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-    ESP.rtcUserMemoryWrite(RTCSLEEPADDR+1, &validflag, sizeof(validflag));
+    ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
     SerialOut(String(F("\nFinal-sleep: ")) + _seconds + String("s; RT:") + millis());
     // WAKE_RF_DEFAULT --> auto reconnect after wakeup
     ESP.deepSleep(_seconds * 1000UL * 1000UL, WAKE_RF_DEFAULT);
@@ -483,7 +551,8 @@ void goodNight(uint32_t seconds) {
   }
 }
 
-void initDS18B20() {
+void initDS18B20()
+{
 
   // workaround for DS not enough power to boot
   pinMode(ONE_WIRE_BUS, OUTPUT);
@@ -492,8 +561,6 @@ void initDS18B20() {
   // digitalWrite(ONE_WIRE_BUS, HIGH);
   // delay(500);
   // oneWire.reset();
-  
-
   // Start up the DS18B20
   DS18B20.begin();
   DS18B20.setWaitForConversion(false);
@@ -502,11 +569,12 @@ void initDS18B20() {
   requestTemp();
 }
 
-void initAccel() {
+void initAccel()
+{
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin(D3, D4);
   Wire.setClock(100000);
-  Wire.setClockStretchLimit(2*230);
+  Wire.setClockStretchLimit(2 * 230);
 
   // init the Accel
   accelgyro.initialize();
@@ -516,10 +584,21 @@ void initAccel() {
   accelgyro.setDMPEnabled(true);
   packetSize = accelgyro.dmpGetFIFOPacketSize();
 #endif
-
 }
 
-float calculateTilt() {
+void applyOffset() {
+  if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT) {
+    SerialOut(F("applying offsets"));
+    accelgyro.setXAccelOffset(my_aX);
+    accelgyro.setYAccelOffset(my_aY);
+    accelgyro.setZAccelOffset(my_aZ);
+  }
+  else
+    SerialOut(F("offsets not available"));
+}
+
+float calculateTilt()
+{
   float _ax = ax;
   float _ay = ay;
   float _az = az;
@@ -528,12 +607,13 @@ float calculateTilt() {
   return sqrt(pitch * pitch + roll * roll);
 }
 
-float getTilt() {
-
+float getTilt()
+{
   // make sure enough time for Acc to start
   uint32_t start = ACCINTERVAL;
 
-  for (uint8_t i = 0; i < MEDIANROUNDS; i++) {
+  for (uint8_t i = 0; i < MEDIANROUNDS; i++)
+  {
     while (millis() - start < ACCINTERVAL)
       yield();
     start = millis();
@@ -548,18 +628,20 @@ float getTilt() {
   return samples.getAverage(MEDIANAVRG);
 }
 
-void getAccSample() { 
+void getAccSample()
+{
   uint8_t res = Wire.status();
   uint8_t con = accelgyro.testConnection();
   if (res == I2C_OK && con == true)
-    accelgyro.getAcceleration(&ax, &az, &ay); 
-  else {
+    accelgyro.getAcceleration(&ax, &az, &ay);
+  else
+  {
     SerialOut(String("I2C ERROR: ") + res + String(" con:") + con);
-    
   }
 }
 
-float getTemperature(bool block = false) {
+float getTemperature(bool block = false)
+{
   // we need to wait for DS18b20 to finish conversion
   float t = Temperatur;
 
@@ -567,7 +649,8 @@ float getTemperature(bool block = false) {
   while (block && (millis() - DSreqTime <= OWinterval))
     yield();
 
-  if (millis() - DSreqTime >= OWinterval) {
+  if (millis() - DSreqTime >= OWinterval)
+  {
     t = DS18B20.getTempCByIndex(0);
     DSrequested = false;
 
@@ -582,21 +665,22 @@ float getTemperature(bool block = false) {
       // delay(500);
       oneWire.reset();
 
-      if (block) {
+      if (block)
+      {
         SerialOut(F("OW Retry"));
         initDS18B20();
-        delay(OWinterval+100);
+        delay(OWinterval + 100);
         t = getTemperature(false);
       }
-
-
     }
   }
   return t;
 }
 
-void requestTemp() {
-  if (DSrequested == false) {
+void requestTemp()
+{
+  if (DSrequested == false)
+  {
     DS18B20.requestTemperatures();
     DSreqTime = millis();
     DSrequested = true;
@@ -604,7 +688,8 @@ void requestTemp() {
   }
 }
 
-void flash() {
+void flash()
+{
   // triggers the LED
   Volt = getBattery();
   getAccSample();
@@ -614,20 +699,25 @@ void flash() {
   requestTemp();
 }
 
-float getBattery() {
+float getBattery()
+{
   analogRead(A0); // drop first read
-	return analogRead(A0) / my_vfact;
+  return analogRead(A0) / my_vfact;
 }
 
-bool isSafeMode(float _volt)  {
-	if (_volt < LOWBATT) {
-		SerialOut("\nWARNING: low Battery");
-		return true;
-	}
-	else return false;
+bool isSafeMode(float _volt)
+{
+  if (_volt < LOWBATT)
+  {
+    SerialOut("\nWARNING: low Battery");
+    return true;
+  }
+  else
+    return false;
 }
 
-void setup() {
+void setup()
+{
 
   Serial.begin(115200);
 
@@ -640,55 +730,63 @@ void setup() {
   initDS18B20();
 
   // decide whether we want configuration mode or normal mode
-  if (shouldStartConfig()) {
+  if (shouldStartConfig())
+  {
     uint32_t tmp;
     ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
 
     // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
-    if (tmp != RTCVALIDFLAG) {
+    if (tmp != RTCVALIDFLAG)
+    {
       drd.setRecentlyResetFlag();
       tmp = RTCVALIDFLAG;
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
       ESP.deepSleep(1, WAKE_RFCAL);
     }
-    else {
+    else
+    {
       tmp = 0;
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
     }
 
-        flasher.attach(1, flash);
+    flasher.attach(1, flash);
 
-        // rescue if wifi credentials lost because of power loss
-        if (!startConfiguration())
+    // rescue if wifi credentials lost because of power loss
+    if (!startConfiguration())
     {
       // test if ssid exists
       if (WiFi.SSID() == "" &&
-          my_ssid != "" && my_psk != "") {
-            connectBackupCredentials();
+          my_ssid != "" && my_psk != "")
+      {
+        connectBackupCredentials();
       }
     }
     uint32_t left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-    
+
     flasher.detach();
   }
   // to make sure we wake up with STA but AP
   WiFi.mode(WIFI_STA);
   Volt = getBattery();
   // we try to survive
-  if (isSafeMode(Volt)) WiFi.setOutputPower(0);
-  else WiFi.setOutputPower(20.5);
+  if (isSafeMode(Volt))
+    WiFi.setOutputPower(0);
+  else
+    WiFi.setOutputPower(20.5);
 
 #ifndef USE_DMP
   Tilt = getTilt();
 #else
-while (fifoCount < packetSize) {
+  while (fifoCount < packetSize)
+  {
     //do stuff
     Serial.println("wait DMP");
-    
- fifoCount = accelgyro.getFIFOCount();
+
+    fifoCount = accelgyro.getFIFOCount();
   }
-  if (fifoCount == 1024) {
+  if (fifoCount == 1024)
+  {
     Serial.println("FIFO overflow");
     accelgyro.resetFIFO();
   }
@@ -728,7 +826,7 @@ while (fifoCount < packetSize) {
     float _az = az;
     float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
     float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-    Tilt=  sqrt(pitch * pitch + roll * roll);
+    Tilt = sqrt(pitch * pitch + roll * roll);
   }
 #endif
 
@@ -757,82 +855,78 @@ while (fifoCount < packetSize) {
   // calc gravity on user defined polynominal
   Gravity = calculateGravity();
   SerialOut(F("\tGravity: "), false);
-  SerialOut(Gravity, false);
+  SerialOut(Gravity, true);
 
   // water anomaly correction
-  float _temp = Temperatur - 4; // polynominal at 4
-  float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
-  corrGravity = Gravity - (1 - wfact / 1000) * 100;
-  SerialOut(F("\tcorrGravity: "), false);
-  SerialOut(corrGravity, true);
+  // float _temp = Temperatur - 4; // polynominal at 4
+  // float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
+  // corrGravity = Gravity - (1 - wfact / 1000);
+  // SerialOut(F("\tcorrGravity: "), false);
+  // SerialOut(corrGravity, true);
 
   unsigned long startedAt = millis();
   SerialOut(F("After waiting "), false);
   // int connRes = WiFi.waitForConnectResult();
   uint8_t wait = 0;
-  while(WiFi.status() == WL_DISCONNECTED) {
-      delay(100);
-      wait++;
-      if (wait > 50) break;
+  while (WiFi.status() == WL_DISCONNECTED)
+  {
+    delay(100);
+    wait++;
+    if (wait > 50)
+      break;
   }
   float waited = (millis() - startedAt);
   SerialOut(waited / 1000, false);
   SerialOut(F(" s, result "), false);
   SerialOut(WiFi.status());
 
-  if (WiFi.status() == WL_CONNECTED) {
+  if (WiFi.status() == WL_CONNECTED)
+  {
     SerialOut(WiFi.localIP());
     uploadData(my_api);
-  } else {
+  }
+  else
+  {
     connectBackupCredentials();
     SerialOut("failed to connect");
   }
 
   // survive - 60min sleep time
-  if (isSafeMode(Volt)) my_sleeptime = EMERGENCYSLEEP;
+  if (isSafeMode(Volt))
+    my_sleeptime = EMERGENCYSLEEP;
   goodNight(my_sleeptime);
 }
 
-void loop() { 
-	SerialOut(F("should never be here!"));
+void loop()
+{
+  SerialOut(F("should never be here!"));
 }
 
-bool connectBackupCredentials() {
-  WiFi.disconnect();       
+bool connectBackupCredentials()
+{
+  WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
   SerialOut(F("Rescue Wifi credentials"));
   delay(100);
 }
 
-float calculateGravity() {
+float calculateGravity()
+{
   double _tilt = Tilt;
   double _temp = Temperatur;
   float _gravity = 0;
-  te_variable vars[] = {{"tilt", &_tilt} ,{"temp", &_temp}};
-
   int err;
-
+  te_variable vars[] = {{"tilt", &_tilt}, {"temp", &_temp}};
   te_expr *expr = te_compile(my_polynominal, vars, 2, &err);
 
   if (expr)
   {
-
-    _gravity = te_eval(expr); 
-    // Serial.println(_gravity);
-
-    // for (_tilt = 4; _tilt < 90; _tilt += 2)
-    // {
-    //   Serial.print(String("tilt=") + _tilt + String(" = "));
-    //   // x = 5; y = 12;
-    //   double h2 = te_eval(expr); /* Returns 13. */
-    //   Serial.println(h2);
-    // }
-    // Serial.println(String("took ") + String(end - start) + String("us for ") + String(i) + String("x =") + String((end - start)/i));
+    _gravity = te_eval(expr);
     te_free(expr);
-    }
-    else
-    {
-      Serial.println(String("Parse error at ") + err);
-    }
-    return _gravity;
+  }
+  else
+  {
+    Serial.println(String("Parse error at ") + err);
+  }
+  return _gravity;
 }
