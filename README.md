@@ -27,6 +27,8 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ## News
 
+
+> 12.04.2017 Mentioned in http://www.homebrewtalk.com/showthread.php?t=598187   
 > 01.03.2017 Mentioned in hackaday.com http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/   
 > 23.02.17 English documentation added   
 > 14.02.17 English documentation added   
