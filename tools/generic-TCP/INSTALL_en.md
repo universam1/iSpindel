@@ -149,7 +149,7 @@ Then, within the SSH terminal session, type:
 	sudo chmod 755 /usr/local/bin/iSpindle.py
 	sudo chmod 755 /etc/init.d/ispindle-srv
 	cd /etc/init.d
-	sudo systemctl deamon-reload
+	sudo systemctl daemon-reload
 	sudo insserv ispindle-srv
 	sudo service ispindle-srv start
 
