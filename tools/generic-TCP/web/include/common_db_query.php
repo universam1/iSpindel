@@ -26,7 +26,7 @@ function getChartValues($iSpindleID='iSpindel000', $timeFrameHours=defaultTimePe
    if ($reset)
    {
    $where="WHERE Name = '".$iSpindleID."' 
-                  AND Timestamp >= (Select max(Timestamp) FROM data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
+                  AND Timestamp >= (Select max(Timestamp) FROM Data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
    }  
    else
    {
