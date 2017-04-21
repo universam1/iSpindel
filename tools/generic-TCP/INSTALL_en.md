@@ -10,6 +10,14 @@ If you already have this running and want to update to the new firmware, you'll 
 
 This is already taken into account if you newly install this and follow the instructions below.
 
+### Update for Resetflag for charts:
+To use the charts with the parameter Resetflag, you'll need to add a new column to the Data table:
+
+	USE iSpindle;
+	ALTER TABLE Data ADD ResetFlag boolean;
+
+This is already taken into account if you newly install this and follow the instructions below.
+
 ### Preliminary Remarks:
 
 These recommended software requirements might seem like overkill, but this solution is highly flexible and wide open for future enhancements.    
@@ -68,11 +76,20 @@ Otherwise, the main data table will suffice:
  		`Angle` double NOT NULL,
  		`Temperature` double NOT NULL,
  		`Battery` double NOT NULL,
+		`ResetFlag` boolean,
 		`Gravity` double NOT NULL DEFAULT 0,
  	PRIMARY KEY (`Timestamp`,`Name`,`ID`)
-	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data'
+	) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Data';
 
 The field "ID" stores the iSpindle's unique hardware ID, which we'll need in order to use calibration.
+
+	CREATE TABLE `Calibration` (
+		`ID` varchar(64) COLLATE ascii_bin NOT NULL,
+		`const1` double NOT NULL,
+		`const2` double NOT NULL,
+		`const3` double NOT NULL,
+		PRIMARY KEY (`ID`)
+		) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin COMMENT='iSpindle Calibration Data';
 
 #### Create a Database User, Grant Permissions, Set Password):
 

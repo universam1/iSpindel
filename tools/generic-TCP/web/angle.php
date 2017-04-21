@@ -9,10 +9,11 @@ include_once("include/common_db.php");
 include_once("include/common_db_query.php");
 
 // Check GET parameters (for now: Spindle name and Timeframe to display) 
-if(!isset($_GET['hours'])) $_GET['hours'] = 24; else $_GET['hours'] = $_GET['hours'];
+if(!isset($_GET['hours'])) $_GET['hours'] = defaultTimePeriod; else $_GET['hours'] = $_GET['hours'];
 if(!isset($_GET['name'])) $_GET['name'] = 'iSpindel000'; else $_GET['name'] = $_GET['name'];
+if(!isset($_GET['reset'])) $_GET['reset'] = defaultReset; else $_GET['reset'] = $_GET['reset'];
 
-list($angle, $temperature) = getChartValues($_GET['name'], $_GET['hours']);
+list($angle, $temperature) = getChartValues($_GET['name'], $_GET['hours'], $_GET['reset']);
 
 ?>
 
@@ -51,8 +52,18 @@ $(function ()
         text: 'iSpindel: <?php echo $_GET['name'];?>'
       },
       subtitle: 
-      {
-        text: 'Temperatur und Winkel der letzten <?php echo $_GET['hours'];?> Stunden'
+      { text:
+       ' <?php               
+          if($_GET['reset']) 
+             {     
+             echo 'Temperatur und Winkel seit dem letzten Reset';
+             }
+           else
+             {
+             echo 'Temperatur und Winkel den letzten '.  $_GET['hours'] .  ' Stunden';
+             }
+        ?>'
+        
       },
       xAxis: 
       {
