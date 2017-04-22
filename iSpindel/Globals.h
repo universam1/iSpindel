@@ -17,6 +17,7 @@
 #define FIRMWAREVERSION "4.1.7"
 
 #define API_FHEM true
+#define API_LOXONE true
 #define API_UBIDOTS true
 #define API_GENERIC true
 #define API_TCONTROL true
@@ -41,7 +42,8 @@
 #define DTHTTP 3
 #define DTTcontrol 4
 #define DTFHEM  5
-#define DTTCP  6
+#define DTLoxone 6
+#define DTTCP  7
 
 // Number of seconds after reset during which a 
 // subseqent reset will be considered a double reset.

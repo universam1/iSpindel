@@ -47,36 +47,56 @@ switch(sel) {
 case "Ubidots":
 	set('token',1);
 	set('server',0);
+  set('user',0);
+  set('pass',0);
 	set('url',0);
 	set('port',0);
   break;
 case "CraftBeerPi":
   set('url',0);
   set('port',0);
+  set('user',0);
+  set('pass',0);
 	set('token',0);
 	set('server',1);
   break;
 case "HTTP":
   set('url',1);
   set('port',1);
+  set('user',0);
+  set('pass',0);
 	set('token',0);
 	set('server',1);
   break;
 case "TControl":
   set('server',1);
   set('port',0);
+  set('user',0);
+  set('pass',0);
   set('token',0);
   set('url',0);
   break;
 case "FHEM":
   set('server',1);
   set('port',1);
+  set('user',0);
+  set('pass',0);
   set('token',0);
   set('url',0);
+  break;
+case "Loxone":
+  set('server',1);
+  set('port',1);
+  set('user',1);
+  set('pass',1);
+  set('token',0);
+  set('url',1);
   break;
 case "TCP":
   set('server',1);
   set('port',1);
+  set('user',0);
+  set('pass',0);
   set('token',0);
   set('url',0);
   break;
@@ -97,7 +117,8 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=3>HTTP</option>
 <option value=4>TControl</option>
 <option value=5>FHEM</option>
-<option value=6>TCP</option>
+<option value=6>Loxone</option>
+<option value=7>TCP</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[]  = "type=\"hidden\"";
