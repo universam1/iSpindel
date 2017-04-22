@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ControlList Version="129" LxAV="7" NextObj="2" NextConst="1" NextNote="1" NextMem="1">
-	<C Type="Document" V="115" U="0f9f8fd3-0181-49e8-ffffe762ed486ec8" Title="iSpindel" ConfigVersion="8030321" PaperFormat="2" SPSfreq="100" OpenIsHigh="false" Date="2017-04-22 17:52:34" CDate="" BDate="" DateS="262115554" Street="" Town="" Ctry="" Latitude="48.2" Longitude="13.36" Creator="Jörg Pressel" Logo="" uuidNotifications="0f9f8fd3-0181-49e7-ffffe762ed486ec8" uuidFavSeq="00000000-0000-0000-0000000000000000" uuidFavCol="00000000-0000-0000-0000000000000000" FC="" Currency="€" UpdTime="120" CrashL="true" NumO="299">
+	<C Type="Document" V="115" U="0f9f8fd3-0181-49e8-ffffe762ed486ec8" Title="iSpindel" ConfigVersion="8030321" PaperFormat="2" SPSfreq="100" OpenIsHigh="false" Date="2017-04-23 00:45:23" CDate="" BDate="" DateS="262140323" Street="" Town="" Ctry="" Latitude="48.2" Longitude="13.36" Creator="Jörg Pressel" Logo="" uuidNotifications="0f9f8fd3-0181-49e7-ffffe762ed486ec8" uuidFavSeq="0f9ff193-016a-82dd-ffff8cb3452e8c54" uuidFavCol="0f9ff193-016a-82de-ffff8cb3452e8c54" FC="" Currency="€" UpdTime="120" CrashL="true" NumO="299">
 		<SeqConf Num="0"/>
 		<C Type="LoxCaption" V="115" U="0f9f8fd3-0181-49ea-ffffe762ed486ec8" Title="Symbole" Cl="0,0,0" WF="16384" CaptionType="5">
 			<C Type="IconCaptionState" V="115" U="0f9f8fd3-0181-49ec-ffffe762ed486ec8" Title="Statussymbole" WF="16384">
@@ -182,7 +182,7 @@
 			<C Type="User" V="115" U="0f9f8fd3-01b0-4b89-ffffe762ed486ec8" Title="admin" WF="16384" Pwd="E791926245F1E7969F941D1D999B05DD" LastEdit="0" Main="true" VisuChangePwd="true" AppGroup="0" iBtnArr="" CodeArr="" NFCArr="" NFCNArr=""/>
 		</C>
 		<C Type="UserGroupCaption" V="115" U="0f9f8fd3-0181-49f8-ffffe762ed486ec8" Title="Benutzergruppen" WF="16384">
-			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b8b-ffffe762ed486ec8" Title="Administratoren" WF="16384" Rights="-1" UgType="1" UserModes="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
+			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b8b-ffffe762ed486ec8" Title="Administratoren" WF="16384" Rights="-1" UgType="1" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
 				<Entry To="1440" V="1"/>
 				<Entry To="1440" Ix="1" V="1"/>
 				<Entry To="1440" Ix="2" V="1"/>
@@ -195,7 +195,7 @@
 				<Entry To="1440" Ix="9" V="1"/>
 				<C Type="RefUser" V="115" U="0f9f8fd3-01b0-4b8d-ffffe762ed486ec8" Title="admin" Cl="0,0,0" Ref="0f9f8fd3-01b0-4b89-ffffe762ed486ec8" WF="16384"/>
 			</C>
-			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b8f-ffffe762ed486ec8" Title="Benutzer" WF="16384" Rights="1" UserModes="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
+			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b8f-ffffe762ed486ec8" Title="Benutzer" WF="16384" Rights="1" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
 				<Entry To="1440" V="1"/>
 				<Entry To="1440" Ix="1" V="1"/>
 				<Entry To="1440" Ix="2" V="1"/>
@@ -207,7 +207,7 @@
 				<Entry To="1440" Ix="8" V="1"/>
 				<Entry To="1440" Ix="9" V="1"/>
 			</C>
-			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Title="Alle" WF="16384" Rights="1" UgType="2" UserModes="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
+			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Title="Alle" WF="16384" Rights="1" UgType="2" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
 				<Entry To="1440" V="1"/>
 				<Entry To="1440" Ix="1" V="1"/>
 				<Entry To="1440" Ix="2" V="1"/>
@@ -220,7 +220,7 @@
 				<Entry To="1440" Ix="9" V="1"/>
 				<C Type="RefUser" V="115" U="0f9f8fd3-01b0-4b93-ffffe762ed486ec8" Title="admin" Cl="0,0,0" Ref="0f9f8fd3-01b0-4b89-ffffe762ed486ec8" WF="16384"/>
 			</C>
-			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b95-ffffe762ed486ec8" Title="Niemand" WF="16384" UgType="3" UserModes="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
+			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b95-ffffe762ed486ec8" Title="Niemand" WF="16384" UgType="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
 				<Entry To="1440" V="1"/>
 				<Entry To="1440" Ix="1" V="1"/>
 				<Entry To="1440" Ix="2" V="1"/>
@@ -448,7 +448,7 @@
 				<Co K="Q" U="0f9f8fd3-0191-4a5d-ffffe762ed486ec8"/>
 			</C>
 		</C>
-		<C Type="WeatherServer" V="115" U="0f9f9019-03c9-4cb9-ffffe762ed486ec8" Title="Wetterserver " Cl="0,0,0" SType="0" Address="http://weather.loxone.com:6066" VisuUUID="0f9f0000-03c9-4cb7-ffff04da8820e1b8" SpStates="0f9f9019-03c9-4cb8-ffff04da8820e1b8">
+		<C Type="WeatherServer" V="115" U="0f9f9019-03c9-4cb9-ffffe762ed486ec8" Title="Wetterserver " Cl="0,0,0" WF="16384" SType="0" Address="http://weather.loxone.com:6066" VisuUUID="0f9f0000-03c9-4cb7-ffff04da8820e1b8" SpStates="0f9f9019-03c9-4cb8-ffff04da8820e1b8">
 			<IoData Visu="true" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
 			<C Type="WeatherData" IName="WDC34" V="115" U="0f9f9019-03c9-4cbc-ffffe762ed486ec8" Title="Sonnenschein" Nio="1" WF="16384" WType="34" SL="220">
 				<Co K="AQ" U="0f9f9019-03c9-4cbb-ffff04da8820e1b8"/>
@@ -496,8 +496,8 @@
 				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
 			</C>
 		</C>
-		<C Type="LoxCaption" V="115" U="0f9f8fd3-01b0-4b97-ffffe762ed486ec8" Title="Netzwerkgeräte" Cl="0,0,0" CaptionType="6"/>
-		<C Type="Devicemonitor" V="115" U="0f9f8fd3-0191-4a67-ffffe762ed486ec8" Title="DeviceMonitor" Cl="0,0,0" WF="4096" SpStates="0f9f8fd3-0191-4a66-ffffe762ed486ec8">
+		<C Type="LoxCaption" V="115" U="0f9f8fd3-01b0-4b97-ffffe762ed486ec8" Title="Netzwerkgeräte" Cl="0,0,0" WF="16384" CaptionType="6"/>
+		<C Type="Devicemonitor" V="115" U="0f9f8fd3-0191-4a67-ffffe762ed486ec8" Title="DeviceMonitor" Cl="0,0,0" WF="20480" SpStates="0f9f8fd3-0191-4a66-ffffe762ed486ec8">
 			<IoData Visu="true" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
 		</C>
 		<C Type="AutoPilot" V="115" U="0f9f8fd3-0191-4a64-ffffe762ed486ec8" Title="AutoPiloten" Cl="0,0,0" Nio="2" WF="20480" SpStates="0f9f8fd3-0191-4a60-ffffe762ed486ec8,0f9f8fd3-0191-4a61-ffffe762ed486ec8" config="">
@@ -638,7 +638,7 @@
 					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
 				</C>
 			</C>
-			<C Type="WeatherCaption" V="115" U="0f9f9019-03c9-4c61-ffffe762ed486ec8" Title="Miniserverkommunikation"/>
+			<C Type="WeatherCaption" V="115" U="0f9f9019-03c9-4c61-ffffe762ed486ec8" Title="Miniserverkommunikation" WF="16384"/>
 			<C Type="EIBline" V="115" U="0f9f9019-03c9-4c53-ffffe762ed486ec8" Title="KNX/EIB Linie" WF="16384" EibAddr="1.1.250 14/">
 				<C Type="EIBsensorCaption" V="115" U="0f9f9019-03c9-4c55-ffffe762ed486ec8" Title="Sensoren" WF="16384"/>
 				<C Type="EIBactorCaption" V="115" U="0f9f9019-03c9-4c57-ffffe762ed486ec8" Title="Aktoren" WF="16384"/>
@@ -652,7 +652,7 @@
 			</C>
 			<C Type="VirtualOutCaption" V="115" U="0f9f9019-03c9-4c5b-ffffe762ed486ec8" Title="Virtuelle Ausgänge" WF="16384"/>
 			<C Type="TaskCaption" V="115" U="0f9f9019-03c9-4c5f-ffffe762ed486ec8" Title="Aufgezeichnete Tasks" Cl="0,0,0" WF="16384" gT="0f9f9019-03c9-4c5e-ffff04da8820e1b8" pT="0f9f9019-03c9-4c5d-ffff04da8820e1b8"/>
-			<C Type="LoxCaption" V="115" U="0f9f9019-03c9-4c69-ffffe762ed486ec8" Title="SD-Karte" Cl="0,0,0" CaptionType="4"/>
+			<C Type="LoxCaption" V="115" U="0f9f9019-03c9-4c69-ffffe762ed486ec8" Title="SD-Karte" Cl="0,0,0" WF="16384" CaptionType="4"/>
 			<C Type="LoggerOutCaption" V="115" U="0f9f9019-03c9-4c63-ffffe762ed486ec8" Title="Mitteilungen" WF="16384">
 				<C Type="Logger" V="115" U="0f9f9019-03c9-4c65-ffffe762ed486ec8" Title="Standard Logger" WF="16384" Address="/log/user.log" Std="true"/>
 				<C Type="Notification" V="115" U="0f9f9019-03c9-4c67-ffffe762ed486ec8" Title="Systembenachrichtigung" WF="16384" Entries="10" Sys="true">
@@ -680,52 +680,56 @@
 					<IoData Visu="true" Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
 					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
 				</C>
-				<C Type="Code16" V="115" U="0f9f9020-00b9-4eb8-ffff97975f2234db" Title="iSpindel" Px="5280" Py="6432" Px2="7968" Py2="8064" Cl="131,184,23" Nio="34" Code="// TQ1 &gt; Name der Spindel
-// AQ1 &gt; Tilt
-// AQ2 &gt; Plato
-// AQ3 &gt; Temperatur
-// AQ4 &gt; Battery
-
-int nEvents;
+				<C Type="Code16" V="115" U="0f9f9020-00b9-4eb8-ffff97975f2234db" Title="iSpindel" Px="5280" Py="6432" Px2="7968" Py2="8064" Cl="131,184,23" Nio="34" Code="int nEvents;
 int idx;
-char* Text;
 char strTemp[30];
 float out;
 
+enum OutputPorts
+{
+    tilt,            // AQ1
+    plato,           // AQ2
+	temperature,	 // AQ3
+	battery										// AQ4
+};
+
 while(TRUE)
-    {
-    nEvents = 1;
+{
+	char* Text;
+	nEvents = getinputevent();
     if (nEvents &amp; 0x01)
         {
         Text = getinputtext(0);
 		idx = strfind(Text, &quot; &quot;, 0);
-		if (idx &lt; 0) {return;}
+		if (idx &lt; 0) {free(Text); return;}
 		strncpy(strTemp,Text,idx);
 		//name
 		setoutputtext(0, strTemp);
 		Text = strstrskip(Text, &quot; &quot;);
 		idx = strfind(Text, &quot; &quot;, 0);
-		if (idx &lt; 0) {return;}
+		if (idx &lt; 0) {free(Text); return;}
 		//tilt
 		strncpy(strTemp,Text,idx);
-		out = batoi(strTemp);
-		setoutput(0, out);
+		out = batof(strTemp);
+		setoutput(tilt, out);
 		out = 0.0045*out*out-0.123*out+1.0689;
-		setoutput(1, out);
+		//plato
+		setoutput(plato, out);
 		Text = strstrskip(Text, &quot; &quot;);
 		idx = strfind(Text, &quot; &quot;, 0);
-		if (idx &lt; 0) {return;}
+		if (idx &lt; 0) {free(Text); return;}
 		//temperature
 		strncpy(strTemp,Text,idx);
-		out = batoi(strTemp);
-		setoutput(2, out);
+		out = batof(strTemp);
+		setoutput(temperature, out);
 		Text = strstrskip(Text, &quot; &quot;);
 		//battery
-		out = batoi(Text);
-		setoutput(3, out);
+		out = batof(Text);
+		setoutput(battery, out);
+		free(Text);
         }
-    sleep(100);
-    }
+    sleep(1000);
+}
 
 " Task="1">
 					<Co K="TI1" Nc="1" U="0f9f9020-00b9-4eb9-ffff97975f2234db">
