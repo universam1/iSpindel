@@ -67,7 +67,7 @@ function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=defaultT
    if ($reset)
    {
    $where="WHERE Name = '".$iSpindleID."' 
-                  AND Timestamp >= (Select max(Timestamp) FROM data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
+                  AND Timestamp >= (Select max(Timestamp) FROM Data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
    }  
    else
    {
@@ -139,7 +139,7 @@ function getChartValuesPlato4($iSpindleID='iSpindel000', $timeFrameHours=default
    if ($reset)
    {
    $where="WHERE Name = '".$iSpindleID."' 
-                  AND Timestamp >= (Select max(Timestamp) FROM data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
+                  AND Timestamp >= (Select max(Timestamp) FROM Data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
    }  
    else
    {
