@@ -1,0 +1,803 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ControlList Version="129" LxAV="7" NextObj="2" NextConst="1" NextNote="1" NextMem="1">
+	<C Type="Document" V="115" U="0f9f8fd3-0181-49e8-ffffe762ed486ec8" Title="iSpindel" ConfigVersion="8030321" PaperFormat="2" SPSfreq="100" OpenIsHigh="false" Date="2017-04-22 17:52:34" CDate="" BDate="" DateS="262115554" Street="" Town="" Ctry="" Latitude="48.2" Longitude="13.36" Creator="Jörg Pressel" Logo="" uuidNotifications="0f9f8fd3-0181-49e7-ffffe762ed486ec8" uuidFavSeq="00000000-0000-0000-0000000000000000" uuidFavCol="00000000-0000-0000-0000000000000000" FC="" Currency="€" UpdTime="120" CrashL="true" NumO="299">
+		<SeqConf Num="0"/>
+		<C Type="LoxCaption" V="115" U="0f9f8fd3-0181-49ea-ffffe762ed486ec8" Title="Symbole" Cl="0,0,0" WF="16384" CaptionType="5">
+			<C Type="IconCaptionState" V="115" U="0f9f8fd3-0181-49ec-ffffe762ed486ec8" Title="Statussymbole" WF="16384">
+				<C Type="IconState" V="115" U="00000000-0000-0001-2200000000000000" Title="Nicht zugeordnet" WF="16384"/>
+				<C Type="IconState" V="115" U="00000000-0000-0002-2200000000000000" Title="Schwerer Fehler" WF="16384" Ix="1"/>
+				<C Type="IconState" V="115" U="00000000-0000-0003-2200000000000000" Title="Kleiner Fehler" WF="16384" Ix="2"/>
+				<C Type="IconState" V="115" U="00000000-0000-0004-2200000000000000" Title="Warnung" WF="16384" Ix="3"/>
+				<C Type="IconState" V="115" U="00000000-0000-0005-2200000000000000" Title="Info" WF="16384" Ix="4"/>
+				<C Type="IconState" V="115" U="00000000-0000-0006-2200000000000000" Title="Neutral" WF="16384" Ix="5"/>
+				<C Type="IconState" V="115" U="00000000-0000-0007-2200000000000000" Title="Aktiv" WF="16384" Ix="6"/>
+				<C Type="IconState" V="115" U="00000000-0000-0008-2200000000000000" Title="Inaktiv" WF="16384" Ix="7"/>
+				<C Type="IconState" V="115" U="00000000-0000-0009-2200000000000000" Title="Alarm" WF="16384" Ix="8"/>
+				<C Type="IconState" V="115" U="00000000-0000-000a-2200000000000000" Title="Scharf" WF="16384" Ix="9"/>
+				<C Type="IconState" V="115" U="00000000-0000-000b-2200000000000000" Title="Unscharf" WF="16384" Ix="10"/>
+				<C Type="IconState" V="115" U="00000000-0000-000c-2200000000000000" Title="Oben" WF="16384" Ix="11"/>
+				<C Type="IconState" V="115" U="00000000-0000-000d-2200000000000000" Title="Mitte" WF="16384" Ix="12"/>
+				<C Type="IconState" V="115" U="00000000-0000-000e-2200000000000000" Title="Unten" WF="16384" Ix="13"/>
+				<C Type="IconState" V="115" U="00000000-0000-000f-2200000000000000" Title="Auf" WF="16384" Ix="14"/>
+				<C Type="IconState" V="115" U="00000000-0000-0010-2200000000000000" Title="Zu" WF="16384" Ix="15"/>
+				<C Type="IconState" V="115" U="00000000-0000-0011-2200000000000000" Title="Ein" WF="16384" Ix="16"/>
+				<C Type="IconState" V="115" U="00000000-0000-0012-2200000000000000" Title="Aus" WF="16384" Ix="17"/>
+				<C Type="IconState" V="115" U="00000000-0000-0013-2200000000000000" Title="Voll" WF="16384" Ix="18"/>
+				<C Type="IconState" V="115" U="00000000-0000-0014-2200000000000000" Title="Leer" WF="16384" Ix="19"/>
+				<C Type="IconState" V="115" U="00000000-0000-0015-2200000000000000" Title="Fertig" WF="16384" Ix="20"/>
+				<C Type="IconState" V="115" U="00000000-0000-0016-2200000000000000" Title="In Arbeit" WF="16384" Ix="21"/>
+				<C Type="IconState" V="115" U="00000000-0000-0017-2200000000000000" Title="Heiß" WF="16384" Ix="22"/>
+				<C Type="IconState" V="115" U="00000000-0000-0018-2200000000000000" Title="Kalt" WF="16384" Ix="23"/>
+				<C Type="IconState" V="115" U="00000000-0000-0019-2200000000000000" Title="Webpage" WF="16384" Ix="24"/>
+			</C>
+			<C Type="IconCaptionCat" V="115" U="0f9f8fd3-0181-49ee-ffffe762ed486ec8" Title="Kategoriesymbole" WF="16384">
+				<C Type="IconCat" V="115" U="00000000-0000-0001-2000000000000000" Title="Nicht zugeordnet" WF="16384"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0002-2000000000000000" Title="Beleuchtung" WF="16384" Ix="1"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0003-2000000000000000" Title="Beschattung" WF="16384" Ix="2"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0004-2000000000000000" Title="Heizung" WF="16384" Ix="3"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0005-2000000000000000" Title="Klima" WF="16384" Ix="4"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0006-2000000000000000" Title="Audio" WF="16384" Ix="5"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0007-2000000000000000" Title="Fühler" WF="16384" Ix="6"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0008-2000000000000000" Title="Stellantrieb" WF="16384" Ix="7"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0009-2000000000000000" Title="Temperatur" WF="16384" Ix="8"/>
+				<C Type="IconCat" V="115" U="00000000-0000-000a-2000000000000000" Title="Melder" WF="16384" Ix="9"/>
+				<C Type="IconCat" V="115" U="00000000-0000-000b-2000000000000000" Title="Lüftung" WF="16384" Ix="10"/>
+				<C Type="IconCat" V="115" U="00000000-0000-000c-2000000000000000" Title="Fenster" WF="16384" Ix="11"/>
+				<C Type="IconCat" V="115" U="00000000-0000-000d-2000000000000000" Title="Überwachung" WF="16384" Ix="12"/>
+				<C Type="IconCat" V="115" U="00000000-0000-000e-2000000000000000" Title="Kühlung" WF="16384" Ix="13"/>
+				<C Type="IconCat" V="115" U="00000000-0000-000f-2000000000000000" Title="Alarm" WF="16384" Ix="14"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0010-2000000000000000" Title="Tor" WF="16384" Ix="15"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0011-2000000000000000" Title="Wellness" WF="16384" Ix="16"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0012-2000000000000000" Title="Technik" WF="16384" Ix="17"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0013-2000000000000000" Title="Audio 2" WF="16384" Ix="18"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0014-2000000000000000" Title="Beleuchtung 2" WF="16384" Ix="19"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0015-2000000000000000" Title="Temperatur 2" WF="16384" Ix="20"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0016-2000000000000000" Title="Melder 2" WF="16384" Ix="21"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0017-2000000000000000" Title="Alarm 2" WF="16384" Ix="22"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0018-2000000000000000" Title="Audio 3" WF="16384" Ix="23"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0019-2000000000000000" Title="Fenster 2" WF="16384" Ix="24"/>
+				<C Type="IconCat" V="115" U="00000000-0000-001a-2000000000000000" Title="Heizung 2" WF="16384" Ix="25"/>
+				<C Type="IconCat" V="115" U="00000000-0000-001b-2000000000000000" Title="Heizventil 2" WF="16384" Ix="26"/>
+				<C Type="IconCat" V="115" U="00000000-0000-001c-2000000000000000" Title="Technik 2" WF="16384" Ix="27"/>
+				<C Type="IconCat" V="115" U="00000000-0000-001d-2000000000000000" Title="Tor 2" WF="16384" Ix="28"/>
+				<C Type="IconCat" V="115" U="00000000-0000-001e-2000000000000000" Title="EDV" WF="16384" Ix="29"/>
+				<C Type="IconCat" V="115" U="00000000-0000-001f-2000000000000000" Title="EDV 2" WF="16384" Ix="30"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0020-2000000000000000" Title="Zutritt" WF="16384" Ix="31"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0021-2000000000000000" Title="Zutritt 2" WF="16384" Ix="32"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0022-2000000000000000" Title="Verbraucher" WF="16384" Ix="33"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0023-2000000000000000" Title="Verbraucher 2" WF="16384" Ix="34"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0024-2000000000000000" Title="Bewässerung" WF="16384" Ix="35"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0025-2000000000000000" Title="Bewässerung 2" WF="16384" Ix="36"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0026-2000000000000000" Title="Photovoltaik" WF="16384" Ix="37"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0027-2000000000000000" Title="Überwachung 2" WF="16384" Ix="38"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0028-2000000000000000" Title="Zutritt 3" WF="16384" Ix="39"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0029-2000000000000000" Title="Zeit" WF="16384" Ix="40"/>
+				<C Type="IconCat" V="115" U="00000000-0000-002a-2000000000000000" Title="Elektrofahrzeug" WF="16384" Ix="41"/>
+				<C Type="IconCat" V="115" U="00000000-0000-002b-2000000000000000" Title="Sonne" WF="16384" Ix="42"/>
+				<C Type="IconCat" V="115" U="00000000-0000-002c-2000000000000000" Title="Wecker" WF="16384" Ix="43"/>
+				<C Type="IconCat" V="115" U="00000000-0000-002d-2000000000000000" Title="Strom" WF="16384" Ix="44"/>
+				<C Type="IconCat" V="115" U="00000000-0000-002e-2000000000000000" Title="Info" WF="16384" Ix="45"/>
+				<C Type="IconCat" V="115" U="00000000-0000-002f-2000000000000000" Title="Zirkulationspumpe" WF="16384" Ix="46"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0030-2000000000000000" Title="Wärmepumpe" WF="16384" Ix="47"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0031-2000000000000000" Title="Wetter" WF="16384" Ix="48"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0032-2000000000000000" Title="Feuchte" WF="16384" Ix="49"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0033-2000000000000000" Title="Multimedia" WF="16384" Ix="50"/>
+				<C Type="IconCat" V="115" U="00000000-0000-0034-2000000000000000" Title="Energie" WF="16384" Ix="51"/>
+			</C>
+			<C Type="IconCaptionPlace" V="115" U="0f9f8fd3-0181-49f0-ffffe762ed486ec8" Title="Raumsymbole" WF="16384">
+				<C Type="IconPlace" V="115" U="00000000-0000-0001-2100000000000000" Title="Nicht zugeordnet" WF="16384"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0002-2100000000000000" Title="Vorzimmer EG" WF="16384" Ix="1"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0003-2100000000000000" Title="Vorzimmer OG" WF="16384" Ix="2"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0004-2100000000000000" Title="Wohnzimmer" WF="16384" Ix="3"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0005-2100000000000000" Title="Küche" WF="16384" Ix="4"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0006-2100000000000000" Title="Bad EG" WF="16384" Ix="5"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0007-2100000000000000" Title="Bad OG" WF="16384" Ix="6"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0008-2100000000000000" Title="Schlafzimmer" WF="16384" Ix="7"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0009-2100000000000000" Title="Kinderzimmer" WF="16384" Ix="8"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-000a-2100000000000000" Title="WC" WF="16384" Ix="9"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-000b-2100000000000000" Title="Ankleidezimmer" WF="16384" Ix="10"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-000c-2100000000000000" Title="Garage" WF="16384" Ix="11"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-000d-2100000000000000" Title="Windfang" WF="16384" Ix="12"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-000e-2100000000000000" Title="Stiege" WF="16384" Ix="13"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-000f-2100000000000000" Title="Saunaraum" WF="16384" Ix="14"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0010-2100000000000000" Title="Wintergarten" WF="16384" Ix="15"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0011-2100000000000000" Title="Arbeitszimmer" WF="16384" Ix="16"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0012-2100000000000000" Title="Spielzimmer" WF="16384" Ix="17"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0013-2100000000000000" Title="Waschzimmer" WF="16384" Ix="18"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0014-2100000000000000" Title="Bügelzimmer" WF="16384" Ix="19"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0015-2100000000000000" Title="Trainingszimmer" WF="16384" Ix="20"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0016-2100000000000000" Title="Terrasse" WF="16384" Ix="21"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0017-2100000000000000" Title="Garten" WF="16384" Ix="22"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0018-2100000000000000" Title="Esszimmer" WF="16384" Ix="23"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0019-2100000000000000" Title="Dachboden" WF="16384" Ix="24"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-001a-2100000000000000" Title="Vorratskeller" WF="16384" Ix="25"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-001b-2100000000000000" Title="Bar" WF="16384" Ix="26"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-001c-2100000000000000" Title="Bad EG 2" WF="16384" Ix="27"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-001d-2100000000000000" Title="Ankleidezimmer 2" WF="16384" Ix="28"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-001e-2100000000000000" Title="Bad EG 3" WF="16384" Ix="29"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-001f-2100000000000000" Title="Bad EG 4" WF="16384" Ix="30"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0020-2100000000000000" Title="Küche 2" WF="16384" Ix="31"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0021-2100000000000000" Title="Küche 3" WF="16384" Ix="32"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0022-2100000000000000" Title="Windfang 2" WF="16384" Ix="33"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0023-2100000000000000" Title="Sanitär" WF="16384" Ix="34"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0024-2100000000000000" Title="Arbeitszimmer 2" WF="16384" Ix="35"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0025-2100000000000000" Title="Esszimmer 2" WF="16384" Ix="36"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0026-2100000000000000" Title="Konferenz" WF="16384" Ix="37"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0027-2100000000000000" Title="Garage 2" WF="16384" Ix="38"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0028-2100000000000000" Title="Wintergarten 2" WF="16384" Ix="39"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0029-2100000000000000" Title="Stiege 2" WF="16384" Ix="40"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-002a-2100000000000000" Title="Terrasse 2" WF="16384" Ix="41"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-002b-2100000000000000" Title="Pool" WF="16384" Ix="42"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-002c-2100000000000000" Title="Flur" WF="16384" Ix="43"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-002d-2100000000000000" Title="Außenbereich" WF="16384" Ix="44"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-002e-2100000000000000" Title="Technikraum" WF="16384" Ix="45"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-002f-2100000000000000" Title="Arbeitszimmer 3" WF="16384" Ix="46"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0030-2100000000000000" Title="Technikraum 2" WF="16384" Ix="47"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0031-2100000000000000" Title="Zentral" WF="16384" Ix="48"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0032-2100000000000000" Title="Serverraum" WF="16384" Ix="49"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0033-2100000000000000" Title="Heizraum" WF="16384" Ix="50"/>
+				<C Type="IconPlace" V="115" U="00000000-0000-0034-2100000000000000" Title="WC 2" WF="16384" Ix="51"/>
+			</C>
+		</C>
+		<C Type="CategoryCaption" V="115" U="0f9f8fd3-0181-49f2-ffffe762ed486ec8" Title="Kategorien" WF="16384">
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Title="Nicht zugeordnet" WF="16384" Icon="00000000-0000-0001-2000000000000000" First="true" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a6f-ffffe762ed486ec8" Title="Beleuchtung" WF="16384" Icon="00000000-0000-0002-2000000000000000" Rating="10" CatGroup="2" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a73-ffffe762ed486ec8" Title="Beschattung" WF="16384" Icon="00000000-0000-0003-2000000000000000" Rating="10" CatGroup="1" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a77-ffffe762ed486ec8" Title="Heizung" WF="16384" Icon="00000000-0000-0004-2000000000000000" CatGroup="8" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a7b-ffffe762ed486ec8" Title="Klima" WF="16384" Icon="00000000-0000-0005-2000000000000000" CatGroup="5" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a7f-ffffe762ed486ec8" Title="Audio" WF="16384" Icon="00000000-0000-0006-2000000000000000" CatGroup="4" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a83-ffffe762ed486ec8" Title="Fühler" WF="16384" Icon="00000000-0000-0007-2000000000000000" CatGroup="6" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a87-ffffe762ed486ec8" Title="Stellantrieb" WF="16384" Icon="00000000-0000-0008-2000000000000000" CatGroup="7" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a8b-ffffe762ed486ec8" Title="Temperatur" WF="16384" Icon="00000000-0000-0009-2000000000000000" CatGroup="3" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a8f-ffffe762ed486ec8" Title="Melder" WF="16384" Icon="00000000-0000-000a-2000000000000000" CatGroup="9" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a93-ffffe762ed486ec8" Title="Lüftung" WF="16384" Icon="00000000-0000-000b-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a97-ffffe762ed486ec8" Title="Fenster" WF="16384" Icon="00000000-0000-000c-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a9b-ffffe762ed486ec8" Title="Überwachung" WF="16384" Icon="00000000-0000-000d-2000000000000000" CatGroup="12" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4a9f-ffffe762ed486ec8" Title="Kühlung" WF="16384" Icon="00000000-0000-000e-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4aa3-ffffe762ed486ec8" Title="Alarm" WF="16384" Icon="00000000-0000-000f-2000000000000000" CatGroup="14" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4aa7-ffffe762ed486ec8" Title="Tor" WF="16384" Icon="00000000-0000-0010-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4aab-ffffe762ed486ec8" Title="Wellness" WF="16384" Icon="00000000-0000-0011-2000000000000000" CatGroup="16" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-0191-4aaf-ffffe762ed486ec8" Title="Technik" WF="16384" Icon="00000000-0000-0012-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4ac9-ffffe762ed486ec8" Title="EDV" WF="16384" Icon="00000000-0000-001e-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4acf-ffffe762ed486ec8" Title="Zutritt" WF="16384" Icon="00000000-0000-0020-2000000000000000" CatGroup="31" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4ad5-ffffe762ed486ec8" Title="Verbraucher" WF="16384" Icon="00000000-0000-0022-2000000000000000" CatGroup="33" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4adb-ffffe762ed486ec8" Title="Bewässerung" WF="16384" Icon="00000000-0000-0024-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4ae1-ffffe762ed486ec8" Title="Photovoltaik" WF="16384" Icon="00000000-0000-0026-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4ae9-ffffe762ed486ec8" Title="Zeit" WF="16384" Icon="00000000-0000-0029-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4aed-ffffe762ed486ec8" Title="Elektrofahrzeug" WF="16384" Icon="00000000-0000-002a-2000000000000000" CatGroup="41" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4af1-ffffe762ed486ec8" Title="Sonne" WF="16384" Icon="00000000-0000-002b-2000000000000000" PType="2"/>
+			<C Type="Category" V="115" U="0f9f8fd3-01a1-4af5-ffffe762ed486ec8" Title="Wecker" WF="16384" Icon="00000000-0000-002c-2000000000000000" PType="2"/>
+		</C>
+		<C Type="PlaceCaption" V="115" U="0f9f8fd3-0181-49f4-ffffe762ed486ec8" Title="Räume" WF="16384">
+			<C Type="Place" V="115" U="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Title="Nicht zugeordnet" WF="16384" Icon="00000000-0000-0001-2100000000000000" First="true" PType="2"/>
+			<C Type="Place" V="115" U="0f9f8fd3-01b0-4ba7-ffffe762ed486ec8" Title="Wohnzimmer" WF="16384" Icon="00000000-0000-0004-2100000000000000" Rating="10" PGroup="3" PType="2"/>
+			<C Type="Place" V="115" U="0f9f8fd3-01b0-4bab-ffffe762ed486ec8" Title="Küche" WF="16384" Icon="00000000-0000-0005-2100000000000000" PGroup="4" PType="2"/>
+			<C Type="Place" V="115" U="0f9f8fd3-01b0-4baf-ffffe762ed486ec8" Title="Bad EG" WF="16384" Icon="00000000-0000-0006-2100000000000000" PGroup="5" PType="2"/>
+			<C Type="Place" V="115" U="0f9f8fd3-01b0-4bb7-ffffe762ed486ec8" Title="Schlafzimmer" WF="16384" Icon="00000000-0000-0008-2100000000000000" PGroup="7" PType="1"/>
+			<C Type="Place" V="115" U="0f9f8fd3-01c0-4bbf-ffffe762ed486ec8" Title="WC" WF="16384" Icon="00000000-0000-000a-2100000000000000" PGroup="9" PType="3"/>
+			<C Type="Place" V="115" U="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Title="Außenbereich" WF="16384" Icon="00000000-0000-002d-2100000000000000" PGroup="44" PType="2"/>
+			<C Type="Place" V="115" U="0f9f8fd3-01c0-4c3d-ffffe762ed486ec8" Title="Zentral" WF="16384" Icon="00000000-0000-0031-2100000000000000" PGroup="48" PType="3"/>
+		</C>
+		<C Type="UserCaption" V="115" U="0f9f8fd3-0181-49f6-ffffe762ed486ec8" Title="Benutzer" WF="16384">
+			<C Type="User" V="115" U="0f9f8fd3-01b0-4b89-ffffe762ed486ec8" Title="admin" WF="16384" Pwd="E791926245F1E7969F941D1D999B05DD" LastEdit="0" Main="true" VisuChangePwd="true" AppGroup="0" iBtnArr="" CodeArr="" NFCArr="" NFCNArr=""/>
+		</C>
+		<C Type="UserGroupCaption" V="115" U="0f9f8fd3-0181-49f8-ffffe762ed486ec8" Title="Benutzergruppen" WF="16384">
+			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b8b-ffffe762ed486ec8" Title="Administratoren" WF="16384" Rights="-1" UgType="1" UserModes="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
+				<Entry To="1440" V="1"/>
+				<Entry To="1440" Ix="1" V="1"/>
+				<Entry To="1440" Ix="2" V="1"/>
+				<Entry To="1440" Ix="3" V="1"/>
+				<Entry To="1440" Ix="4" V="1"/>
+				<Entry To="1440" Ix="5" V="1"/>
+				<Entry To="1440" Ix="6" V="1"/>
+				<Entry To="1440" Ix="7" V="1"/>
+				<Entry To="1440" Ix="8" V="1"/>
+				<Entry To="1440" Ix="9" V="1"/>
+				<C Type="RefUser" V="115" U="0f9f8fd3-01b0-4b8d-ffffe762ed486ec8" Title="admin" Cl="0,0,0" Ref="0f9f8fd3-01b0-4b89-ffffe762ed486ec8" WF="16384"/>
+			</C>
+			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b8f-ffffe762ed486ec8" Title="Benutzer" WF="16384" Rights="1" UserModes="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
+				<Entry To="1440" V="1"/>
+				<Entry To="1440" Ix="1" V="1"/>
+				<Entry To="1440" Ix="2" V="1"/>
+				<Entry To="1440" Ix="3" V="1"/>
+				<Entry To="1440" Ix="4" V="1"/>
+				<Entry To="1440" Ix="5" V="1"/>
+				<Entry To="1440" Ix="6" V="1"/>
+				<Entry To="1440" Ix="7" V="1"/>
+				<Entry To="1440" Ix="8" V="1"/>
+				<Entry To="1440" Ix="9" V="1"/>
+			</C>
+			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Title="Alle" WF="16384" Rights="1" UgType="2" UserModes="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
+				<Entry To="1440" V="1"/>
+				<Entry To="1440" Ix="1" V="1"/>
+				<Entry To="1440" Ix="2" V="1"/>
+				<Entry To="1440" Ix="3" V="1"/>
+				<Entry To="1440" Ix="4" V="1"/>
+				<Entry To="1440" Ix="5" V="1"/>
+				<Entry To="1440" Ix="6" V="1"/>
+				<Entry To="1440" Ix="7" V="1"/>
+				<Entry To="1440" Ix="8" V="1"/>
+				<Entry To="1440" Ix="9" V="1"/>
+				<C Type="RefUser" V="115" U="0f9f8fd3-01b0-4b93-ffffe762ed486ec8" Title="admin" Cl="0,0,0" Ref="0f9f8fd3-01b0-4b89-ffffe762ed486ec8" WF="16384"/>
+			</C>
+			<C Type="UserGroup" V="115" U="0f9f8fd3-01b0-4b95-ffffe762ed486ec8" Title="Niemand" WF="16384" UgType="3" UserModes="3" N="10" Modes="00000000-0000-0001-1500000000000000,00000000-0000-0002-1500000000000000,00000000-0000-0003-1500000000000000,00000000-0000-0004-1500000000000000,00000000-0000-0005-1500000000000000,00000000-0000-0006-1500000000000000,00000000-0000-0007-1500000000000000,00000000-0000-0008-1500000000000000,00000000-0000-0009-1500000000000000,00000000-0000-000a-1500000000000000">
+				<Entry To="1440" V="1"/>
+				<Entry To="1440" Ix="1" V="1"/>
+				<Entry To="1440" Ix="2" V="1"/>
+				<Entry To="1440" Ix="3" V="1"/>
+				<Entry To="1440" Ix="4" V="1"/>
+				<Entry To="1440" Ix="5" V="1"/>
+				<Entry To="1440" Ix="6" V="1"/>
+				<Entry To="1440" Ix="7" V="1"/>
+				<Entry To="1440" Ix="8" V="1"/>
+				<Entry To="1440" Ix="9" V="1"/>
+			</C>
+		</C>
+		<C Type="ConstantCaption" V="115" U="0f9f8fd3-0181-49fa-ffffe762ed486ec8" Title="Konstanten" WF="16384"/>
+		<C Type="MemoryCaption" V="115" U="0f9f8fd3-0181-49fc-ffffe762ed486ec8" Title="Merker" WF="16384"/>
+		<C Type="ModeCaption" V="115" U="0f9f8fd3-0181-49fe-ffffe762ed486ec8" Title="Betriebsmodi" WF="16384">
+			<C Type="Mode" V="115" U="00000000-0000-0001-1500000000000000" Title="Feiertag" Nio="2" WF="16384">
+				<Co K="I" U="0f9f8fd3-01b0-4b39-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b3a-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-0002-1500000000000000" Title="Urlaub" Nio="2" WF="16384" Mode="1">
+				<Co K="I" U="0f9f8fd3-01b0-4b3d-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b3e-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-0003-1500000000000000" Title="Freier Tag/Schulferien" Nio="2" WF="16384" Mode="2">
+				<Co K="I" U="0f9f8fd3-01b0-4b41-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b42-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-0004-1500000000000000" Title="Montag" Nio="2" WF="16384" Mode="3">
+				<Co K="I" U="0f9f8fd3-01b0-4b45-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b46-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-0005-1500000000000000" Title="Dienstag" Nio="2" WF="16384" Mode="4">
+				<Co K="I" U="0f9f8fd3-01b0-4b49-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b4a-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-0006-1500000000000000" Title="Mittwoch" Nio="2" WF="16384" Mode="5">
+				<Co K="I" U="0f9f8fd3-01b0-4b4d-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b4e-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-0007-1500000000000000" Title="Donnerstag" Nio="2" WF="16384" Mode="6">
+				<Co K="I" U="0f9f8fd3-01b0-4b51-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b52-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-0008-1500000000000000" Title="Freitag" Nio="2" WF="16384" Mode="7">
+				<Co K="I" U="0f9f8fd3-01b0-4b55-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b56-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-0009-1500000000000000" Title="Samstag" Nio="2" WF="16384" Mode="8">
+				<Co K="I" U="0f9f8fd3-01b0-4b59-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b5a-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-000a-1500000000000000" Title="Sonntag" Nio="2" WF="16384" Mode="9">
+				<Co K="I" U="0f9f8fd3-01b0-4b5d-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b5e-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-000b-1500000000000000" Title="Heizperiode" Nio="2" WF="16384" Mode="10">
+				<Co K="I" U="0f9f8fd3-01b0-4b61-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b62-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="00000000-0000-000c-1500000000000000" Title="Kühlperiode" Nio="2" WF="16384" Mode="11">
+				<Co K="I" U="0f9f8fd3-01b0-4b65-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b66-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="0f9f8fd3-01b0-4b6b-ffffe762ed486ec8" Title="Alarm" Nio="2" WF="16384" Mode="-1">
+				<Co K="I" U="0f9f8fd3-01b0-4b69-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b6a-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="0f9f8fd3-01b0-4b6f-ffffe762ed486ec8" Title="Anwesenheitssimulation" Nio="2" WF="16384" Mode="-2">
+				<Co K="I" U="0f9f8fd3-01b0-4b6d-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b6e-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="0f9f8fd3-01b0-4b73-ffffe762ed486ec8" Title="Haus im Tiefschlaf" Nio="2" WF="16384" Mode="-3">
+				<Co K="I" U="0f9f8fd3-01b0-4b71-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b72-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="0f9f8fd3-01b0-4b77-ffffe762ed486ec8" Title="Erhöhter Wärmebedarf" Nio="2" WF="16384" Mode="-4">
+				<Co K="I" U="0f9f8fd3-01b0-4b75-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b76-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="0f9f8fd3-01b0-4b7b-ffffe762ed486ec8" Title="Party" Nio="2" WF="16384" Mode="-5">
+				<Co K="I" U="0f9f8fd3-01b0-4b79-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b7a-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+			<C Type="Mode" V="115" U="0f9f8fd3-01b0-4b7f-ffffe762ed486ec8" Title="Alle abwesend" Nio="2" WF="16384" Mode="-6">
+				<Co K="I" U="0f9f8fd3-01b0-4b7d-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b7e-ffffe762ed486ec8"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<Display StateOnly="true"/>
+			</C>
+		</C>
+		<C Type="CalendarCaption" V="115" U="0f9f8fd3-0181-4a00-ffffe762ed486ec8" Title="Betriebszeiten" WF="16384">
+			<C Type="CalendarEntry" V="115" U="0f9f8fd3-01b0-4b83-ffffe762ed486ec8" Title="Heizperiode" Nio="2" WF="16384" CalType="10" Mode="4" Month="10" Day="1" Month2="4" Day2="30" WeekDayInMonth="1">
+				<Co K="I" U="0f9f8fd3-01b0-4b81-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b82-ffffe762ed486ec8"/>
+			</C>
+			<C Type="CalendarEntry" V="115" U="0f9f8fd3-01b0-4b87-ffffe762ed486ec8" Title="Kühlperiode" Nio="2" WF="16384" CalType="11" Mode="4" Month="5" Day="1" Month2="9" Day2="30" WeekDayInMonth="1">
+				<Co K="I" U="0f9f8fd3-01b0-4b85-ffffe762ed486ec8"/>
+				<Co K="Q" U="0f9f8fd3-01b0-4b86-ffffe762ed486ec8"/>
+			</C>
+		</C>
+		<C Type="RemoteControls" V="115" U="0f9f8fd3-0181-4a02-ffffe762ed486ec8" Title="Fernbedienungen" WF="16384"/>
+		<C Type="TimeCaption" V="115" U="0f9f8fd3-0181-4a04-ffffe762ed486ec8" Title="Zeiten" Cl="0,0,0" WF="16384">
+			<C Type="Day2009" V="115" U="0f9f8fd3-0181-4a07-ffffe762ed486ec8" Title="Tage seit 2009" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0181-4a06-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Year" V="115" U="0f9f8fd3-0181-4a0a-ffffe762ed486ec8" Title="Jahr" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0181-4a09-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Month" V="115" U="0f9f8fd3-0191-4a0d-ffffe762ed486ec8" Title="Monat" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a0c-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Day" V="115" U="0f9f8fd3-0191-4a10-ffffe762ed486ec8" Title="Tag" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a0f-ffffe762ed486ec8"/>
+			</C>
+			<C Type="DayOfWeek" V="115" U="0f9f8fd3-0191-4a13-ffffe762ed486ec8" Title="Wochentag" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a12-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Calendar" V="115" U="0f9f8fd3-0191-4a16-ffffe762ed486ec8" Title="Aktive Betriebszeit" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a15-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Time" V="115" U="0f9f8fd3-0191-4a19-ffffe762ed486ec8" Title="Minuten seit Mitternacht" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a18-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Hour" V="115" U="0f9f8fd3-0191-4a1c-ffffe762ed486ec8" Title="Stunde" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a1b-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Minute" V="115" U="0f9f8fd3-0191-4a1f-ffffe762ed486ec8" Title="Minuten" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a1e-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Second" V="115" U="0f9f8fd3-0191-4a22-ffffe762ed486ec8" Title="Sekunden" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a21-ffffe762ed486ec8"/>
+			</C>
+			<C Type="SecondsBoot" V="115" U="0f9f8fd3-0191-4a25-ffffe762ed486ec8" Title="Sekunden seit Boot" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a24-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Sunrise" V="115" U="0f9f8fd3-0191-4a28-ffffe762ed486ec8" Title="Minuten bis Sonnenaufgang" Nio="1" WF="16384">
+				<Co K="Q" U="0f9f8fd3-0191-4a27-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Sunset" V="115" U="0f9f8fd3-0191-4a2b-ffffe762ed486ec8" Title="Minuten bis Sonnenuntergang" Nio="1" WF="16384">
+				<Co K="Q" U="0f9f8fd3-0191-4a2a-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Daylight" V="115" U="0f9f8fd3-0191-4a2e-ffffe762ed486ec8" Title="Tageslicht" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a2d-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Daylight2" V="115" U="0f9f8fd3-0191-4a31-ffffe762ed486ec8" Title="Tageslicht 30Min" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a30-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Morningtwilight" V="115" U="0f9f8fd3-0191-4a34-ffffe762ed486ec8" Title="Minuten bis Morgendämmerung" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a33-ffffe762ed486ec8"/>
+			</C>
+			<C Type="Eveningtwilight" V="115" U="0f9f8fd3-0191-4a37-ffffe762ed486ec8" Title="Minuten bis Abenddämmerung" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a36-ffffe762ed486ec8"/>
+			</C>
+			<C Type="SunAltitude" V="115" U="0f9f8fd3-0191-4a3a-ffffe762ed486ec8" Title="Sonne Höhe" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a39-ffffe762ed486ec8"/>
+			</C>
+			<C Type="SunAzimuth" V="115" U="0f9f8fd3-0191-4a3d-ffffe762ed486ec8" Title="Sonne Richtung" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a3c-ffffe762ed486ec8"/>
+			</C>
+			<C Type="StartPulse" V="115" U="0f9f8fd3-0191-4a40-ffffe762ed486ec8" Title="Startimpuls" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a3f-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseYear" V="115" U="0f9f8fd3-0191-4a43-ffffe762ed486ec8" Title="Jahresimpuls" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a42-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseMonth" V="115" U="0f9f8fd3-0191-4a46-ffffe762ed486ec8" Title="Monatsimpuls" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a45-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseDay" V="115" U="0f9f8fd3-0191-4a49-ffffe762ed486ec8" Title="Tagesimpuls" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a48-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseHour" V="115" U="0f9f8fd3-0191-4a4c-ffffe762ed486ec8" Title="Stundenimpuls" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a4b-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseMinute" V="115" U="0f9f8fd3-0191-4a4f-ffffe762ed486ec8" Title="Minutenimpuls" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a4e-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseSecond" V="115" U="0f9f8fd3-0191-4a52-ffffe762ed486ec8" Title="Sekundenimpuls" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a51-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseSunrise" V="115" U="0f9f8fd3-0191-4a55-ffffe762ed486ec8" Title="Impuls Sonnenaufgang" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a54-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseSunset" V="115" U="0f9f8fd3-0191-4a58-ffffe762ed486ec8" Title="Impuls Sonnenuntergang" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a57-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseMorningtwilight" V="115" U="0f9f8fd3-0191-4a5b-ffffe762ed486ec8" Title="Impuls Morgendämmerung" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a5a-ffffe762ed486ec8"/>
+			</C>
+			<C Type="ImpulseEveningtwilight" V="115" U="0f9f8fd3-0191-4a5e-ffffe762ed486ec8" Title="Impuls Abenddämmerung" Nio="1" WF="16385">
+				<Co K="Q" U="0f9f8fd3-0191-4a5d-ffffe762ed486ec8"/>
+			</C>
+		</C>
+		<C Type="WeatherServer" V="115" U="0f9f9019-03c9-4cb9-ffffe762ed486ec8" Title="Wetterserver " Cl="0,0,0" SType="0" Address="http://weather.loxone.com:6066" VisuUUID="0f9f0000-03c9-4cb7-ffff04da8820e1b8" SpStates="0f9f9019-03c9-4cb8-ffff04da8820e1b8">
+			<IoData Visu="true" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			<C Type="WeatherData" IName="WDC34" V="115" U="0f9f9019-03c9-4cbc-ffffe762ed486ec8" Title="Sonnenschein" Nio="1" WF="16384" WType="34" SL="220">
+				<Co K="AQ" U="0f9f9019-03c9-4cbb-ffff04da8820e1b8"/>
+				<Display StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+			<C Type="WeatherData" IName="WDC1" V="115" U="0f9f9019-03d8-4cbf-ffffe762ed486ec8" Title="Temperatur" Nio="1" WF="16384" WType="1" SL="220">
+				<Co K="AQ" U="0f9f9019-03d8-4cbe-ffff04da8820e1b8"/>
+				<Display Unit="&lt;v.1&gt;°" StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+			<C Type="WeatherData" IName="WDC3" V="115" U="0f9f9019-03d8-4cc2-ffffe762ed486ec8" Title="Rel.Luftfeuchte" Nio="1" WF="16384" WType="3" SL="220">
+				<Co K="AQ" U="0f9f9019-03d8-4cc1-ffff04da8820e1b8"/>
+				<Display Unit="&lt;v&gt;%" StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+			<C Type="WeatherData" IName="WDC4" V="115" U="0f9f9019-03d8-4cc5-ffffe762ed486ec8" Title="Windgeschwindigkeit" Nio="1" WF="16384" WType="4" SL="220">
+				<Co K="AQ" U="0f9f9019-03d8-4cc4-ffff04da8820e1b8"/>
+				<Display Unit="&lt;v&gt;km/h" StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+			<C Type="WeatherData" IName="WDC5" V="115" U="0f9f9019-03d8-4cc8-ffffe762ed486ec8" Title="Windrichtung" Nio="1" WF="16384" WType="5" SL="220">
+				<Co K="AQ" U="0f9f9019-03d8-4cc7-ffff04da8820e1b8"/>
+				<Display Unit="&lt;v.1&gt;°" StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+			<C Type="WeatherData" IName="WDC7" V="115" U="0f9f9019-03d8-4ccb-ffffe762ed486ec8" Title="Strahlung Abs." Nio="1" WF="16384" WType="7" SL="220">
+				<Co K="AQ" U="0f9f9019-03d8-4cca-ffff04da8820e1b8"/>
+				<Display Unit="&lt;v&gt;W/m²" StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+			<C Type="WeatherData" IName="WDC9" V="115" U="0f9f9019-03d8-4cce-ffffe762ed486ec8" Title="Niederschlag" Nio="1" WF="16384" WType="9" SL="220">
+				<Co K="AQ" U="0f9f9019-03d8-4ccd-ffff04da8820e1b8"/>
+				<Display Unit="&lt;v.1&gt;l/m²/h" StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+			<C Type="WeatherData" IName="WDC11" V="115" U="0f9f9019-03d8-4cd1-ffffe762ed486ec8" Title="Luftdruck" Nio="1" WF="16384" WType="11" SL="220">
+				<Co K="AQ" U="0f9f9019-03d8-4cd0-ffff04da8820e1b8"/>
+				<Display Unit="&lt;v&gt;hPa" StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+			<C Type="WeatherData" IName="WDC26" V="115" U="0f9f9019-03d8-4cd4-ffffe762ed486ec8" Title="Gefühlte Temperatur" Nio="1" WF="16384" WType="26" SL="220">
+				<Co K="AQ" U="0f9f9019-03d8-4cd3-ffff04da8820e1b8"/>
+				<Display Unit="&lt;v.1&gt;°" StateOnly="true"/>
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01c0-4c31-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+			</C>
+		</C>
+		<C Type="LoxCaption" V="115" U="0f9f8fd3-01b0-4b97-ffffe762ed486ec8" Title="Netzwerkgeräte" Cl="0,0,0" CaptionType="6"/>
+		<C Type="Devicemonitor" V="115" U="0f9f8fd3-0191-4a67-ffffe762ed486ec8" Title="DeviceMonitor" Cl="0,0,0" WF="4096" SpStates="0f9f8fd3-0191-4a66-ffffe762ed486ec8">
+			<IoData Visu="true" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+		</C>
+		<C Type="AutoPilot" V="115" U="0f9f8fd3-0191-4a64-ffffe762ed486ec8" Title="AutoPiloten" Cl="0,0,0" Nio="2" WF="20480" SpStates="0f9f8fd3-0191-4a60-ffffe762ed486ec8,0f9f8fd3-0191-4a61-ffffe762ed486ec8" config="">
+			<Co K="Input" U="0f9f8fd3-0191-4a62-ffffe762ed486ec8"/>
+			<Co K="output" U="0f9f8fd3-0191-4a63-ffffe762ed486ec8"/>
+		</C>
+		<C Type="LoxLIVE" V="115" U="0f9f9019-03b9-4c49-ffffe762ed486ec8" Title="iSpindel" WF="16384" CycleUserProt="-1" Serial="504F94000000" Installation="" SwitchBoard="Schaltschrank" SwitchBoardRow="1" SwitchBoardPos="1" ExtAddr="dns.loxonecloud.com" IntAddr="" Pause="10" RxTimeout="1000" BaseID="-1">
+			<IoData Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8"/>
+			<C Type="InputCaption" V="115" U="0f9f9019-03c9-4c4b-ffffe762ed486ec8" Title="Digitale Eingänge" WF="16384">
+				<C Type="DigitalIn" IName="I1" V="115" U="0f9f9019-03c9-4c6c-ffffe762ed486ec8" Title="Eingang 1" Nio="1" WF="16385" MinTime="10">
+					<Co K="Q" U="0f9f9019-03c9-4c6b-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v&gt;" StateOnly="true"/>
+				</C>
+				<C Type="DigitalIn" IName="I2" V="115" U="0f9f9019-03c9-4c6f-ffffe762ed486ec8" Title="Eingang 2" Nio="1" WF="16385" MinTime="10">
+					<Co K="Q" U="0f9f9019-03c9-4c6e-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v&gt;" StateOnly="true"/>
+				</C>
+				<C Type="DigitalIn" IName="I3" V="115" U="0f9f9019-03c9-4c72-ffffe762ed486ec8" Title="Eingang 3" Nio="1" WF="16385" MinTime="10">
+					<Co K="Q" U="0f9f9019-03c9-4c71-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v&gt;" StateOnly="true"/>
+				</C>
+				<C Type="DigitalIn" IName="I4" V="115" U="0f9f9019-03c9-4c75-ffffe762ed486ec8" Title="Eingang 4" Nio="1" WF="16385" MinTime="10">
+					<Co K="Q" U="0f9f9019-03c9-4c74-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v&gt;" StateOnly="true"/>
+				</C>
+				<C Type="DigitalIn" IName="I5" V="115" U="0f9f9019-03c9-4c78-ffffe762ed486ec8" Title="Eingang 5" Nio="1" WF="16385" MinTime="10">
+					<Co K="Q" U="0f9f9019-03c9-4c77-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v&gt;" StateOnly="true"/>
+				</C>
+				<C Type="DigitalIn" IName="I6" V="115" U="0f9f9019-03c9-4c7b-ffffe762ed486ec8" Title="Eingang 6" Nio="1" WF="16385" MinTime="10">
+					<Co K="Q" U="0f9f9019-03c9-4c7a-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v&gt;" StateOnly="true"/>
+				</C>
+				<C Type="DigitalIn" IName="I7" V="115" U="0f9f9019-03c9-4c7e-ffffe762ed486ec8" Title="Eingang 7" Nio="1" WF="16385" MinTime="10">
+					<Co K="Q" U="0f9f9019-03c9-4c7d-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v&gt;" StateOnly="true"/>
+				</C>
+				<C Type="DigitalIn" IName="I8" V="115" U="0f9f9019-03c9-4c81-ffffe762ed486ec8" Title="Eingang 8" Nio="1" WF="16385" MinTime="10">
+					<Co K="Q" U="0f9f9019-03c9-4c80-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v&gt;" StateOnly="true"/>
+				</C>
+			</C>
+			<C Type="AnalogInputCaption" V="115" U="0f9f9019-03c9-4c4d-ffffe762ed486ec8" Title="Analoge Eingänge" WF="16384">
+				<C Type="VoltageIn" IName="AI1" V="115" U="0f9f9019-03c9-4c85-ffffe762ed486ec8" Title="Spannung 1" Nio="2" WF="16385" Analog="true" SourceValHigh="10" DestValHigh="10" MaxVal="10" MinChange="0.25" MinTime="1000" AverageTime="1">
+					<Co K="AQ" U="0f9f9019-03c9-4c83-ffff04da8820e1b8"/>
+					<Co K="Q" U="0f9f9019-03c9-4c84-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Type="2" Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="VoltageIn" IName="AI2" V="115" U="0f9f9019-03c9-4c89-ffffe762ed486ec8" Title="Spannung 2" Nio="2" WF="16385" Analog="true" SourceValHigh="10" DestValHigh="10" MaxVal="10" MinChange="0.25" MinTime="1000" AverageTime="1">
+					<Co K="AQ" U="0f9f9019-03c9-4c87-ffff04da8820e1b8"/>
+					<Co K="Q" U="0f9f9019-03c9-4c88-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Type="2" Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="VoltageIn" IName="AI3" V="115" U="0f9f9019-03c9-4c8d-ffffe762ed486ec8" Title="Spannung 3" Nio="2" WF="16385" Analog="true" SourceValHigh="10" DestValHigh="10" MaxVal="10" MinChange="0.25" MinTime="1000" AverageTime="1">
+					<Co K="AQ" U="0f9f9019-03c9-4c8b-ffff04da8820e1b8"/>
+					<Co K="Q" U="0f9f9019-03c9-4c8c-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Type="2" Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="VoltageIn" IName="AI4" V="115" U="0f9f9019-03c9-4c91-ffffe762ed486ec8" Title="Spannung 4" Nio="2" WF="16385" Analog="true" SourceValHigh="10" DestValHigh="10" MaxVal="10" MinChange="0.25" MinTime="1000" AverageTime="1">
+					<Co K="AQ" U="0f9f9019-03c9-4c8f-ffff04da8820e1b8"/>
+					<Co K="Q" U="0f9f9019-03c9-4c90-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Type="2" Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+			</C>
+			<C Type="OutputCaption" V="115" U="0f9f9019-03c9-4c4f-ffffe762ed486ec8" Title="Digitale Ausgänge" WF="16384">
+				<C Type="Actor" IName="Q1" V="115" U="0f9f9019-03c9-4c94-ffffe762ed486ec8" Title="Aktor (Relais) 1" Nio="1" WF="16385">
+					<Co K="I" U="0f9f9019-03c9-4c93-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="Actor" IName="Q2" V="115" U="0f9f9019-03c9-4c97-ffffe762ed486ec8" Title="Aktor (Relais) 2" Nio="1" WF="16385">
+					<Co K="I" U="0f9f9019-03c9-4c96-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="Actor" IName="Q3" V="115" U="0f9f9019-03c9-4c9a-ffffe762ed486ec8" Title="Aktor (Relais) 3" Nio="1" WF="16385">
+					<Co K="I" U="0f9f9019-03c9-4c99-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="Actor" IName="Q4" V="115" U="0f9f9019-03c9-4c9d-ffffe762ed486ec8" Title="Aktor (Relais) 4" Nio="1" WF="16385">
+					<Co K="I" U="0f9f9019-03c9-4c9c-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="Actor" IName="Q5" V="115" U="0f9f9019-03c9-4ca0-ffffe762ed486ec8" Title="Aktor (Relais) 5" Nio="1" WF="16385">
+					<Co K="I" U="0f9f9019-03c9-4c9f-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="Actor" IName="Q6" V="115" U="0f9f9019-03c9-4ca3-ffffe762ed486ec8" Title="Aktor (Relais) 6" Nio="1" WF="16385">
+					<Co K="I" U="0f9f9019-03c9-4ca2-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="Actor" IName="Q7" V="115" U="0f9f9019-03c9-4ca6-ffffe762ed486ec8" Title="Aktor (Relais) 7" Nio="1" WF="16385">
+					<Co K="I" U="0f9f9019-03c9-4ca5-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="Actor" IName="Q8" V="115" U="0f9f9019-03c9-4ca9-ffffe762ed486ec8" Title="Aktor (Relais) 8" Nio="1" WF="16385">
+					<Co K="I" U="0f9f9019-03c9-4ca8-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+			</C>
+			<C Type="AnalogOutputCaption" V="115" U="0f9f9019-03c9-4c51-ffffe762ed486ec8" Title="Analoge Ausgänge" WF="16384">
+				<C Type="VoltageOut" IName="AQ1" V="115" U="0f9f9019-03c9-4cac-ffffe762ed486ec8" Title="Spannung 1" Nio="1" WF="16385" Channel="1" SourceValHigh="10" DestValHigh="10">
+					<Co K="I" U="0f9f9019-03c9-4cab-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="VoltageOut" IName="AQ2" V="115" U="0f9f9019-03c9-4caf-ffffe762ed486ec8" Title="Spannung 2" Nio="1" WF="16385" Channel="1" SourceValHigh="10" DestValHigh="10">
+					<Co K="I" U="0f9f9019-03c9-4cae-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="VoltageOut" IName="AQ3" V="115" U="0f9f9019-03c9-4cb2-ffffe762ed486ec8" Title="Spannung 3" Nio="1" WF="16385" Channel="1" SourceValHigh="10" DestValHigh="10">
+					<Co K="I" U="0f9f9019-03c9-4cb1-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="VoltageOut" IName="AQ4" V="115" U="0f9f9019-03c9-4cb5-ffffe762ed486ec8" Title="Spannung 4" Nio="1" WF="16385" Channel="1" SourceValHigh="10" DestValHigh="10">
+					<Co K="I" U="0f9f9019-03c9-4cb4-ffff04da8820e1b8"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+			</C>
+			<C Type="WeatherCaption" V="115" U="0f9f9019-03c9-4c61-ffffe762ed486ec8" Title="Miniserverkommunikation"/>
+			<C Type="EIBline" V="115" U="0f9f9019-03c9-4c53-ffffe762ed486ec8" Title="KNX/EIB Linie" WF="16384" EibAddr="1.1.250 14/">
+				<C Type="EIBsensorCaption" V="115" U="0f9f9019-03c9-4c55-ffffe762ed486ec8" Title="Sensoren" WF="16384"/>
+				<C Type="EIBactorCaption" V="115" U="0f9f9019-03c9-4c57-ffffe762ed486ec8" Title="Aktoren" WF="16384"/>
+			</C>
+			<C Type="VirtualInCaption" V="115" U="0f9f9019-03c9-4c59-ffffe762ed486ec8" Title="Virtuelle Eingänge" WF="16384">
+				<C Type="VirtualTextIn" IName="VTI1" V="115" U="0f9f9089-0389-5f95-ffffe762ed486ec8" Title="iSpindel" Nio="1" WF="16400">
+					<Co K="TQ" U="0f9f9089-0389-5f94-ffffe0615c251027"/>
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;"/>
+				</C>
+			</C>
+			<C Type="VirtualOutCaption" V="115" U="0f9f9019-03c9-4c5b-ffffe762ed486ec8" Title="Virtuelle Ausgänge" WF="16384"/>
+			<C Type="TaskCaption" V="115" U="0f9f9019-03c9-4c5f-ffffe762ed486ec8" Title="Aufgezeichnete Tasks" Cl="0,0,0" WF="16384" gT="0f9f9019-03c9-4c5e-ffff04da8820e1b8" pT="0f9f9019-03c9-4c5d-ffff04da8820e1b8"/>
+			<C Type="LoxCaption" V="115" U="0f9f9019-03c9-4c69-ffffe762ed486ec8" Title="SD-Karte" Cl="0,0,0" CaptionType="4"/>
+			<C Type="LoggerOutCaption" V="115" U="0f9f9019-03c9-4c63-ffffe762ed486ec8" Title="Mitteilungen" WF="16384">
+				<C Type="Logger" V="115" U="0f9f9019-03c9-4c65-ffffe762ed486ec8" Title="Standard Logger" WF="16384" Address="/log/user.log" Std="true"/>
+				<C Type="Notification" V="115" U="0f9f9019-03c9-4c67-ffffe762ed486ec8" Title="Systembenachrichtigung" WF="16384" Entries="10" Sys="true">
+					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				</C>
+			</C>
+		</C>
+		<C Type="Program" V="115" U="0f9f901b-006d-4cd6-ffffe762ed486ec8" Title="iSpindel" Ref="0f9f9019-03b9-4c49-ffffe762ed486ec8" WF="16384">
+			<C Type="Page" V="115" U="0f9f901b-006d-4cd8-ffffe762ed486ec8" Title="Seite" WF="16384">
+				<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+				<C Type="StateV" V="115" U="0f9f9020-00b9-4eaf-ffff97975f2234db" Title="iSpindel Plato" StatsType="4" Px="8928" Py="5952" Px2="11616" Py2="6624" Cl="131,184,23" Nio="2" Analog="true" Tx="false">
+					<Co K="I" Nc="1" U="0f9f9020-00b9-4eb0-ffff97975f2234db">
+						<In Input="0f9f9020-00b9-4eb1-ffff97975f2234db"/>
+					</Co>
+					<Co K="AQ" U="0f9f9020-00b9-4eb2-ffff97975f2234db"/>
+					<IoData Visu="true" Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;°" StateOnly="true"/>
+				</C>
+				<C Type="Memory" V="115" U="0f978668-0054-498b-ffffeee00008002d" Title="iSpindel Name" Px="8928" Py="8256" Px2="11040" Py2="8448" Cl="238,238,238" Nio="3" WF="131072" Tp="2">
+					<Co K="Input" Nc="1" U="0f9f9020-00b9-4eb4-ffff97975f2234db">
+						<In Input="0f9f9020-00b9-4eb5-ffff97975f2234db"/>
+					</Co>
+					<Co K="AQ" U="0f9f9020-00b9-4eb6-ffff97975f2234db"/>
+					<Co K="Q" U="0f9f9020-00b9-4eb7-ffff97975f2234db"/>
+					<IoData Visu="true" Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
+				</C>
+				<C Type="Code16" V="115" U="0f9f9020-00b9-4eb8-ffff97975f2234db" Title="iSpindel" Px="5280" Py="6432" Px2="7968" Py2="8064" Cl="131,184,23" Nio="34" Code="// TQ1 &gt; Name der Spindel
+// AQ1 &gt; Tilt
+// AQ2 &gt; Plato
+// AQ3 &gt; Temperatur
+// AQ4 &gt; Battery
+
+int nEvents;
+int idx;
+char* Text;
+char strTemp[30];
+float out;
+
+while(TRUE)
+    {
+    nEvents = 1;
+    if (nEvents &amp; 0x01)
+        {
+        Text = getinputtext(0);
+		idx = strfind(Text, &quot; &quot;, 0);
+		if (idx &lt; 0) {return;}
+		strncpy(strTemp,Text,idx);
+		//name
+		setoutputtext(0, strTemp);
+		Text = strstrskip(Text, &quot; &quot;);
+		idx = strfind(Text, &quot; &quot;, 0);
+		if (idx &lt; 0) {return;}
+		//tilt
+		strncpy(strTemp,Text,idx);
+		out = batoi(strTemp);
+		setoutput(0, out);
+		out = 0.0045*out*out-0.123*out+1.0689;
+		setoutput(1, out);
+		Text = strstrskip(Text, &quot; &quot;);
+		idx = strfind(Text, &quot; &quot;, 0);
+		if (idx &lt; 0) {return;}
+		//temperature
+		strncpy(strTemp,Text,idx);
+		out = batoi(strTemp);
+		setoutput(2, out);
+		Text = strstrskip(Text, &quot; &quot;);
+		//battery
+		out = batoi(Text);
+		setoutput(3, out);
+        }
+    sleep(100);
+    }
+
+" Task="1">
+					<Co K="TI1" Nc="1" U="0f9f9020-00b9-4eb9-ffff97975f2234db">
+						<In Input="0f9f909a-0220-6515-ffff2eee36717679"/>
+					</Co>
+					<Co K="TI2" U="0f9f9020-00b9-4eba-ffff97975f2234db"/>
+					<Co K="TI3" U="0f9f9020-00b9-4ebb-ffff97975f2234db"/>
+					<Co K="AI1" U="0f9f9020-00b9-4ebc-ffff97975f2234db"/>
+					<Co K="AI2" U="0f9f9020-00b9-4ebd-ffff97975f2234db"/>
+					<Co K="AI3" U="0f9f9020-00b9-4ebe-ffff97975f2234db"/>
+					<Co K="AI4" U="0f9f9020-00b9-4ebf-ffff97975f2234db"/>
+					<Co K="AI5" U="0f9f9020-00b9-4ec0-ffff97975f2234db"/>
+					<Co K="AI6" U="0f9f9020-00b9-4ec1-ffff97975f2234db"/>
+					<Co K="AI7" U="0f9f9020-00b9-4ec2-ffff97975f2234db"/>
+					<Co K="AI8" U="0f9f9020-00b9-4ec3-ffff97975f2234db"/>
+					<Co K="AI9" U="0f9f9020-00b9-4ec4-ffff97975f2234db"/>
+					<Co K="AI10" U="0f9f9020-00b9-4ec5-ffff97975f2234db"/>
+					<Co K="AI11" U="0f9f9020-00b9-4ec6-ffff97975f2234db"/>
+					<Co K="AI12" U="0f9f9020-00b9-4ec7-ffff97975f2234db"/>
+					<Co K="AI13" U="0f9f9020-00b9-4ec8-ffff97975f2234db"/>
+					<Co K="Remanence" U="0f9f9020-00b9-4ec9-ffff97975f2234db"/>
+					<Co K="TQ1" U="0f9f9020-00b9-4eb5-ffff97975f2234db"/>
+					<Co K="TQ2" U="0f9f9020-00b9-4eca-ffff97975f2234db"/>
+					<Co K="TQ3" U="0f9f9020-00b9-4ecb-ffff97975f2234db"/>
+					<Co K="AQ1" U="0f9f9020-00b9-4ecc-ffff97975f2234db"/>
+					<Co K="AQ2" U="0f9f9020-00b9-4eb1-ffff97975f2234db"/>
+					<Co K="AQ3" U="0f9f9020-00b9-4ecd-ffff97975f2234db"/>
+					<Co K="AQ4" U="0f9f9020-00b9-4ece-ffff97975f2234db"/>
+					<Co K="AQ5" U="0f9f9020-00b9-4ecf-ffff97975f2234db"/>
+					<Co K="AQ6" U="0f9f9020-00b9-4ed0-ffff97975f2234db"/>
+					<Co K="AQ7" U="0f9f9020-00b9-4ed1-ffff97975f2234db"/>
+					<Co K="AQ8" U="0f9f9020-00b9-4ed2-ffff97975f2234db"/>
+					<Co K="AQ9" U="0f9f9020-00b9-4ed3-ffff97975f2234db"/>
+					<Co K="AQ10" U="0f9f9020-00b9-4ed4-ffff97975f2234db"/>
+					<Co K="AQ11" U="0f9f9020-00b9-4ed5-ffff97975f2234db"/>
+					<Co K="AQ12" U="0f9f9020-00b9-4ed6-ffff97975f2234db"/>
+					<Co K="AQ13" U="0f9f9020-00b9-4ed7-ffff97975f2234db"/>
+					<Co K="TeQ" U="0f9f9020-00b9-4ed8-ffff97975f2234db"/>
+				</C>
+				<C Type="StateV" V="115" U="0f9f9020-00b9-4ed9-ffff97975f2234db" Title="iSpindel Tilt" StatsType="4" Px="8928" Py="5184" Px2="11616" Py2="5856" Cl="131,184,23" Nio="2" Analog="true" Tx="false">
+					<Co K="I" Nc="1" U="0f9f9020-00b9-4eda-ffff97975f2234db">
+						<In Input="0f9f9020-00b9-4ecc-ffff97975f2234db"/>
+					</Co>
+					<Co K="AQ" U="0f9f9020-00b9-4edb-ffff97975f2234db"/>
+					<IoData Visu="true" Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;°" StateOnly="true"/>
+				</C>
+				<C Type="StateV" V="115" U="0f9f9020-00b9-4edc-ffff97975f2234db" Title="iSpindel Temperatur" StatsType="4" Px="8928" Py="6720" Px2="11616" Py2="7392" Cl="131,184,23" Nio="2" Analog="true" Tx="false">
+					<Co K="I" Nc="1" U="0f9f9020-00b9-4edd-ffff97975f2234db">
+						<In Input="0f9f9020-00b9-4ecd-ffff97975f2234db"/>
+					</Co>
+					<Co K="AQ" U="0f9f9020-00b9-4ede-ffff97975f2234db"/>
+					<IoData Visu="true" Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;°C" StateOnly="true"/>
+				</C>
+				<C Type="StateV" V="115" U="0f9f9020-00b9-4edf-ffff97975f2234db" Title="iSpindel Battery" StatsType="4" Px="8928" Py="7488" Px2="11616" Py2="8160" Cl="131,184,23" Nio="2" Analog="true" Tx="false">
+					<Co K="I" Nc="1" U="0f9f9020-00b9-4ee0-ffff97975f2234db">
+						<In Input="0f9f9020-00b9-4ece-ffff97975f2234db"/>
+					</Co>
+					<Co K="AQ" U="0f9f9020-00b9-4ee1-ffff97975f2234db"/>
+					<IoData Visu="true" Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Unit="&lt;v.1&gt;V" StateOnly="true"/>
+				</C>
+				<C Type="InputRef" V="115" U="0f9f909a-0220-6517-ffffe762ed486ec8" Title="iSpindel" Px="2400" Py="6912" Px2="4512" Py2="7104" Cl="238,238,238" Nio="4" Ref="0f9f9089-0389-5f95-ffffe762ed486ec8" WF="131072" Text="true" LinkRefType="83">
+					<Co K="AI" Nc="1" U="0f9f909a-0220-6513-ffff2eee36717679">
+						<In Input="0f9f9089-0389-5f94-ffffe0615c251027"/>
+					</Co>
+					<Co K="I" U="0f9f909a-0220-6514-ffff2eee36717679"/>
+					<Co K="AQ" U="0f9f909a-0220-6515-ffff2eee36717679"/>
+					<Co K="Q" U="0f9f909a-0220-6516-ffff2eee36717679"/>
+				</C>
+			</C>
+		</C>
+	</C>
+</ControlList>
