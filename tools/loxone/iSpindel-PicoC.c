@@ -8,20 +8,19 @@ enum OutputPorts
     tilt,            // AQ1
     plato,           // AQ2
 	temperature,	 // AQ3
-	battery			 // AQ4
+	battery          // AQ4
 };
 
 while(TRUE)
 {
-	char* Text;
 	nEvents = getinputevent();
     if (nEvents & 0x01)
         {
-        Text = getinputtext(0);
+		char* Text = getinputtext(0);
 		idx = strfind(Text, " ", 0);
 		if (idx < 0) {free(Text); return;}
-		strncpy(strTemp,Text,idx);
 		//name
+		strncpy(strTemp,Text,idx);
 		setoutputtext(0, strTemp);
 		Text = strstrskip(Text, " ");
 		idx = strfind(Text, " ", 0);
@@ -30,8 +29,8 @@ while(TRUE)
 		strncpy(strTemp,Text,idx);
 		out = batof(strTemp);
 		setoutput(tilt, out);
-		out = 0.0045*out*out-0.123*out+1.0689;
 		//plato
+		out = 0.0045*out*out-0.123*out+1.0689;  //change formula according to your calibration!
 		setoutput(plato, out);
 		Text = strstrskip(Text, " ");
 		idx = strfind(Text, " ", 0);
@@ -46,5 +45,5 @@ while(TRUE)
 		setoutput(battery, out);
 		free(Text);
         }
-    sleep(1000);
+    sleep(5000);
 }
