@@ -22,6 +22,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
 #include <Ticker.h>
+#include "Base64.h"
 
 #ifdef API_UBIDOTS
 #include "Ubidots.h"
@@ -31,6 +32,9 @@ All rights reserverd by S.Lang <universam@web.de>
 #endif
 #ifdef API_FHEM
 #include "FHEM.h"
+#endif
+#ifdef API_LOXONE
+#include "Loxone.h"
 #endif
 #ifdef API_TCONTROL
 #include "TControl.h"
@@ -54,6 +58,9 @@ bool shouldSaveConfig = false;
 char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
+char my_user[TKIDSIZE];
+char my_pass[TKIDSIZE];
+char my_userpass[TKIDSIZE];
 char my_url[TKIDSIZE];
 String my_ssid;
 String my_psk;
@@ -128,8 +135,14 @@ bool readConfig() {
             my_api = json["API"];
           if (json.containsKey("Port"))
             my_port = json["Port"];
+          if (json.containsKey("User"))
+            strcpy(my_user, json["User"]);
+          if (json.containsKey("Pass"))
+            strcpy(my_pass, json["Pass"]);
+          if (json.containsKey("UserPass"))
+            strcpy(my_userpass, json["UserPass"]);
           if (json.containsKey("URL"))
-            strcpy(my_url, json["URL"]);
+          strcpy(my_url, json["URL"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
 
@@ -239,6 +252,8 @@ bool startConfiguration() {
   WiFiManagerParameter custom_port("port", "Server Port",
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
+  WiFiManagerParameter custom_user("user", "Username", my_user, TKIDSIZE);
+  WiFiManagerParameter custom_pass("pass", "Password", my_pass, TKIDSIZE);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
                                     String(my_vfact).c_str(), 7,TYPE_NUMBER);
@@ -256,6 +271,8 @@ bool startConfiguration() {
   wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
+  wifiManager.addParameter(&custom_user);
+  wifiManager.addParameter(&custom_pass);
   wifiManager.addParameter(&custom_url);
 
   wifiManager.startConfigPortal("iSpindel");
@@ -268,6 +285,8 @@ bool startConfiguration() {
   
   my_api = String(custom_api.getValue()).toInt();
   my_port = String(custom_port.getValue()).toInt();
+  validateInput(custom_user.getValue(), my_user);
+  validateInput(custom_pass.getValue(), my_pass);
   validateInput(custom_url.getValue(), my_url);
 
   String tmp = String(custom_vfact.getValue());
@@ -288,6 +307,23 @@ bool startConfiguration() {
       SerialOut(SPIFFS.format());
     }
 
+    //encode username/password in base64
+    if (sizeof(my_user) > 0 && sizeof(my_pass) > 0) {
+      String userpass = String(my_user) + String(":") + String(my_pass);
+      int userpassLen = sizeof(userpass) + 1; //length plus termination byte
+      char input[userpassLen];
+      int encodedLen = base64_enc_len(userpassLen);
+      if (encodedLen > TKIDSIZE) {
+        SerialOut(F("Username+Password too long, configuration not saved!"), true);
+        return false;
+      }
+      userpass.toCharArray(input, userpassLen);
+      base64_encode(my_userpass, input, userpassLen-1);
+    } else {
+      //empty user and pass
+      SerialOut(F("Username or Password empty!"), true);
+    }
+    
     DynamicJsonBuffer jsonBuffer;
     JsonObject &json = jsonBuffer.createObject();
 
@@ -300,6 +336,9 @@ bool startConfiguration() {
     json["API"] = my_api;
     json["Port"] = my_port;
     json["URL"] = my_url;
+    json["User"] = my_user;
+    json["Pass"] = my_pass;
+    json["UserPass"] = my_userpass;
     json["Vfact"] = my_vfact;
 
     // Store current Wifi credentials
@@ -384,6 +423,17 @@ bool uploadData(uint8_t service) {
   return fhemclient.sendHTTP();
   }
 #endif // DATABASESYSTEM ==
+
+#ifdef API_LOXONE
+  if (service == DTLoxone) {
+  LoxoneHttp loxoneclient(my_name, my_server, my_port, my_userpass, my_url);
+  loxoneclient.add("angle", Tilt);
+  loxoneclient.add("temperature", Temperatur);
+  loxoneclient.add("battery", Volt);
+  return loxoneclient.sendHTTP();
+  }
+#endif
+
 #ifdef API_TCONTROL
   if (service == DTTcontrol) {
   TControl tcclient(my_name, my_server, my_port);
