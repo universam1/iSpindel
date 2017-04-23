@@ -11,6 +11,8 @@ This translation might be out of sync with the original german one, please doubl
 
 ## [Upload FHEM](upload-FHEM_en.md)
 
+## [Upload Loxone](upload-Loxone_en.md)
+
 ## [Ubidots scripting](ubidotsscripting_en.md)
 
 
