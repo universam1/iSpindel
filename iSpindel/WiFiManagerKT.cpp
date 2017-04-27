@@ -377,7 +377,8 @@ int WiFiManager::connectWifi(String ssid, String pass) {
 	    WiFi.config(_sta_static_ip, _sta_static_gw, _sta_static_sn);
 	    DEBUG_WM(WiFi.localIP());
   }
-	WiFi.mode(WIFI_AP_STA); //It will start in station mode if it was previously in AP mode.
+
+	WiFi.mode(WIFI_STA); //It will start in station mode if it was previously in AP mode.
     WiFi.begin(ssid.c_str(), pass.c_str());// Start Wifi with new values.
   } else if(!WiFi.SSID()) {
       DEBUG_WM(F("No saved credentials"));
@@ -451,6 +452,10 @@ String WiFiManager::getConfigPortalSSID() {
 void WiFiManager::resetSettings() {
   DEBUG_WM(F("previous settings invalidated"));
   WiFi.disconnect(true);
+  //trying to fix connection in progress hanging
+  ETS_UART_INTR_DISABLE();
+  wifi_station_disconnect();
+  ETS_UART_INTR_ENABLE();
   delay(200);
   return;
 }

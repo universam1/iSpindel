@@ -398,15 +398,12 @@ bool saveConfig()
   }
   else
   {
-
-    SerialOut(F("saved successfully"), true);
-
     if (isDebugEnabled)
       json.printTo(Serial);
-
     json.printTo(configFile);
     configFile.close();
     SPIFFS.end();
+    SerialOut(F("saved successfully"), true);
     return true;
   }
 }
