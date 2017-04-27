@@ -10,7 +10,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
 #include "Globals.h"
 #include "RunningMedian.h"
-#include "Ubidots.h"
+// #include "Ubidots.h"
 #include "WiFiManagerKT.h"
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 #include <DNSServer.h>
@@ -20,21 +20,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <Ticker.h>
 #include "tinyexpr.h"
 
-#ifdef API_UBIDOTS
-#include "Ubidots.h"
-#endif
-#ifdef API_GENERIC
-#include "genericHTTP.h"
-#endif
-#ifdef API_FHEM
-#include "FHEM.h"
-#endif
-#ifdef API_TCONTROL
-#include "TControl.h"
-#endif // DATABASESYSTEM ==
-#ifndef DEBUG
-#define DEBUG 1 // uncomment this line to enable serial diagnostic messages
-#endif          // !DEBUG 1
+        // !DEBUG 1
 
 // definitions go here
 MPU6050_Base accelgyro;

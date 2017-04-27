@@ -8,6 +8,8 @@
 
 #include "genericHTTP.h"
 
+#define CONNTIMEOUT 3000
+
 genericHTTP::genericHTTP( char* device, char* server, uint16_t port, char* url) {
     _device = device;
     _server = server;

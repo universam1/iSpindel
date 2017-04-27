@@ -14,7 +14,6 @@
 #include <ArduinoJson.h>         //https://github.com/bblanchon/ArduinoJson
 
 #define GHTTPJSONARRAY 200
-#define CONNTIMEOUT 3000
 
 typedef struct genValue {
   char  * id;

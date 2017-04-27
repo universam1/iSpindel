@@ -5,11 +5,11 @@
 
  **************************************************************/
 
-#pragma once
 
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
+#pragma once
 //#define USE_DMP false
 #include <Arduino.h>
 #ifdef USE_DMP
@@ -22,18 +22,33 @@
 #include "OneWire.h"
 #include "Wire.h"
 #include <Ticker.h>
+
 extern Ticker flasher;
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "5.1.1"
+#define FIRMWAREVERSION "5.1.2"
 
 
 #define API_FHEM true
 #define API_UBIDOTS true
 #define API_GENERIC true
 #define API_TCONTROL true
-
+#ifdef API_UBIDOTS
+#include "Ubidots.h"
+#endif
+#ifdef API_GENERIC
+#include "genericHTTP.h"
+#endif
+#ifdef API_FHEM
+#include "FHEM.h"
+#endif
+#ifdef API_TCONTROL
+#include "TControl.h"
+#endif // DATABASESYSTEM ==
+#ifndef DEBUG
+#define DEBUG 1 // uncomment this line to enable serial diagnostic messages
+#endif
 #define PORTALTIMEOUT 300
 
 #define ADCDIVISOR 191.8
