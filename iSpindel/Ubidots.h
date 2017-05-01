@@ -38,16 +38,17 @@ Made by Mateo Velez - Metavix for Ubidots Inc
 #include "WiFiUdp.h"
 #include <ArduinoJson.h>         //https://github.com/bblanchon/ArduinoJson
 #define JSONARRAY 150
-#define CONNTIMEOUT 5000
 
-#define TIME_SERVER (PSTR("pool.ntp.org"))
+#define TIME_SERVER "pool.ntp.org"
 
-#define SERVER "translate.ubidots.com"
+// #define SERVER "translate.ubidots.com"
+static char SERVER[] = "translate.ubidots.com";
 #define PORT 9010
 
 #define HTTPSERVER "things.ubidots.com"
 #define HTTPPORT 80
-#define USER_AGENT "ESP8266"
+// #define USER_AGENT "ESP8266"
+static char USER_AGENT[] = "ESP8266";
 #define VERSION "1.0"
 
 typedef struct Value {
@@ -59,19 +60,20 @@ typedef struct Value {
 
 class Ubidots {
  public:
-    Ubidots(char* token, char* agent = USER_AGENT, char* server = SERVER);
-    bool sendAll(bool type = false);
-    bool sendHTTP();
-    bool sendTLATE();
-    float getValue(char* id);
-    void add(char *variable_id, float value);
-    void add(char *variable_id, float value, char *ctext);
-    void add(char *variable_id, float value, unsigned long timestamp);
-    void add(char *variable_id, float value, char *ctext, unsigned long timestamp);
-    bool wifiConnection(char *ssid, char *pass);
-    void setDataSourceName(char* dataSoruceName);
-    void setDataSourceLabel(char* dataSoruceLabel);
-    unsigned long ntpUnixTime ();
+  //  Ubidots(char *token, char *agent = USER_AGENT, char *server = SERVER);
+   Ubidots(char *token, char *agent = USER_AGENT, char *server = SERVER);
+   bool sendAll(bool type = false);
+   bool sendHTTP();
+   bool sendTLATE();
+   float getValue(char *id);
+   void add(char *variable_id, float value);
+   void add(char *variable_id, float value, char *ctext);
+   void add(char *variable_id, float value, unsigned long timestamp);
+   void add(char *variable_id, float value, char *ctext, unsigned long timestamp);
+   bool wifiConnection(char *ssid, char *pass);
+   void setDataSourceName(char *dataSoruceName);
+   void setDataSourceLabel(char *dataSoruceLabel);
+   unsigned long ntpUnixTime();
 
  private:
     char* _agent;

@@ -2,10 +2,10 @@
 
 ## Requirements
 
-- Arduino 1.6.11 - 13
+- Arduino 1.6.11+
 - ESP8266 core for Arduino
 - ArduinoJson
-- SDK ***1.5.4*** 
+- SDK ***1.5.4*** or newer
 > Make sure not to use <= **SDK 1.5.3** since this is know to have issues!
 
 

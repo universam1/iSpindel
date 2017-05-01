@@ -35,6 +35,7 @@ Made by Mateo Velez - Metavix for Ubidots Inc
 /**
  * Constructor.
  */
+#define CONNTIMEOUT 5000
 Ubidots::Ubidots(char* token, char* agent, char* server) {
     _agent = agent;
     _token = token;

@@ -124,7 +124,7 @@ By pressing the  ```Reset Button``` the Wemos creates an access point, which all
 By saving your settings or waiting timeout of 5min it will end the Portal thus AccessPoint and try to go into `operation mode`.
 
 
-   ![Setup](/pics/setup.jpg)
+   ![Setup](/pics/configuration.png)
 
    ![AccessPoint](/pics/AP.png)![Portal](/pics/Portal.png)
 

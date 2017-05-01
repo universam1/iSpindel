@@ -7,6 +7,7 @@
 // http://homer:8083/fhem?cmd.Test=set%20iSpindel%2011.5%2011.4%2013&XHR=1
 
 #include "FHEM.h"
+#define CONNTIMEOUT 3000
 
 FhemHttp::FhemHttp( char* device, char* server, uint16_t port) {
     _device = device;
