@@ -166,7 +166,7 @@ Man verlässt den *Konfiguration-Modus* durch speichern seiner Einstellungen, du
 
 - Ebenfalls stellt man hier den `Intervall` ein in dem sie Daten liefert. Dies hat direkt mit der Akku Lebensdauer zu tun. Es empfiehlt sich in der Praxis etwa `1800` Sekunden (= 30 Minuten) Takt zu wählen.
 
-   ![Setup](pics/setup.jpg)
+   ![Setup](pics/configuration.png)
 
 
 - Man erreicht es über

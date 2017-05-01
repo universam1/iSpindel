@@ -900,20 +900,14 @@ void WiFiManager::handleMnt() {
 
   // we reset the timeout
   _configPortalStart = millis();
-
   String page = FPSTR(HTTP_HEAD);
   page.replace("{v}", "Maintenance");
-  // page += FPSTR(HTTP_SCRIPT);
+  page += FPSTR(HTTP_SCRIPT);
   page += FPSTR(HTTP_STYLE);
-  // page += _customHeadElement;
-  // page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"5\">");
   page += FPSTR(HTTP_HEAD_END);
-  page += F("<h1>Maintenance</h1><hr>");
   page += F("<h2>Offset Calibration</h2><br>Before proceeding with calibration make sure the iSpindel is leveled flat, exactly at 0&deg; horizontally and vertically, according to this picture:<br>");
   page += FPSTR(HTTP_ISPINDEL_IMG);
-
   page += F("<br><form action=\"/offset\" method=\"get\"><button class=\"btn\">calibrate</button></form><br/>");
-
   page += F("<hr><h2>Firmware Update</h2><br>Firmware updates:<br><a href=\"https://universam1.github.io/iSpindel\">universam1.github.io/iSpindel</a>");
   page += F("Current Firmware installed:<br><dl>");
   // page += F("<dt><h3>Firmware</h3></dt>");
