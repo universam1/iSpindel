@@ -1,6 +1,13 @@
 # Firmware
 
-## Release flashen
+## Flashen über Web Interface
+
+- download the newest .bin firmware from this repository (suggesting to download the whole repo as .zip download)
+- in `Maintenance` menu select this file and press update
+
+![flash web](/pics/maintenance.png)
+
+## Flashen über USB
 
 - Download und Starten von [NodeMCU-Flasher](https://github.com/nodemcu/nodemcu-flasher/raw/master/Win32/Release/ESP8266Flasher.exe)
 - neuestes Release aus [/bin Folder](https://github.com/universam1/iSpindel/raw/master/bin/) downloaden

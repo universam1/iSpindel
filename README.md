@@ -28,6 +28,23 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 ## News
 
 
+> # 01.05.2017 Major Firmware update to 5.x   
+>## Calculate the Gravity 
+>now within the iSpindel by expression evaluation! The conversion polynom can be stored per iSpindel and sends as an additional metric (without a unit). Therefore, whether Plato or SG is prefered is up to the user defined polynom. There are two variable available `tilt` and `temp`  
+>
+>[Kalibrierung](docs/Kalibrierung.md)   
+>
+>![Gravity](pics/polynom.png)
+>
+>### Firmware update via Web Browser 
+>now possible - [Firmware flashen](docs/Firmware.md)
+>
+>![Offset](pics/firmware.png)
+>## Calibrate Hardware Offset 
+>of the MPU6050. Greatly reduces the issue of not perfectly aligned sensor.
+>
+>![Offset](pics/offset.png)
+
 > 12.04.2017 Mentioned in http://www.homebrewtalk.com/showthread.php?t=598187   
 > 01.03.2017 Mentioned in hackaday.com http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/   
 > 23.02.17 English documentation added   
@@ -87,6 +104,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
   - [Ubitdots](#ubitdots)
   - [Portal](#portal)
   - [Scripting](#scripting)
+  - [Firmware Update](#firmware)
 - [Anzeige](#anzeige)
   - [Kalibrierung der Spindel](#kalibrierung)
   - [Ubidots Graphen](#ubidots-graphen)
@@ -241,13 +259,10 @@ Du siehst, dass Daten ankomen, wenn Du Deine Fermentation / Gärung im CBP ansch
 
 ### Firmware flashen
 
-***Getestet***
-
 - [Firmware flashen](docs/Firmware.md)
 
 ### Compile from Source
 
-***Development***
 > The sources represent the current development state thus being untested or at times even broken. Use the provided .bin files for your brew.
 
 - [Compile from source](docs/compile.md)

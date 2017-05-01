@@ -9,6 +9,7 @@
 - [Variante A (vereinfacht](#variante-a-(vereinfacht))
 - [Variante B Schnellvergärung (genauer)](#variante-b-schnellvergärung-(genauer))
 - [Formel Excel Tabelle](#formel)
+- [Speichern in iSpindel](#speichern)
 
 ***
 
@@ -70,3 +71,9 @@ Diese hinterlegt man in Ubidots um die Anzeige des °Plato zu erhalten.
 ```tilt``` ersetzt man durch ```instert Variable``` und wählt dort ```tilt``` aus 
 ![Plato](/pics/Ubiplato.jpg)
 1. Im ```Dashboard``` erstellt man dann einen neuen Graphen mit den Datenquelle ```Plato```
+
+# Speichern
+
+> Das Polynome kann nun in der iSpindel gespeichert werden, welcher in Laufzeit evaluiert und berechnet wird.
+
+![Plato](/pics/configuration.png)
