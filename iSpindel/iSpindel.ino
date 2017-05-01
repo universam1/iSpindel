@@ -22,7 +22,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
 #include <Ticker.h>
-#include "Base64.h"
+#include <base64.h>
 
 #ifdef API_UBIDOTS
 #include "Ubidots.h"
@@ -310,15 +310,8 @@ bool startConfiguration() {
     //encode username/password in base64
     if (sizeof(my_user) > 0 && sizeof(my_pass) > 0) {
       String userpass = String(my_user) + String(":") + String(my_pass);
-      int userpassLen = sizeof(userpass) + 1; //length plus termination byte
-      char input[userpassLen];
-      int encodedLen = base64_enc_len(userpassLen);
-      if (encodedLen > TKIDSIZE) {
-        SerialOut(F("Username+Password too long, configuration not saved!"), true);
-        return false;
-      }
-      userpass.toCharArray(input, userpassLen);
-      base64_encode(my_userpass, input, userpassLen-1);
+      userpass = base64::encode(userpass);
+      strcpy(my_userpass, userpass.c_str());
     } else {
       //empty user and pass
       SerialOut(F("Username or Password empty!"), true);
