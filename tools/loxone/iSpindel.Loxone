@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ControlList Version="129" LxAV="7" NextObj="2" NextConst="1" NextNote="1" NextMem="1">
-	<C Type="Document" V="115" U="0f9f8fd3-0181-49e8-ffffe762ed486ec8" Title="iSpindel" ConfigVersion="8030321" PaperFormat="2" SPSfreq="100" OpenIsHigh="false" Date="2017-04-23 10:54:53" CDate="" BDate="" DateS="262176893" Street="" Town="" Ctry="" Latitude="48.2" Longitude="13.36" Creator="Jörg Pressel" Logo="" uuidNotifications="0f9f8fd3-0181-49e7-ffffe762ed486ec8" uuidFavSeq="0f9ff193-016a-82dd-ffff8cb3452e8c54" uuidFavCol="0f9ff193-016a-82de-ffff8cb3452e8c54" FC="" Currency="€" UpdTime="120" CrashL="true" NumO="299">
+<ControlList Version="129" LxAV="7" NextObj="3" NextConst="1" NextNote="1" NextMem="1">
+	<C Type="Document" V="115" U="0f9f8fd3-0181-49e8-ffffe762ed486ec8" Title="iSpindel" ConfigVersion="8030321" PaperFormat="2" SPSfreq="100" OpenIsHigh="false" Date="2017-05-09 00:13:17" CDate="" BDate="" DateS="263520797" Street="" Town="" Ctry="" Latitude="48.2" Longitude="13.36" Creator="Jörg Pressel" Logo="" uuidNotifications="0f9f8fd3-0181-49e7-ffffe762ed486ec8" uuidFavSeq="0f9ff193-016a-82dd-ffff8cb3452e8c54" uuidFavCol="0f9ff193-016a-82de-ffff8cb3452e8c54" FC="" Currency="€" UpdTime="120" CrashL="true" NumO="301">
 		<SeqConf Num="0"/>
 		<C Type="LoxCaption" V="115" U="0f9f8fd3-0181-49ea-ffffe762ed486ec8" Title="Symbole" Cl="0,0,0" WF="16384" CaptionType="5">
 			<C Type="IconCaptionState" V="115" U="0f9f8fd3-0181-49ec-ffffe762ed486ec8" Title="Statussymbole" WF="16384">
@@ -649,6 +649,12 @@
 					<IoData Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
 					<Display Unit="&lt;v.1&gt;"/>
 				</C>
+				<C Type="VirtualIn" IName="VI1" V="115" U="0fb501f2-011d-b910-ffffe762ed486ec8" Title="iSpindel Active" Nio="2" WF="16400" Analog="false" MaxVal="100" MinChange="0.25" MinTime="1000" AverageTime="1">
+					<Co K="Q" U="0fb501f2-011d-b90e-ffffce80154a014b"/>
+					<Co K="Qm" U="0fb501f2-011d-b90f-ffffce80154a014b"/>
+					<IoData Visu="true" Cr="0f9f8fd3-0191-4a6b-ffffe762ed486ec8" Pr="0f9f8fd3-01b0-4b9b-ffffe762ed486ec8" Ugr="0f9f8fd3-01b0-4b91-ffffe762ed486ec8" Ugx="0f9f8fd3-01b0-4b91-ffffe762ed486ec8"/>
+					<Display Type="1" Unit="&lt;v.1&gt;"/>
+				</C>
 			</C>
 			<C Type="VirtualOutCaption" V="115" U="0f9f9019-03c9-4c5b-ffffe762ed486ec8" Title="Virtuelle Ausgänge" WF="16384"/>
 			<C Type="TaskCaption" V="115" U="0f9f9019-03c9-4c5f-ffffe762ed486ec8" Title="Aufgezeichnete Tasks" Cl="0,0,0" WF="16384" gT="0f9f9019-03c9-4c5e-ffff04da8820e1b8" pT="0f9f9019-03c9-4c5d-ffff04da8820e1b8"/>
@@ -681,14 +687,16 @@
 					<Display Unit="&lt;v.1&gt;" StateOnly="true"/>
 				</C>
 				<C Type="Code16" V="115" U="0f9f9020-00b9-4eb8-ffff97975f2234db" Title="iSpindel" Px="5280" Py="6432" Px2="7968" Py2="8064" Cl="131,184,23" Nio="34" Code="int nEvents;
-int idx;
-char strTemp[30];
+int idx1;
+int idx2;
 float out;
+char strTemp[35];
+char* str;
 
 enum OutputPorts
 {
     tilt,            // AQ1
-    plato,           // AQ2
+    gravity,         // AQ2
 	temperature,	 // AQ3
 	battery          // AQ4
 };
@@ -696,37 +704,36 @@ enum OutputPorts
 while(TRUE)
 {
 	nEvents = getinputevent();
-    if (nEvents &amp; 0x01)
+	//AI1 means active
+    if (nEvents &amp; 0x01 &amp;&amp; getinput(0) &gt; 0)
         {
-		char* Text = getinputtext(0);
-		idx = strfind(Text, &quot; &quot;, 0);
-		if (idx &lt; 0) {free(Text); return;}
+		str = getinputtext(0);
+		idx1 = strfind(str, &quot; &quot;, 0);
 		//name
-		strncpy(strTemp,Text,idx);
+		strncpy(strTemp,str,idx1);
 		setoutputtext(0, strTemp);
-		Text = strstrskip(Text, &quot; &quot;);
-		idx = strfind(Text, &quot; &quot;, 0);
-		if (idx &lt; 0) {free(Text); return;}
+		idx2 = strfind(str, &quot; &quot;, idx1+1);
 		//tilt
-		strncpy(strTemp,Text,idx);
+		strncpy(strTemp,str+idx1+1,idx2);
 		out = batof(strTemp);
 		setoutput(tilt, out);
-		//plato
-		out = 0.0045*out*out-0.123*out+1.0689;  //change formula according to your calibration!
-		setoutput(plato, out);
-		Text = strstrskip(Text, &quot; &quot;);
-		idx = strfind(Text, &quot; &quot;, 0);
-		if (idx &lt; 0) {free(Text); return;}
+		idx1 = strfind(str, &quot; &quot;, idx2+1);
 		//temperature
-		strncpy(strTemp,Text,idx);
+		strncpy(strTemp,str+idx2+1,idx1);
 		out = batof(strTemp);
 		setoutput(temperature, out);
-		Text = strstrskip(Text, &quot; &quot;);
+		idx2 = strfind(str, &quot; &quot;, idx1+1);
 		//battery
-		out = batof(Text);
+		strncpy(strTemp,str+idx1+1,idx2);
+		out = batof(strTemp);
 		setoutput(battery, out);
-		free(Text);
-        }
+		//gravity
+		strncpy(strTemp,str+idx2+1,strlen(str));
+		out = batof(strTemp);
+		setoutput(gravity, out);
+
+		free(str);
+    }
     sleep(5000);
 }
 
@@ -736,7 +743,9 @@ while(TRUE)
 					</Co>
 					<Co K="TI2" U="0f9f9020-00b9-4eba-ffff97975f2234db"/>
 					<Co K="TI3" U="0f9f9020-00b9-4ebb-ffff97975f2234db"/>
-					<Co K="AI1" U="0f9f9020-00b9-4ebc-ffff97975f2234db"/>
+					<Co K="AI1" Nc="1" U="0f9f9020-00b9-4ebc-ffff97975f2234db">
+						<In Input="0fb5020c-0042-be99-ffffbad91be67fbb"/>
+					</Co>
 					<Co K="AI2" U="0f9f9020-00b9-4ebd-ffff97975f2234db"/>
 					<Co K="AI3" U="0f9f9020-00b9-4ebe-ffff97975f2234db"/>
 					<Co K="AI4" U="0f9f9020-00b9-4ebf-ffff97975f2234db"/>
@@ -799,6 +808,16 @@ while(TRUE)
 					<Co K="I" U="0f9f909a-0220-6514-ffff2eee36717679"/>
 					<Co K="AQ" U="0f9f909a-0220-6515-ffff2eee36717679"/>
 					<Co K="Q" U="0f9f909a-0220-6516-ffff2eee36717679"/>
+				</C>
+				<C Type="InputRef" V="115" U="0fb5020c-0042-be9b-ffffe762ed486ec8" Title="iSpindel Active" Px="2400" Py="7200" Px2="4512" Py2="7392" Cl="238,238,238" Nio="4" Ref="0fb501f2-011d-b910-ffffe762ed486ec8" WF="131072" LinkRefType="71">
+					<Co K="AI" Nc="1" U="0fb5020c-0042-be97-ffffbad91be67fbb">
+						<In Input="0fb501f2-011d-b90e-ffffce80154a014b"/>
+					</Co>
+					<Co K="I" Nc="1" U="0fb5020c-0042-be98-ffffbad91be67fbb">
+						<In Input="0fb501f2-011d-b90f-ffffce80154a014b"/>
+					</Co>
+					<Co K="AQ" U="0fb5020c-0042-be99-ffffbad91be67fbb"/>
+					<Co K="Q" U="0fb5020c-0042-be9a-ffffbad91be67fbb"/>
 				</C>
 			</C>
 		</C>

@@ -5,6 +5,7 @@
 
  **************************************************************/
 #include "TControl.h"
+#define CONNTIMEOUT 3000 / 100
 
 TControl::TControl( char* device, char* server, uint16_t port) {
     
