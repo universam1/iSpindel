@@ -1,12 +1,14 @@
 int nEvents;
-int idx;
-char strTemp[30];
+int idx1;
+int idx2;
 float out;
+char strTemp[35];
+char* str;
 
 enum OutputPorts
 {
     tilt,            // AQ1
-    plato,           // AQ2
+    gravity,         // AQ2
 	temperature,	 // AQ3
 	battery          // AQ4
 };
@@ -14,36 +16,35 @@ enum OutputPorts
 while(TRUE)
 {
 	nEvents = getinputevent();
-    if (nEvents & 0x01)
+	//AI1 means active
+    if (nEvents & 0x01 && getinput(0) > 0)
         {
-		char* Text = getinputtext(0);
-		idx = strfind(Text, " ", 0);
-		if (idx < 0) {free(Text); return;}
+		str = getinputtext(0);
+		idx1 = strfind(str, " ", 0);
 		//name
-		strncpy(strTemp,Text,idx);
+		strncpy(strTemp,str,idx1);
 		setoutputtext(0, strTemp);
-		Text = strstrskip(Text, " ");
-		idx = strfind(Text, " ", 0);
-		if (idx < 0) {free(Text); return;}
+		idx2 = strfind(str, " ", idx1+1);
 		//tilt
-		strncpy(strTemp,Text,idx);
+		strncpy(strTemp,str+idx1+1,idx2);
 		out = batof(strTemp);
 		setoutput(tilt, out);
-		//plato
-		out = 0.0045*out*out-0.123*out+1.0689;  //change formula according to your calibration!
-		setoutput(plato, out);
-		Text = strstrskip(Text, " ");
-		idx = strfind(Text, " ", 0);
-		if (idx < 0) {free(Text); return;}
+		idx1 = strfind(str, " ", idx2+1);
 		//temperature
-		strncpy(strTemp,Text,idx);
+		strncpy(strTemp,str+idx2+1,idx1);
 		out = batof(strTemp);
 		setoutput(temperature, out);
-		Text = strstrskip(Text, " ");
+		idx2 = strfind(str, " ", idx1+1);
 		//battery
-		out = batof(Text);
+		strncpy(strTemp,str+idx1+1,idx2);
+		out = batof(strTemp);
 		setoutput(battery, out);
-		free(Text);
-        }
+		//gravity
+		strncpy(strTemp,str+idx2+1,strlen(str));
+		out = batof(strTemp);
+		setoutput(gravity, out);
+
+		free(str);
+    }
     sleep(5000);
 }

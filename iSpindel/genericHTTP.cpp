@@ -8,17 +8,19 @@
 
 #include "genericHTTP.h"
 
+#define CONNTIMEOUT 3000
+
 genericHTTP::genericHTTP( char* device, char* server, uint16_t port, char* url) {
     _device = device;
     _server = server;
     _port = port;
     _url = url;
-    maxValues = 5;
+    // maxValues = 11;
     currentValue = 0;
-    val = (gValue *)malloc(maxValues*sizeof(gValue));
+    val = (gValue *)malloc(ghmaxValues*sizeof(gValue));
 }
 
-genericHTTP::~genericHTTP() { free(val); }
+// genericHTTP::~genericHTTP() { free(val); }
 
 void genericHTTP::add(char *variable_id, float value) {
     (val+currentValue)->id = variable_id;
@@ -30,7 +32,7 @@ bool genericHTTP::sendHTTP() {
     uint16_t i;
     String msg, json;
     
-    StaticJsonBuffer<JSONARRAY> jsonBuffer;
+    StaticJsonBuffer<GHTTPJSONARRAY> jsonBuffer;
     JsonObject& data = jsonBuffer.createObject();
 
     data["name"] = _device;
@@ -83,14 +85,14 @@ bool genericHTTP::sendTCP() {
   uint16_t i;
   String msg, json;
 
-  StaticJsonBuffer<JSONARRAY> jsonBuffer;
+  StaticJsonBuffer<GHTTPJSONARRAY> jsonBuffer;
   JsonObject &data = jsonBuffer.createObject();
 
   data["name"] = _device;
   data["ID"] = String(ESP.getChipId());
 
   for (i = 0; i < currentValue;) {
-    data[String((val + i)->id)] = (val + i)->value_id;
+    data[String((val + i)->id)] = double_with_n_digits((val + i)->value_id , 6);
     i++;
   }
 
