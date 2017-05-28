@@ -41,7 +41,7 @@ iSpindle (iSpindel) Documentation
   - [Circuit Diagram](#circuit-diagram)
   - [Sled](#sled)
 - [Configuration](#configuration)
-  - [Ubitdots](#ubitdots)
+  - [Ubidots](#ubidots)
   - [Portal](#portal)
 - [Graphical User Interface](#graphical-user-interface)
   - [Calibrating the Spindle](#calibration)
@@ -68,7 +68,7 @@ The system is based around the use of a heeling (or tilting) cylinder, an ingeni
 
 ![Kränung](/pics/kraengung.jpg)
 
-Therefore the idea  is to place a Wifi-enable IoT device with an accelerometer and temperature sensor in a floating cylinder. The system will measure the sensors and every x-minutes it will connect to the Wifi and sends its tilt angle, temperature and battery voltage to a cloud service like Ubitdots.com to store the data.
+Therefore the idea  is to place a Wifi-enable IoT device with an accelerometer and temperature sensor in a floating cylinder. The system will measure the sensors and every x-minutes it will connect to the Wifi and sends its tilt angle, temperature and battery voltage to a cloud service like Ubidots.com to store the data.
 
 With an update interval of 30min it was possible to achive a battery lifetime of almost 3 months!
 
