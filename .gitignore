@@ -1,3 +1,4 @@
+.local/
 .vscode/
 drawer/drawer.scad
 *.vcxproj
