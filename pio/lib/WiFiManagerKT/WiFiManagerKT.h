@@ -17,6 +17,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
+#include <I2Cdev.h>
+#include "MPUOffset.h"
 #include <memory>
 #undef min
 #undef max

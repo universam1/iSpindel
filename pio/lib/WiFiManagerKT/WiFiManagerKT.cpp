@@ -19,7 +19,6 @@
  **************************************************************/
 
 #include "WiFiManagerKT.h"
-#include "MPUOffset.h"
 
 MPUOffset offset;
 

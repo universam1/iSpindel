@@ -6,9 +6,27 @@ All rights reserverd by S.Lang <universam@web.de>
 **************************************************************/
 
 // includes go here
+#include "Globals.h"
+#ifdef API_UBIDOTS
+#include "Ubidots.h"
+#endif
+#ifdef API_GENERIC
+#include "genericHTTP.h"
+#endif
+#ifdef API_FHEM
+#include "FHEM.h"
+#endif
+#ifdef API_TCONTROL
+#include "TControl.h"
+#endif // DATABASESYSTEM ==
+
+#include "MPUOffset.h"
+// #endif
+#include "OneWire.h"
+#include "Wire.h"
+// #include <Ticker.h>
 #include "DallasTemperature.h"
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
-#include "Globals.h"
 #include "RunningMedian.h"
 // #include "Ubidots.h"
 #include "WiFiManagerKT.h"
@@ -17,10 +35,9 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
-#include <Ticker.h>
 #include "tinyexpr.h"
 
-        // !DEBUG 1
+// !DEBUG 1
 
 // definitions go here
 MPU6050_Base accelgyro;
@@ -105,6 +122,19 @@ void saveConfigCallback()
   // SerialOut(F("Should save config"));
   // WiFi.setAutoReconnect(true);
   shouldSaveConfig = true;
+}
+
+void applyOffset()
+{
+  if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT)
+  {
+    SerialOut(F("applying offsets"));
+    accelgyro.setXAccelOffset(my_aX);
+    accelgyro.setYAccelOffset(my_aY);
+    accelgyro.setZAccelOffset(my_aZ);
+  }
+  else
+    SerialOut(F("offsets not available"));
 }
 
 bool readConfig()
@@ -478,22 +508,6 @@ bool uploadData(uint8_t service)
 #endif // DATABASESYSTEM ==
 }
 
-void sleepManager()
-{
-  uint32_t left2sleep, validflag;
-  ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-  ESP.rtcUserMemoryRead(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-
-  // check if we have to incarnate again
-  if (left2sleep != 0 && !drd.detectDoubleReset() && validflag == RTCVALIDFLAG)
-  {
-    goodNight(left2sleep);
-  }
-  else
-  {
-    SerialOut(F("Worker run!"));
-  }
-}
 
 void goodNight(uint32_t seconds)
 {
@@ -533,6 +547,33 @@ void goodNight(uint32_t seconds)
     delay(500);
   }
 }
+void sleepManager()
+{
+  uint32_t left2sleep, validflag;
+  ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+  ESP.rtcUserMemoryRead(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
+
+  // check if we have to incarnate again
+  if (left2sleep != 0 && !drd.detectDoubleReset() && validflag == RTCVALIDFLAG)
+  {
+    goodNight(left2sleep);
+  }
+  else
+  {
+    SerialOut(F("Worker run!"));
+  }
+}
+
+void requestTemp()
+{
+  if (DSrequested == false)
+  {
+    DS18B20.requestTemperatures();
+    DSreqTime = millis();
+    DSrequested = true;
+    // SerialOut("DEBUG DSreq:");
+  }
+}
 
 void initDS18B20()
 {
@@ -569,17 +610,6 @@ void initAccel()
 #endif
 }
 
-void applyOffset() {
-  if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT) {
-    SerialOut(F("applying offsets"));
-    accelgyro.setXAccelOffset(my_aX);
-    accelgyro.setYAccelOffset(my_aY);
-    accelgyro.setZAccelOffset(my_aZ);
-  }
-  else
-    SerialOut(F("offsets not available"));
-}
-
 float calculateTilt()
 {
   float _ax = ax;
@@ -588,6 +618,18 @@ float calculateTilt()
   float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
   float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
   return sqrt(pitch * pitch + roll * roll);
+}
+
+void getAccSample()
+{
+  uint8_t res = Wire.status();
+  uint8_t con = accelgyro.testConnection();
+  if (res == I2C_OK && con == true)
+    accelgyro.getAcceleration(&ax, &az, &ay);
+  else
+  {
+    SerialOut(String("I2C ERROR: ") + res + String(" con:") + con);
+  }
 }
 
 float getTilt()
@@ -609,18 +651,6 @@ float getTilt()
     samples.add(_tilt);
   }
   return samples.getAverage(MEDIANAVRG);
-}
-
-void getAccSample()
-{
-  uint8_t res = Wire.status();
-  uint8_t con = accelgyro.testConnection();
-  if (res == I2C_OK && con == true)
-    accelgyro.getAcceleration(&ax, &az, &ay);
-  else
-  {
-    SerialOut(String("I2C ERROR: ") + res + String(" con:") + con);
-  }
 }
 
 float getTemperature(bool block = false)
@@ -659,17 +689,34 @@ float getTemperature(bool block = false)
   }
   return t;
 }
-
-void requestTemp()
+float getBattery()
 {
-  if (DSrequested == false)
-  {
-    DS18B20.requestTemperatures();
-    DSreqTime = millis();
-    DSrequested = true;
-    // SerialOut("DEBUG DSreq:");
-  }
+  analogRead(A0); // drop first read
+  return analogRead(A0) / my_vfact;
 }
+
+
+float calculateGravity()
+{
+  double _tilt = Tilt;
+  double _temp = Temperatur;
+  float _gravity = 0;
+  int err;
+  te_variable vars[] = {{"tilt", &_tilt}, {"temp", &_temp}};
+  te_expr *expr = te_compile(my_polynominal, vars, 2, &err);
+
+  if (expr)
+  {
+    _gravity = te_eval(expr);
+    te_free(expr);
+  }
+  else
+  {
+    Serial.println(String("Parse error at ") + err);
+  }
+  return _gravity;
+}
+
 
 void flash()
 {
@@ -682,11 +729,6 @@ void flash()
   requestTemp();
 }
 
-float getBattery()
-{
-  analogRead(A0); // drop first read
-  return analogRead(A0) / my_vfact;
-}
 
 bool isSafeMode(float _volt)
 {
@@ -697,6 +739,14 @@ bool isSafeMode(float _volt)
   }
   else
     return false;
+}
+
+bool connectBackupCredentials()
+{
+  WiFi.disconnect();
+  WiFi.begin(my_ssid.c_str(), my_psk.c_str());
+  SerialOut(F("Rescue Wifi credentials"));
+  delay(100);
 }
 
 void setup()
@@ -883,33 +933,4 @@ void setup()
 void loop()
 {
   SerialOut(F("should never be here!"));
-}
-
-bool connectBackupCredentials()
-{
-  WiFi.disconnect();
-  WiFi.begin(my_ssid.c_str(), my_psk.c_str());
-  SerialOut(F("Rescue Wifi credentials"));
-  delay(100);
-}
-
-float calculateGravity()
-{
-  double _tilt = Tilt;
-  double _temp = Temperatur;
-  float _gravity = 0;
-  int err;
-  te_variable vars[] = {{"tilt", &_tilt}, {"temp", &_temp}};
-  te_expr *expr = te_compile(my_polynominal, vars, 2, &err);
-
-  if (expr)
-  {
-    _gravity = te_eval(expr);
-    te_free(expr);
-  }
-  else
-  {
-    Serial.println(String("Parse error at ") + err);
-  }
-  return _gravity;
 }

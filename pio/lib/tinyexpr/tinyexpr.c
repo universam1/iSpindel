@@ -44,6 +44,13 @@ For log = natural log uncomment the next line. */
 #define NAN (0.0/0.0)
 #endif
 
+#ifndef fmod
+double fmod(double a, double b)
+{
+return (a - b * floor(a / b));
+}
+#endif
+
 typedef double (*te_fun2)(double, double);
 
 enum {

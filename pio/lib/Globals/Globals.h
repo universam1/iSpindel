@@ -12,17 +12,16 @@
 #pragma once
 //#define USE_DMP false
 #include <Arduino.h>
-#ifdef USE_DMP
-#include "MPU6050_6Axis_MotionApps20.h"
-// #include "I2Cdev.h"
-#else
-#include "I2Cdev.h"
-#include "MPU6050.h"
-#endif
-#include "OneWire.h"
-#include "Wire.h"
+#include <Hash.h>
+
+// #ifdef USE_DMP
+// #include "MPU6050_6Axis_MotionApps20.h"
+// // #include "I2Cdev.h"
+// #else
 #include <Ticker.h>
 
+#include <I2Cdev.h>
+#include <MPU6050.h>
 extern Ticker flasher;
 // #include <stdint.h>
 
@@ -34,18 +33,7 @@ extern Ticker flasher;
 #define API_UBIDOTS true
 #define API_GENERIC true
 #define API_TCONTROL true
-#ifdef API_UBIDOTS
-#include "Ubidots.h"
-#endif
-#ifdef API_GENERIC
-#include "genericHTTP.h"
-#endif
-#ifdef API_FHEM
-#include "FHEM.h"
-#endif
-#ifdef API_TCONTROL
-#include "TControl.h"
-#endif // DATABASESYSTEM ==
+
 #ifndef DEBUG
 #define DEBUG 1 // uncomment this line to enable serial diagnostic messages
 #endif

@@ -1,10 +1,11 @@
 #ifndef _MPUOffset_H_
 #define _MPUOffset_H_
 
+#include <Arduino.h>
+#include <Hash.h>
+#include <I2Cdev.h>
+#include <MPU6050.h>
 #include "Globals.h"
-// #include "I2Cdev.h"
-// // #include "MPU6050.h"
-// #include "Wire.h"
 
 class MPUOffset {
  public:
