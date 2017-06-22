@@ -30,7 +30,7 @@ Diese wird auch von einem Online Versand angeboten
 - Widerstände
   - 4k7 Ohm
   - 220k Ohm
-  - 470 Ohm
+  - 330 Ohm oder BAT43 Diode
 - [Mikro Schalter](http://www.reichelt.de/Schiebeschalter/SS-ESP201/3/index.html?ACTION=3&LA=446&ARTICLE=112179&GROUPID=7595&artnr=SS+ESP201&SEARCH=SS%2BESP201)  
 oder bei Platine [Reed Wechsler](http://www.reichelt.de/Reedrelais/KSK-1C90/3/index.html?ACTION=3&LA=446&ARTICLE=27696&GROUPID=7617&artnr=KSK+1C90&SEARCH=KSK%2B1C90)   
 - Lipo Lademodul `TP4056` (6 pin recommended)

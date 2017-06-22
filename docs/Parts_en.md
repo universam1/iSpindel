@@ -37,7 +37,7 @@ This is also offered by an online dispatch
 - Resistors
   - 4k7 ohms
   - 220k ohms
-  - 470 ohms
+  - 330 ohms or BAT43 diode
 - [microswitches](http://www.reichelt.de/Schiebeschalter/SS-ESP201/3/index.html?ACTION=3&LA=446&ARTICLE=112179&GROUPID=7595&artnr=SS+ESP201&SEARCH=SS%2BESP201)
 Or at the PCB [Reed Wechsler](http://www.reichelt.de/Reedrelais/KSK-1C90/3/index.html?ACTION=3&LA=446&ARTICLE=27696&GROUPID=7617&artnr=KSK+1C90&SEARCH=KSK%2B1C90)
 - Lipo charger `TP4056` (6 pin recommended)

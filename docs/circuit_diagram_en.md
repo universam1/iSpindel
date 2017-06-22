@@ -15,7 +15,7 @@
 
 ### Resistors
 
-- 470 ohms between D0 and RST
+- BAT43 or better schottky diode (cathode to D0) or 330 ohms resistor between D0 and RST
 - 230k ohms of A0 -> 5V
 - 4k7 ohms of D6 -> 5V
 
