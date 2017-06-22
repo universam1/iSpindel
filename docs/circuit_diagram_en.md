@@ -28,7 +28,6 @@ VCC and 5V
 ### Wemos
 
 - Remove the input diode (short circuit via Lipomodul!)
-- Connect Wemos USB + 5V (above diode pin) to Lipomodul `+ IN` (optionally to load over the Wemos)
 - Switch / Reed between + 5V and Lipomodul `+ OUT`
 - GND -> GND
 
