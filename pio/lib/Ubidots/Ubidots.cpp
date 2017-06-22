@@ -74,7 +74,7 @@ float Ubidots::getValue(char* id) {
         _client.println(F("Connection: close"));
         _client.println();
   } else {
-        return NULL;
+        return 0;
   }
     int timeout = 0;
     while(!_client.available() && timeout < 5000) {

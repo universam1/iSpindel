@@ -26,7 +26,7 @@ extern Ticker flasher;
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "5.1.2"
+#define FIRMWAREVERSION "5.2.0"
 
 
 #define API_FHEM true
