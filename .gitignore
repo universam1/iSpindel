@@ -1,7 +1,12 @@
 .local/
 .vscode/
+pio/.pioenvs/
+pio/.piolibdeps/
 drawer/drawer.scad
 *.vcxproj
 *.filters
 iSpindel/Debug/
 iSpindel/__vm/
+.pioenvs
+.piolibdeps
+.vscode
