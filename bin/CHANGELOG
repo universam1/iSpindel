@@ -1,3 +1,4 @@
+5.1.2   Major rewrite, calculating Gravity by iSpindel, adding zero compensation etc.
 4.1.7   solve endless wait for Access Point
 4.1.6   New routine to restore Wifi credentials from Flash.
         Double reset fixed which was not caught in RC_Cal restart
