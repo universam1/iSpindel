@@ -917,6 +917,7 @@ void setup()
   {
     SerialOut(WiFi.localIP());
     uploadData(my_api);
+    delay(100); // workaround for https://github.com/esp8266/Arduino/issues/2750
   }
   else
   {
