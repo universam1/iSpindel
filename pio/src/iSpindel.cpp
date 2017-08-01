@@ -508,7 +508,6 @@ bool uploadData(uint8_t service)
 #endif // DATABASESYSTEM ==
 }
 
-
 void goodNight(uint32_t seconds)
 {
 
@@ -646,7 +645,7 @@ float getTilt()
     float _tilt = calculateTilt();
     SerialOut("Spl ", false);
     SerialOut(i, false);
-    SerialOut(F(": "), false);
+    SerialOut(": ", false);
     SerialOut(_tilt);
     samples.add(_tilt);
   }
@@ -695,7 +694,6 @@ float getBattery()
   return analogRead(A0) / my_vfact;
 }
 
-
 float calculateGravity()
 {
   double _tilt = Tilt;
@@ -717,7 +715,6 @@ float calculateGravity()
   return _gravity;
 }
 
-
 void flash()
 {
   // triggers the LED
@@ -728,7 +725,6 @@ void flash()
   Gravity = calculateGravity();
   requestTemp();
 }
-
 
 bool isSafeMode(float _volt)
 {
