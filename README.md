@@ -4,6 +4,7 @@ iSpindel | iSpindle
 **DIY elektronische Bierspindel | electronic Hydrometer**
 ***https://universam1.github.io/iSpindel***
 
+[![Build Status](https://travis-ci.org/universam1/iSpindel.svg?branch=master)](https://travis-ci.org/universam1/iSpindel)
 
 
 If you like that project please vote for the [Hackaday.io *2017 Prize List*](https://hackaday.io/project/20421-ispindel)
