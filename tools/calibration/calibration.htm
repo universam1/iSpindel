@@ -1,0 +1,610 @@
+<html>
+
+<head>
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <script src="http://Tom-Alexander.github.io/regression-js/jquery.flot.js"></script>
+    <!-- 
+Vito Tai. 2017.
+-->
+    <script>
+        /* Regression.JS */
+        /* the librar is embedded for your convenience .*/
+        /**
+         * @license
+         *
+         * Regression.JS - Regression functions for javascript
+         * http://tom-alexander.github.com/regression-js/
+         *
+         * copyright(c) 2013 Tom Alexander
+         * Licensed under the MIT license.
+         *
+         * @module regression - Least-squares regression functions for JavaScript
+         **/
+        ! function(a, b) {
+            var c;
+            return c = "function" == typeof define && define.amd ? define("regression", b) : "undefined" != typeof module ? module.exports = b() : a.regression = b()
+        }(this, function() {
+            "use strict";
+
+            function a(a, b) {
+                var c = a.reduce(function(a, b) {
+                        return a + b[1]
+                    }, 0),
+                    d = c / a.length,
+                    e = a.reduce(function(a, b) {
+                        var c = b[1] - d;
+                        return a + c * c
+                    }, 0),
+                    f = a.reduce(function(a, c, d) {
+                        var e = b[d],
+                            f = c[1] - e[1];
+                        return a + f * f
+                    }, 0);
+                return 1 - f / e
+            }
+
+            function b(a, b) {
+                var c = 0,
+                    d = 0,
+                    e = 0,
+                    f = 0,
+                    g = 0,
+                    h = a.length - 1,
+                    i = new Array(b);
+                for (c = 0; h > c; c++) {
+                    for (f = c, d = c + 1; h > d; d++) Math.abs(a[c][d]) > Math.abs(a[c][f]) && (f = d);
+                    for (e = c; h + 1 > e; e++) g = a[e][c], a[e][c] = a[e][f], a[e][f] = g;
+                    for (d = c + 1; h > d; d++)
+                        for (e = h; e >= c; e--) a[e][d] -= a[e][c] * a[c][d] / a[c][c]
+                }
+                for (d = h - 1; d >= 0; d--) {
+                    for (g = 0, e = d + 1; h > e; e++) g += a[e][d] * i[e];
+                    i[d] = (a[h][d] - g) / a[d][d]
+                }
+                return i
+            }
+
+            function c(a, b) {
+                var c = Math.pow(10, b);
+                return Math.round(a * c) / c
+            }
+            var d, e = 2,
+                f = {
+                    linear: function(b, d, e) {
+                        for (var f, g, h, i = [0, 0, 0, 0, 0], j = b.length, k = 0; j > k; k++) null !== b[k][1] && (i[0] += b[k][0], i[1] += b[k][1], i[2] += b[k][0] * b[k][0], i[3] += b[k][0] * b[k][1], i[4] += b[k][1] * b[k][1]);
+                        return g = (j * i[3] - i[0] * i[1]) / (j * i[2] - i[0] * i[0]), h = i[1] / j - g * i[0] / j, f = b.map(function(a) {
+                            var b = a[0];
+                            return [b, g * b + h]
+                        }), {
+                            r2: a(b, f),
+                            equation: [g, h],
+                            points: f,
+                            string: "y = " + c(g, e.precision) + "x + " + c(h, e.precision)
+                        }
+                    },
+                    linearthroughorigin: function(b, d, e) {
+                        for (var f, g, h = [0, 0], i = 0; i < b.length; i++) null !== b[i][1] && (h[0] += b[i][0] * b[i][0], h[1] += b[i][0] * b[i][1]);
+                        return f = h[1] / h[0], g = b.map(function(a) {
+                            var b = a[0];
+                            return [b, f * b]
+                        }), {
+                            r2: a(b, g),
+                            equation: [f],
+                            points: g,
+                            string: "y = " + c(f, e.precision) + "x"
+                        }
+                    },
+                    exponential: function(b, d, e) {
+                        for (var f, g, h, i, j = [0, 0, 0, 0, 0, 0], k = 0; k < b.length; k++) null !== b[k][1] && (j[0] += b[k][0], j[1] += b[k][1], j[2] += b[k][0] * b[k][0] * b[k][1], j[3] += b[k][1] * Math.log(b[k][1]), j[4] += b[k][0] * b[k][1] * Math.log(b[k][1]), j[5] += b[k][0] * b[k][1]);
+                        return f = j[1] * j[2] - j[5] * j[5], g = Math.exp((j[2] * j[3] - j[5] * j[4]) / f), h = (j[1] * j[4] - j[5] * j[3]) / f, i = b.map(function(a) {
+                            var b = a[0];
+                            return [b, g * Math.exp(h * b)]
+                        }), {
+                            r2: a(b, i),
+                            equation: [g, h],
+                            points: i,
+                            string: "y = " + c(g, e.precision) + "e^(" + c(h, e.precision) + "x)"
+                        }
+                    },
+                    logarithmic: function(b, d, e) {
+                        for (var f, g, h, i = [0, 0, 0, 0], j = b.length, k = 0; j > k; k++) null !== b[k][1] && (i[0] += Math.log(b[k][0]), i[1] += b[k][1] * Math.log(b[k][0]), i[2] += b[k][1], i[3] += Math.pow(Math.log(b[k][0]), 2));
+                        return g = (j * i[1] - i[2] * i[0]) / (j * i[3] - i[0] * i[0]), f = (i[2] - g * i[0]) / j, h = b.map(function(a) {
+                            var b = a[0];
+                            return [b, f + g * Math.log(b)]
+                        }), {
+                            r2: a(b, h),
+                            equation: [f, g],
+                            points: h,
+                            string: "y = " + c(f, e.precision) + " + " + c(g, e.precision) + " ln(x)"
+                        }
+                    },
+                    power: function(b, d, e) {
+                        for (var f, g, h, i = [0, 0, 0, 0], j = b.length, k = 0; j > k; k++) null !== b[k][1] && (i[0] += Math.log(b[k][0]), i[1] += Math.log(b[k][1]) * Math.log(b[k][0]), i[2] += Math.log(b[k][1]), i[3] += Math.pow(Math.log(b[k][0]), 2));
+                        return g = (j * i[1] - i[2] * i[0]) / (j * i[3] - i[0] * i[0]), f = Math.exp((i[2] - g * i[0]) / j), h = b.map(function(a) {
+                            var b = a[0];
+                            return [b, f * Math.pow(b, g)]
+                        }), {
+                            r2: a(b, h),
+                            equation: [f, g],
+                            points: h,
+                            string: "y = " + c(f, e.precision) + "x^" + c(g, e.precision)
+                        }
+                    },
+                    polynomial: function(d, e, f) {
+                        var g, h, i, j, k, l, m, n, o = [],
+                            p = [],
+                            q = 0,
+                            r = 0,
+                            s = d.length;
+                        for (h = "undefined" == typeof e ? 3 : e + 1, i = 0; h > i; i++) {
+                            for (k = 0; s > k; k++) null !== d[k][1] && (q += Math.pow(d[k][0], i) * d[k][1]);
+                            for (o.push(q), q = 0, g = [], j = 0; h > j; j++) {
+                                for (k = 0; s > k; k++) null !== d[k][1] && (r += Math.pow(d[k][0], i + j));
+                                g.push(r), r = 0
+                            }
+                            p.push(g)
+                        }
+                        for (p.push(o), m = b(p, h), l = d.map(function(a) {
+                                var b = a[0],
+                                    c = m.reduce(function(a, c, d) {
+                                        return a + c * Math.pow(b, d)
+                                    }, 0);
+                                return [b, c]
+                            }), n = "y = ", i = m.length - 1; i >= 0; i--) n += i > 1 ? c(m[i], f.precision) + "x^" + i + " + " : 1 === i ? c(m[i], f.precision) + "x + " : c(m[i], f.precision);
+                        return {
+                            r2: a(d, l),
+                            equation: m,
+                            points: l,
+                            string: n
+                        }
+                    },
+                    lastvalue: function(b, d, e) {
+                        for (var f = [], g = null, h = 0; h < b.length; h++) null !== b[h][1] && isFinite(b[h][1]) ? (g = b[h][1], f.push([b[h][0], b[h][1]])) : f.push([b[h][0], g]);
+                        return {
+                            r2: a(b, f),
+                            equation: [g],
+                            points: f,
+                            string: "" + c(g, e.precision)
+                        }
+                    }
+                };
+            return d = function(a, b, c, d) {
+                var g = "object" == typeof c && "undefined" == typeof d ? c : d || {};
+                return g.precision || (g.precision = e), "string" == typeof a ? f[a.toLowerCase()](b, c, g) : null
+            }
+        });
+        /*** end of Regression.JS **/
+        var q = function(s) {
+            return document.querySelector(s);
+        };
+
+        function s_ajax(b) {
+            var c = new XMLHttpRequest();
+            c.onreadystatechange = function() {
+                if (c.readyState == 4) {
+                    if (c.status == 200) {
+                        b.success(c.responseText)
+                    } else {
+                        c.onerror(c.status)
+                    }
+                }
+            };
+            c.ontimeout = function() {
+                if (typeof b["timeout"] != "undefined") b.timeout();
+                else c.onerror(-1)
+            }, c.onerror = function(a) {
+                if (typeof b["fail"] != "undefined") b.fail(a)
+            };
+            c.open(b.m, b.url, true);
+            if (typeof b["data"] != "undefined") {
+                c.setRequestHeader("Content-Type", (typeof b["mime"] != "undefined") ? b["mime"] : "application/x-www-form-urlencoded");
+                c.send(b.data)
+            } else c.send()
+        }
+
+        function C2F(c) {
+            return (c * 1.8 + 32);
+        }
+
+        var BrewMath = {
+            plato2sg: function(plato) {
+                return 1 + plato / (258.6 - ((plato / 258.2) * 227.1));
+                // SG = 1+ (plato / (258.6 – ( (plato/258.2) *227.1) ) )
+            },
+            sg2brix: function(sg) {
+                //Brix = (((182.4601 * SG -775.6821) * SG +1262.7794) * SG -669.5622)
+                return ((182.4601 * sg - 775.6821) * sg + 1262.7794) * sg - 669.5622;
+            },
+            sg2plato: function(sg) {
+                //plato = (-1 * 616.868) + (1111.14 * sg) – (630.272 * sg^2) + (135.997 * sg^3)
+                return -616.868 + (1111.14 * sg) - (630.272 * sg * sg) + (135.997 * sg * sg * sg);
+            },
+            sgTempCorrectedC: function(Reading, C, CT) {
+                return BrewMath.sgTempCorrected(Reading, C2F(C), C2F(CT));
+            },
+            sgTempCorrected: function(Reading, F, CT) {
+                return Reading * ((1.00130346 - 0.000134722124 * F + 0.00000204052596 * F * F - 0.00000000232820948 * F * F * F) / (1.00130346 - 0.000134722124 * CT + 0.00000204052596 * CT * CT - 0.00000000232820948 * CT * CT * CT));
+            },
+            brix2sg: function(brix, wc) {
+                wc = (typeof wc === "undefined") ? 1.0 : wc;
+                var bi = brix / wc;
+                return (bi / (258.6 - ((bi / 258.2) * 227.1))) + 1;
+            }
+        };
+
+
+        function applyTempCal() {
+            var cal = parseFloat(q("#tempcalvalue").value);
+            if (isNaN(cal)) {
+                alert("invalid calibration value");
+                return;
+            }
+            console.log("temp cal:" + cal);
+            s_ajax({
+                url: tcurl,
+                m: "POST",
+                data: "tc=" + cal,
+                success: function(d) {
+                    alert("done");
+                },
+                fail: function(d) {
+                    alert("failed:" + d);
+                }
+            });
+        }
+
+        function setSg(sgn, bx) {
+            q("#sgvalue").innerHTML = sgn.toFixed(3);
+            q("#brixvalue").innerHTML = bx.toFixed(1);
+            window.sg = sgn;
+            window.brix = bx;
+        }
+
+        function sgchanged() {
+            var sg = q("#sginput").value.trim();
+            if (sg == "") return;
+            var tc = q("#tempcorrect").checked;
+            var ct = q("#sgcorrect").value.trim();
+            //clear brix to avoid confusing
+            q("#brixinput").value = "";
+            var sgn = parseFloat(sg);
+            if (tc) {
+                sqn = BrewMath.sgTempCorrectedC(sgn, SSE.temp, ct);
+            }
+            var bx = BrewMath.sg2brix(sgn);
+
+            setSg(sgn, bx);
+        }
+
+        function brixchanged() {
+            var brix = q("#brixinput").value.trim();
+            if (brix == "") return;
+            var wc = q("#wortcorrect").value.trim();
+
+            q("#sginput").value = "";
+            var bx = parseFloat(brix) / parseFloat(wc);
+            var sgn = BrewMath.brix2sg(bx);
+            setSg(sgn, bx);
+        }
+
+        var TiltPoints = {
+            points: [],
+            clear: function() {
+                var tbody = document.getElementById("pointlist").getElementsByTagName("tbody")[0];
+                var rl = tbody.getElementsByTagName("tr");
+                var count = rl.length;
+                for (var i = rl.length - 1; i > 0; i--) {
+                    var tr = rl[i];
+                    tr.parentNode.removeChild(tr);
+                }
+                return tbody;
+            },
+            del: function(i) {
+                console.log("delete " + i);
+                this.points.splice(i, 1);
+                this.list();
+            },
+            newrow: function(i) {
+                var tr = document.createElement("tr");
+                var td1 = document.createElement("td");
+                td1.className = "pl_del";
+                var db = document.createElement("button");
+                db.appendChild(document.createTextNode("X"));
+                db.onclick = function() {
+                    TiltPoints.del(i);
+                };
+                td1.appendChild(db);
+
+                var td2 = document.createElement("td");
+                td2.className = "pl_tilt";
+                td2.innerHTML = this.points[i][0];
+                var td3 = document.createElement("td");
+
+                td3.className = "pl_brix";
+                td3.innerHTML = BrewMath.sg2brix(this.points[i][1]).toFixed(1); //this.points[i][1];
+
+                var td4 = document.createElement("td");
+                td4.className = "pl_sg";
+                td4.innerHTML = this.points[i][1]; // BrewMath.brix2sg(this.points[i][1]).toFixed(3);
+
+                var td5i = document.createElement("td");
+                td5i.className = "pl_2ndvalue";
+                if (typeof window.secValue != "undefined")
+                    td5i.innerHTML = window.secValue[i].toFixed(3);
+
+                var td5 = document.createElement("td");
+                td5.className = "pl_2nderror";
+                if (typeof window.secondError != "undefined")
+                    td5.innerHTML = window.secondError[i].toFixed(4);
+
+                var td6i = document.createElement("td");
+                td6i.className = "pl_3rdvalue";
+                if (typeof window.thirdValue != "undefined")
+                    td6i.innerHTML = window.thirdValue[i].toFixed(3);
+
+
+                var td6 = document.createElement("td");
+                td6.className = "pl_3rderror";
+                if (typeof window.thirdError != "undefined")
+                    td6.innerHTML = window.thirdError[i].toFixed(4);
+
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+                tr.appendChild(td5i);
+                tr.appendChild(td5);
+                tr.appendChild(td6i);
+                tr.appendChild(td6);
+                return tr;
+            },
+            list: function() {
+                this.regression();
+                var tbody = this.clear();
+                for (var i = 0; i < this.points.length; i++) {
+                    tbody.appendChild(this.newrow(i));
+                }
+            },
+            regression: function() {
+                if (this.points.length < 2) return;
+
+                var thirdRegression = regression('polynomial', this.points, 3, {
+                    precision: 9
+                });
+                var secondRegression = regression('polynomial', this.points, 2, {
+                    precision: 9
+                });
+                // Plot the result
+                $.plot($('#graph'), [{
+                    data: thirdRegression.points,
+                    label: '3rd'
+                }, {
+                    data: secondRegression.points,
+                    label: '2nd'
+                }, {
+                    data: this.points,
+                    lines: {
+                        show: false
+                    },
+                    points: {
+                        show: true
+                    }
+                }, ]);
+                q("#secondpoly").innerHTML = secondRegression.string;
+                q("#thirdpoly").innerHTML = thirdRegression.string;
+                // caluate errors
+                var sec_error = [];
+                var sec_value = [];
+                var secoe = secondRegression.equation;
+                var third_error = [];
+                var third_value = [];
+                var thirdcoe = thirdRegression.equation;
+                for (var i = 0; i < this.points.length; i++) {
+                    var x = this.points[i][0];
+                    var x2 = x * x;
+                    var x3 = x2 * x;
+                    var y = this.points[i][1]
+                    var s = secoe[0] + secoe[1] * x + secoe[2] * x2;
+                    var t = thirdcoe[0] + thirdcoe[1] * x + thirdcoe[2] * x2 + thirdcoe[3] * x3;
+                    sec_error.push(s - y);
+                    third_error.push(t - y);
+                    sec_value.push(s);
+                    third_value.push(t);
+                }
+                window.secondError = sec_error;
+                window.thirdError = third_error;
+                window.equation2nd = secoe;
+                window.equation3rd = thirdcoe;
+                window.secValue = sec_value;
+                window.thirdValue = third_value;
+            },
+            adddata: function() {
+                var tilt = parseFloat(q("#tiltinput").value);
+                var sg = window.sg;
+                if (isNaN(tilt) || isNaN(sg)) {
+                    alert("invalid value");
+                    return;
+                }
+                this.points.push([tilt, sg]);
+                this.points.sort(function(a, b) {
+                    return a[0] - b[0];
+                });
+                this.list();
+            },
+
+        };
+
+        function setformula(order) {
+            var coeffs;
+            if (order == 2) {
+                if (typeof window.equation2nd == "undefined") {
+                    alert("The formula is not yet derived.");
+                    return;
+                }
+                coeffs = "a0=" + window.equation2nd[0] +
+                    "&a1=" + window.equation2nd[1] +
+                    "&a2=" + window.equation2nd[2];
+
+
+            } else {
+                if (typeof window.equation3rd == "undefined") {
+                    alert("The formula is not yet derived.");
+                    return;
+                }
+                coeffs = "a0=" + window.equation3rd[0] +
+                    "&a1=" + window.equation3rd[1] +
+                    "&a2=" + window.equation3rd[2] +
+                    "&a3=" + window.equation3rd[3];
+            }
+            console.log("set equation:" + coeffs);
+            s_ajax({
+                url: equrl,
+                m: "POST",
+                data: coeffs,
+                success: function(d) {
+                    alert("done");
+                },
+                fail: function(d) {
+                    alert("failed:" + d);
+                }
+            });
+        }
+
+        function loaded() {}
+
+        function resettarget() {
+            s_ajax({
+                url: reseturl,
+                m: "GET",
+                success: function(d) {
+                    alert("HailHydro will restart after 3 seconds.");
+                },
+                fail: function(d) {
+                    alert("failed:" + d);
+                }
+            })
+        }
+    </script>
+    <style>
+        .sectitle {
+            margin: 4px;
+            font-size: 16pt;
+        }
+        
+        .ledreddim {
+            background: #DE912F;
+        }
+        
+        .ledgreen {
+            background: #70FC57;
+        }
+        
+        .round-led-circle {
+            width: 16px;
+            height: 0;
+            padding-bottom: 16px;
+            border-radius: 50%;
+            border-style: outset;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        span.round-led {
+            width: 15px;
+            height: 15px;
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #readings th {
+            font-weight: bold;
+        }
+        
+        #readings td {
+            color: blue;
+        }
+        
+        .topcell {
+            vertical-align: top;
+        }
+        
+        #pointlist th,
+        #pointlist td,
+        #pointlist tr,
+        #pointlist {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+        
+        #pointlist th {
+            width: 52px;
+            background-color: #ffff27;
+        }
+        
+        #pointlist td {
+            text-align: right;
+        }
+        
+        #graph {
+            width: 500px;
+            height: 600px;
+        }
+    </style>
+</head>
+
+<body onload="loaded()">
+    <div class="sectitle gravity_cal"> Gravity Calibration</div>
+    <div class="secdiv gravity_cal">
+        <table>
+            <tr>
+                <td colspan="2">
+                    <fieldset id="inputpoints">
+                        <div>
+                            SG or Plato:<input type="text" size="6" id="sginput" value="" onchange="sgchanged()"></input>
+                            <input type="checkbox" id="tempcorrect" onchange="sgchanged()"></input>Temperature Corrected. CAL@
+                            <input type="text" size="3" id="sgcorrect" value="20" onchange="sgchanged()">&deg;C ,or <br> BRIX:
+                            <input type="text" size="6" id="brixinput" onchange="brixchanged()">&deg;Bx </input>@Wort Correction:
+                            <input type="text" size="4" id="wortcorrect" value="1.0" onchange="brixchanged()"></input>
+                        </div>
+                        <div>
+                            SG/Plato=<span id="sgvalue"></span>, Brix:<span id="brixvalue"></span>&deg;Bx, Tilt:<input type="text" size="6" id="tiltinput"></input>
+                            <button onclick="TiltPoints.adddata();">Add Data</button>
+                        </div>
+                    </fieldset>
+
+                    <td>
+            </tr>
+            <tr>
+                <td class="topcell">
+                    <table id="pointlist">
+                        <tr>
+                            <th></th>
+                            <th>Tilt</th>
+                            <th>Plato</th>
+                            <th>SG</th>
+                            <th>Degree 2 Value</th>
+                            <th>Degree 2 Error</th>
+                            <th>Degree 3 Value</th>
+                            <th>Degree 3 Error</th>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <div id="graph"></div>
+                </td>
+                <tr>
+                    <tr>
+                        <td colspan="2">Degree 2:<span id="secondpoly"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Degree 3:<span id="thirdpoly"></span></td>
+                    </tr>
+        </table>
+    </div>
+
+</body>
+
+</html>
