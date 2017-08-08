@@ -8,7 +8,7 @@
 
 - [Variante A (vereinfacht](#variante-a-(vereinfacht))
 - [Variante B Schnellvergärung (genauer)](#variante-b-schnellvergärung-(genauer))
-- [Formel Excel Tabelle](#formel)
+- [Formel errechnen](#formel)
 - [Speichern in iSpindel](#speichern)
 
 ***
@@ -53,6 +53,15 @@
 ***
 
 # Formel
+Folgende Varianten existieren um das Polynome leicht zu errechnen:
+
+- ## [Online Gravity Calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm)
+
+Die Messwerte werden in das Feld `Plato` oder `Brix` eingetragen mit dem korrespondierendem Neigungswinkel unter `Tilt`. Daraus errechnet sich dann ein Polynom 2. oder 3. Grades welches dann in der Firmware hinterlegt wird.
+
+***
+
+- ## Excel Tabelle
 
 > Obige Meßwerte können nun anhand dieser Excel Tabelle in eine annähernde Formel überführt werden.  
 Diese hinterlegt man in Ubidots um die Anzeige des °Plato zu erhalten.  
