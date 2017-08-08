@@ -67,10 +67,18 @@ It is advised to connect the iSpindel with Ubidots in order te easily read the m
 
 ***
 
-## Formula
+# Formula
 
-The measured values can be entered in the Excel sheet. This sheet will calculate a formula that will predict the density or the degrees of Plato given an inclination value. This formula has to be entered in Ubidots to be able to get readings in density or degrees Plato.
-Other reading, such as apparent attenuation or alcohol % can be obtained in similiar manners with the use of a '''Derived Variable'''.
+- ## [Online Gravity Calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm)
+
+The measured values can be entered in the field SG/Plato or BRIX plus the corresponding Tilt. It will calculate a formula of 2nd or 3rd degree that will predict the density or the degrees of Plato given an inclination value. This formula has to be entered in Firmware to be able to get readings in density or degrees Plato.
+
+***
+
+- ## Excel Sheet
+
+The measured values can be entered in the Excel sheet. This sheet will calculate a formula that will predict the density or the degrees of Plato given an inclination value. This formula has to be entered in Firmware to be able to get readings in density or degrees Plato.
+Other reading, such as apparent attenuation or alcohol % can be obtained in similiar manners with the use of a 'Derived Variable' in Ubidots.
 
 1. First enter the measured values in Excel:    
 [Download Excel table](https://github.com/universam1/iSpindel/blob/master/docs/Kalibrierung.xlsm)
