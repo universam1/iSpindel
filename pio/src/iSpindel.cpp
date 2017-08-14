@@ -301,7 +301,7 @@ bool startConfiguration()
                                    TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
                                     String(my_sleeptime).c_str(), 5, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Ubidots Token", my_token,
+  WiFiManagerParameter custom_token("token", "Token", my_token,
                                     TKIDSIZE);
   WiFiManagerParameter custom_server("server", "Server Address",
                                      my_server, TKIDSIZE);
@@ -468,6 +468,14 @@ bool uploadData(uint8_t service)
     }
 
     genericHTTP genclient(my_name, my_server, port, url);
+
+    if (my_token[0] != 0)
+      genclient.add("token", my_token);
+
+    char buf[10];
+    ltoa(ESP.getChipId(), buf, DEC);
+    genclient.add("ID", buf);
+
     genclient.add("angle", Tilt);
     genclient.add("temperature", Temperatur);
     genclient.add("battery", Volt);

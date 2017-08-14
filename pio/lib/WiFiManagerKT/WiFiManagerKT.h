@@ -64,7 +64,7 @@ case "CraftBeerPi":
 case "HTTP":
   set('url',1);
   set('port',1);
-	set('token',0);
+	set('token',1);
 	set('server',1);
   break;
 case "TControl":
@@ -82,7 +82,7 @@ case "FHEM":
 case "TCP":
   set('server',1);
   set('port',1);
-  set('token',0);
+  set('token',1);
   set('url',0);
   break;
 }};

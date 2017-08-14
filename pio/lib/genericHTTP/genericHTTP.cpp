@@ -16,8 +16,9 @@ genericHTTP::genericHTTP(char *device, char *server, uint16_t port, char *url)
     _port = port;
     _url = url;
     // maxValues = 11;
-    currentValue = 0;
+    currentValue = currentStrValue = 0;
     val = (gValue *)malloc(ghmaxValues * sizeof(gValue));
+    gStr = (gString *)malloc(gStrmaxValues * sizeof(gString));
 }
 
 // genericHTTP::~genericHTTP() { free(val); }
@@ -29,6 +30,13 @@ void genericHTTP::add(char *variable_id, float value)
     currentValue++;
 }
 
+void genericHTTP::add(char *variable_id, char *value)
+{
+    (gStr + currentValue)->id = variable_id;
+    (gStr + currentValue)->value_id = value;
+    currentStrValue++;
+}
+
 bool genericHTTP::sendHTTP()
 {
     uint16_t i;
@@ -38,13 +46,13 @@ bool genericHTTP::sendHTTP()
     JsonObject &data = jsonBuffer.createObject();
 
     data["name"] = _device;
-    data["ID"] = String(ESP.getChipId());
+    // data["ID"] = String(ESP.getChipId());
 
-    for (i = 0; i < currentValue;)
-    {
+    for (i = 0; i < currentStrValue; i++)
+        data[String((gStr + i)->id)] = String((gStr + i)->value_id);
+
+    for (i = 0; i < currentValue; i++)
         data[String((val + i)->id)] = (val + i)->value_id;
-        i++;
-    }
 
     if (_client.connect(_server, _port))
     {
