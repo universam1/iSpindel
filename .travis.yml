@@ -7,6 +7,7 @@ cache:
   - "~/.platformio"
 install:
 - pip install -U platformio
+- platformio platform uninstall espressif8266
 - platformio platform install https://github.com/platformio/platform-espressif8266.git#feature/stage
 script:
 - platformio run
