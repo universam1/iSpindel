@@ -7,19 +7,6 @@ All rights reserverd by S.Lang <universam@web.de>
 
 // includes go here
 #include "Globals.h"
-#ifdef API_UBIDOTS
-#include "Ubidots.h"
-#endif
-#ifdef API_GENERIC
-#include "genericHTTP.h"
-#endif
-#ifdef API_FHEM
-#include "FHEM.h"
-#endif
-#ifdef API_TCONTROL
-#include "TControl.h"
-#endif // DATABASESYSTEM ==
-
 #include "MPUOffset.h"
 // #endif
 #include "OneWire.h"
@@ -28,7 +15,6 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "DallasTemperature.h"
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
 #include "RunningMedian.h"
-// #include "Ubidots.h"
 #include "WiFiManagerKT.h"
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 #include <DNSServer.h>
@@ -37,6 +23,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <FS.h>          //this needs to be first
 #include "tinyexpr.h"
 
+#include "Sender.h"
 // !DEBUG 1
 
 // definitions go here
@@ -182,9 +169,9 @@ bool readConfig()
             my_vfact = json["Vfact"];
 
           if (json.containsKey("SSID"))
-            my_ssid = json["SSID"].asString();
+            my_ssid = (const char*)json["SSID"];
           if (json.containsKey("PSK"))
-            my_psk = json["PSK"].asString();
+            my_psk = (const char*)json["PSK"];
           if (json.containsKey("POLY"))
             strcpy(my_polynominal, json["POLY"]);
 
@@ -426,21 +413,19 @@ bool saveConfig()
 
 bool uploadData(uint8_t service)
 {
-  char url[TKIDSIZE];
-  uint16_t port;
+  // char url[TKIDSIZE];
+  // uint16_t port;
 
+  SenderClass sender;
+  
 #ifdef API_UBIDOTS
   if (service == DTUbiDots)
   {
-    Ubidots ubiclient(my_token, my_name);
-    ubiclient.add("tilt", Tilt);
-    // ubiclient.add("corrGravity", corrGravity);
-    ubiclient.add("temperature", Temperatur);
-    ubiclient.add("battery", Volt);
-    ubiclient.add("gravity", Gravity);
-    // This creates a new Device, only with TCP transmission
-    ubiclient.setDataSourceName(my_name);
-    return ubiclient.sendAll(false);
+    sender.add("tilt", Tilt);
+    sender.add("temperature", Temperatur);
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    return sender.sendUbidots(my_token);
   }
 #endif
 
@@ -448,46 +433,28 @@ bool uploadData(uint8_t service)
   if ((service == DTHTTP) || (service == DTCraftbeepPi) || (service == DTTCP))
   {
 
+    sender.add("ID", ESP.getChipId());
+    if (my_token[0] != 0)
+      sender.add("token", my_token);
+    sender.add("angle", Tilt);
+    sender.add("temperature", Temperatur);
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+
     if (service == DTHTTP)
     {
-      SerialOut(F("\ncalling DTHTTP "));
-      strcpy(url, my_url);
-      port = my_port;
+      SerialOut(F("\ncalling HTTP "));
+      return sender.send(my_server, my_url, my_port);
     }
     else if (service == DTCraftbeepPi)
     {
-      SerialOut(F("\ncalling DTCraftbeepPi "));
-      strcpy(url, CBP_ENDPOINT);
-      port = 5000;
+      SerialOut(F("\ncalling CraftbeepPi "));
+      return sender.send(my_server, CBP_ENDPOINT, 5000);
     }
     else if (service == DTTCP)
     {
-      SerialOut(F("\ncalling DTTCP "));
-      port = my_port;
-      strcpy(url, "");
-    }
-
-    genericHTTP genclient(my_name, my_server, port, url);
-
-    if (my_token[0] != 0)
-      genclient.add("token", my_token);
-
-    char buf[10];
-    ltoa(ESP.getChipId(), buf, DEC);
-    genclient.add("ID", buf);
-
-    genclient.add("angle", Tilt);
-    genclient.add("temperature", Temperatur);
-    genclient.add("battery", Volt);
-    genclient.add("gravity", Gravity);
-
-    if (service == DTTCP)
-    {
-      return genclient.sendTCP();
-    }
-    else
-    {
-      return genclient.sendHTTP();
+      SerialOut(F("\ncalling TCP "));
+      return sender.send(my_server, "", my_port);
     }
   }
 #endif // DATABASESYSTEM
@@ -495,23 +462,27 @@ bool uploadData(uint8_t service)
 #ifdef API_FHEM
   if (service == DTFHEM)
   {
-    FhemHttp fhemclient(my_name, my_server, my_port);
-    fhemclient.add("angle", Tilt);
-    fhemclient.add("temperature", Temperatur);
-    fhemclient.add("battery", Volt);
-    fhemclient.add("gravity", Gravity);
-    return fhemclient.sendHTTP();
+    sender.add("angle", Tilt);
+    sender.add("temperature", Temperatur);
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    return sender.sendFHEM(my_server, my_port,my_name);
   }
 #endif // DATABASESYSTEM ==
 #ifdef API_TCONTROL
   if (service == DTTcontrol)
   {
-    TControl tcclient(my_name, my_server, my_port);
-    tcclient.add("T", Temperatur);
-    tcclient.add("D", Tilt);
-    tcclient.add("U", Volt);
-    tcclient.add("G", Gravity);
-    return tcclient.send();
+    // TControl tcclient(my_name, my_server, my_port);
+    // tcclient.add("T", Temperatur);
+    // tcclient.add("D", Tilt);
+    // tcclient.add("U", Volt);
+    // tcclient.add("G", Gravity);
+    // return tcclient.send();    TControl tcclient(my_name, my_server, my_port);
+    sender.add("T", Temperatur);
+    sender.add("D", Tilt);
+    sender.add("U", Volt);
+    sender.add("G", Gravity);
+    return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
 }

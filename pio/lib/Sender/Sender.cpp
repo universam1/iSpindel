@@ -1,0 +1,209 @@
+/**************************************************************
+
+    "iSpindel"
+    changes by S.Lang <universam@web.de>
+
+ **************************************************************/
+
+#include "Sender.h"
+
+#define UBISERVER "things.ubidots.com"
+#define CONNTIMEOUT 3000
+
+SenderClass::SenderClass()
+{
+    _jsonVariant = _jsonBuffer.createObject();
+}
+void SenderClass::add(String id, float value)
+{
+    _jsonVariant[id] = value;
+}
+void SenderClass::add(String id, String value)
+{
+    _jsonVariant[id] = value;
+}
+
+bool SenderClass::send(String server, String url, uint16_t port)
+{
+    _jsonVariant.printTo(Serial);
+
+    if (_client.connect(server.c_str(), port))
+    {
+        if (url != "")
+        {
+            Serial.println(F("Sender: HTTP posting"));
+
+            String msg = String("POST ");
+            msg += url;
+            msg += String(F(" HTTP/1.1\r\nHost: "));
+            msg += server;
+            msg += String(F("\r\nUser-Agent: iSpindel"));
+            msg += String(F("\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: "));
+            msg += String(_jsonVariant.measureLength());
+            msg += String("\r\n");
+
+            _client.println(msg);
+            Serial.println(msg);
+        }
+        else
+            Serial.println(F("Sender: TCP stream"));
+        _jsonVariant.printTo(_client);
+        _client.println();
+    }
+    else
+    {
+        Serial.println(F("\nERROR Sender: couldnt connect"));
+    }
+
+    int timeout = 0;
+    while (!_client.available() && timeout < CONNTIMEOUT)
+    {
+        timeout++;
+        delay(1);
+    }
+    while (_client.available())
+    {
+        char c = _client.read();
+        Serial.write(c);
+    }
+    // currentValue = 0;
+    _client.stop();
+    return true;
+}
+
+bool SenderClass::sendUbidots(String token)
+{
+    _jsonVariant.printTo(Serial);
+
+    if (_client.connect(UBISERVER, 80))
+    {
+        Serial.println(F("Sender: Ubidots posting"));
+
+        String msg = String(F("POST /api/v1.6/devices/ESP8266"));
+        msg += String(F("?token="));
+        msg += String(token);
+        msg += String(F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: ESP8266"));
+        msg += String(F("\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: "));
+        msg += String(_jsonVariant.measureLength());
+        msg += String("\r\n");
+
+        _client.println(msg);
+        Serial.println(msg);
+
+        _jsonVariant.printTo(_client);
+        _client.println();
+        Serial.println(msg);
+    }
+    else
+    {
+        Serial.println(F("\nERROR Sender: couldnt connect"));
+    }
+
+    int timeout = 0;
+    while (!_client.available() && timeout < CONNTIMEOUT)
+    {
+        timeout++;
+        delay(1);
+    }
+    while (_client.available())
+    {
+        char c = _client.read();
+        Serial.write(c);
+    }
+    // currentValue = 0;
+    _client.stop();
+    return true;
+}
+
+bool SenderClass::sendFHEM(String server, uint16_t port, String name)
+{
+    _jsonVariant.printTo(Serial);
+
+    if (_client.connect(server.c_str(), port))
+    {
+        Serial.println(F("Sender: FHEM get"));
+
+        String msg = String("GET /fhem?cmd.Test=set%20");
+        msg += name;
+        msg += String("%20");
+        msg += (const char *)_jsonVariant["angle"];
+        msg += String("%20");
+        msg += (const char *)_jsonVariant["temperature"];
+        msg += String("%20");
+        msg += (const char *)_jsonVariant["battery"];
+        msg += String("%20");
+        msg += (const char *)_jsonVariant["gravity"];
+
+        msg += String("&XHR=1");
+        msg += String(" HTTP/1.1\r\nHost: ");
+        msg += server;
+        msg += String(":");
+        msg += port;
+        msg += String("\r\nUser-Agent: ");
+        msg += name;
+        msg += String("\r\nConnection: close\r\n");
+
+        _client.println(msg);
+        Serial.println(msg);
+    }
+    else
+    {
+        Serial.println(F("\nERROR Sender: couldnt connect"));
+    }
+
+    int timeout = 0;
+    while (!_client.available() && timeout < CONNTIMEOUT)
+    {
+        timeout++;
+        delay(1);
+    }
+    while (_client.available())
+    {
+        char c = _client.read();
+        Serial.write(c);
+    }
+    // currentValue = 0;
+    _client.stop();
+    return true;
+}
+
+bool SenderClass::sendTCONTROL(String server, uint16_t port)
+{
+    _jsonVariant.printTo(Serial);
+
+    if (_client.connect(server.c_str(), port))
+    {
+
+        Serial.println(F("Sender: TCONTROL"));
+        String msg = String("T: ");
+        msg = (const char *)_jsonVariant["T"];
+        msg = String(" D: ");
+        msg = (const char *)_jsonVariant["D"];
+        msg = String(" U: ");
+        msg = (const char *)_jsonVariant["U"];
+        msg = String(" G: ");
+        msg = (const char *)_jsonVariant["G"];
+
+        _client.println(msg);
+        Serial.println(msg);
+    }
+    else
+    {
+        Serial.println(F("\nERROR Sender: couldnt connect"));
+    }
+
+    int timeout = 0;
+    while (!_client.available() && timeout < CONNTIMEOUT)
+    {
+        timeout++;
+        delay(1);
+    }
+    while (_client.available())
+    {
+        char c = _client.read();
+        Serial.write(c);
+    }
+    // currentValue = 0;
+    _client.stop();
+    return true;
+}
