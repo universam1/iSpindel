@@ -26,7 +26,7 @@ extern Ticker flasher;
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "5.4.0"
+#define FIRMWAREVERSION "5.4.1"
 
 
 #define API_FHEM true
@@ -58,6 +58,7 @@ extern Ticker flasher;
 #define DTTcontrol 4
 #define DTFHEM  5
 #define DTTCP  6
+#define DTiSPINDELde 7
 
 // Number of seconds after reset during which a 
 // subseqent reset will be considered a double reset.

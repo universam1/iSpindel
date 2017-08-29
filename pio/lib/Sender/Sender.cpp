@@ -8,7 +8,7 @@
 #include "Sender.h"
 
 #define UBISERVER "things.ubidots.com"
-#define CONNTIMEOUT 3000
+#define CONNTIMEOUT 2000
 
 SenderClass::SenderClass()
 {
@@ -68,10 +68,11 @@ bool SenderClass::send(String server, String url, uint16_t port)
     }
     // currentValue = 0;
     _client.stop();
+    delay(100); // allow gracefull session close
     return true;
 }
 
-bool SenderClass::sendUbidots(String token)
+bool SenderClass::sendUbidots(String token, String name)
 {
     _jsonVariant.printTo(Serial);
 
@@ -79,7 +80,8 @@ bool SenderClass::sendUbidots(String token)
     {
         Serial.println(F("Sender: Ubidots posting"));
 
-        String msg = String(F("POST /api/v1.6/devices/ESP8266"));
+        String msg = String(F("POST /api/v1.6/devices/"));
+        msg += String(name);
         msg += String(F("?token="));
         msg += String(token);
         msg += String(F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: ESP8266"));
@@ -112,6 +114,7 @@ bool SenderClass::sendUbidots(String token)
     }
     // currentValue = 0;
     _client.stop();
+    delay(100); // allow gracefull session close
     return true;
 }
 
@@ -164,6 +167,7 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
     }
     // currentValue = 0;
     _client.stop();
+    delay(100); // allow gracefull session close
     return true;
 }
 
@@ -205,5 +209,6 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
     }
     // currentValue = 0;
     _client.stop();
+    delay(100); // allow gracefull session close
     return true;
 }

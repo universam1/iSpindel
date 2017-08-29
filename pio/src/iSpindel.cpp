@@ -169,9 +169,9 @@ bool readConfig()
             my_vfact = json["Vfact"];
 
           if (json.containsKey("SSID"))
-            my_ssid = (const char*)json["SSID"];
+            my_ssid = (const char *)json["SSID"];
           if (json.containsKey("PSK"))
-            my_psk = (const char*)json["PSK"];
+            my_psk = (const char *)json["PSK"];
           if (json.containsKey("POLY"))
             strcpy(my_polynominal, json["POLY"]);
 
@@ -413,11 +413,8 @@ bool saveConfig()
 
 bool uploadData(uint8_t service)
 {
-  // char url[TKIDSIZE];
-  // uint16_t port;
-
   SenderClass sender;
-  
+
 #ifdef API_UBIDOTS
   if (service == DTUbiDots)
   {
@@ -425,14 +422,16 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    return sender.sendUbidots(my_token);
+    SerialOut(F("\ncalling Ubidots"));    
+    return sender.sendUbidots(my_token, my_name);
   }
 #endif
 
 #ifdef API_GENERIC
-  if ((service == DTHTTP) || (service == DTCraftbeepPi) || (service == DTTCP))
+  if ((service == DTHTTP) || (service == DTCraftbeepPi) || (service == DTiSPINDELde) || (service == DTTCP))
   {
 
+    sender.add("name", my_name);
     sender.add("ID", ESP.getChipId());
     if (my_token[0] != 0)
       sender.add("token", my_token);
@@ -443,17 +442,22 @@ bool uploadData(uint8_t service)
 
     if (service == DTHTTP)
     {
-      SerialOut(F("\ncalling HTTP "));
+      SerialOut(F("\ncalling HTTP"));
       return sender.send(my_server, my_url, my_port);
     }
     else if (service == DTCraftbeepPi)
     {
-      SerialOut(F("\ncalling CraftbeepPi "));
+      SerialOut(F("\ncalling CraftbeepPi"));
       return sender.send(my_server, CBP_ENDPOINT, 5000);
+    }
+    else if (service == DTiSPINDELde)
+    {
+      SerialOut(F("\ncalling iSPINDELde"));
+      return sender.send("ispindle.de", "", 9501);
     }
     else if (service == DTTCP)
     {
-      SerialOut(F("\ncalling TCP "));
+      SerialOut(F("\ncalling TCP"));
       return sender.send(my_server, "", my_port);
     }
   }
@@ -466,22 +470,18 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    return sender.sendFHEM(my_server, my_port,my_name);
+    SerialOut(F("\ncalling FHEM"));    
+    return sender.sendFHEM(my_server, my_port, my_name);
   }
 #endif // DATABASESYSTEM ==
 #ifdef API_TCONTROL
   if (service == DTTcontrol)
   {
-    // TControl tcclient(my_name, my_server, my_port);
-    // tcclient.add("T", Temperatur);
-    // tcclient.add("D", Tilt);
-    // tcclient.add("U", Volt);
-    // tcclient.add("G", Gravity);
-    // return tcclient.send();    TControl tcclient(my_name, my_server, my_port);
     sender.add("T", Temperatur);
     sender.add("D", Tilt);
     sender.add("U", Volt);
     sender.add("G", Gravity);
+    SerialOut(F("\ncalling TCONTROL"));    
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==

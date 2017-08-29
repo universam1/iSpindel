@@ -16,7 +16,7 @@ class SenderClass
 public:
   SenderClass();
   bool send(String server, String url, uint16_t port = 80);
-  bool sendUbidots(String token);
+  bool sendUbidots(String token, String name);
   bool sendFHEM(String server, uint16_t port, String name);
   bool sendTCONTROL(String server, uint16_t port);
   void add(String id, float value);

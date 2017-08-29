@@ -28,7 +28,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ## News
 
-
+> 29.08.2017 Firmware 5.4.1: Rewrite of the upload class to streamline and allow further data items. Also add iSpindel.de as data server as preset.    
 > 08.08.2017 [calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm) to calculate gravity as alternative to the Excel sheet    
 > 05.07.2017 Workaround for BrewPiLess    
 > 30.06.2017 Mentioned in http://preview.mailerlite.com/g6n5p3/660851237247259035/r2w6/    
