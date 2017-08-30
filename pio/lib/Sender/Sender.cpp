@@ -35,12 +35,11 @@ bool SenderClass::send(String server, String url, uint16_t port)
 
             String msg = String("POST ");
             msg += url;
-            msg += String(F(" HTTP/1.1\r\nHost: "));
+            msg += F(" HTTP/1.1\r\nHost: ");
             msg += server;
-            msg += String(F("\r\nUser-Agent: iSpindel"));
-            msg += String(F("\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: "));
-            msg += String(_jsonVariant.measureLength());
-            msg += String("\r\n");
+            msg += F("\r\nUser-Agent: iSpindel\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
+            msg += _jsonVariant.measureLength();
+            msg += "\r\n";
 
             _client.println(msg);
             Serial.println(msg);
@@ -80,14 +79,13 @@ bool SenderClass::sendUbidots(String token, String name)
     {
         Serial.println(F("Sender: Ubidots posting"));
 
-        String msg = String(F("POST /api/v1.6/devices/"));
-        msg += String(name);
-        msg += String(F("?token="));
-        msg += String(token);
-        msg += String(F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: ESP8266"));
-        msg += String(F("\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: "));
-        msg += String(_jsonVariant.measureLength());
-        msg += String("\r\n");
+        String msg = F("POST /api/v1.6/devices/");
+        msg += name;
+        msg += "?token=";
+        msg += token;
+        msg += F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
+        msg += _jsonVariant.measureLength();
+        msg += "\r\n";
 
         _client.println(msg);
         Serial.println(msg);
@@ -128,23 +126,20 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
 
         String msg = String("GET /fhem?cmd.Test=set%20");
         msg += name;
-        msg += String("%20");
-        msg += (const char *)_jsonVariant["angle"];
-        msg += String("%20");
-        msg += (const char *)_jsonVariant["temperature"];
-        msg += String("%20");
-        msg += (const char *)_jsonVariant["battery"];
-        msg += String("%20");
-        msg += (const char *)_jsonVariant["gravity"];
 
-        msg += String("&XHR=1");
-        msg += String(" HTTP/1.1\r\nHost: ");
+        for (const auto &kv : _jsonVariant.as<JsonObject>())
+        {
+            msg += "%20";
+            msg += kv.value.as<char *>();
+        }
+
+        msg += F("&XHR=1 HTTP/1.1\r\nHost: ");
         msg += server;
-        msg += String(":");
+        msg += ":";
         msg += port;
-        msg += String("\r\nUser-Agent: ");
+        msg += "\r\nUser-Agent: ";
         msg += name;
-        msg += String("\r\nConnection: close\r\n");
+        msg += F("\r\nConnection: close\r\n");
 
         _client.println(msg);
         Serial.println(msg);
@@ -179,14 +174,16 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
     {
 
         Serial.println(F("Sender: TCONTROL"));
-        String msg = String("T: ");
-        msg = (const char *)_jsonVariant["T"];
-        msg = String(" D: ");
-        msg = (const char *)_jsonVariant["D"];
-        msg = String(" U: ");
-        msg = (const char *)_jsonVariant["U"];
-        msg = String(" G: ");
-        msg = (const char *)_jsonVariant["G"];
+        String msg;
+
+        for (const auto &kv : _jsonVariant.as<JsonObject>())
+        {
+            msg += kv.key;
+            msg += ": ";
+            msg += kv.value.as<char *>();
+            msg += " ";
+        }
+        msg.remove(msg.length() - 1);
 
         _client.println(msg);
         Serial.println(msg);

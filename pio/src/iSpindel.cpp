@@ -265,7 +265,7 @@ bool shouldStartConfig()
 
 void validateInput(const char *input, char *output)
 {
-  String tmp = String(input);
+  String tmp = input;
   tmp.trim();
   tmp.replace(' ', '_');
   tmp.toCharArray(output, tmp.length() + 1);
@@ -336,7 +336,7 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
 
-  String tmp = String(custom_vfact.getValue());
+  String tmp = custom_vfact.getValue();
   tmp.trim();
   tmp.replace(',', '.');
   my_vfact = tmp.toFloat();
@@ -422,7 +422,7 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    SerialOut(F("\ncalling Ubidots"));    
+    SerialOut(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
   }
 #endif
@@ -470,7 +470,7 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    SerialOut(F("\ncalling FHEM"));    
+    SerialOut(F("\ncalling FHEM"));
     return sender.sendFHEM(my_server, my_port, my_name);
   }
 #endif // DATABASESYSTEM ==
@@ -481,7 +481,7 @@ bool uploadData(uint8_t service)
     sender.add("D", Tilt);
     sender.add("U", Volt);
     sender.add("G", Gravity);
-    SerialOut(F("\ncalling TCONTROL"));    
+    SerialOut(F("\ncalling TCONTROL"));
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
@@ -506,7 +506,7 @@ void goodNight(uint32_t seconds)
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + String("s; left: ") + left2sleep + String("s; RT:") + millis());
+    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT:" + millis());
     ESP.deepSleep(MAXSLEEPTIME * 1000UL * 1000UL, WAKE_RF_DISABLED);
     // workaround proper power state init
     delay(500);
@@ -518,7 +518,7 @@ void goodNight(uint32_t seconds)
     left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    SerialOut(String(F("\nFinal-sleep: ")) + _seconds + String("s; RT:") + millis());
+    SerialOut(String(F("\nFinal-sleep: ")) + _seconds + "s; RT:" + millis());
     // WAKE_RF_DEFAULT --> auto reconnect after wakeup
     ESP.deepSleep(_seconds * 1000UL * 1000UL, WAKE_RF_DEFAULT);
     // workaround proper power state init
@@ -606,7 +606,7 @@ void getAccSample()
     accelgyro.getAcceleration(&ax, &az, &ay);
   else
   {
-    SerialOut(String("I2C ERROR: ") + res + String(" con:") + con);
+    SerialOut(String("I2C ERROR: ") + res + " con:" + con);
   }
 }
 
