@@ -3,6 +3,25 @@
 
 [English Version](INSTALL_en.md)
 
+### Update auf die neueste Version, kompatibel mit Firmware 5.4.x und höher:
+
+(Bei Neuinstallation bitte ignorieren)
+
+GIT PULL im iSpindel Verzeichnis machen, das Skript (iSpindle.py) konfigurieren und nach /usr/local/bin kopieren.
+
+Die Datenbank aktualisieren:
+	mysql -u iSpindle -p
+	(Passwort falls nicht geändert: ohyeah)
+	ALTER TABLE Data MODIFY ID INT UNSIGNED NOT NULL;
+	ALTER TABLE Calibration MODIFY ID INT UNSIGNED NOT NULL;
+	ALTER TABLE Data ADD UserToken VARCHAR(64);
+	quit;
+
+Natürlich wird es ein neues Image geben, aber dann sind halt die alten Daten weg.
+Wie oben beschrieben kommt Ihr auch so auf den neuesten Stand.
+Auch ohne diese Änderungen wird erst mal alles weiterhin funktionieren, aber ich empfehle, Ihr bringt das jetzt gleich hinter euch.
+Das erleichtert die Fehlersuche, falls künftig irgendwas schiefgeht.
+
 ### Update auf Firmware Version 5.x:
 Um die neue Firmware einsetzen zu können, bitte das Skript auf die neueste Version aktualisieren.     
 Falls die Datenbank schon besteht, muss in die Tabelle "Data" ein neues Feld eingefügt werden:
