@@ -1,3 +1,4 @@
+5.4.2   Memory improvements
 5.4.1   Rewrite of the upload class to streamline and allow further data items. Also add iSpindel.de as data server as preset.
 5.2.1   Workaround for https://github.com/esp8266/Arduino/issues/2750
 5.1.2   Major rewrite, calculating Gravity by iSpindel, adding zero compensation etc.
