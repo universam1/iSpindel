@@ -1,16 +1,29 @@
 # genericTCP
-#### (iSpindle.py Version 1.0.0)
+#### (iSpindle.py Version 1.3.1)
 
 [English Version](README_en.md)
 
+**Neu (31.08.2017)**
+Kompatibel zu Firmware >= 5.4.x
+Optionale Weiterleitung zum öffentlichen Server bzw. weiteren lokalen (Raspi-) Server Instanzen implementiert
+Inkohärenz bei Legacy Plato Diagrammen (Version 4, serverseitiges Polynom) beseitigt
+Kleinere Fehler in den Diagrammen beseitigt (Legenden)
+Unix Dateizugriffsrechte angepasst
+Kleinere Bugfixes
+
+Update von bestehenden Versionen:
+Bitte die [Installations Anleitung](INSTALL.md) beachten.
+
+Ein neues Raspbian "Plug & Play" Image wird natürlich ebenfalls in den nächsten Tagen bereitgestellt.
+Hierzu bitte diesen Thread im Hobbybrauer Forum beobachten:
+http://hobbybrauer.de/forum/viewtopic.php?f=58&t=12869
+
+**Ältere News:**
 **Neu: Diagramme, siehe:**
-[Charts Readme](web/README.md)
+[Diagramme Readme](web/README.md)
 
 **Installations Anleitung für Raspbian:**
-[INSTALL.md](INSTALL.md)
-
-**Achtung: Update auf Firmware 5.x:**
-Bitte die [Installations Anleitung](INSTALL.md) beachten.      
+[Installations Anleitung](INSTALL.md)
 
 Dieses in Python geschriebene Server Skript dient dazu, von der iSpindel kommende Rohdaten über eine generische TCP Verbindung zu empfangen.
 Auf zusätzlichen, unnötigen Overhead durch Protokolle wie http wird hierbei bewusst verzichtet, um den Stromverbrauch der iSpindel so gut es geht zu minimieren.

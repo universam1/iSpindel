@@ -66,16 +66,16 @@ function getChartValuesPlato($iSpindleID='iSpindel000', $timeFrameHours=defaultT
 {
    if ($reset)
    {
-   $where="WHERE Name = '".$iSpindleID."' 
-                  AND Timestamp >= (Select max(Timestamp) FROM Data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
+   	$where="WHERE Name = '".$iSpindleID."' 
+            AND Timestamp >= (Select max(Timestamp) FROM Data WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
    }  
    else
    {
-  $where ="WHERE Name = '".$iSpindleID."' 
+   	$where ="WHERE Name = '".$iSpindleID."' 
             AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) 
-            and Timestamp <= NOW()";
+            AND Timestamp <= NOW()";
    }  
-  $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle, gravity
+   $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle, gravity
                           FROM Data " 
                          .$where 
                          ." ORDER BY Timestamp ASC") or die(mysql_error());
@@ -138,14 +138,14 @@ function getChartValuesPlato4($iSpindleID='iSpindel000', $timeFrameHours=default
     $const3 = 0;
    if ($reset)
    {
-   $where="WHERE Name = '".$iSpindleID."' 
-                  AND Timestamp >= (Select max(Timestamp) FROM Data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
+   	$where="WHERE Name = '".$iSpindleID."' 
+            AND Timestamp >= (Select max(Timestamp) FROM Data  WHERE ResetFlag = true AND Name = '".$iSpindleID."')";
    }  
    else
    {
-  $where ="WHERE Name = '".$iSpindleID."' 
+   	$where ="WHERE Name = '".$iSpindleID."' 
             AND Timestamp >= date_sub(NOW(), INTERVAL ".$timeFrameHours." HOUR) 
-            and Timestamp <= NOW()";
+            AND Timestamp <= NOW()";
    }  
    
    $q_sql = mysql_query("SELECT UNIX_TIMESTAMP(Timestamp) as unixtime, temperature, angle
@@ -181,7 +181,7 @@ function getChartValuesPlato4($iSpindleID='iSpindel000', $timeFrameHours=default
      {
          $jsTime = $r_row['unixtime'] * 1000;
          $angle = $r_row['angle'];
-         $dens = $const1 * $angle ** 2 - $const2 * $angle + $const3;   // complete polynome from database
+         $dens = $const1 * $angle ** 2 + $const2 * $angle + $const3;   // complete polynome from database
                          
          $valAngle         .= '['.$jsTime.', '.$angle.'],';
          $valDens          .= '['.$jsTime.', '.$dens.'],';

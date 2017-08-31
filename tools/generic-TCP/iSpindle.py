@@ -1,13 +1,14 @@
 #!/usr/bin/env python2.7
 
-# Generic TCP Server for iSpindel (https://github.com/universam1/iSpindel)
-# Version: 1.0.1 
-# Now Supports Firmware 5.0.1 
-# Pre-Configured for Ready-to-Use Raspbian Image
+# Version: 1.3.1
+# New: Forward data to another instance of this script or any other JSON recipient
+# New: Support changes in firmware >= 5.4.0 (ID now transmitted as Integer)
 #
-# Receives iSpindel data as JSON via TCP socket and writes it to a CSV file, Database and/or Ubidots
-# This is my first Python script ever, so please bear with me for now.
-# Stephan Schreiber <stephan@sschreiber.de>, 2017-03-15
+# Generic TCP Server for iSpindel (https://github.com/universam1/iSpindel)
+# Receives iSpindel data as JSON via TCP socket and writes it to a CSV file, Database and/or forwards it
+#
+# Stephan Schreiber <stephan@sschreiber.de>, 2017-02-02 - 2017-08-31
+#
 
 from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
 from datetime import datetime
@@ -17,31 +18,38 @@ import json
 # CONFIG Start
 
 # General
-DEBUG = 0                               # Set to 1 to enable debug output on console
-PORT = 9501                             # TCP Port to listen to
+DEBUG = 1                               # Set to 1 to enable debug output on console (usually devs only)
+PORT = 9501                             # TCP Port to listen to (to be used in iSpindle config as well)
 HOST = '0.0.0.0'                        # Allowed IP range. Leave at 0.0.0.0 to allow connections from anywhere
 
 # CSV
 CSV = 0                                 # Set to 1 if you want CSV (text file) output
-OUTPATH = '/home/pi/iSpindle'		# CSV output file path; filename will be name_id.csv
+OUTPATH = '/home/pi/iSpindel/csv/'      # CSV output file path; filename will be name_id.csv
 DELIMITER = ';'                         # CSV delimiter (normally use ; for Excel)
 NEWLINE='\r\n'                          # newline (\r\n for windows clients)
 DATETIME = 1                            # Leave this at 1 to include Excel compatible timestamp in CSV
 
 # MySQL
-SQL = 1                                 # 1 to enable output to MySQL database. You'll usually want this.
+SQL = 1                                 # 1 to enable output to MySQL database
 SQL_HOST = '127.0.0.1'                  # Database host name (default: localhost - 127.0.0.1 loopback interface)
 SQL_DB = 'iSpindle'                     # Database name
 SQL_TABLE = 'Data'                      # Table name
 SQL_USER = 'iSpindle'                   # DB user
-SQL_PASSWORD = 'ohyeah'                 # DB user's password (might want to change this)
+SQL_PASSWORD = 'ohyeah'                 # DB user's password (change this)
 
-# Ubidots Forwarding (using existing account)
-UBIDOTS = 0                                     # change to 1 to enable output to ubidots and enter your token below
-UBI_TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'    # ubidots token (get this by registering with ubidots.com and then enter it here)
+# Ubidots (using existing account)
+UBIDOTS = 0                                     # 1 to enable output to ubidots
+UBI_TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'    # ubidots token, see manual or ubidots.com
+
+# Forward to public server or other relay (i.e. another instance of this script)
+FORWARD = 0
+# FORWARDADDR = 'ispindle.de'
+# FORWARDPORT = 9501
+FORWARDADDR = '192.168.2.21'
+FORWARDPORT = 9501
 
 # ADVANCED
-ENABLE_ADDCOLS = 0                              # Enable dynamic columns (configure pre-defined in lines 128-129)
+ENABLE_ADDCOLS = 0                              # Enable dynamic columns (do not use this unless you're a developer)
 
 # CONFIG End
 
@@ -54,13 +62,14 @@ def dbgprint(s):
 
 def handler(clientsock,addr):
     inpstr = ''
-    success = False
+    success = 0
     spindle_name = ''
     spindle_id = ''
     angle = 0.0
     temperature = 0.0
     battery = 0.0
     gravity = 0.0
+    user_token = ''
     while 1:
         data = clientsock.recv(BUFF)
         if not data: break  # client closed connection
@@ -83,19 +92,25 @@ def handler(clientsock,addr):
                 angle = jinput['angle']
                 temperature = jinput['temperature']
                 battery = jinput['battery']
-		try:
-		   gravity = jinput['gravity']
-		except:
-		   # probably using old firmware < 5.x
-		   gravity = 0
+                try:
+                   gravity = jinput['gravity']
+                except:
+                   # older firmwares < 5.0.1 are not transmitting this parameter
+                   gravity = 0.0
+                try:
+                    # get user token for connection to ispindle.de public server
+                    user_token = jinput['token']
+                except:
+                    # older firmwares < 5.         4 or field not filled in
+                    user_token = ''
                 # looks like everything went well :)
                 clientsock.send(ACK)
-                success = True
-                dbgprint(repr(addr) + ' ' + spindle_name + ' (ID:' + spindle_id + ') : Data received OK.')
+                dbgprint(repr(addr) + ' ' + spindle_name + ' (ID:' + str(spindle_id) + ') : Data received OK.')
+                success = 1
                 break # close connection
         except Exception as e:
             # something went wrong
-            # traceback.print_exc() # too verbose, so let's do this instead:
+            # traceback.print_exc() # this would be too verbose, so let's do this instead:
             dbgprint(repr(addr) + ' Error: ' + str(e))
             clientsock.send(NAK)
             dbgprint(repr(addr) + ' NAK sent.')
@@ -103,7 +118,7 @@ def handler(clientsock,addr):
     clientsock.close()
     dbgprint(repr(addr) + " - closed connection") #log on console
 
-    if success :
+    if success == 1:
         # We have the complete spindle data now, so let's make it available
         if CSV == 1:
             dbgprint(repr(addr) + ' - writing CSV')
@@ -120,7 +135,8 @@ def handler(clientsock,addr):
                     outstr += str(angle) + DELIMITER
                     outstr += str(temperature) + DELIMITER
                     outstr += str(battery) + DELIMITER
-		    outstr += str(gravity)
+                    outstr += str(gravity) + DELIMITER
+                    outstr += user_token
                     if DATETIME == 1:
                         cdt = datetime.now()
                         outstr += DELIMITER + cdt.strftime('%x %X')
@@ -135,14 +151,24 @@ def handler(clientsock,addr):
                 import mysql.connector
                 dbgprint(repr(addr) + ' - writing to database')
                 # standard field definitions:
-                fieldlist = ['timestamp', 'name', 'ID', 'angle', 'temperature', 'battery', 'gravity']
+                fieldlist = ['Timestamp', 'Name', 'ID', 'Angle', 'Temperature', 'Battery', 'Gravity']
                 valuelist = [datetime.now(), spindle_name, spindle_id, angle, temperature, battery, gravity]
+
+                # do we have a user token defined? (Fw > 5.4.x)
+                # it's for later use but if it exists, let's store it for testing purposes
+                # this also should ensure compatibility with older fw versions and not-yet updated databases
+                if user_token != '':
+                    fieldlist.append('UserToken')
+                    valuelist.append(user_token)
+
                 # establish database connection
                 cnx = mysql.connector.connect(user=SQL_USER, password=SQL_PASSWORD, host=SQL_HOST, database=SQL_DB)
                 cur = cnx.cursor()
+
                 # add extra columns dynamically?
                 # this is kinda ugly; if new columns should persist, make sure you add them to the lists above...
                 # for testing purposes it allows to introduce new values of raw data without having to fiddle around.
+                # Basically, do not use this unless your name is Sam and you are the firmware developer... ;)
                 if ENABLE_ADDCOLS == 1:
                     jinput = json.loads(inpstr)
                     for key in jinput:
@@ -167,6 +193,7 @@ def handler(clientsock,addr):
                                     dbgprint(repr(addr) + ' - key \'' + key + '\': exists. Consider adding it to defaults list if you want to keep it.')
                                 else:
                                     dbgprint(repr(addr) + ' - key \'' + key + '\': Error: ' + str(e))
+
                 # gather the data now and send it to the database
                 fieldstr = ', '.join(fieldlist)
                 valuestr = ', '.join(['%s' for x in valuelist])
@@ -188,7 +215,7 @@ def handler(clientsock,addr):
                     'tilt' : angle,
                     'temperature' : temperature,
                     'battery' : battery,
-		    'gravity' : gravity
+                    'gravity' : gravity
                 }
                 out = json.dumps(outdata)
                 dbgprint(repr(addr) + ' - sending: ' + out)
@@ -200,6 +227,35 @@ def handler(clientsock,addr):
                 dbgprint(repr(addr) + ' - received: ' + str(response))
             except Exception as e:
                 dbgprint(repr(addr) + ' Ubidots Error: ' + str(e))
+
+        if FORWARD == 1:
+            try:
+                dbgprint(repr(addr) + ' - forwarding to ' + FORWARDADDR)
+                outdata = {
+                    'name' : spindle_name,
+                    'ID' : spindle_id,
+                    'angle' : angle,
+                    'temperature' : temperature,
+                    'battery' : battery,
+                    'gravity' : gravity,
+                    'token' : user_token
+                }
+                out = json.dumps(outdata)
+                dbgprint(repr(addr) + ' - sending: ' + out)
+                s = socket(AF_INET, SOCK_STREAM)
+                s.connect((FORWARDADDR, FORWARDPORT))
+                s.send(out)
+                rcv = s.recv(BUFF)
+                s.close()
+                if rcv[0] == ACK :
+                    dbgprint(repr(addr) + ' - received ACK - OK!')
+                elif rcv[0] == NAK :
+                    dbgprint(repr(addr) + ' - received NAK - Not OK...')
+                else:
+                    dbgprint(repr(addr) + ' - received: ' + rcv)
+
+            except Exception as e:
+                dbgprint(repr(addr) + ' Error while forwarding to ' + FORWARDADDR + ': ' + str(e))
 
 
 def main():
@@ -216,3 +272,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

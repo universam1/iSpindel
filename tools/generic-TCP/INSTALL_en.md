@@ -2,6 +2,24 @@
 ### Step-by-Step
 
 
+### Update to latest Version (1.3.1), compatible with Firmware 5.4.x and later:
+
+(Ignore this when newly installing)
+
+GIT PULL within the iSpindel Directory, then configure (edit) iSpindle.py and copy it to /usr/local/bin.
+
+Update the Database:
+        mysql -u iSpindle -p
+        (Passwort falls nicht geändert: ohyeah)
+        ALTER TABLE Data MODIFY ID INT UNSIGNED NOT NULL;
+        ALTER TABLE Calibration MODIFY ID INT UNSIGNED NOT NULL;
+        ALTER TABLE Data ADD UserToken VARCHAR(64);
+        quit;
+
+Of course there will be an updated ready-to-flash image for the Raspi as well, but this would kill your existing data.
+The above commands will bring you to the same level without losing anything.
+Even without these, everything will probably continue to work as usual, but I still highly recommend to follow these steps, as it will make future debugging much easier and ensure you are up-to-date with the current development branch.
+
 ### Update to Firmware 5.x:
 If you already have this running and want to update to the new firmware, you'll need to add a new column to the Data table:
 

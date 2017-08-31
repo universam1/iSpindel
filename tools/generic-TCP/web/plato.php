@@ -56,11 +56,11 @@ $(function ()
               text: ' <?php               
                          if($_GET['reset']) 
                          {     
-                            echo 'Temperatur und Winkel seit dem letzten Reset';
+                            echo 'Temperatur und Extraktgehalt seit dem letzten Reset';
                          }
                          else
                          {
-                            echo 'Temperatur und Winkel den letzten '.  $_GET['hours'] .  ' Stunden';
+                            echo 'Temperatur und Extraktgehalt der letzten '.  $_GET['hours'] .  ' Stunden';
                          }
                       ?>
                     '

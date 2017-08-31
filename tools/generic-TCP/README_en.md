@@ -1,10 +1,28 @@
 # genericTCP
-#### (iSpindle.py Version 1.0.0)
+#### (iSpindle.py Version 1.3.1)
 
-[Install Instructions](INSTALL_en.md)      
+**New (31.08.2017)**
+Compatible to firmware >= 5.4.x
+Optional data forwarding to other JSON capable TCP clients, including this one and the upcoming "public server".
+Fixed incoherency with legacy Plato charts (plato4.php), properly using signed parameters in Calibration table now for building the polynomial
+Fixed some minor issues in chart legends (formerly mislabeled but still only in German, sorry for that...)
+Fixed Unix permissions
+Several other small bugfixes
+
+In order to update from former versions:
+Take a look at the [Install Instructions](INSTALL_en.md).
+
+There will of course also be an updated full image for the Raspberry.
+Please watch this thread on the German Hobbybrauer Forum for the announcement:
+http://hobbybrauer.de/forum/viewtopic.php?f=58&t=12869
+
+Future enhancements and goodies are being announced there, too, so make sure you check it once in a while. ;)
+
+**Older News:**
+**New: Charts:**
 [Charts](web/README_en.md)
 
-NOTE: If you are updating from Firmware < 5.x please see [Install Instructions](INSTALL_en.md).
+[Installation Instructions](INSTALL_en.md)      
 
 This script was written in Python and its purpose is to accept raw data from an iSpindle via a generic TCP connection, usually in a local network environment.
 It purposely avoids unneccessary higher-level protocols such as http, in order to maximize the battery lifetime of the iSpindle and generally make things more easy and transparent, also for you fellow developers out there.
