@@ -9,6 +9,8 @@ install:
 - pip install -U platformio || true
 - platformio platform uninstall espressif8266 || true
 - platformio platform install https://github.com/platformio/platform-espressif8266.git#feature/stage || true
+- platformio upgrade || true
+- platformio update || true
 script:
 - platformio run
 deploy:
