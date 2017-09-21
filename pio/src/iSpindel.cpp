@@ -315,17 +315,16 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_url);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  // f.e. '0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96'
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal", my_polynominal, 70, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
-  // WiFiManagerParameter custom_polynom_temp("POLYTEMP", "calibration Temperatur C", String(my_polynominal_temp).c_str(), 5, TYPE_NUMBER);
-  // wifiManager.addParameter(&custom_polynom_temp);
+
+  wifiManager._ssid = my_ssid;
+  wifiManager._pass = my_psk;
 
   SerialOut(F("started Portal"));
   wifiManager.startConfigPortal("iSpindel");
 
   strcpy(my_polynominal, custom_polynom.getValue());
-  // my_polynominal_temp = String(custom_polynom_temp.getValue()).toInt();
 
   validateInput(custom_name.getValue(), my_name);
   validateInput(custom_token.getValue(), my_token);

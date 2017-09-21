@@ -595,7 +595,13 @@ void WiFiManager::handleWifi() {
     page += "<br/>";
     }
 
-  page += FPSTR(HTTP_FORM_START);
+  // page += FPSTR(HTTP_FORM_START);
+  page += FPSTR(HTTP_FORM_START1);
+  page += _ssid;
+  page += FPSTR(HTTP_FORM_START2);
+  page += _pass;
+  page += FPSTR(HTTP_FORM_START3);
+  
   char parLength[2];
   // add the extra parameters to the form
   for (int i = 0; i < _paramsCount; i++) {
