@@ -1,8 +1,9 @@
 iSpindel | iSpindle
 ===================
 
+![Dashboard](/pics/blackedition.png)
+
 **DIY elektronische Bierspindel | electronic Hydrometer**
-***https://universam1.github.io/iSpindel***
 
 [![Build Status](https://travis-ci.org/universam1/iSpindel.svg?branch=master)](https://travis-ci.org/universam1/iSpindel)
 
@@ -27,6 +28,8 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 ***
 
 ## News
+
+> 28.09.2017 Firmware 5.5.0: Recall saved Wifi credential thus persisting over configuration changes  
 > 31.08.2017 iSpindle.py Version 1.3.1: genericTCP Update (local server & prep for public server); Firmware 5.4.2: Memory improvements.    
 > 29.08.2017 Firmware 5.4.1: Rewrite of the upload class to streamline and allow further data items. Also add iSpindel.de as data server as preset.    
 > 08.08.2017 [calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm) to calculate gravity as alternative to the Excel sheet    
@@ -35,22 +38,6 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 > 22.05.2017 updated build docs    
 > 22.05.2017 switching build environment to platform.io    
 > 01.05.2017 Major Firmware update to 5.x   
->### Calculate the Gravity 
->now within the iSpindel by expression evaluation! The conversion polynom can be stored per iSpindel and sends as an additional metric (without a unit). Therefore, whether Plato or SG is prefered is up to the user defined polynom. There are two variable available `tilt` and `temp`  
->
->### [Kalibrierung](docs/Kalibrierung.md)   
->
->![Gravity](pics/polynom.png)
->
->### [Firmware update via Web Browser](docs/Firmware.md)
->
->![Offset](pics/firmware.png)
-
->### Calibrate Hardware Offset 
->of the MPU6050. Greatly reduces the issue of not perfectly aligned sensor.
->
->![Offset](pics/offset.png)
-
 > 12.04.2017 Mentioned in http://www.homebrewtalk.com/showthread.php?t=598187   
 > 01.03.2017 Mentioned in hackaday.com http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/   
 > 23.02.17 English documentation added   
@@ -79,7 +66,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 >- Power saving on empty battery
 >- added custom Battery conversion factor
 >- Bugfixes
-
+>
 > 11.12.16 Sources and drawer online  
 > 11.12.16: FHEM upload documentation & firmware (thanks @MSBannert!)  
 > 07.12.16: Schematics  
@@ -88,9 +75,9 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ***
 
-> The `iSpindle` is a young project and under heavy development, see german [Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235).  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
+> The `iSpindle` is under heavy development, see german [Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235).  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
 >
-> Die `iSpindel` befindet sich zur Zeit mitten in der Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
+> Die `iSpindel` befindet sich in andauernder Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
 ![Spindel im Reinwasser](pics/floating.jpg)
 ![Dashboard](pics/Dashboard.jpg)
