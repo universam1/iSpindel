@@ -3,7 +3,7 @@ iSpindel | iSpindle
 
 ![Dashboard](/pics/blackedition.png)
 
-**DIY elektronische Bierspindel | electronic Hydrometer**
+**DIY electronic Hydrometer**
 
 [![Build Status](https://travis-ci.org/universam1/iSpindel.svg?branch=master)](https://travis-ci.org/universam1/iSpindel)
 
@@ -22,8 +22,14 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ***
 
-***If you like it say thanks with a beer*** :beers:
+***Say thanks with a beer*** :beers:
+
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
+
+***
+
+## Firmware download: 
+***https://github.com/universam1/iSpindel/releases***
 
 ***
 
@@ -37,7 +43,11 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 > 30.06.2017 Mentioned in http://preview.mailerlite.com/g6n5p3/660851237247259035/r2w6/    
 > 22.05.2017 updated build docs    
 > 22.05.2017 switching build environment to platform.io    
-> 01.05.2017 Major Firmware update to 5.x   
+> 01.05.2017 Major Firmware update to 5
+>- Calculate the Gravity now within the iSpindel by expression evaluation! The conversion polynom can be stored per iSpindel and sends as an additional metric (without a unit). Therefore, whether Plato or SG is prefered is up to the user defined polynom. There are two variable available `tilt` and `temp`
+>- Zero point calibration 
+>- Firmware update OTA over the Air 
+>
 > 12.04.2017 Mentioned in http://www.homebrewtalk.com/showthread.php?t=598187   
 > 01.03.2017 Mentioned in hackaday.com http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/   
 > 23.02.17 English documentation added   
@@ -97,7 +107,9 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
   - [Ubitdots](#ubitdots)
   - [Portal](#portal)
   - [Scripting](#scripting)
-  - [Firmware Update](#firmware)
+- [Software](#software)
+  - [Firmware Update](#firmware-flashen-from-source)
+  - [Compile](#compile-from-source)
 - [Anzeige](#anzeige)
   - [Kalibrierung der Spindel](#kalibrierung)
   - [Ubidots Graphen](#ubidots-graphen)
