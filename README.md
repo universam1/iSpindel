@@ -1,23 +1,25 @@
 iSpindel | iSpindle
 ===================
 
-![Dashboard](/pics/blackedition.png)
-<img src="/pics/blackedition.png" height="500" align="right" />
-<img src="pics/blackedition.png" height="500" align="right" />
+
 
 **DIY electronic Hydrometer**
 
 [![Build Status](https://travis-ci.org/universam1/iSpindel.svg?branch=master)](https://travis-ci.org/universam1/iSpindel)
+<img src="/pics/blackedition.png" width="400" align="right" />  
 
 
 If you like that project please vote for the [Hackaday.io *2017 Prize List*](https://hackaday.io/project/20421-ispindel)
+<img src="/pics/floating.jpg" width="400" align="right" />  
 
 
 Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/
 
+<img src="pics/blackedition.png" width="400" align="right" />  
 
 
 ## Documentation in other languages
+<img src="pics/floating.jpg" width="400" align="right" />  
 
 ### [English Documentation (work in progress)](docs/README_en.md) :us:
 ### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) [](#lang-nl)
@@ -31,7 +33,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 ***
 
 ## Firmware download: 
-***https://github.com/universam1/iSpindel/releases***
+***[https://github.com/universam1/iSpindel/releases](https://github.com/universam1/iSpindel/releases)***
 
 ***
 
@@ -91,9 +93,6 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 >
 > Die `iSpindel` befindet sich in andauernder Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
-![Spindel im Reinwasser](pics/floating.jpg)
-<img src="pics/floating.jpg" height="500" align="right" />
-<img src="/pics/floating.jpg" height="500" align="right" />
 ![Dashboard](pics/Dashboard.jpg)
 <img src="pics/Dashboard.jpg" height="500" align="right" />
 <img src="/pics/Dashboard.jpg" height="500" align="right" />

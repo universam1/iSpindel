@@ -3,11 +3,15 @@
 ## Flashen über Web Interface
 
 - download the latest .bin firmware from this repository 
-### https://github.com/universam1/iSpindel/releases
+### [https://github.com/universam1/iSpindel/releases](https://github.com/universam1/iSpindel/releases)
 
 - in `Maintenance` menu select this file and press update
 
 ![flash web](/pics/maintenance.png)
+
+
+<img src="/pics/floating.jpg" width="400" align="right" />  
+<img src="pics/blackedition.png" width="400" align="right" />  
 
 ## Flashen über USB
 
