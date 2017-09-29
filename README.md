@@ -2,6 +2,8 @@ iSpindel | iSpindle
 ===================
 
 ![Dashboard](/pics/blackedition.png)
+<img src="/pics/blackedition.png" height="500" align="right" />
+<img src="pics/blackedition.png" height="500" align="right" />
 
 **DIY electronic Hydrometer**
 
@@ -90,7 +92,11 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 > Die `iSpindel` befindet sich in andauernder Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
 
 ![Spindel im Reinwasser](pics/floating.jpg)
+<img src="pics/floating.jpg" height="500" align="right" />
+<img src="/pics/floating.jpg" height="500" align="right" />
 ![Dashboard](pics/Dashboard.jpg)
+<img src="pics/Dashboard.jpg" height="500" align="right" />
+<img src="/pics/Dashboard.jpg" height="500" align="right" />
 
 
 ## Inhaltverzeichnis
