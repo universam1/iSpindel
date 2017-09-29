@@ -246,9 +246,9 @@ Du siehst, dass Daten ankomen, wenn Du Deine Fermentation / Gärung im CBP ansch
 
 - [upload zu FHEM](docs/upload-FHEM.md)
 
-### Tozzi's Python Skript
+### iSpindel-TCP-Server
 
-- [generic-TCP](https://github.com/universam1/iSpindel/tree/master/tools/generic-TCP)
+- [https://github.com/DottoreTozzi/iSpindel-TCP-Server](https://github.com/DottoreTozzi/iSpindel-TCP-Server)
 
 ***
 
