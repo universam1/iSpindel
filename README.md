@@ -115,6 +115,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
   - [Ubidots Graphen](#ubidots-graphen)
   - [CraftBeerPi](#craftbeerpi)
   - [FHEM](#fhem)
+  - [iSpindel TCP Server](#ispindel-tcp-server)
 - [FAQ](docs/FAQ.md)
 - [Software](#software)
 

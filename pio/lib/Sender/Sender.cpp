@@ -122,15 +122,15 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
 
     if (_client.connect(server.c_str(), port))
     {
-        Serial.println(F("Sender: FHEM get"));
+        Serial.println(F("\nSender: FHEM get"));
 
         String msg = String("GET /fhem?cmd.Test=set%20");
         msg += name;
-
+        
         for (const auto &kv : _jsonVariant.as<JsonObject>())
         {
             msg += "%20";
-            msg += kv.value.as<char *>();
+            msg += kv.value.as<String>();
         }
 
         msg += F("&XHR=1 HTTP/1.1\r\nHost: ");
@@ -180,7 +180,7 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
         {
             msg += kv.key;
             msg += ": ";
-            msg += kv.value.as<char *>();
+            msg += kv.value.as<String>();
             msg += " ";
         }
         msg.remove(msg.length() - 1);
