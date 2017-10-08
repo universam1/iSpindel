@@ -1,6 +1,6 @@
 # Circuit diagram
 
-![Schematic](/pics/Schematic.jpg)
+![Schematic](/pics/schematic-en.png)
 
 ## Connection assignment
 
