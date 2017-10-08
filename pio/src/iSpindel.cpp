@@ -469,6 +469,7 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
+    sender.add("ID", ESP.getChipId());
     SerialOut(F("\ncalling FHEM"));
     return sender.sendFHEM(my_server, my_port, my_name);
   }
