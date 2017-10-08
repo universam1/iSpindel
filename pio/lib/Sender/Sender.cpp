@@ -71,6 +71,44 @@ bool SenderClass::send(String server, String url, uint16_t port)
     return true;
 }
 
+bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
+{
+    _jsonVariant.printTo(Serial);
+
+    HTTPClient http;
+
+    Serial.println(F("HTTPAPI: posting"));
+    // configure traged server and url
+    http.begin(server, port, url);
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    http.addHeader("Content-Type", "application/json");
+
+    // size_t len = _jsonVariant.measureLength() + 1; 
+    // uint8_t json[len];
+    // _jsonVariant.printTo(json, len); 
+    String json;
+    _jsonVariant.printTo(json);
+    auto httpCode = http.POST(json);
+    Serial.println(String("code: ") + httpCode);
+
+    // httpCode will be negative on error
+    if (httpCode > 0)
+    {
+        if (httpCode == HTTP_CODE_OK)
+        {
+            Serial.println(http.getString());
+        }
+    }
+    else
+    {
+        Serial.print(F("[HTTP] POST... failed, error: "));
+        Serial.println(http.errorToString(httpCode));
+    }
+
+    http.end();
+}
+
 bool SenderClass::sendUbidots(String token, String name)
 {
     _jsonVariant.printTo(Serial);
@@ -126,7 +164,7 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
 
         String msg = String("GET /fhem?cmd.Test=set%20");
         msg += name;
-        
+
         for (const auto &kv : _jsonVariant.as<JsonObject>())
         {
             msg += "%20";

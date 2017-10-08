@@ -442,12 +442,14 @@ bool uploadData(uint8_t service)
     if (service == DTHTTP)
     {
       SerialOut(F("\ncalling HTTP"));
-      return sender.send(my_server, my_url, my_port);
+      // return sender.send(my_server, my_url, my_port);
+      return sender.sendGenericPost(my_server, my_url, my_port);
     }
     else if (service == DTCraftbeepPi)
     {
       SerialOut(F("\ncalling CraftbeepPi"));
-      return sender.send(my_server, CBP_ENDPOINT, 5000);
+      // return sender.send(my_server, CBP_ENDPOINT, 5000);
+      return sender.sendGenericPost(my_server, CBP_ENDPOINT, 5000);
     }
     else if (service == DTiSPINDELde)
     {
