@@ -20,7 +20,7 @@ iSpindle (iSpindel) Documentation
 ## Table of Contents
 
 
-- [FAQ](docs/FAQ.md)
+- [FAQ](FAQ-en.md)
 - [Parts](Parts_en.md)
 - [Calibration](Calibration_en.md)
 - [Circuit Diagram](circuit_diagram_en.md)
