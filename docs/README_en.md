@@ -3,25 +3,11 @@
 ***Translation is work in progress, feel free to contribute!
 This translation might be out of sync with the original german one, please double check***
 
-## [Parts](Parts_en.md)
-
-## [Calibration](Calibration_en.md)
-
-## [Circuit Diagram](circuit_diagram_en.md)
-
-## [Upload FHEM](upload-FHEM_en.md)
-
-## [Ubidots scripting](ubidotsscripting_en.md)
-
-
 
 iSpindle (iSpindel) Documentation
 ===================
 
 **DIY electronic Hydrometer**
-***https://universam1.github.io/iSpindel***
-
-
 ***Please consider supporting this project***  
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/universam)
@@ -32,6 +18,15 @@ iSpindle (iSpindel) Documentation
 
 
 ## Table of Contents
+
+
+- [FAQ](docs/FAQ.md)
+- [Parts](Parts_en.md)
+- [Calibration](Calibration_en.md)
+- [Circuit Diagram](circuit_diagram_en.md)
+- [Upload FHEM](upload-FHEM_en.md)
+- [Ubidots scripting](ubidotsscripting_en.md)
+
 
 - [License](#license)
 - [Principle](#principle)

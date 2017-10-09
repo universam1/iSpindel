@@ -23,3 +23,9 @@ Ab Firmware 3 kann man den Umrechnungfaktor anpassen. Standardmässig ist der Fa
 ```
 angezeigte Spannung / gemessene Spannung  * jetziger Faktor (191.8) = neuer Faktor
 ```
+- ***Kann ich sie in einem Edelstahl Behälter betreiben? Geht es auch durch den faradischen Käfig?***
+Um eine ausreichende WLAN Signalstärke zu erreichen kann man z.B. folgende Dinge unternehmen:
+
+  - Den faradischen Käfig aufbrechen. Dies ist möglich, indem man den Deckel vom Topf elektrisch trennt. Kann durch Aufbringen einer Silikondichtmasse zwischen die beiden Teile erreicht werden.
+  - Eine passive Antenne einsetzen. Benutzen Sie ein abgeschirmtes Kabel, das von beiden Enden (d. h. Lambda/4), wo eine Seite im Topf endet, exakt 3,2mm abgemantelt ist. Diese wird passiv von innen nach außen und umgekehrt übertragen. Ein gutes Beispiel gibt es hier: http://hobbybrauer.de/forum/viewtopic.php?p=208782#p208782
+  - Einen Wifi Range Extender direkt neben dem Fass installieren, um den Signalpegel zu erhöhen.
