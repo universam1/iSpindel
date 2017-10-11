@@ -104,7 +104,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
   - [Schaltplan](#schaltplan)
   - [Schlitten](#schlitten)
 - [Konfiguration](#konfiguration)
-  - [Ubitdots](#ubitdots)
+  - [Ubidots](#ubidots)
   - [Portal](#portal)
   - [Scripting](#scripting)
 - [Software](#software)
@@ -132,9 +132,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ## Prinzip
 
-Angetrieben von dem Thread [Alternative zu Spindel](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499) wurde die Idee geboren die kommerziell erhältliche elektronische Bierspindel nachzubauen.
-
-Die Idee des krängende Zylinders ist genial wie einfach - man braucht keine externe Referenz (außer der Erde) und der Zylinder ist extrem leicht sauber zu halten. Der Neigungswinkel ändert sich im Verhältnis zum Auftrieb und damit im direkten Zusammenhang mit dem Zuckergehalt.
+Die Messung der Dichte von Wasser mit Hilfe des krängenden Zylinders ist so einfach wie genial - man braucht keine externe Referenz (außer der Erde) und der Zylinder ist extrem leicht sauber zu halten. Der Neigungswinkel ändert sich im Verhältnis zum Auftrieb und damit im direkten Zusammenhang mit dem Zuckergehalt.
 Kein unnötiges Öffnen zum spindeln und evtl. Kontaminieren!
 
 ![Kränung](pics/kraengung.jpg)
@@ -181,7 +179,7 @@ Die obige Platine kann (über Trenn-Schnitt) mit dem Kunstoff Schlitten in Kombi
 
 ## Konfiguration
 
-### Ubitdots
+### Ubidots
 
 - Zu Beginn muss ein kostenloser Account bei [Ubidots.com](https://ubidots.com) erstellt werden
 - Im Menü  `API Credentials` erhält man seinen `Token` durch das die iSpindel die Berechtigung zum Schreiben der Daten erhält.  
@@ -255,7 +253,10 @@ Du siehst, dass Daten ankomen, wenn Du Deine Fermentation / Gärung im CBP ansch
 
 ## Kalibrierung
 
-> Zur Umrechnung von Winkel ° in °Plato, SG, %mas o.Ä. ist es initial nötig eine Referenzkurve zu kalibrieren. Die gewonnenen Referenzen können dann vereinfacht über eine Excel Tabelle in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig durchführen.
+Zur Umrechnung von dem gemessenen **Winkel ° in °Plato, SG, %mas** o.ä. ist es initial nötig eine Referenzkurve zu kalibrieren. 
+Die gewonnenen Referenzen können dann über eine Excel Tabelle oder das [Online Gravity Calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm) in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. 
+
+Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig pro iSpindel durchführen.
 
 [siehe Kalibrierung durchführen](docs/Kalibrierung.md)
 
@@ -268,8 +269,6 @@ Du siehst, dass Daten ankomen, wenn Du Deine Fermentation / Gärung im CBP ansch
 - [Firmware flashen](docs/Firmware.md)
 
 ### Compile from Source
-
-> The sources represent the current development state thus being untested or at times even broken. Use the provided .bin files for your brew.
 
 - [Compile from source](docs/compile.md)
 
