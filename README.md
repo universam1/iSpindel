@@ -19,6 +19,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ### [English Documentation (work in progress)](docs/README_en.md) :us:
 ### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) [](#lang-nl)
+### [Documentação em Português (trabalho em andamento)](docs/README_pt.md) [](#lang-pt)
 
 ***
 
