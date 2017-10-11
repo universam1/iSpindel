@@ -82,10 +82,11 @@ The software calculates the Euler angle for X and Y from the XYZ acceleration va
 
 ### see [Parts](Parts_en.md)
 
-
 ### see [Sourcing](Parts_en.md)
 
-### [Circuit Diagram](circuit_diagram_en.md)
+### see [Circuit Diagram](circuit_diagram_en.md)
+
+### see [iSpindel Breabboard Mounting](iSpindelbreadboard_en.md)
 
 ***
 
