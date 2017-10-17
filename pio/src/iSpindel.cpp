@@ -427,7 +427,7 @@ bool uploadData(uint8_t service)
 #endif
 
 #ifdef API_GENERIC
-  if ((service == DTHTTP) || (service == DTCraftbeepPi) || (service == DTiSPINDELde) || (service == DTTCP))
+  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
   {
 
     sender.add("name", my_name);
@@ -444,9 +444,9 @@ bool uploadData(uint8_t service)
       SerialOut(F("\ncalling HTTP"));
       return sender.send(my_server, my_url, my_port);
     }
-    else if (service == DTCraftbeepPi)
+    else if (service == DTCraftBeerPi)
     {
-      SerialOut(F("\ncalling CraftbeepPi"));
+      SerialOut(F("\ncalling CraftBeerPi"));
       return sender.send(my_server, CBP_ENDPOINT, 5000);
     }
     else if (service == DTiSPINDELde)

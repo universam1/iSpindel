@@ -53,7 +53,7 @@ extern Ticker flasher;
 
 #define DTUbiDots 0
 #define DTThingspeak 1
-#define DTCraftbeepPi 2
+#define DTCraftBeerPi 2
 #define DTHTTP 3
 #define DTTcontrol 4
 #define DTFHEM  5
