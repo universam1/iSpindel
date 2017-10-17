@@ -10,6 +10,7 @@ install:
 - platformio platform install https://github.com/platformio/platform-espressif8266.git#feature/stage || true
 - platformio upgrade || true
 - platformio update || true
+- platformio lib update || true
 script:
 - platformio run
 deploy:
