@@ -883,13 +883,14 @@ void setup()
     if (wait > 50)
       break;
   }
-  float waited = (millis() - startedAt);
-  SerialOut(waited / 1000, false);
-  SerialOut(F(" s, result "), false);
+  auto waited = (millis() - startedAt);
+  SerialOut(waited, false);
+  SerialOut(F("ms, result "), false);
   SerialOut(WiFi.status());
 
   if (WiFi.status() == WL_CONNECTED)
   {
+    SerialOut("IP: ", false);
     SerialOut(WiFi.localIP());
     uploadData(my_api);
     delay(100); // workaround for https://github.com/esp8266/Arduino/issues/2750

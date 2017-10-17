@@ -1,7 +1,8 @@
 # Fragen und Antworten FAQ
 
 - ***Es funktioniert nicht, ich sehe nichts***  
-Am Besten du liest mit was die Spindel als Informationen ausgiebt. Das geht über einen Serial Monitor wie HTerm oder Arduino hat das auch. Die Spindel per Micro USB anschliessen, dann den Com Port mit obigen Serial Monitor öffnen und mitlesen. Das bringt Licht ins Dunkel.
+Am Besten du liest mit was die Spindel als Informationen ausgiebt. Das geht über einen Serial Monitor wie HTerm oder Arduino. Die Spindel per Micro USB anschliessen, dann den Com Port mit obigen Serial Monitor öffnen und mitlesen, Baud `115200`. 
+Ein Youtube HowTo: https://youtu.be/6xDW5GbIbUw
 
 - ***Wie komme ich auf die iSpindel - das Portal***  
 Anschalten, 3-4 maliges drücken der Reset Taste stellt sie einen Access Point auf. D.h. du siehst ein neues WLAN "iSpindel" mit dem du dich verbindest. Jetzt wirst den Browser automatisch auf die Seite [http://192.168.4.1](http://192.168.4.1) dich weiterleiten. Falls nicht steuer sie selbst an.

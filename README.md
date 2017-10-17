@@ -18,8 +18,8 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 ## Documentation in other languages
 
 ### [English Documentation (work in progress)](docs/README_en.md) :us:
-### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) [](#lang-nl)
-### [Documentação em Português (trabalho em andamento)](docs/README_pt.md) [](#lang-pt)
+### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) :nl:
+### [Documentação em Português (trabalho em andamento)](docs/README_pt.md) :pt:
 
 ***
 
@@ -36,6 +36,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ## News
 
+> 17.10.2017 Firmware 5.5.4: Various fixes for CraftBeerPi, BrewPiLess and Ubidots   
 > 28.09.2017 Firmware 5.5.0: Recall saved Wifi credential thus persisting over configuration changes  
 > 31.08.2017 iSpindle.py Version 1.3.1: genericTCP Update (local server & prep for public server); Firmware 5.4.2: Memory improvements.    
 > 29.08.2017 Firmware 5.4.1: Rewrite of the upload class to streamline and allow further data items. Also add iSpindel.de as data server as preset.    

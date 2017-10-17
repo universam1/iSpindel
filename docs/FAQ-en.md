@@ -3,6 +3,8 @@
 - ***It doesn't work, I don't see anything****  
 The best way to find out what the iSpindle is doing as information is to read it's log. This can be done via a serial monitor like HTerm or Arduino IDE. Connect the spindle via Micro USB, then open the Com Port with the serial monitor above and read it. Set baud rate to `115200`. It brings light into the dark.
 
+Here is a youtube howto: https://youtu.be/6xDW5GbIbUw
+
 - ***How get to the iSpindel - the portal***  
 Switch it on, press the reset button 3-4 times which sets up an access point. That means you will see a new Wifi network "iSpindel" where you connect to with your computer, smartphone or tablet. Now the browser should automatically redirect you to the page[http://192.168.4.1](http://192.168.4.1). If not, navigate there yourself.
 If you are now on the portal page, under `Configuration` you can enter your token and the wifi password that you need for your network. Then click on `safe` and it will send the data to Ubidots. This means that the **iSpindel is not reachable in normal operation**, until you manually start the portal again.

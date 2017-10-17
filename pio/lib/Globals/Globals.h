@@ -26,7 +26,7 @@ extern Ticker flasher;
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "5.5.3"
+#define FIRMWAREVERSION "5.5.4"
 
 
 #define API_FHEM true
@@ -49,7 +49,7 @@ extern Ticker flasher;
 #define ACCINTERVAL 200
 #define MEDIANAVRG 3
 
-#define CBP_ENDPOINT (PSTR("/api/hydrometer/v1/data"))
+#define CBP_ENDPOINT "/api/hydrometer/v1/data"
 
 #define DTUbiDots 0
 #define DTThingspeak 1

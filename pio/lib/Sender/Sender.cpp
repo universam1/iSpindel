@@ -38,7 +38,7 @@ bool SenderClass::send(String server, String url, uint16_t port)
             msg += F(" HTTP/1.1\r\nHost: ");
             msg += server;
             msg += F("\r\nUser-Agent: iSpindel\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
-            msg += _jsonVariant.measureLength();
+            msg += _jsonVariant.measureLength() + 2;
             msg += "\r\n";
 
             _client.println(msg);
@@ -126,7 +126,7 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
 
         String msg = String("GET /fhem?cmd.Test=set%20");
         msg += name;
-        
+
         for (const auto &kv : _jsonVariant.as<JsonObject>())
         {
             msg += "%20";
