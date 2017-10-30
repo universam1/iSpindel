@@ -22,6 +22,10 @@ void SenderClass::add(String id, String value)
 {
     _jsonVariant[id] = value;
 }
+void SenderClass::add(String id, uint32_t value)
+{
+    _jsonVariant[id] = value;
+}
 
 bool SenderClass::send(String server, String url, uint16_t port)
 {
