@@ -431,7 +431,7 @@ bool uploadData(uint8_t service)
   {
 
     sender.add("name", my_name);
-    sender.add("ID", ESP.getChipId());
+    sender.add("ID", String(ESP.getChipId()));
     if (my_token[0] != 0)
       sender.add("token", my_token);
     sender.add("angle", Tilt);
@@ -469,7 +469,7 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    sender.add("ID", ESP.getChipId());
+    sender.add("ID", String(ESP.getChipId()));
     SerialOut(F("\ncalling FHEM"));
     return sender.sendFHEM(my_server, my_port, my_name);
   }
@@ -811,7 +811,7 @@ void setup()
     accelgyro.dmpGetQuaternion(&q, fifoBuffer);
     accelgyro.dmpGetEuler(euler, &q);
 
-    /*     
+    /*
       for (int i = 1; i < 64; i++) {
         Serial.print(fifoBuffer[i]);
         Serial.print(" ");
