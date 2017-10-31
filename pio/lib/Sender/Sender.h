@@ -21,12 +21,13 @@ public:
   bool sendTCONTROL(String server, uint16_t port);
   void add(String id, float value);
   void add(String id, String value);
+  void add(String id, uint32_t value);
   // ~SenderClass();
 
 private:
   WiFiClient _client;
   // StaticJsonBuffer<200> _jsonBuffer;
-  DynamicJsonBuffer _jsonBuffer;  
+  DynamicJsonBuffer _jsonBuffer;
   // JsonObject data;
   JsonVariant _jsonVariant;
 };
