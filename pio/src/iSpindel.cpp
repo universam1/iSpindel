@@ -442,22 +442,24 @@ bool uploadData(uint8_t service)
     if (service == DTHTTP)
     {
       SerialOut(F("\ncalling HTTP"));
-      return sender.send(my_server, my_url, my_port);
+      // return sender.send(my_server, my_url, my_port);
+      return sender.sendGenericPost(my_server, my_url, my_port);
     }
     else if (service == DTCraftBeerPi)
     {
-      SerialOut(F("\ncalling CraftBeerPi"));
-      return sender.send(my_server, CBP_ENDPOINT, 5000);
+      SerialOut(F("\ncalling CraftbeerPi"));
+      // return sender.send(my_server, CBP_ENDPOINT, 5000);
+      return sender.sendGenericPost(my_server, CBP_ENDPOINT, 5000);
     }
     else if (service == DTiSPINDELde)
     {
       SerialOut(F("\ncalling iSPINDELde"));
-      return sender.send("ispindle.de", "", 9501);
+      return sender.sendTCP("ispindle.de", 9501);
     }
     else if (service == DTTCP)
     {
       SerialOut(F("\ncalling TCP"));
-      return sender.send(my_server, "", my_port);
+      return sender.sendTCP(my_server, my_port);
     }
   }
 #endif // DATABASESYSTEM

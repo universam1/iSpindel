@@ -27,28 +27,28 @@ void SenderClass::add(String id, uint32_t value)
     _jsonVariant[id] = value;
 }
 
-bool SenderClass::send(String server, String url, uint16_t port)
+bool SenderClass::sendTCP(String server, uint16_t port)
 {
     _jsonVariant.printTo(Serial);
 
     if (_client.connect(server.c_str(), port))
     {
-        if (url != "")
-        {
-            Serial.println(F("Sender: HTTP posting"));
+        // if (url != "")
+        // {
+        //     Serial.println(F("Sender: HTTP posting"));
 
-            String msg = String("POST ");
-            msg += url;
-            msg += F(" HTTP/1.1\r\nHost: ");
-            msg += server;
-            msg += F("\r\nUser-Agent: iSpindel\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
-            msg += _jsonVariant.measureLength() + 2;
-            msg += "\r\n";
+        //     String msg = String("POST ");
+        //     msg += url;
+        //     msg += F(" HTTP/1.1\r\nHost: ");
+        //     msg += server;
+        //     msg += F("\r\nUser-Agent: iSpindel\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
+        //     msg += _jsonVariant.measureLength() + 2;
+        //     msg += "\r\n";
 
-            _client.println(msg);
-            Serial.println(msg);
-        }
-        else
+        //     _client.println(msg);
+        //     Serial.println(msg);
+        // }
+        // else
             Serial.println(F("Sender: TCP stream"));
         _jsonVariant.printTo(_client);
         _client.println();
@@ -73,6 +73,44 @@ bool SenderClass::send(String server, String url, uint16_t port)
     _client.stop();
     delay(100); // allow gracefull session close
     return true;
+}
+
+bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
+{
+    _jsonVariant.printTo(Serial);
+
+    HTTPClient http;
+
+    Serial.println(F("HTTPAPI: posting"));
+    // configure traged server and url
+    http.begin(server, port, url);
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    http.addHeader("Content-Type", "application/json");
+
+    // size_t len = _jsonVariant.measureLength() + 1; 
+    // uint8_t json[len];
+    // _jsonVariant.printTo(json, len); 
+    String json;
+    _jsonVariant.printTo(json);
+    auto httpCode = http.POST(json);
+    Serial.println(String("code: ") + httpCode);
+
+    // httpCode will be negative on error
+    if (httpCode > 0)
+    {
+        if (httpCode == HTTP_CODE_OK)
+        {
+            Serial.println(http.getString());
+        }
+    }
+    else
+    {
+        Serial.print(F("[HTTP] POST... failed, error: "));
+        Serial.println(http.errorToString(httpCode));
+    }
+
+    http.end();
 }
 
 bool SenderClass::sendUbidots(String token, String name)
