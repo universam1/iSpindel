@@ -10,23 +10,18 @@
 #define _GLOBALS_H
 
 #pragma once
-//#define USE_DMP false
 #include <Arduino.h>
-#include <Hash.h>
-
-// #ifdef USE_DMP
-// #include "MPU6050_6Axis_MotionApps20.h"
-// // #include "I2Cdev.h"
-// #else
-#include <Ticker.h>
 
 #include <I2Cdev.h>
 #include <MPU6050.h>
+#include <Ticker.h>
+
+
 extern Ticker flasher;
 // #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "5.6.0"
+#define FIRMWAREVERSION "5.7.0"
 
 
 #define API_FHEM true

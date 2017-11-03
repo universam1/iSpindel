@@ -7,6 +7,8 @@ All rights reserverd by S.Lang <universam@web.de>
 
 // includes go here
 #include "Globals.h"
+#include <Hash.h>
+
 #include "MPUOffset.h"
 // #endif
 #include "OneWire.h"
@@ -24,6 +26,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "tinyexpr.h"
 
 #include "Sender.h"
+#include "AutoUpdater.h"
 // !DEBUG 1
 
 // definitions go here
