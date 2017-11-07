@@ -14,19 +14,14 @@
 #include <Arduino.h>
 #include <Hash.h>
 
-// #ifdef USE_DMP
-// #include "MPU6050_6Axis_MotionApps20.h"
-// // #include "I2Cdev.h"
-// #else
 #include <Ticker.h>
 
 #include <I2Cdev.h>
 #include <MPU6050.h>
 extern Ticker flasher;
-// #include <stdint.h>
 
 // defines go here
-#define FIRMWAREVERSION "5.6.0"
+#define FIRMWAREVERSION "5.6.1"
 
 
 #define API_FHEM true
@@ -71,7 +66,7 @@ extern Ticker flasher;
 
 // sleep management
 #define RTCSLEEPADDR 5
-#define MAXSLEEPTIME 3600 //TODO
+#define MAXSLEEPTIME 3600UL //TODO
 #define EMERGENCYSLEEP (my_sleeptime*3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime*3)
 #define LOWBATT 3.3
 

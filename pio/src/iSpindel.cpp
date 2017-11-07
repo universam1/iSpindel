@@ -509,7 +509,7 @@ void goodNight(uint32_t seconds)
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
     SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT:" + millis());
-    ESP.deepSleep(MAXSLEEPTIME * 1000UL * 1000UL, WAKE_RF_DISABLED);
+    ESP.deepSleep(MAXSLEEPTIME * 1e6, WAKE_RF_DISABLED);
     // workaround proper power state init
     delay(500);
   }
@@ -522,7 +522,7 @@ void goodNight(uint32_t seconds)
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
     SerialOut(String(F("\nFinal-sleep: ")) + _seconds + "s; RT:" + millis());
     // WAKE_RF_DEFAULT --> auto reconnect after wakeup
-    ESP.deepSleep(_seconds * 1000UL * 1000UL, WAKE_RF_DEFAULT);
+    ESP.deepSleep(_seconds * 1e6, WAKE_RF_DEFAULT);
     // workaround proper power state init
     delay(500);
   }
@@ -751,7 +751,9 @@ void setup()
       drd.setRecentlyResetFlag();
       tmp = RTCVALIDFLAG;
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
-      ESP.deepSleep(1, WAKE_RFCAL);
+      Serial.println(F("reboot RFCAL"));
+      ESP.deepSleep(100000, WAKE_RFCAL);
+      delay(500);
     }
     else
     {
