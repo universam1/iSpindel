@@ -6,8 +6,9 @@
 
 # Inhalt
 
-- [Variante A (vereinfacht](#variante-a-(vereinfacht))
+- [Variante A (vereinfacht)](#variante-a-(vereinfacht))
 - [Variante B Schnellvergärung (genauer)](#variante-b-schnellvergärung-(genauer))
+- [Variante C Referenzen einer Gärung ziehen (empfohlen)](#variante-C-Referenzen-ziehen)
 - [Formel errechnen](#formel)
 - [Speichern in iSpindel](#speichern)
 
@@ -50,6 +51,12 @@
 1. bis x. :  Nun nimmt man regelmässig Plato Messwerte und den jeweilig korrelierenden Winkel und trägt dies in die Excel Tabelle ein. 
 > Achtung: Sollte man hier einen Refraktometer verwenden darf man die Korrektur dessen nicht vergessen: [Refraktometerrechner](http://www.maischemalzundmehr.de/index.php?inhaltmitte=toolsrefraktorechner)
 
+## Variante C Referenzen ziehen (empfohlen)
+
+> Die einfachste und vermeintlich genaueste Variante ist sie in eine Gärung zu bringen und einige Referenzen zu ziehen. Man notiert sich die Stammwürze und den entsprechenden Winkel den man zB. bei Ubidots zu diesem Zeitpunkt sieht. Im Verlauf der Gärung nimmt man weiter 3 oder mehr solcher Referenzen ( gespindelte Stammwürze / Winkel ) notiert diese bis zum Gärende. Damit erhält man praxisnahe Werte die übrigens den CO2 Einfluss beinhalten bzw. berücksichtigen.
+Danach kann man mit dem errechnen der Formel fortfahren, und diesen fest in der iSpindel dann hinterlegen.
+
+
 ***
 
 # Formel
@@ -71,6 +78,18 @@ Diese hinterlegt man in Ubidots um die Anzeige des °Plato zu erhalten.
   [Download Excel Tabelle](Kalibrierung.xlsm)
 1. ```Formel update``` Macro durch den Button starten, stellt die Trendlinie als Formal dar  
 ![Formel update](/pics/Excelcalc.jpg)
+
+
+# Speichern
+
+## in iSpindel hinterlegen
+
+> Das Polynome kann nun in der iSpindel gespeichert werden, welcher in Laufzeit evaluiert und berechnet wird. Damit liefert die iSpindel nun die Dichte direkt als Datensatz.
+
+![Plato](/pics/configuration.png)
+
+## Alternativ: in Ubidots nach-berechnen
+
 1. Ubidots eine ```Derived``` Variable erstellen, d.h. eine berechnete die auf anderen Daten aufbaut.  
 1. Bei Ubidots auf Sources gehen
 1. Source ISpindel wählen
@@ -80,9 +99,3 @@ Diese hinterlegt man in Ubidots um die Anzeige des °Plato zu erhalten.
 ```tilt``` ersetzt man durch ```instert Variable``` und wählt dort ```tilt``` aus 
 ![Plato](/pics/Ubiplato.jpg)
 1. Im ```Dashboard``` erstellt man dann einen neuen Graphen mit den Datenquelle ```Plato```
-
-# Speichern
-
-> Das Polynome kann nun in der iSpindel gespeichert werden, welcher in Laufzeit evaluiert und berechnet wird.
-
-![Plato](/pics/configuration.png)
