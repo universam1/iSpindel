@@ -438,6 +438,7 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
 
     if (service == DTHTTP)
     {
@@ -815,7 +816,7 @@ void setup()
     accelgyro.dmpGetQuaternion(&q, fifoBuffer);
     accelgyro.dmpGetEuler(euler, &q);
 
-    /*     
+    /*
       for (int i = 1; i < 64; i++) {
         Serial.print(fifoBuffer[i]);
         Serial.print(" ");
