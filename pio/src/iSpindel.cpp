@@ -421,6 +421,7 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
     SerialOut(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
   }
@@ -438,6 +439,7 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
 
     if (service == DTHTTP)
     {
@@ -472,6 +474,7 @@ bool uploadData(uint8_t service)
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("ID", ESP.getChipId());
+    sender.add("interval", my_sleeptime);
     SerialOut(F("\ncalling FHEM"));
     return sender.sendFHEM(my_server, my_port, my_name);
   }
@@ -483,6 +486,7 @@ bool uploadData(uint8_t service)
     sender.add("D", Tilt);
     sender.add("U", Volt);
     sender.add("G", Gravity);
+    sender.add("I", my_sleeptime);
     SerialOut(F("\ncalling TCONTROL"));
     return sender.sendTCONTROL(my_server, my_port);
   }
@@ -815,7 +819,7 @@ void setup()
     accelgyro.dmpGetQuaternion(&q, fifoBuffer);
     accelgyro.dmpGetEuler(euler, &q);
 
-    /*     
+    /*
       for (int i = 1; i < 64; i++) {
         Serial.print(fifoBuffer[i]);
         Serial.print(" ");
