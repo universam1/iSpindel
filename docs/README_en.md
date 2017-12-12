@@ -151,7 +151,7 @@ In the ```Dashboard``` now you can create your nice graphs.
 
 ### Firmware flashing
 
-[Firmware flashing](Firmware.md)
+[Firmware flashing](Firmware_en.md)
 
 ***if you like it, let me know***  :beers:
 
