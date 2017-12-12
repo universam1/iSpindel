@@ -33,23 +33,7 @@ bool SenderClass::sendTCP(String server, uint16_t port)
 
     if (_client.connect(server.c_str(), port))
     {
-        // if (url != "")
-        // {
-        //     Serial.println(F("Sender: HTTP posting"));
-
-        //     String msg = String("POST ");
-        //     msg += url;
-        //     msg += F(" HTTP/1.1\r\nHost: ");
-        //     msg += server;
-        //     msg += F("\r\nUser-Agent: iSpindel\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
-        //     msg += _jsonVariant.measureLength() + 2;
-        //     msg += "\r\n";
-
-        //     _client.println(msg);
-        //     Serial.println(msg);
-        // }
-        // else
-            Serial.println(F("Sender: TCP stream"));
+        Serial.println(F("Sender: TCP stream"));
         _jsonVariant.printTo(_client);
         _client.println();
     }
@@ -88,9 +72,6 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
     http.addHeader("Connection", "close");
     http.addHeader("Content-Type", "application/json");
 
-    // size_t len = _jsonVariant.measureLength() + 1; 
-    // uint8_t json[len];
-    // _jsonVariant.printTo(json, len); 
     String json;
     _jsonVariant.printTo(json);
     auto httpCode = http.POST(json);
