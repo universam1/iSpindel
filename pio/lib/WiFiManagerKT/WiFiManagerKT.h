@@ -177,6 +177,8 @@ public:
   // get the AP name of the config portal, so it can be used in the callback
   String getConfigPortalSSID();
 
+  void header();
+
   void resetSettings();
 
   //sets timeout before webserver loop ends and exits even if there has been no setup.
@@ -212,10 +214,13 @@ public:
   //Scan for WiFiNetworks in range and sort by signal strength
   //space for indices array allocated on the heap and should be freed when no longer required
   int scanWifiNetworks(int **indicesptr);
-  String _ssid = "";
-  String _pass = "";
+
+  void setConfSSID(String ssid) { _ssid = ssid; }
+  void setConfPSK(String psk) { _pass = psk; }
 
 private:
+  String _ssid = "";
+  String _pass = "";
   std::unique_ptr<DNSServer> dnsServer;
   std::unique_ptr<ESP8266WebServer> server;
 

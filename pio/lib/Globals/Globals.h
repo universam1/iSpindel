@@ -21,7 +21,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "5.6.2"
+#define FIRMWAREVERSION "5.7.0"
 
 
 #define API_FHEM true
@@ -78,5 +78,6 @@ extern int16_t my_aX, my_aY, my_aZ;
 
 extern MPU6050_Base accelgyro;
 extern bool saveConfig();
+extern void formatSpiffs();
 
 #endif

@@ -360,8 +360,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal", my_polynominal, 70, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
-  wifiManager._ssid = my_ssid;
-  wifiManager._pass = urlencode(my_psk);
+  wifiManager.setConfSSID(my_ssid);
+  wifiManager.setConfPSK(urlencode(my_psk));
 
   SerialOut(F("started Portal"));
   wifiManager.startConfigPortal("iSpindel");
@@ -396,6 +396,13 @@ bool startConfiguration()
   return false;
 }
 
+void formatSpiffs() {
+      SerialOut(F("\nneed to format SPIFFS: "), false);
+    SPIFFS.end();
+    SPIFFS.begin();
+    SerialOut(SPIFFS.format());
+}
+
 bool saveConfig()
 {
   SerialOut(F("saving config..."), false);
@@ -403,12 +410,7 @@ bool saveConfig()
   // if SPIFFS is not usable
   if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
       !SPIFFS.open(CFGFILE, "w"))
-  {
-    SerialOut(F("\nneed to format SPIFFS: "), false);
-    SPIFFS.end();
-    SPIFFS.begin();
-    SerialOut(SPIFFS.format());
-  }
+  formatSpiffs();
 
   DynamicJsonBuffer jsonBuffer;
   JsonObject &json = jsonBuffer.createObject();
