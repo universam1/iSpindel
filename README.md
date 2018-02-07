@@ -36,8 +36,9 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ## News
 
+> 07.02.2018 Firmware 5.7.1: Allow longer sleep intervals longer up to 99999s == 27 days  
 > 03.02.2018 Firmware 5.7.0: Introduce Factory Reset feature  
-> 02.02.2018 Firmware 5.6.1: Support for Wifi credentials with special characters  
+> 02.02.2018 Firmware 5.6.2: Support for Wifi credentials with special characters  
 > 07.11.2017 Firmware 5.6.1: Restoring Wifi credentials, moved to HTTP client library, improved RFCAL resilience to gain more stable Wifi connection  
 > 17.10.2017 Firmware 5.5.4: Various fixes for CraftBeerPi, BrewPiLess and Ubidots   
 > 28.09.2017 Firmware 5.5.0: Recall saved Wifi credential thus persisting over configuration changes  
