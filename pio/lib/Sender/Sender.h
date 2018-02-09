@@ -24,6 +24,7 @@ public:
   bool sendTCONTROL(String server, uint16_t port);
   void add(String id, float value);
   void add(String id, String value);
+  void add(String id, int32_t value);
   void add(String id, uint32_t value);
   // ~SenderClass();
 

@@ -26,6 +26,10 @@ void SenderClass::add(String id, uint32_t value)
 {
     _jsonVariant[id] = value;
 }
+void SenderClass::add(String id, int32_t value)
+{
+    _jsonVariant[id] = value;
+}
 
 bool SenderClass::sendTCP(String server, uint16_t port)
 {

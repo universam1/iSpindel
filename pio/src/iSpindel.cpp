@@ -106,7 +106,6 @@ void SerialOut() { SerialOut(""); }
 // callback notifying us of the need to save config
 void saveConfigCallback()
 {
-  // SerialOut(F("Should save config"));
   // WiFi.setAutoReconnect(true);
   shouldSaveConfig = true;
 }
@@ -396,11 +395,12 @@ bool startConfiguration()
   return false;
 }
 
-void formatSpiffs() {
-      SerialOut(F("\nneed to format SPIFFS: "), false);
-    SPIFFS.end();
-    SPIFFS.begin();
-    SerialOut(SPIFFS.format());
+void formatSpiffs()
+{
+  SerialOut(F("\nneed to format SPIFFS: "), false);
+  SPIFFS.end();
+  SPIFFS.begin();
+  SerialOut(SPIFFS.format());
 }
 
 bool saveConfig()
@@ -410,7 +410,7 @@ bool saveConfig()
   // if SPIFFS is not usable
   if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
       !SPIFFS.open(CFGFILE, "w"))
-  formatSpiffs();
+    formatSpiffs();
 
   DynamicJsonBuffer jsonBuffer;
   JsonObject &json = jsonBuffer.createObject();
@@ -465,7 +465,9 @@ bool uploadData(uint8_t service)
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    SerialOut(F("\ncalling Ubidots"));
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    SerialOut(F("\ncalling Ubidots"), true);
     return sender.sendUbidots(my_token, my_name);
   }
 #endif
@@ -483,6 +485,7 @@ bool uploadData(uint8_t service)
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
 
     if (service == DTHTTP)
     {
