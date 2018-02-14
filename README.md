@@ -36,6 +36,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ## News
 
+> 14.02.2018 Firmware 5.8.1: HTML encode special character in configuration forms, allows displaying the passwort correctly  
 > 09.02.2018 Firmware 5.8.0: Transmitting the Wifi strength RSSI to insight of the reception  
 > 07.02.2018 Firmware 5.7.1: Allow longer sleep intervals longer up to 99999s == 27 days  
 > 03.02.2018 Firmware 5.7.0: Introduce Factory Reset feature  

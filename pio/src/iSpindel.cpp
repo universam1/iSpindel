@@ -312,6 +312,30 @@ String urlencode(String str)
   return encodedString;
 }
 
+String htmlencode(String str)
+{
+  String encodedstr = "";
+  char c;
+  uint8_t b;
+
+  for (int i = 0; i < str.length(); i++)
+  {
+    c = str.charAt(i);
+
+    if (isalnum(c))
+    {
+      encodedstr += c;
+    }
+    else
+    {
+      encodedstr += "&#";
+      encodedstr += String((uint8_t)c);
+      encodedstr += ';';
+    }
+  }
+  return encodedstr;
+}
+
 bool startConfiguration()
 {
 
@@ -325,11 +349,11 @@ bool startConfiguration()
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
                                   20, TYPE_HIDDEN, WFM_NO_LABEL);
 
-  WiFiManagerParameter custom_name("name", "iSpindel Name", my_name,
+  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
                                    TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token", my_token,
+  WiFiManagerParameter custom_token("token", "Token",  htmlencode(my_token).c_str(),
                                     TKIDSIZE);
   WiFiManagerParameter custom_server("server", "Server Address",
                                      my_server, TKIDSIZE);
@@ -356,11 +380,11 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_url);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", my_polynominal, 70, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
-  wifiManager.setConfSSID(my_ssid);
-  wifiManager.setConfPSK(urlencode(my_psk));
+  wifiManager.setConfSSID(htmlencode(my_ssid));
+  wifiManager.setConfPSK(htmlencode(my_psk));
 
   SerialOut(F("started Portal"));
   wifiManager.startConfigPortal("iSpindel");
