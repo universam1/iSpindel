@@ -1,10 +1,10 @@
-iSpindel 
-[www.ispindel.de](www.ispindel.de)
-===========================
+# iSpindel - *DIY electronic Hydrometer*
+# [www.ispindel.de](www.ispindel.de)
 
+***
 ![Dashboard](/pics/blackedition.png)
+***
 
-**DIY electronic Hydrometer**
 
 [![Build Status](https://travis-ci.org/universam1/iSpindel.svg?branch=master)](https://travis-ci.org/universam1/iSpindel)
 
