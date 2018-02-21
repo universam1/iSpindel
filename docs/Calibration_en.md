@@ -69,7 +69,7 @@ It's recommended you connect with [Ubidots](https://ubidots.com/) in order to ea
 
 # Formula
 
-- ## [Online Gravity Calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm)
+- ## [Online Gravity Calibration tool](http://www.ispindel.de/tools/calibration/calibration.htm)
 
 The measured values can be entered in the field SG/Plato or BRIX plus the corresponding Tilt. It will calculate a formula of 2nd or 3rd degree that will predict the density or the degrees of Plato given an tilt value. This formula has to be entered in Firmware to be able to get readings in density or degrees Plato.
 

@@ -62,7 +62,7 @@ Danach kann man mit dem errechnen der Formel fortfahren, und diesen fest in der 
 # Formel
 Folgende Varianten existieren um das Polynome leicht zu errechnen:
 
-- ## [Online Gravity Calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm)
+- ## [Online Gravity Calibration tool](http://www.ispindel.de/tools/calibration/calibration.htm)
 
 Die Messwerte werden in das Feld `Plato` oder `Brix` eingetragen mit dem korrespondierendem Neigungswinkel unter `Tilt`. Daraus errechnet sich dann ein Polynom 2. oder 3. Grades welches dann in der Firmware hinterlegt wird.
 

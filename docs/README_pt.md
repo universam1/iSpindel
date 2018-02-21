@@ -19,7 +19,7 @@ Documentação do iSpindle (iSpindel)
 ===================
 
 **Densímetro digital DIY**
-***https://universam1.github.io/iSpindel***
+***http://www.ispindel.de***
 
 
 ***Por favor, considere a possibilidade de patrocinar este projeto***  

@@ -1,5 +1,6 @@
-iSpindel | iSpindle
-===================
+iSpindel 
+[www.ispindel.de](www.ispindel.de)
+===========================
 
 ![Dashboard](/pics/blackedition.png)
 
@@ -10,8 +11,7 @@ iSpindel | iSpindle
 
 If you like that project please vote for the [Hackaday.io *2017 Prize List*](https://hackaday.io/project/20421-ispindel)
 
-
-Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/
+Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/)
 
 
 
@@ -36,6 +36,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 
 ## News
 
+> 21.02.2018 Firmware 5.8.2: Extend token size to 40 char to support longer Ubidots token  
 > 14.02.2018 Firmware 5.8.1: HTML encode special character in configuration forms, allows displaying the passwort correctly  
 > 09.02.2018 Firmware 5.8.0: Transmitting the Wifi strength RSSI to insight of the reception  
 > 07.02.2018 Firmware 5.7.1: Allow longer sleep intervals longer up to 99999s == 27 days  
@@ -46,7 +47,7 @@ Check out *IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING* at http://hackaday.com/2
 > 28.09.2017 Firmware 5.5.0: Recall saved Wifi credential thus persisting over configuration changes  
 > 31.08.2017 iSpindle.py Version 1.3.1: genericTCP Update (local server & prep for public server); Firmware 5.4.2: Memory improvements.    
 > 29.08.2017 Firmware 5.4.1: Rewrite of the upload class to streamline and allow further data items. Also add iSpindel.de as data server as preset.    
-> 08.08.2017 [calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm) to calculate gravity as alternative to the Excel sheet    
+> 08.08.2017 [calibration tool](http://www.ispindel.de/tools/calibration/calibration.htm) to calculate gravity as alternative to the Excel sheet    
 > 05.07.2017 Workaround for BrewPiLess    
 > 30.06.2017 Mentioned in http://preview.mailerlite.com/g6n5p3/660851237247259035/r2w6/    
 > 22.05.2017 updated build docs    
@@ -262,7 +263,7 @@ Du siehst, dass Daten ankomen, wenn Du Deine Fermentation / Gärung im CBP ansch
 ## Kalibrierung
 
 Zur Umrechnung von dem gemessenen **Winkel ° in °Plato, SG, %mas** o.ä. ist es initial nötig eine Referenzkurve zu kalibrieren. 
-Die gewonnenen Referenzen können dann über eine Excel Tabelle oder das [Online Gravity Calibration tool](https://universam1.github.io/iSpindel/tools/calibration/calibration.htm) in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. 
+Die gewonnenen Referenzen können dann über eine Excel Tabelle oder das [Online Gravity Calibration tool](http://www.ispindel.de/tools/calibration/calibration.htm) in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. 
 
 Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig pro iSpindel durchführen.
 
