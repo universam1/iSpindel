@@ -1,5 +1,5 @@
 # iSpindel - *DIY electronic Hydrometer*
-# [www.ispindel.de](www.ispindel.de)
+# [www.ispindel.de](http://www.ispindel.de)
 
 ***
 ![Dashboard](/pics/blackedition.png)
@@ -34,73 +34,49 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 ***
 
-## News
+## ChangeLog
 
-> 21.02.2018 Firmware 5.8.2: Extend token size to 40 char to support longer Ubidots token  
-> 14.02.2018 Firmware 5.8.1: HTML encode special character in configuration forms, allows displaying the passwort correctly  
-> 09.02.2018 Firmware 5.8.0: Transmitting the Wifi strength RSSI to insight of the reception  
-> 07.02.2018 Firmware 5.7.1: Allow longer sleep intervals longer up to 99999s == 27 days  
-> 03.02.2018 Firmware 5.7.0: Introduce Factory Reset feature  
-> 02.02.2018 Firmware 5.6.2: Support for Wifi credentials with special characters  
-> 07.11.2017 Firmware 5.6.1: Restoring Wifi credentials, moved to HTTP client library, improved RFCAL resilience to gain more stable Wifi connection  
-> 17.10.2017 Firmware 5.5.4: Various fixes for CraftBeerPi, BrewPiLess and Ubidots   
-> 28.09.2017 Firmware 5.5.0: Recall saved Wifi credential thus persisting over configuration changes  
-> 31.08.2017 iSpindle.py Version 1.3.1: genericTCP Update (local server & prep for public server); Firmware 5.4.2: Memory improvements.    
-> 29.08.2017 Firmware 5.4.1: Rewrite of the upload class to streamline and allow further data items. Also add iSpindel.de as data server as preset.    
-> 08.08.2017 [calibration tool](http://www.ispindel.de/tools/calibration/calibration.htm) to calculate gravity as alternative to the Excel sheet    
-> 05.07.2017 Workaround for BrewPiLess    
-> 30.06.2017 Mentioned in http://preview.mailerlite.com/g6n5p3/660851237247259035/r2w6/    
-> 22.05.2017 updated build docs    
-> 22.05.2017 switching build environment to platform.io    
-> 01.05.2017 Major Firmware update to 5
->- Calculate the Gravity now within the iSpindel by expression evaluation! The conversion polynom can be stored per iSpindel and sends as an additional metric (without a unit). Therefore, whether Plato or SG is prefered is up to the user defined polynom. There are two variable available `tilt` and `temp`
->- Zero point calibration 
->- Firmware update OTA over the Air 
->
-> 12.04.2017 Mentioned in http://www.homebrewtalk.com/showthread.php?t=598187   
-> 01.03.2017 Mentioned in hackaday.com http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/   
-> 23.02.17 English documentation added   
-> 14.02.17 English documentation added   
-> 09.02.17 Firmware 4.1.6   
-> 31.01.17 Bilder Aufbau Platinenvariante   
-> 26.01.17 Firmware 4.0   
->- inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps   
->- Wifi RF calibration introduced when calling configuration   
->- fixed bug of emergency interval   
->- fixed UI numeric formating   
->  
-> 25.02.17 Firmware 3.5.0: genericTCP  
->- Python Skript um lokal die Daten in eine CSV Datei zu schreiben (thanks to Tozzi)  
->  
-> 23.12.16 CraftBeerPi Info, FW.3.4.4, Combo-Schlitten   
-> 18.12.16 FAQ und Ubidots tool  
-> 15.11.16 Firmware 3.4.2:
->- Supporting now backends
->   - CraftBeerPi
->   - TControl   
->   - FHEM
->   - generic HTTP
->- major Portal rework, added labels for convenience
->- upload speed improvements
->- Power saving on empty battery
->- added custom Battery conversion factor
->- Bugfixes
->
-> 11.12.16 Sources and drawer online  
-> 11.12.16: FHEM upload documentation & firmware (thanks @MSBannert!)  
-> 07.12.16: Schematics  
-> 3.12.16: Firmware 2.1.2 Wifi improvements  
-> 9.11.16: Calibration and Excel sheet for conversion to Plato, SG etc.  
+| Date       | Note                                                                                                                                    |
+| :--------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| 21.02.2018 | Firmware 5.8.2: Extend token size to 40 char to support longer Ubidots token                                                            |
+| 14.02.2018 | Firmware 5.8.1: HTML encode special character in configuration forms, allows displaying the passwort correctly                          |
+| 09.02.2018 | Firmware 5.8.0: Transmitting the Wifi strength RSSI to insight of the reception                                                         |
+| 07.02.2018 | Firmware 5.7.1: Allow longer sleep intervals longer up to 99999s == 27 days                                                             |
+| 03.02.2018 | Firmware 5.7.0: Introduce Factory Reset feature                                                                                         |
+| 02.02.2018 | Firmware 5.6.2: Support for Wifi credentials with special characters                                                                    |
+| 07.11.2017 | Firmware 5.6.1: Restoring Wifi credentials, moved to HTTP client library, improved RFCAL resilience to gain more stable Wifi connection |
+| 17.10.2017 | Firmware 5.5.4: Various fixes for CraftBeerPi, BrewPiLess and Ubidots                                                                   |
+| 28.09.2017 | Firmware 5.5.0: Recall saved Wifi credential thus persisting over configuration changes                                                 |
+| 31.08.2017 | iSpindle.py Version 1.3.1: genericTCP Update (local server & prep for public server); Firmware 5.4.2: Memory improvements.              |
+| 29.08.2017 | Firmware 5.4.1: Rewrite of the upload class to streamline and allow further data items. Also add iSpindel.de as data server as preset.  |
+| 08.08.2017 | [calibration tool](http://www.ispindel.de/tools/calibration/calibration.htm) to calculate gravity as alternative to the Excel sheet     |
+| 05.07.2017 | Workaround for BrewPiLess                                                                                                               |
+| 30.06.2017 | Mentioned in http://preview.mailerlite.com/g6n5p3/660851237247259035/r2w6/                                                              |
+| 22.05.2017 | updated build docs                                                                                                                      |
+| 22.05.2017 | switching build environment to platform.io                                                                                              |
+| 01.05.2017 | Major Firmware update to 5! Calculate the Gravity now within the iSpindel by expression evaluation! The conversion polynom can be stored per iSpindel and sends as an additional metric (without a unit). Therefore, whether Plato or SG is prefered is up to the user defined polynom. There are two variable available `tilt` and `temp`. Zero point calibration. Firmware update OTA over the Air |
+| 12.04.2017 | Mentioned in http://www.homebrewtalk.com/showthread.php?t=598187    |
+| 01.03.2017 | Mentioned in hackaday.com http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/    |
+| 23.02.2017 | English documentation added    |
+| 14.02.2017 | English documentation added    |
+| 09.02.2017 | Firmware 4.1.6    |
+| 31.01.2017 | Bilder Aufbau Platinenvariante    |
+| 26.01.2017 | Firmware 4.0: inifinte sleep time developed: the maximum 71min RTC time extends through step-sleeps . Wifi RF calibration introduced when calling configuration. fixed bug of emergency interval. fixed UI numeric formating   | 
+| 25.02.2017 | Firmware 3.5.0: genericTCP: Python Skript um lokal die Daten in eine CSV Datei zu schreiben (thanks to Tozzi)  |
+| 23.12.2016 | CraftBeerPi Info, FW.3.4.4, Combo-Schlitten    |
+| 18.12.2016 | FAQ und Ubidots tool   |
+| 15.11.2016 | Firmware 3.4.2: Supporting now backends: CraftBeerPi, TControl,FHEM, generic HTTP. major Portal rework, added labels for convenience, upload speed improvements, Power saving on empty battery, added custom Battery conversion factor, Bugfixes
+| 11.12.2016 | Sources and drawer online   |
+| 11.12.2016 | FHEM upload documentation & firmware (thanks @MSBannert!)   |
+| 07.12.2016 | Schematics   |
+| 03.12.2016 | Firmware 2.1.2 Wifi improvements   |
+| 09.11.2016 | Calibration and Excel sheet for conversion to Plato, SG etc.   |
 
 ***
 
-> The `iSpindle` is under heavy development, see german [Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235).  Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
+> Contribution and support is appreciated especially regarding creation and translation of documentation. Feel free to provide a `pull request`.  
 >
 > Die `iSpindel` befindet sich in andauernder Entwicklung, siehe dazu [den Hobbybrauer.de Thread](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11235). Mithilfe ist herzlich willkommen und Ergänzungen bitte per Pull Request einreichen. Großes Dank an alle die Unterstützung leisten seitens Grundlagen erarbeiten oder passende Hardware zu finden.
-
-![Spindel im Reinwasser](pics/floating.jpg)
-![Dashboard](pics/Dashboard.jpg)
-
 
 ## Inhaltverzeichnis
 
