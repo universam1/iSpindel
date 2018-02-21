@@ -2,7 +2,7 @@ title: iSpindel
 description: DIY elektronische Bierspindel | electronic Hydrometer
 google_analytics: 
 show_downloads: true
-theme: jekyll-theme-architect
+theme: jekyll-theme-hacker
 
 gems:
   - jekyll-mentions
