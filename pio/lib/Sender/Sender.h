@@ -26,6 +26,9 @@ public:
   void add(String id, String value);
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
+
+  String getUbidotsValue(String token, String name, String variable);
+  uint32_t getInterval(String response);
   // ~SenderClass();
 
 private:

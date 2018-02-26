@@ -148,8 +148,6 @@ bool readConfig()
 
         if (json.success())
         {
-          SerialOut(F("\nparsed json"));
-
           if (json.containsKey("Name"))
             strcpy(my_name, json["Name"]);
           if (json.containsKey("Token"))
@@ -186,9 +184,10 @@ bool readConfig()
             my_aZ = json["aZ"];
           applyOffset();
 
-          SerialOut(F("parsed config:"));
+          SerialOut(F("\nparsed config:"));
           if (isDebugEnabled)
             json.printTo(Serial);
+            Serial.println();
           return true;
         }
         else
@@ -353,7 +352,7 @@ bool startConfiguration()
                                    TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token",  htmlencode(my_token).c_str(),
+  WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE);
   WiFiManagerParameter custom_server("server", "Server Address",
                                      my_server, TKIDSIZE);
@@ -413,8 +412,8 @@ bool startConfiguration()
     // Wifi config
     WiFi.setAutoConnect(true);
     WiFi.setAutoReconnect(true);
-
-    return saveConfig();
+    saveConfig();
+    return true;
   }
   return false;
 }
@@ -442,8 +441,6 @@ bool saveConfig()
   json["Name"] = my_name;
   json["Token"] = my_token;
   json["Sleep"] = my_sleeptime;
-  // first reboot is for test
-  my_sleeptime = 1;
   json["Server"] = my_server;
   json["API"] = my_api;
   json["Port"] = my_port;
@@ -476,6 +473,31 @@ bool saveConfig()
     SerialOut(F("saved successfully"), true);
     return true;
   }
+}
+
+bool downloadData(uint8_t service)
+{
+  SenderClass receiver;
+  String response;
+
+  if (service == DTUbiDots)
+  {
+    SerialOut(F("\nrequesting Ubidots"), true);
+    response = receiver.getUbidotsValue(my_token, my_name, "interval");
+    if (response.length() > 0)
+    {
+      uint32_t _interval = receiver.getInterval(response);
+      if (_interval > 10 && _interval < 24 * 3600 && my_sleeptime != _interval)
+      {
+        Serial.print(F("received new interval: "));
+        Serial.println(_interval);
+        my_sleeptime = _interval;
+        saveConfig();
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 bool uploadData(uint8_t service)
@@ -680,7 +702,7 @@ void getAccSample()
     accelgyro.getAcceleration(&ax, &az, &ay);
   else
   {
-    SerialOut(String("I2C ERROR: ") + res + " con:" + con);
+    SerialOut(String("I2C ERROR: MPU6050 unaccessible! ") + res + " con:" + con);
   }
 }
 
@@ -722,7 +744,7 @@ float getTemperature(bool block = false)
     if (t == DEVICE_DISCONNECTED_C || // DISCONNECTED
         t == 85.0)                    // we read 85 uninitialized
     {
-      SerialOut(F("ERROR: OW DISCONNECTED"));
+      SerialOut(F("ERROR: DS18b20 Temp Sensor DISCONNECTED"));
       pinMode(ONE_WIRE_BUS, OUTPUT);
       digitalWrite(ONE_WIRE_BUS, LOW);
       delay(100);
@@ -968,18 +990,24 @@ void setup()
   {
     SerialOut("IP: ", false);
     SerialOut(WiFi.localIP());
+
+    if (shouldSaveConfig == false)
+      downloadData(my_api);
+
     uploadData(my_api);
     delay(100); // workaround for https://github.com/esp8266/Arduino/issues/2750
   }
   else
-  {
     connectBackupCredentials();
-    SerialOut("failed to connect");
-  }
 
   // survive - 60min sleep time
   if (isSafeMode(Volt))
     my_sleeptime = EMERGENCYSLEEP;
+
+  // First reboot after saving is test
+  if (shouldSaveConfig)
+    my_sleeptime = 1;
+
   goodNight(my_sleeptime);
 }
 

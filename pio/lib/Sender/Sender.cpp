@@ -59,7 +59,6 @@ bool SenderClass::sendTCP(String server, uint16_t port)
     }
     // currentValue = 0;
     _client.stop();
-    delay(100); // allow gracefull session close
     return true;
 }
 
@@ -100,11 +99,10 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
 
 bool SenderClass::sendUbidots(String token, String name)
 {
-    _jsonVariant.printTo(Serial);
 
     if (_client.connect(UBISERVER, 80))
     {
-        Serial.println(F("Sender: Ubidots posting"));
+        Serial.println(F("\nSender: Ubidots posting"));
 
         String msg = F("POST /api/v1.6/devices/");
         msg += name;
@@ -115,11 +113,11 @@ bool SenderClass::sendUbidots(String token, String name)
         msg += "\r\n";
 
         _client.println(msg);
-        Serial.println(msg);
-
         _jsonVariant.printTo(_client);
         _client.println();
+
         Serial.println(msg);
+        _jsonVariant.printTo(Serial);
     }
     else
     {
@@ -139,8 +137,55 @@ bool SenderClass::sendUbidots(String token, String name)
     }
     // currentValue = 0;
     _client.stop();
-    delay(100); // allow gracefull session close
     return true;
+}
+
+uint32_t SenderClass::getInterval(String response)
+{
+    return response.toInt();
+}
+
+String SenderClass::getUbidotsValue(String token, String name, String variable)
+{
+
+    HTTPClient http;
+    String payload;
+
+    if (_client.connect(UBISERVER, 80))
+    {
+        String uri = F("/api/v1.6/devices/");
+        uri += name;
+        uri += '/' + variable;
+        uri += "/lv?token=";
+        uri += token;
+
+        http.begin(UBISERVER, 80, uri);
+
+        Serial.printf("[Ubidots] GET... %s\n", uri.c_str());
+        // start connection and send HTTP header
+        int httpCode = http.GET();
+
+        // httpCode will be negative on error
+        if (httpCode > 0)
+        {
+            // HTTP header has been send and Server response header has been handled
+            Serial.printf("Result: %d : ", httpCode);
+
+            // file found at server
+            if (httpCode == HTTP_CODE_OK)
+            {
+                payload = http.getString();
+                Serial.println(payload);
+            }
+        }
+        else
+        {
+            Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        }
+
+        http.end();
+    }
+    return payload;
 }
 
 bool SenderClass::sendFHEM(String server, uint16_t port, String name)
@@ -189,7 +234,6 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
     }
     // currentValue = 0;
     _client.stop();
-    delay(100); // allow gracefull session close
     return true;
 }
 
@@ -233,6 +277,5 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
     }
     // currentValue = 0;
     _client.stop();
-    delay(100); // allow gracefull session close
     return true;
 }
