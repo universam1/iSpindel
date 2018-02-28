@@ -46,14 +46,16 @@ extern Ticker flasher;
 
 #define CBP_ENDPOINT "/api/hydrometer/v1/data"
 
+//Values have to match with those from WiFiManagerKT.h!
 #define DTUbiDots 0
 #define DTThingspeak 1
 #define DTCraftBeerPi 2
 #define DTHTTP 3
-#define DTTcontrol 4
-#define DTFHEM  5
-#define DTTCP  6
-#define DTiSPINDELde 7
+#define DTHTTPsecure 4
+#define DTTcontrol 5
+#define DTFHEM  6
+#define DTTCP  7
+#define DTiSPINDELde 8
 
 // Number of seconds after reset during which a 
 // subseqent reset will be considered a double reset.

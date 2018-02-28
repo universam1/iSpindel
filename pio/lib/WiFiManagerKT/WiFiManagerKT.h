@@ -53,42 +53,56 @@ case "Ubidots":
 	set('server',0);
 	set('url',0);
 	set('port',0);
+	set('fingerprint',0);
 	set('token',1);
   break;
 case "CraftBeerPi":
 	set('server',1);
   set('port',0);
   set('url',0);
+	set('fingerprint',0);
 	set('token',0);
   break;
 case "HTTP":
   set('url',1);
   set('port',1);
-	set('token',1);
 	set('server',1);
+	set('fingerprint',0);
+	set('token',1);
+  break;
+case "HTTPsecure":
+  set('url',1);
+  set('port',1);
+	set('server',1);
+	set('fingerprint',1);
+	set('token',1);
   break;
 case "TControl":
   set('server',1);
   set('port',0);
   set('url',0);
+	set('fingerprint',0);
   set('token',0);
   break;
 case "FHEM":
   set('server',1);
   set('port',1);
   set('url',0);
+	set('fingerprint',0);
   set('token',0);
   break;
 case "TCP":
   set('server',1);
   set('port',1);
   set('url',0);
+	set('fingerprint',0);
   set('token',1);
   break;
 case "iSpindel.de":
 	set('server',0);
   set('port',0);
   set('url',0);
+	set('fingerprint',0);
 	set('token',1);
   break;
 }};
@@ -100,15 +114,17 @@ window.onload = function(e){
   $('API').value = $('selAPI').value; sAPI();};
 </script>)V0G0N";
 
+//Values have to match with those from Globals.h!
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <select id="API" onclick="sAPI()">
 <option value=0>Ubidots</option>
 <option value=2>CraftBeerPi</option>
 <option value=3>HTTP</option>
-<option value=4>TControl</option>
-<option value=5>FHEM</option>
-<option value=6>TCP</option>
-<option value=7>iSpindel.de</option>
+<option value=4>HTTPsecure</option>
+<option value=5>TControl</option>
+<option value=6>FHEM</option>
+<option value=7>TCP</option>
+<option value=8>iSpindel.de</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";

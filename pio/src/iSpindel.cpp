@@ -63,6 +63,7 @@ char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
+char my_fingerprint[42]; // 40char + /0 (delimiter)
 char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 String my_ssid;
@@ -164,6 +165,7 @@ bool readConfig()
           if (json.containsKey("Server"))       strcpy(my_server, json["Server"]);
           if (json.containsKey("Port"))         my_port = json["Port"];
           if (json.containsKey("URL"))          strcpy(my_url, json["URL"]);
+          if (json.containsKey("Fingerprint"))  strcpy(my_fingerprint, json["Fingerprint"]);
 
           if (json.containsKey("POLY"))         strcpy(my_polynominal, json["POLY"]);
           if (json.containsKey("Vfact"))        my_vfact = json["Vfact"];
@@ -346,6 +348,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_server("server", "Server Address (http://www.example.org)", my_server, sizeof(my_server));
   WiFiManagerParameter custom_port("port", "Server Port (http: 80, https: 443, etc.)", String(my_port).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL (/folder/file.php)", my_url, sizeof(my_url));
+  WiFiManagerParameter custom_fingerprint("fingerprint", "Server Fingerprint (40 hex character, without colon or space)", my_fingerprint, sizeof(my_fingerprint));
 
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
@@ -392,6 +395,7 @@ bool startConfiguration()
   validateInput(custom_server.getValue(), my_server);
   my_port = String(custom_port.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
+  validateInput(custom_fingerprint.getValue(), my_fingerprint);
 
   strcpy(my_polynominal, custom_polynom.getValue());
   String tmp = custom_vfact.getValue();
@@ -444,6 +448,7 @@ bool saveConfig()
   json["API"] = my_api;
   json["Port"] = my_port;
   json["URL"] = my_url;
+  json["Fingerprint"] = my_fingerprint;
   json["Vfact"] = my_vfact;
 
   // Store current Wifi credentials
@@ -494,7 +499,7 @@ bool uploadData(uint8_t service)
 #endif
 
 #ifdef API_GENERIC
-  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
+  if ((service == DTHTTP) || (service = DTHTTPsecure) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
   {
 
     sender.add("name", my_name);
@@ -513,6 +518,12 @@ bool uploadData(uint8_t service)
       SerialOut(F("\ncalling HTTP"));
       // return sender.send(my_server, my_url, my_port);
       return sender.sendGenericPost(my_server, my_url, my_port);
+    }
+    else if (service == DTHTTPsecure)
+    {
+      SerialOut(F("\ncalling HTTPS"));
+      
+      return sender.sendGenericPostSecure(my_server, my_url, my_port, my_fingerprint);
     }
     else if (service == DTCraftBeerPi)
     {
