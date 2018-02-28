@@ -39,7 +39,7 @@ extern Ticker flasher;
 #define RESOLUTION 12 // 12bit resolution == 750ms update rate
 #define OWinterval (800 / (1 << (12 - RESOLUTION))) 
 #define CFGFILE "/config.json"
-#define TKIDSIZE 40
+#define TKIDSIZE 42 /*should hold an Fingerprint (40 char) + termination*/
 #define MEDIANROUNDS 7
 #define ACCINTERVAL 200
 #define MEDIANAVRG 3
