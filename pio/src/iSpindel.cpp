@@ -187,7 +187,7 @@ bool readConfig()
           SerialOut(F("\nparsed config:"));
           if (isDebugEnabled)
             json.printTo(Serial);
-            Serial.println();
+          Serial.println();
           return true;
         }
         else
@@ -477,25 +477,43 @@ bool saveConfig()
 
 bool downloadData(uint8_t service)
 {
+
   SenderClass receiver;
   String response;
+  uint32_t temp;
+  ESP.rtcUserMemoryRead(RECEIVEADDR, &temp, sizeof(temp));
+  int32_t receivetimer = (int32_t) temp;
+  
 
-  if (service == DTUbiDots)
+  if (receivetimer > MAXRECEIVETIME)
+    receivetimer = MAXRECEIVETIME;
+  else if (receivetimer <= 0)
   {
-    SerialOut(F("\nrequesting Ubidots"), true);
-    response = receiver.getUbidotsValue(my_token, my_name, "interval");
-    if (response.length() > 0)
+    if (service == DTUbiDots)
     {
-      uint32_t _interval = receiver.getInterval(response);
-      if (_interval > 10 && _interval < 24 * 3600 && my_sleeptime != _interval)
+      SerialOut(F("\nrequesting Ubidots"), true);
+      response = receiver.getUbidotsValue(my_token, my_name, "interval");
+      if (response.length() > 0)
       {
-        Serial.print(F("received new interval: "));
-        Serial.println(_interval);
-        my_sleeptime = _interval;
-        saveConfig();
-        return true;
+        uint32_t _interval = receiver.getInterval(response);
+        if (_interval > 10 && _interval < 24 * 3600 && my_sleeptime != _interval)
+        {
+          Serial.print(F("received new interval: "));
+          Serial.println(_interval);
+          my_sleeptime = _interval;
+          saveConfig();
+          ESP.rtcUserMemoryWrite(RECEIVEADDR, 0, sizeof(receivetimer));
+          return true;
+        }
       }
     }
+    ESP.rtcUserMemoryWrite(RECEIVEADDR, &my_sleeptime, sizeof(receivetimer));
+  }
+  else
+  {
+    receivetimer -= my_sleeptime;
+    temp = (uint32_t) receivetimer;
+    ESP.rtcUserMemoryWrite(RECEIVEADDR, &temp, sizeof(temp));
   }
   return false;
 }
@@ -589,6 +607,8 @@ void goodNight(uint32_t seconds)
   uint32_t _seconds = seconds;
   uint32_t left2sleep = 0;
   uint32_t validflag = RTCVALIDFLAG;
+  uint32_t sleep;
+  WakeMode mode;
 
   drd.stop();
 
@@ -600,32 +620,31 @@ void goodNight(uint32_t seconds)
   if (_seconds > MAXSLEEPTIME)
   {
     left2sleep = _seconds - MAXSLEEPTIME;
-    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-    ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
+    sleep = MAXSLEEPTIME;
+    mode = WAKE_RF_DISABLED;
     SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT:" + millis());
-    ESP.deepSleep(MAXSLEEPTIME * 1e6, WAKE_RF_DISABLED);
-    // workaround proper power state init
-    delay(500);
   }
   // regular sleep with RF enabled after wakeup
   else
   {
     // clearing RTC to mark next wake
     left2sleep = 0;
-    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-    ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
+    sleep = _seconds;
+    mode = WAKE_RF_DEFAULT;
     SerialOut(String(F("\nFinal-sleep: ")) + _seconds + "s; RT:" + millis());
-    // WAKE_RF_DEFAULT --> auto reconnect after wakeup
-    ESP.deepSleep(_seconds * 1e6, WAKE_RF_DEFAULT);
-    // workaround proper power state init
-    delay(500);
   }
+
+  ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+  ESP.rtcUserMemoryWrite(RTCVALIDADDR, &validflag, sizeof(validflag));
+  ESP.deepSleep(sleep * 1e6, mode);
+  // workaround proper power state init
+  delay(500);
 }
 void sleepManager()
 {
   uint32_t left2sleep, validflag;
   ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-  ESP.rtcUserMemoryRead(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
+  ESP.rtcUserMemoryRead(RTCVALIDADDR, &validflag, sizeof(validflag));
 
   // check if we have to incarnate again
   if (left2sleep != 0 && !drd.detectDoubleReset() && validflag == RTCVALIDFLAG)

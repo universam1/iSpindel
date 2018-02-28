@@ -5,7 +5,6 @@
 
  **************************************************************/
 
-
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
@@ -23,7 +22,6 @@ extern Ticker flasher;
 // defines go here
 #define FIRMWAREVERSION "5.8.2"
 
-
 #define API_FHEM true
 #define API_UBIDOTS true
 #define API_GENERIC true
@@ -35,9 +33,9 @@ extern Ticker flasher;
 #define PORTALTIMEOUT 300
 
 #define ADCDIVISOR 191.8
-#define ONE_WIRE_BUS D6  // DS18B20 on ESP pin12
-#define RESOLUTION 12 // 12bit resolution == 750ms update rate
-#define OWinterval (800 / (1 << (12 - RESOLUTION))) 
+#define ONE_WIRE_BUS D6 // DS18B20 on ESP pin12
+#define RESOLUTION 12   // 12bit resolution == 750ms update rate
+#define OWinterval (800 / (1 << (12 - RESOLUTION)))
 #define CFGFILE "/config.json"
 #define TKIDSIZE 40
 #define MEDIANROUNDS 7
@@ -51,11 +49,11 @@ extern Ticker flasher;
 #define DTCraftBeerPi 2
 #define DTHTTP 3
 #define DTTcontrol 4
-#define DTFHEM  5
-#define DTTCP  6
+#define DTFHEM 5
+#define DTTCP 6
 #define DTiSPINDELde 7
 
-// Number of seconds after reset during which a 
+// Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
 #define DRD_TIMEOUT 1
 // RTC Memory Address for the DoubleResetDetector to use
@@ -65,10 +63,14 @@ extern Ticker flasher;
 #define RTCVALIDFLAG 0xCAFEBABE
 
 // sleep management
-#define RTCSLEEPADDR 5
+#define RTCSLEEPADDR WIFIENADDR + 4
+#define RTCVALIDADDR RTCSLEEPADDR + 4
 #define MAXSLEEPTIME 3600UL //TODO
-#define EMERGENCYSLEEP (my_sleeptime*3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime*3)
+#define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
 #define LOWBATT 3.3
+
+#define MAXRECEIVETIME 3600 * 24
+#define RECEIVEADDR RTCVALIDADDR + 4
 
 #define UNINIT 0
 
