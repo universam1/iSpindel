@@ -93,6 +93,7 @@ bool isDebugEnabled()
 // generic serial output
 template <typename T>
 void SerialOut(const T aValue, bool newLine = true)
+//send message to terminal in debug mode, supress this in normal operation
 {
   if (!isDebugEnabled())
     return;
@@ -111,6 +112,7 @@ void saveConfigCallback()
 }
 
 void applyOffset()
+// apply offset data from config file into the acceleration driver (next value-request will be corrected)
 {
   if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT)
   {
@@ -124,6 +126,7 @@ void applyOffset()
 }
 
 bool readConfig()
+// reads config-file from SPIF-File-System
 {
   SerialOut(F("mounting FS..."), false);
 
@@ -236,6 +239,7 @@ bool shouldStartConfig()
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
   if (!_wifiCred)
+    // no wifi credentials avaliable, create your own network!
     WiFi.begin();
   while (!_wifiCred)
   {
@@ -263,6 +267,7 @@ bool shouldStartConfig()
 }
 
 void validateInput(const char *input, char *output)
+// checks a value for ? used in ?
 {
   String tmp = input;
   tmp.trim();
@@ -271,12 +276,12 @@ void validateInput(const char *input, char *output)
 }
 
 String urlencode(String str)
+// encodes an string into an url by converting special characters into hexvalue (all outsinde 09AZaz)
 {
   String encodedString = "";
   char c;
   char code0;
   char code1;
-  char code2;
   for (int i = 0; i < str.length(); i++)
   {
     c = str.charAt(i);
@@ -290,22 +295,22 @@ String urlencode(String str)
     }
     else
     {
+      //convert lower 4 bits into hex value
       code1 = (c & 0xf) + '0';
       if ((c & 0xf) > 9)
       {
         code1 = (c & 0xf) - 10 + 'A';
       }
+      //work on higher 4 bits
       c = (c >> 4) & 0xf;
       code0 = c + '0';
       if (c > 9)
       {
         code0 = c - 10 + 'A';
       }
-      code2 = '\0';
       encodedString += '%';
       encodedString += code0;
       encodedString += code1;
-      //encodedString+=code2;
     }
     yield();
   }
@@ -313,6 +318,7 @@ String urlencode(String str)
 }
 
 String htmlencode(String str)
+// checks if string contains special characters out of 09azAZ and encodes in html style (&#hex;)
 {
   String encodedstr = "";
   char c;
@@ -420,6 +426,7 @@ bool startConfiguration()
 }
 
 void formatSpiffs()
+// erases all data from SPIF-file-system (kind of reset)
 {
   SerialOut(F("\nneed to format SPIFFS: "), false);
   SPIFFS.end();
@@ -428,6 +435,7 @@ void formatSpiffs()
 }
 
 bool saveConfig()
+// saves config in JSON style into SPIF-file-system to survive reset
 {
   SerialOut(F("saving config..."), false);
 
@@ -479,6 +487,7 @@ bool saveConfig()
 }
 
 bool uploadData(uint8_t service)
+// upload data to the configured server
 {
   SenderClass sender;
 
@@ -562,6 +571,7 @@ bool uploadData(uint8_t service)
 }
 
 void goodNight(uint32_t seconds)
+// prepare and go into deepsleep
 {
 
   uint32_t _seconds = seconds;
@@ -600,6 +610,9 @@ void goodNight(uint32_t seconds)
   }
 }
 void sleepManager()
+// needed for realization of sleep times longer than the native max  ~75 (?) min
+// takes into account:
+// * double reset should follow up to setup --> deepsleep suppressed
 {
   uint32_t left2sleep, validflag;
   ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
@@ -617,6 +630,7 @@ void sleepManager()
 }
 
 void requestTemp()
+// request the temperature value of DS18B20 sensor (no value return)
 {
   if (DSrequested == false)
   {
@@ -628,6 +642,7 @@ void requestTemp()
 }
 
 void initDS18B20()
+// initialization of external HW: temperature sensor
 {
 
   // workaround for DS not enough power to boot
@@ -646,6 +661,7 @@ void initDS18B20()
 }
 
 void initAccel()
+// initialization of external HW: acceleration sensor
 {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin(D3, D4);
@@ -673,6 +689,7 @@ float calculateTilt()
 }
 
 void getAccSample()
+// request raw data of external HW: acceleration sensor
 {
   uint8_t res = Wire.status();
   uint8_t con = accelgyro.testConnection();
@@ -685,6 +702,7 @@ void getAccSample()
 }
 
 float getTilt()
+// reads raw data and convertes into pitch and roll values (includes average calculation for filtering)
 {
   // make sure enough time for Acc to start
   uint32_t start = ACCINTERVAL;
@@ -706,6 +724,7 @@ float getTilt()
 }
 
 float getTemperature(bool block = false)
+// reads the temperature value // error handling by missing sensor
 {
   // we need to wait for DS18b20 to finish conversion
   float t = Temperatur;
@@ -741,13 +760,16 @@ float getTemperature(bool block = false)
   }
   return t;
 }
+
 float getBattery()
+// get battery voltage (includes conversation of raw value)
 {
   analogRead(A0); // drop first read
   return analogRead(A0) / my_vfact;
 }
 
 float calculateGravity()
+// calculates gravity out of tilt and temperature by using calibration data & formula
 {
   double _tilt = Tilt;
   double _temp = Temperatur;
@@ -769,6 +791,7 @@ float calculateGravity()
 }
 
 void flash()
+// get a sample of all data
 {
   // triggers the LED
   Volt = getBattery();
@@ -780,6 +803,7 @@ void flash()
 }
 
 bool isSafeMode(float _volt)
+// check battery charge level: du we need to protect battery?
 {
   if (_volt < LOWBATT)
   {
@@ -791,6 +815,7 @@ bool isSafeMode(float _volt)
 }
 
 bool connectBackupCredentials()
+// try to connect to wifi by using backup credential
 {
   WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
@@ -799,6 +824,7 @@ bool connectBackupCredentials()
 }
 
 void setup()
+// main routine, runs after reset & after deepsleep phases
 {
 
   Serial.begin(115200);
@@ -806,8 +832,10 @@ void setup()
   SerialOut("\nFW " FIRMWAREVERSION);
   SerialOut(ESP.getSdkVersion());
 
+  //realize extended deep sleep phases / check if config-mode was requested
   sleepManager();
 
+  //initialize hardware
   initAccel();
   initDS18B20();
 
@@ -855,8 +883,10 @@ void setup()
   Volt = getBattery();
   // we try to survive
   if (isSafeMode(Volt))
+    // Battery is low
     WiFi.setOutputPower(0);
   else
+    // normal operation
     WiFi.setOutputPower(20.5);
 
 #ifndef USE_DMP
@@ -984,6 +1014,7 @@ void setup()
 }
 
 void loop()
+// loop not used due to deep sleep system --> after deep_sleep mode a reset follows --> runs setup()
 {
   SerialOut(F("should never be here!"));
 }
