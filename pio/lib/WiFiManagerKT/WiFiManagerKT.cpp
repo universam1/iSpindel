@@ -924,22 +924,34 @@ void WiFiManager::handleInfo()
   page += F("<h3>Available Pages</h3>");
   page += F("<table class=\"table\">");
   page += F("<thead><tr><th>Page</th><th>Function</th></tr></thead><tbody>");
+
   page += F("<tr><td><a href=\"/\">/</a></td>");
   page += F("<td>Menu page.</td></tr>");
+
   page += F("<tr><td><a href=\"/wifi\">/wifi</a></td>");
   page += F("<td>Show WiFi scan results and enter WiFi configuration.</td></tr>");
+
   page += F("<tr><td><a href=\"/wifisave\">/wifisave</a></td>");
   page += F("<td>Save WiFi configuration information and configure device. Needs variables supplied.</td></tr>");
+
   page += F("<tr><td><a href=\"/close\">/close</a></td>");
   page += F("<td>Close the configuration server and configuration WiFi network.</td></tr>");
+
   page += F("<tr><td><a href=\"/i\">/i</a></td>");
   page += F("<td>This page.</td></tr>");
+
   page += F("<tr><td><a href=\"/r\">/r</a></td>");
   page += F("<td>Delete WiFi configuration and reboot. ESP device will not reconnect to a network until new WiFi configuration data is entered.</td></tr>");
+
   page += F("<tr><td><a href=\"/state\">/state</a></td>");
   page += F("<td>Current device state in JSON format. Interface for programmatic WiFi configuration.</td></tr>");
+
   page += F("<tr><td><a href=\"/scan\">/scan</a></td>");
   page += F("<td>Run a WiFi scan and return results in JSON format. Interface for programmatic WiFi configuration.</td></tr>");
+
+  page += F("<tr><td><a href=\"/sensors\">/sensors</a></td>");
+  page += F("<td>return all sensor values in JSON format. Interface for programmatic WiFi diagnosis.</td></tr>");
+
   page += F("</table>");
   page += F("<p/>");
   page += FPSTR(HTTP_END);

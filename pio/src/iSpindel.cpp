@@ -516,7 +516,7 @@ bool uploadData(uint8_t service)
     if (service == DTHTTP)
     {
       SerialOut(F("\ncalling HTTP"));
-      // return sender.send(my_server, my_url, my_port);
+
       return sender.sendGenericPost(my_server, my_url, my_port);
     }
     else if (service == DTHTTPsecure)
@@ -608,6 +608,7 @@ void goodNight(uint32_t seconds)
     delay(500);
   }
 }
+
 void sleepManager()
 // needed for realization of sleep times longer than the native max  ~75 (?) min
 // takes into account:
@@ -643,7 +644,6 @@ void requestTemp()
 void initDS18B20()
 // initialization of external HW: temperature sensor
 {
-
   // workaround for DS not enough power to boot
   pinMode(ONE_WIRE_BUS, OUTPUT);
   digitalWrite(ONE_WIRE_BUS, LOW);
