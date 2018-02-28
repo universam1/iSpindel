@@ -677,27 +677,28 @@ void initAccel()
 #endif
 }
 
-float calculateTilt()
-{
-  float _ax = ax;
-  float _ay = ay;
-  float _az = az;
-  float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-  float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-  return sqrt(pitch * pitch + roll * roll);
-}
-
 void getAccSample()
 // request raw data of external HW: acceleration sensor
 {
   uint8_t res = Wire.status();
   uint8_t con = accelgyro.testConnection();
   if (res == I2C_OK && con == true)
-    accelgyro.getAcceleration(&ax, &az, &ay);
+    accelgyro.getAcceleration(&ax, &ay, &az);
   else
   {
     SerialOut(String("I2C ERROR: ") + res + " con:" + con);
   }
+}
+
+float calculateTilt()
+// converts the three undependend raw angles into a pitch and roll vector
+{
+  float _ax = ax;
+  float _ay = az;
+  float _az = ay;
+  float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
+  float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
+  return sqrt(pitch * pitch + roll * roll);
 }
 
 float getTilt()
