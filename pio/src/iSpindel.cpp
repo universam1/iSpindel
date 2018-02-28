@@ -819,7 +819,11 @@ bool connectBackupCredentials()
 {
   WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
-  SerialOut(F("Rescue Wifi credentials"));
+  SerialOut(F("Rescue Wifi credentials: try to connect to ssid: \""), false);
+  SerialOut(WiFi.SSID(), false); 
+  SerialOut("\"\npwd:  \"", false);
+  SerialOut(WiFi.psk(), false);
+  SerialOut("\"");
   delay(100);
 }
 
@@ -979,7 +983,7 @@ void setup()
   // SerialOut(corrGravity, true);
 
   unsigned long startedAt = millis();
-  SerialOut(F("After waiting "), false);
+  SerialOut(F("Waiting for Wifi connection..."), false);
   // int connRes = WiFi.waitForConnectResult();
   uint8_t wait = 0;
   while (WiFi.status() == WL_DISCONNECTED)
@@ -1003,6 +1007,11 @@ void setup()
   }
   else
   {
+    SerialOut(F("failed to connect to ssid: \""), false);
+    SerialOut(WiFi.SSID(), false); 
+    SerialOut("\"\npwd:  \"", false);
+    SerialOut(WiFi.psk(), false);
+    SerialOut("\"");
     connectBackupCredentials();
     SerialOut("failed to connect");
   }
