@@ -30,13 +30,13 @@ extern Ticker flasher;
 #define API_TCONTROL true
 
 #ifndef DEBUG
-#define DEBUG 1 // uncomment this line to enable serial diagnostic messages
+#define DEBUG 1 /* uncomment this line to enable serial diagnostic messages */
 #endif
 #define PORTALTIMEOUT 300
 
 #define ADCDIVISOR 191.8
-#define ONE_WIRE_BUS D6  // DS18B20 on ESP pin12
-#define RESOLUTION 12 // 12bit resolution == 750ms update rate
+#define ONE_WIRE_BUS D6  /* DS18B20 on ESP pin12 */
+#define RESOLUTION 12 /* 12bit resolution == 750ms update rate */
 #define OWinterval (800 / (1 << (12 - RESOLUTION))) 
 #define CFGFILE "/config.json"
 #define TKIDSIZE 42 /*should hold an Fingerprint (40 char) + termination*/
@@ -66,7 +66,7 @@ extern Ticker flasher;
 
 // sleep management
 #define RTCSLEEPADDR 5
-#define MAXSLEEPTIME 3600UL //TODO
+#define MAXSLEEPTIME 3600UL /* TODO */
 #define EMERGENCYSLEEP (my_sleeptime*3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime*3)
 #define LOWBATT 3.3
 
