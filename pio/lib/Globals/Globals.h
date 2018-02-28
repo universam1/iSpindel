@@ -73,6 +73,8 @@ extern Ticker flasher;
 #define UNINIT 0
 
 extern int16_t ax, ay, az;
+extern float roll, pitch;
+
 extern float Volt, Temperatur, Tilt, Gravity;
 extern int16_t my_aX, my_aY, my_aZ;
 

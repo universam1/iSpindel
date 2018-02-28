@@ -273,6 +273,7 @@ private:
   void handleServerClose();
   void handleInfo();
   void handleiSpindel();
+  void handleSensors();
   void handleState();
   void handleScan();
   void handleReset();

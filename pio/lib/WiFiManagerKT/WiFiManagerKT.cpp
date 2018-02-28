@@ -175,6 +175,7 @@ void WiFiManager::setupConfigPortal()
   server->on("/close", std::bind(&WiFiManager::handleServerClose, this));
   server->on("/i", std::bind(&WiFiManager::handleInfo, this));
   server->on("/iSpindel", std::bind(&WiFiManager::handleiSpindel, this));
+  server->on("/sensors", std::bind(&WiFiManager::handleSensors, this));
   server->on("/state", std::bind(&WiFiManager::handleState, this));
   server->on("/scan", std::bind(&WiFiManager::handleScan, this));
   server->on("/mnt", std::bind(&WiFiManager::handleMnt, this));
@@ -992,6 +993,40 @@ void WiFiManager::handleiSpindel()
   server->send(200, "text/html", page);
 
   DEBUG_WM(F("Sent iSpindel info page"));
+}
+
+/** Handle the info page */
+void WiFiManager::handleSensors()
+{
+  DEBUG_WM(F("Sensors - json"));
+  header();
+  String page = F("{\"battery\":\"");
+  page += Volt;
+  page += F("\",\"temperature\":\"");
+  page += Temperatur;
+  page += F("\",\"ax\":\"");
+  page += ax;
+  page += F("\",\"ay\":\"");
+  page += ay;
+  page += F("\",\"az\":\"");
+  page += az;
+  page += F("\",\"ax_offset\":\"");
+  page += my_aX;
+  page += F("\",\"ay_offset\":\"");
+  page += my_aY;
+  page += F("\",\"az_offset\":\"");
+  page += my_aZ;
+  page += F("\",\"roll\":\"");
+  page += roll;
+  page += F("\",\"pitch\":\"");
+  page += pitch;
+  page += F("\",\"tilt\":\"");
+  page += Tilt;
+  page += F("\",\"gravity\":\"");
+  page += Gravity;
+  page += F("\"}");
+  server->send(200, "application/json", page);
+  DEBUG_WM(F("Sent sensor state page in json format"));
 }
 
 /** Handle the info page */
