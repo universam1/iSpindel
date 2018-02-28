@@ -153,29 +153,20 @@ bool readConfig()
         {
           SerialOut(F("\nparsed json"));
 
-          if (json.containsKey("Name"))
-            strcpy(my_name, json["Name"]);
-          if (json.containsKey("Token"))
-            strcpy(my_token, json["Token"]);
-          if (json.containsKey("Server"))
-            strcpy(my_server, json["Server"]);
-          if (json.containsKey("Sleep"))
-            my_sleeptime = json["Sleep"];
-          if (json.containsKey("API"))
-            my_api = json["API"];
-          if (json.containsKey("Port"))
-            my_port = json["Port"];
-          if (json.containsKey("URL"))
-            strcpy(my_url, json["URL"]);
-          if (json.containsKey("Vfact"))
-            my_vfact = json["Vfact"];
+          if (json.containsKey("SSID"))         my_ssid = (const char *)json["SSID"];
+          if (json.containsKey("PSK"))          my_psk = (const char *)json["PSK"];
 
-          if (json.containsKey("SSID"))
-            my_ssid = (const char *)json["SSID"];
-          if (json.containsKey("PSK"))
-            my_psk = (const char *)json["PSK"];
-          if (json.containsKey("POLY"))
-            strcpy(my_polynominal, json["POLY"]);
+          if (json.containsKey("Sleep"))        my_sleeptime = json["Sleep"];
+          if (json.containsKey("API"))          my_api = json["API"];
+
+          if (json.containsKey("Token"))        strcpy(my_token, json["Token"]);
+          if (json.containsKey("Name"))         strcpy(my_name, json["Name"]);
+          if (json.containsKey("Server"))       strcpy(my_server, json["Server"]);
+          if (json.containsKey("Port"))         my_port = json["Port"];
+          if (json.containsKey("URL"))          strcpy(my_url, json["URL"]);
+
+          if (json.containsKey("POLY"))         strcpy(my_polynominal, json["POLY"]);
+          if (json.containsKey("Vfact"))        my_vfact = json["Vfact"];
 
           my_aX = UNINIT;
           my_aY = UNINIT;
@@ -344,6 +335,22 @@ String htmlencode(String str)
 
 bool startConfiguration()
 {
+  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(), sizeof(my_name));
+  WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)", String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
+
+  WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
+  WiFiManagerParameter api_list(HTTP_API_LIST);
+  WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(), 20, TYPE_HIDDEN, WFM_NO_LABEL);
+
+  WiFiManagerParameter custom_token("token", "Token",  htmlencode(my_token).c_str(), sizeof(my_token));
+  WiFiManagerParameter custom_server("server", "Server Address (http://www.example.org)", my_server, sizeof(my_server));
+  WiFiManagerParameter custom_port("port", "Server Port (http: 80, https: 443, etc.)", String(my_port).c_str(), 6, TYPE_NUMBER);
+  WiFiManagerParameter custom_url("url", "Server URL (/folder/file.php)", my_url, sizeof(my_url));
+
+  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
+  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(my_vfact).c_str(), 7, TYPE_NUMBER);
+
 
   WiFiManager wifiManager;
 
@@ -351,32 +358,11 @@ bool startConfiguration()
   wifiManager.setSaveConfigCallback(saveConfigCallback);
   wifiManager.setBreakAfterConfig(true);
 
-  WiFiManagerParameter api_list(HTTP_API_LIST);
-  WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
-                                  20, TYPE_HIDDEN, WFM_NO_LABEL);
-
-  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
-                                   TKIDSIZE);
-  WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
-                                    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token",  htmlencode(my_token).c_str(),
-                                    TKIDSIZE);
-  WiFiManagerParameter custom_server("server", "Server Address",
-                                     my_server, TKIDSIZE);
-  WiFiManagerParameter custom_port("port", "Server Port",
-                                   String(my_port).c_str(), TKIDSIZE,
-                                   TYPE_NUMBER);
-  WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
-  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
-                                    String(my_vfact).c_str(), 7, TYPE_NUMBER);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
-  wifiManager.addParameter(&custom_vfact);
 
-  WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
   wifiManager.addParameter(&custom_api_hint);
-
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
 
@@ -384,10 +370,12 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_url);
-  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+  wifiManager.addParameter(&custom_fingerprint);
+
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
+  wifiManager.addParameter(&custom_vfact);
+
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
   wifiManager.setConfPSK(htmlencode(my_psk));
@@ -395,17 +383,17 @@ bool startConfiguration()
   SerialOut(F("started Portal"));
   wifiManager.startConfigPortal("iSpindel");
 
-  strcpy(my_polynominal, custom_polynom.getValue());
-
   validateInput(custom_name.getValue(), my_name);
-  validateInput(custom_token.getValue(), my_token);
-  validateInput(custom_server.getValue(), my_server);
   my_sleeptime = String(custom_sleep.getValue()).toInt();
 
   my_api = String(custom_api.getValue()).toInt();
+  
+  validateInput(custom_token.getValue(), my_token);
+  validateInput(custom_server.getValue(), my_server);
   my_port = String(custom_port.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
 
+  strcpy(my_polynominal, custom_polynom.getValue());
   String tmp = custom_vfact.getValue();
   tmp.trim();
   tmp.replace(',', '.');
