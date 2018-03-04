@@ -1347,7 +1347,7 @@ void WiFiManager::DEBUG_WM(Generic text)
 {
   if (_debug)
   {
-    Serial.print(F("[WifiManager ] ");
+    Serial.print(F("[WifiManager ] "));
     Serial.println(text);
   }
 }
