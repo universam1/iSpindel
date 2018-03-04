@@ -32,6 +32,7 @@ void SenderClass::add(String id, int32_t value)
 }
 
 bool SenderClass::sendTCP(String server, uint16_t port)
+// transmit data to the given server by butting a JSON string as TCP stream to the server (?)
 {
     _jsonVariant.printTo(Serial);
 
@@ -64,14 +65,20 @@ bool SenderClass::sendTCP(String server, uint16_t port)
 }
 
 bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
+// transmit data to the given server by using the POST method and a JSON string
 {
     _jsonVariant.printTo(Serial);
 
     HTTPClient http;
 
-    Serial.println(F("HTTPAPI: posting"));
+    Serial.println(F("\n[HTTP] posting"));
+
     // configure traged server and url
-    http.begin(server, port, url);
+    String full_url = server + ":" + port + url;
+    Serial.println("[HTTP] Url: \"" + full_url + "\"");
+    http.begin(full_url);
+//    http.begin(server, port, url);
+
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
     http.addHeader("Content-Type", "application/json");
@@ -98,7 +105,49 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
     http.end();
 }
 
+bool SenderClass::sendGenericPostSecure(String server, String url, uint16_t port, String fingerprint)
+// transmit data to the given server by using the POST method and a JSON string
+{
+    HTTPClient http;
+
+    Serial.println(F("\n[HTTPS] posting secure "));
+    
+    // configure traged server and url
+    String full_url = server + ":" + port + url;
+    Serial.println("[HTTPS] Url: \"" + full_url + "\"");
+    Serial.println("[HTTPS] Fingerprint: \"" + fingerprint+"\"");
+    http.begin(full_url, fingerprint);
+//    http.begin(server, port, url);
+
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    http.addHeader("Content-Type", "application/json");
+
+    String json;
+    _jsonVariant.printTo(json);
+    Serial.println(String("[HTTPS] json data: ") + json);
+    auto httpCode = http.POST(json);
+
+    Serial.println(String("[HTTPS] response code: ") + httpCode);
+    // httpCode will be negative on error
+    if (httpCode > 0)
+    {
+        if (httpCode == HTTP_CODE_OK)
+        {
+            String payload = http.getString();    
+            Serial.println(payload);
+            Serial.println(String("[HTTPS] end of data"));
+        }
+    } else {
+        Serial.print(F("[HTTPS] POST... failed, error: "));
+        Serial.println(http.errorToString(httpCode));
+    }
+
+    http.end();
+}
+
 bool SenderClass::sendUbidots(String token, String name)
+// transmit data to Ubidots server by using their POST method
 {
     _jsonVariant.printTo(Serial);
 
@@ -144,6 +193,7 @@ bool SenderClass::sendUbidots(String token, String name)
 }
 
 bool SenderClass::sendFHEM(String server, uint16_t port, String name)
+// transmit data to local FHEM server  using their POST method
 {
     _jsonVariant.printTo(Serial);
 

@@ -175,6 +175,7 @@ void WiFiManager::setupConfigPortal()
   server->on("/close", std::bind(&WiFiManager::handleServerClose, this));
   server->on("/i", std::bind(&WiFiManager::handleInfo, this));
   server->on("/iSpindel", std::bind(&WiFiManager::handleiSpindel, this));
+  server->on("/sensors", std::bind(&WiFiManager::handleSensors, this));
   server->on("/state", std::bind(&WiFiManager::handleState, this));
   server->on("/scan", std::bind(&WiFiManager::handleScan, this));
   server->on("/mnt", std::bind(&WiFiManager::handleMnt, this));
@@ -923,22 +924,34 @@ void WiFiManager::handleInfo()
   page += F("<h3>Available Pages</h3>");
   page += F("<table class=\"table\">");
   page += F("<thead><tr><th>Page</th><th>Function</th></tr></thead><tbody>");
+
   page += F("<tr><td><a href=\"/\">/</a></td>");
   page += F("<td>Menu page.</td></tr>");
+
   page += F("<tr><td><a href=\"/wifi\">/wifi</a></td>");
   page += F("<td>Show WiFi scan results and enter WiFi configuration.</td></tr>");
+
   page += F("<tr><td><a href=\"/wifisave\">/wifisave</a></td>");
   page += F("<td>Save WiFi configuration information and configure device. Needs variables supplied.</td></tr>");
+
   page += F("<tr><td><a href=\"/close\">/close</a></td>");
   page += F("<td>Close the configuration server and configuration WiFi network.</td></tr>");
+
   page += F("<tr><td><a href=\"/i\">/i</a></td>");
   page += F("<td>This page.</td></tr>");
+
   page += F("<tr><td><a href=\"/r\">/r</a></td>");
   page += F("<td>Delete WiFi configuration and reboot. ESP device will not reconnect to a network until new WiFi configuration data is entered.</td></tr>");
+
   page += F("<tr><td><a href=\"/state\">/state</a></td>");
   page += F("<td>Current device state in JSON format. Interface for programmatic WiFi configuration.</td></tr>");
+
   page += F("<tr><td><a href=\"/scan\">/scan</a></td>");
   page += F("<td>Run a WiFi scan and return results in JSON format. Interface for programmatic WiFi configuration.</td></tr>");
+
+  page += F("<tr><td><a href=\"/sensors\">/sensors</a></td>");
+  page += F("<td>return all sensor values in JSON format. Interface for programmatic WiFi diagnosis.</td></tr>");
+
   page += F("</table>");
   page += F("<p/>");
   page += FPSTR(HTTP_END);
@@ -992,6 +1005,40 @@ void WiFiManager::handleiSpindel()
   server->send(200, "text/html", page);
 
   DEBUG_WM(F("Sent iSpindel info page"));
+}
+
+/** Handle the info page */
+void WiFiManager::handleSensors()
+{
+  DEBUG_WM(F("Sensors - json"));
+  header();
+  String page = F("{\"battery\":\"");
+  page += Volt;
+  page += F("\",\"temperature\":\"");
+  page += Temperatur;
+  page += F("\",\"ax\":\"");
+  page += ax;
+  page += F("\",\"ay\":\"");
+  page += ay;
+  page += F("\",\"az\":\"");
+  page += az;
+  page += F("\",\"ax_offset\":\"");
+  page += my_aX;
+  page += F("\",\"ay_offset\":\"");
+  page += my_aY;
+  page += F("\",\"az_offset\":\"");
+  page += my_aZ;
+  page += F("\",\"roll\":\"");
+  page += roll;
+  page += F("\",\"pitch\":\"");
+  page += pitch;
+  page += F("\",\"tilt\":\"");
+  page += Tilt;
+  page += F("\",\"gravity\":\"");
+  page += Gravity;
+  page += F("\"}");
+  server->send(200, "application/json", page);
+  DEBUG_WM(F("Sent sensor state page in json format"));
 }
 
 /** Handle the info page */
@@ -1300,7 +1347,7 @@ void WiFiManager::DEBUG_WM(Generic text)
 {
   if (_debug)
   {
-    Serial.print("*WM: ");
+    Serial.print("[WifiManager ] ");
     Serial.println(text);
   }
 }

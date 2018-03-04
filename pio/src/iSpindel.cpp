@@ -63,6 +63,7 @@ char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
+char my_fingerprint[42]; // 40char + /0 (delimiter)
 char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 String my_ssid;
@@ -93,6 +94,7 @@ bool isDebugEnabled()
 // generic serial output
 template <typename T>
 void SerialOut(const T aValue, bool newLine = true)
+//send message to terminal in debug mode, supress this in normal operation
 {
   if (!isDebugEnabled())
     return;
@@ -111,6 +113,7 @@ void saveConfigCallback()
 }
 
 void applyOffset()
+// apply offset data from config file into the acceleration driver (next value-request will be corrected)
 {
   if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT)
   {
@@ -124,6 +127,7 @@ void applyOffset()
 }
 
 bool readConfig()
+// reads config-file from SPIF-File-System
 {
   SerialOut(F("mounting FS..."), false);
 
@@ -150,29 +154,21 @@ bool readConfig()
         {
           SerialOut(F("\nparsed json"));
 
-          if (json.containsKey("Name"))
-            strcpy(my_name, json["Name"]);
-          if (json.containsKey("Token"))
-            strcpy(my_token, json["Token"]);
-          if (json.containsKey("Server"))
-            strcpy(my_server, json["Server"]);
-          if (json.containsKey("Sleep"))
-            my_sleeptime = json["Sleep"];
-          if (json.containsKey("API"))
-            my_api = json["API"];
-          if (json.containsKey("Port"))
-            my_port = json["Port"];
-          if (json.containsKey("URL"))
-            strcpy(my_url, json["URL"]);
-          if (json.containsKey("Vfact"))
-            my_vfact = json["Vfact"];
+          if (json.containsKey("SSID"))         my_ssid = (const char *)json["SSID"];
+          if (json.containsKey("PSK"))          my_psk = (const char *)json["PSK"];
 
-          if (json.containsKey("SSID"))
-            my_ssid = (const char *)json["SSID"];
-          if (json.containsKey("PSK"))
-            my_psk = (const char *)json["PSK"];
-          if (json.containsKey("POLY"))
-            strcpy(my_polynominal, json["POLY"]);
+          if (json.containsKey("Sleep"))        my_sleeptime = json["Sleep"];
+          if (json.containsKey("API"))          my_api = json["API"];
+
+          if (json.containsKey("Token"))        strcpy(my_token, json["Token"]);
+          if (json.containsKey("Name"))         strcpy(my_name, json["Name"]);
+          if (json.containsKey("Server"))       strcpy(my_server, json["Server"]);
+          if (json.containsKey("Port"))         my_port = json["Port"];
+          if (json.containsKey("URL"))          strcpy(my_url, json["URL"]);
+          if (json.containsKey("Fingerprint"))  strcpy(my_fingerprint, json["Fingerprint"]);
+
+          if (json.containsKey("POLY"))         strcpy(my_polynominal, json["POLY"]);
+          if (json.containsKey("Vfact"))        my_vfact = json["Vfact"];
 
           my_aX = UNINIT;
           my_aY = UNINIT;
@@ -236,6 +232,7 @@ bool shouldStartConfig()
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
   if (!_wifiCred)
+    // no wifi credentials avaliable, create your own network!
     WiFi.begin();
   while (!_wifiCred)
   {
@@ -263,6 +260,7 @@ bool shouldStartConfig()
 }
 
 void validateInput(const char *input, char *output)
+// checks a value for ? used in ?
 {
   String tmp = input;
   tmp.trim();
@@ -271,12 +269,12 @@ void validateInput(const char *input, char *output)
 }
 
 String urlencode(String str)
+// encodes an string into an url by converting special characters into hexvalue (all outsinde 09AZaz)
 {
   String encodedString = "";
   char c;
   char code0;
   char code1;
-  char code2;
   for (int i = 0; i < str.length(); i++)
   {
     c = str.charAt(i);
@@ -290,22 +288,22 @@ String urlencode(String str)
     }
     else
     {
+      //convert lower 4 bits into hex value
       code1 = (c & 0xf) + '0';
       if ((c & 0xf) > 9)
       {
         code1 = (c & 0xf) - 10 + 'A';
       }
+      //work on higher 4 bits
       c = (c >> 4) & 0xf;
       code0 = c + '0';
       if (c > 9)
       {
         code0 = c - 10 + 'A';
       }
-      code2 = '\0';
       encodedString += '%';
       encodedString += code0;
       encodedString += code1;
-      //encodedString+=code2;
     }
     yield();
   }
@@ -313,6 +311,7 @@ String urlencode(String str)
 }
 
 String htmlencode(String str)
+// checks if string contains special characters out of 09azAZ and encodes in html style (&#hex;)
 {
   String encodedstr = "";
   char c;
@@ -338,6 +337,23 @@ String htmlencode(String str)
 
 bool startConfiguration()
 {
+  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(), sizeof(my_name));
+  WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)", String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
+
+  WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
+  WiFiManagerParameter api_list(HTTP_API_LIST);
+  WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(), 20, TYPE_HIDDEN, WFM_NO_LABEL);
+
+  WiFiManagerParameter custom_token("token", "Token",  htmlencode(my_token).c_str(), sizeof(my_token));
+  WiFiManagerParameter custom_server("server", "Server Address (http://www.example.org)", my_server, sizeof(my_server));
+  WiFiManagerParameter custom_port("port", "Server Port (http: 80, https: 443, etc.)", String(my_port).c_str(), 6, TYPE_NUMBER);
+  WiFiManagerParameter custom_url("url", "Server URL (/folder/file.php)", my_url, sizeof(my_url));
+  WiFiManagerParameter custom_fingerprint("fingerprint", "Server Fingerprint (40 hex character, without colon or space)", my_fingerprint, sizeof(my_fingerprint));
+
+  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
+  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(my_vfact).c_str(), 7, TYPE_NUMBER);
+
 
   WiFiManager wifiManager;
 
@@ -345,32 +361,11 @@ bool startConfiguration()
   wifiManager.setSaveConfigCallback(saveConfigCallback);
   wifiManager.setBreakAfterConfig(true);
 
-  WiFiManagerParameter api_list(HTTP_API_LIST);
-  WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
-                                  20, TYPE_HIDDEN, WFM_NO_LABEL);
-
-  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
-                                   TKIDSIZE);
-  WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
-                                    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token",  htmlencode(my_token).c_str(),
-                                    TKIDSIZE);
-  WiFiManagerParameter custom_server("server", "Server Address",
-                                     my_server, TKIDSIZE);
-  WiFiManagerParameter custom_port("port", "Server Port",
-                                   String(my_port).c_str(), TKIDSIZE,
-                                   TYPE_NUMBER);
-  WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
-  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
-                                    String(my_vfact).c_str(), 7, TYPE_NUMBER);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
-  wifiManager.addParameter(&custom_vfact);
 
-  WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
   wifiManager.addParameter(&custom_api_hint);
-
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
 
@@ -378,10 +373,12 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_url);
-  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+  wifiManager.addParameter(&custom_fingerprint);
+
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
+  wifiManager.addParameter(&custom_vfact);
+
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
   wifiManager.setConfPSK(htmlencode(my_psk));
@@ -389,17 +386,18 @@ bool startConfiguration()
   SerialOut(F("started Portal"));
   wifiManager.startConfigPortal("iSpindel");
 
-  strcpy(my_polynominal, custom_polynom.getValue());
-
   validateInput(custom_name.getValue(), my_name);
-  validateInput(custom_token.getValue(), my_token);
-  validateInput(custom_server.getValue(), my_server);
   my_sleeptime = String(custom_sleep.getValue()).toInt();
 
   my_api = String(custom_api.getValue()).toInt();
+  
+  validateInput(custom_token.getValue(), my_token);
+  validateInput(custom_server.getValue(), my_server);
   my_port = String(custom_port.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
+  validateInput(custom_fingerprint.getValue(), my_fingerprint);
 
+  strcpy(my_polynominal, custom_polynom.getValue());
   String tmp = custom_vfact.getValue();
   tmp.trim();
   tmp.replace(',', '.');
@@ -420,6 +418,7 @@ bool startConfiguration()
 }
 
 void formatSpiffs()
+// erases all data from SPIF-file-system (kind of reset)
 {
   SerialOut(F("\nneed to format SPIFFS: "), false);
   SPIFFS.end();
@@ -428,6 +427,7 @@ void formatSpiffs()
 }
 
 bool saveConfig()
+// saves config in JSON style into SPIF-file-system to survive reset
 {
   SerialOut(F("saving config..."), false);
 
@@ -448,6 +448,7 @@ bool saveConfig()
   json["API"] = my_api;
   json["Port"] = my_port;
   json["URL"] = my_url;
+  json["Fingerprint"] = my_fingerprint;
   json["Vfact"] = my_vfact;
 
   // Store current Wifi credentials
@@ -479,6 +480,7 @@ bool saveConfig()
 }
 
 bool uploadData(uint8_t service)
+// upload data to the configured server
 {
   SenderClass sender;
 
@@ -497,7 +499,7 @@ bool uploadData(uint8_t service)
 #endif
 
 #ifdef API_GENERIC
-  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
+  if ((service == DTHTTP) || (service = DTHTTPsecure) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
   {
 
     sender.add("name", my_name);
@@ -514,8 +516,14 @@ bool uploadData(uint8_t service)
     if (service == DTHTTP)
     {
       SerialOut(F("\ncalling HTTP"));
-      // return sender.send(my_server, my_url, my_port);
+
       return sender.sendGenericPost(my_server, my_url, my_port);
+    }
+    else if (service == DTHTTPsecure)
+    {
+      SerialOut(F("\ncalling HTTPS"));
+      
+      return sender.sendGenericPostSecure(my_server, my_url, my_port, my_fingerprint);
     }
     else if (service == DTCraftBeerPi)
     {
@@ -562,6 +570,7 @@ bool uploadData(uint8_t service)
 }
 
 void goodNight(uint32_t seconds)
+// prepare and go into deepsleep
 {
 
   uint32_t _seconds = seconds;
@@ -599,7 +608,11 @@ void goodNight(uint32_t seconds)
     delay(500);
   }
 }
+
 void sleepManager()
+// needed for realization of sleep times longer than the native max  ~75 (?) min
+// takes into account:
+// * double reset should follow up to setup --> deepsleep suppressed
 {
   uint32_t left2sleep, validflag;
   ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
@@ -617,6 +630,7 @@ void sleepManager()
 }
 
 void requestTemp()
+// request the temperature value of DS18B20 sensor (no value return)
 {
   if (DSrequested == false)
   {
@@ -628,8 +642,8 @@ void requestTemp()
 }
 
 void initDS18B20()
+// initialization of external HW: temperature sensor
 {
-
   // workaround for DS not enough power to boot
   pinMode(ONE_WIRE_BUS, OUTPUT);
   digitalWrite(ONE_WIRE_BUS, LOW);
@@ -646,6 +660,7 @@ void initDS18B20()
 }
 
 void initAccel()
+// initialization of external HW: acceleration sensor
 {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin(D3, D4);
@@ -662,29 +677,32 @@ void initAccel()
 #endif
 }
 
-float calculateTilt()
-{
-  float _ax = ax;
-  float _ay = ay;
-  float _az = az;
-  float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-  float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-  return sqrt(pitch * pitch + roll * roll);
-}
-
 void getAccSample()
+// request raw data of external HW: acceleration sensor
 {
   uint8_t res = Wire.status();
   uint8_t con = accelgyro.testConnection();
   if (res == I2C_OK && con == true)
-    accelgyro.getAcceleration(&ax, &az, &ay);
+    accelgyro.getAcceleration(&ax, &ay, &az);
   else
   {
     SerialOut(String("I2C ERROR: ") + res + " con:" + con);
   }
 }
 
+float calculateTilt()
+// converts the three undependend raw angles into a pitch and roll vector
+{
+  float _ax = ax;
+  float _ay = az;
+  float _az = ay;
+  float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
+  float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
+  return sqrt(pitch * pitch + roll * roll);
+}
+
 float getTilt()
+// reads raw data and convertes into pitch and roll values (includes average calculation for filtering)
 {
   // make sure enough time for Acc to start
   uint32_t start = ACCINTERVAL;
@@ -706,6 +724,7 @@ float getTilt()
 }
 
 float getTemperature(bool block = false)
+// reads the temperature value // error handling by missing sensor
 {
   // we need to wait for DS18b20 to finish conversion
   float t = Temperatur;
@@ -741,13 +760,16 @@ float getTemperature(bool block = false)
   }
   return t;
 }
+
 float getBattery()
+// get battery voltage (includes conversation of raw value)
 {
   analogRead(A0); // drop first read
   return analogRead(A0) / my_vfact;
 }
 
 float calculateGravity()
+// calculates gravity out of tilt and temperature by using calibration data & formula
 {
   double _tilt = Tilt;
   double _temp = Temperatur;
@@ -769,6 +791,7 @@ float calculateGravity()
 }
 
 void flash()
+// get a sample of all data
 {
   // triggers the LED
   Volt = getBattery();
@@ -780,6 +803,7 @@ void flash()
 }
 
 bool isSafeMode(float _volt)
+// check battery charge level: du we need to protect battery?
 {
   if (_volt < LOWBATT)
   {
@@ -791,14 +815,20 @@ bool isSafeMode(float _volt)
 }
 
 bool connectBackupCredentials()
+// try to connect to wifi by using backup credential
 {
   WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
-  SerialOut(F("Rescue Wifi credentials"));
+  SerialOut(F("Rescue Wifi credentials: try to connect to ssid: \""), false);
+  SerialOut(WiFi.SSID(), false); 
+  SerialOut("\"\npwd:  \"", false);
+  SerialOut(WiFi.psk(), false);
+  SerialOut("\"");
   delay(100);
 }
 
 void setup()
+// main routine, runs after reset & after deepsleep phases
 {
 
   Serial.begin(115200);
@@ -806,8 +836,10 @@ void setup()
   SerialOut("\nFW " FIRMWAREVERSION);
   SerialOut(ESP.getSdkVersion());
 
+  //realize extended deep sleep phases / check if config-mode was requested
   sleepManager();
 
+  //initialize hardware
   initAccel();
   initDS18B20();
 
@@ -855,8 +887,10 @@ void setup()
   Volt = getBattery();
   // we try to survive
   if (isSafeMode(Volt))
+    // Battery is low
     WiFi.setOutputPower(0);
   else
+    // normal operation
     WiFi.setOutputPower(20.5);
 
 #ifndef USE_DMP
@@ -949,7 +983,7 @@ void setup()
   // SerialOut(corrGravity, true);
 
   unsigned long startedAt = millis();
-  SerialOut(F("After waiting "), false);
+  SerialOut(F("Waiting for Wifi connection..."), false);
   // int connRes = WiFi.waitForConnectResult();
   uint8_t wait = 0;
   while (WiFi.status() == WL_DISCONNECTED)
@@ -973,6 +1007,11 @@ void setup()
   }
   else
   {
+    SerialOut(F("failed to connect to ssid: \""), false);
+    SerialOut(WiFi.SSID(), false); 
+    SerialOut("\"\npwd:  \"", false);
+    SerialOut(WiFi.psk(), false);
+    SerialOut("\"");
     connectBackupCredentials();
     SerialOut("failed to connect");
   }
@@ -984,6 +1023,7 @@ void setup()
 }
 
 void loop()
+// loop not used due to deep sleep system --> after deep_sleep mode a reset follows --> runs setup()
 {
   SerialOut(F("should never be here!"));
 }
