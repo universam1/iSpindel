@@ -28,6 +28,7 @@ extern Ticker flasher;
 #define API_UBIDOTS true
 #define API_GENERIC true
 #define API_TCONTROL true
+#define API_INFLUXDB true
 
 #ifndef DEBUG
 #define DEBUG 1 // uncomment this line to enable serial diagnostic messages
@@ -54,6 +55,7 @@ extern Ticker flasher;
 #define DTFHEM  5
 #define DTTCP  6
 #define DTiSPINDELde 7
+#define DTInfluxDB 8
 
 // Number of seconds after reset during which a 
 // subseqent reset will be considered a double reset.

@@ -63,6 +63,7 @@ char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
+char my_db[TKIDSIZE] = "ispindel";
 char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 String my_ssid;
@@ -164,6 +165,8 @@ bool readConfig()
             my_port = json["Port"];
           if (json.containsKey("URL"))
             strcpy(my_url, json["URL"]);
+          if (json.containsKey("DB"))
+            strcpy(my_db, json["DB"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
 
@@ -361,6 +364,7 @@ bool startConfiguration()
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
+  WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
                                     String(my_vfact).c_str(), 7, TYPE_NUMBER);
 
@@ -378,6 +382,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_url);
+  wifiManager.addParameter(&custom_db);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
@@ -394,6 +399,7 @@ bool startConfiguration()
   validateInput(custom_name.getValue(), my_name);
   validateInput(custom_token.getValue(), my_token);
   validateInput(custom_server.getValue(), my_server);
+  validateInput(custom_db.getValue(), my_db);
   my_sleeptime = String(custom_sleep.getValue()).toInt();
 
   my_api = String(custom_api.getValue()).toInt();
@@ -448,6 +454,7 @@ bool saveConfig()
   json["API"] = my_api;
   json["Port"] = my_port;
   json["URL"] = my_url;
+  json["DB"] = my_db;
   json["Vfact"] = my_vfact;
 
   // Store current Wifi credentials
@@ -493,6 +500,21 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     SerialOut(F("\ncalling Ubidots"), true);
     return sender.sendUbidots(my_token, my_name);
+  }
+#endif
+
+#ifdef API_INFLUXDB
+  if (service == DTInfluxDB)
+  {
+    sender.add("tilt", Tilt);
+    sender.add("temperature", Temperatur);
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    SerialOut(F("\ncalling InfluxDB"), true);
+    Serial.println(String("Sending to db: ") + my_db);
+    return sender.sendInfluxDB(my_server, my_port, my_db, my_name);
   }
 #endif
 
