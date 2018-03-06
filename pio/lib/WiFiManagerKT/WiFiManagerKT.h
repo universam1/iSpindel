@@ -54,42 +54,49 @@ case "Ubidots":
 	set('server',0);
 	set('url',0);
 	set('port',0);
+	set('fingerprint',0);
   break;
 case "CraftBeerPi":
   set('url',0);
   set('port',0);
 	set('token',0);
 	set('server',1);
+	set('fingerprint',0);
   break;
 case "HTTP":
   set('url',1);
   set('port',1);
 	set('token',1);
 	set('server',1);
+	set('fingerprint',1);
   break;
 case "TControl":
   set('server',1);
   set('port',0);
   set('token',0);
   set('url',0);
+	set('fingerprint',0);
   break;
 case "FHEM":
   set('server',1);
   set('port',1);
   set('token',0);
   set('url',0);
+	set('fingerprint',0);
   break;
 case "TCP":
   set('server',1);
   set('port',1);
   set('token',1);
   set('url',0);
+	set('fingerprint',0);
   break;
 case "iSpindel.de":
   set('url',0);
   set('port',0);
 	set('token',1);
 	set('server',0);
+	set('fingerprint',0);
   break;
 }};
 window.onload = function(e){ 

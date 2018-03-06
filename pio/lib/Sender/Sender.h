@@ -17,7 +17,7 @@ class SenderClass
 public:
   SenderClass();
   bool sendTCP(String server, uint16_t port = 80);
-  bool sendGenericPost(String server, String url, uint16_t port = 80);
+  bool sendGenericPost(String server, String url, uint16_t port = 80, String Fingerprint = "");
   
   bool sendUbidots(String token, String name);
   bool sendFHEM(String server, uint16_t port, String name);
