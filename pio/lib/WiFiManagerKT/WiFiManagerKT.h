@@ -50,53 +50,53 @@ function sAPI(){
 	$('selAPI').value = parseInt($('API').options[$('API').selectedIndex].value);
 switch(sel) {
 case "Ubidots":
-	set('token',1);
 	set('server',0);
 	set('url',0);
 	set('port',0);
 	set('fingerprint',0);
+	set('token',1);
   break;
 case "CraftBeerPi":
-  set('url',0);
-  set('port',0);
-	set('token',0);
 	set('server',1);
+  set('port',0);
+  set('url',0);
 	set('fingerprint',0);
+	set('token',0);
   break;
 case "HTTP":
   set('url',1);
   set('port',1);
-	set('token',1);
 	set('server',1);
-	set('fingerprint',1);
+	set('fingerprint',0);
+	set('token',1);
   break;
 case "TControl":
   set('server',1);
   set('port',0);
-  set('token',0);
   set('url',0);
 	set('fingerprint',0);
+  set('token',0);
   break;
 case "FHEM":
   set('server',1);
   set('port',1);
-  set('token',0);
   set('url',0);
 	set('fingerprint',0);
+  set('token',0);
   break;
 case "TCP":
   set('server',1);
   set('port',1);
-  set('token',1);
   set('url',0);
 	set('fingerprint',0);
+  set('token',1);
   break;
 case "iSpindel.de":
-  set('url',0);
-  set('port',0);
-	set('token',1);
 	set('server',0);
+  set('port',0);
+  set('url',0);
 	set('fingerprint',0);
+	set('token',1);
   break;
 }};
 window.onload = function(e){ 
@@ -107,15 +107,17 @@ window.onload = function(e){
   $('API').value = $('selAPI').value; sAPI();};
 </script>)V0G0N";
 
+//Values have to match with those from Globals.h!
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <select id="API" onclick="sAPI()">
 <option value=0>Ubidots</option>
 <option value=2>CraftBeerPi</option>
 <option value=3>HTTP</option>
-<option value=4>TControl</option>
-<option value=5>FHEM</option>
-<option value=6>TCP</option>
-<option value=7>iSpindel.de</option>
+<option value=4>HTTPsecure</option>
+<option value=5>TControl</option>
+<option value=6>FHEM</option>
+<option value=7>TCP</option>
+<option value=8>iSpindel.de</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";
@@ -125,9 +127,9 @@ const char HTTP_HEAD_END[] PROGMEM = "</head><body><div class=\"container\">";
 const char HTTP_PORTAL_OPTIONS[] PROGMEM = "<form action=\"/iSpindel\" method=\"get\"><button class=\"btn\">iSpindel Info</button></form><br/><form action=\"/wifi\" method=\"get\"><button class=\"btn\">Configuration</button></form><br/><form action=\"/mnt\" method=\"get\"><button class=\"btn\">Maintenance</button></form><br/><form action=\"/i\" method=\"get\"><button class=\"btn\">Information</button></form><br/><form action=\"/close\" method=\"get\"><button class=\"btn\">Exit Portal</button></form><br/>";
 const char HTTP_ITEM[] PROGMEM = "<div><a href=\"#p\" onclick=\"c(this)\">{v}</a>&nbsp;<span class=\"q {i}\">{r}%</span></div>";
 const char JSON_ITEM[] PROGMEM = "{\"SSID\":\"{v}\", \"Encryption\":{i}, \"Quality\":\"{r}\"}";
-// const char HTTP_FORM_START[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" length=32 placeholder=\"SSID\"><label>Password</label><input id=\"p\" name=\"p\" length=64 placeholder=\"password\">";
-const char HTTP_FORM_START1[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" length=32 placeholder=\"SSID\" value=\"";
-const char HTTP_FORM_START2[] PROGMEM = "\"><label>Password</label><input id=\"p\" name=\"p\" length=64 placeholder=\"password\" value=\"";
+// const char HTTP_FORM_START[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" maxlength=32 placeholder=\"SSID\"><label>Password</label><input id=\"p\" name=\"p\" maxlength=63 placeholder=\"password\">";
+const char HTTP_FORM_START1[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" type=\"text\" maxlength=32 required placeholder=\"SSID\" value=\"";
+const char HTTP_FORM_START2[] PROGMEM = "\"><label>Password</label><input id=\"p\" name=\"p\" type=\"password\" maxlength=63 placeholder=\"password\" value=\"";
 const char HTTP_FORM_START3[] PROGMEM = "\">";
 
 const char HTTP_FORM_LABEL[] PROGMEM = "<label for=\"{i}\">{p}</label>";
@@ -280,6 +282,7 @@ private:
   void handleServerClose();
   void handleInfo();
   void handleiSpindel();
+  void handleSensors();
   void handleState();
   void handleScan();
   void handleReset();

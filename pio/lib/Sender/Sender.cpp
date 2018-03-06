@@ -32,6 +32,7 @@ void SenderClass::add(String id, int32_t value)
 }
 
 bool SenderClass::sendTCP(String server, uint16_t port)
+// transmit data to the given server by butting a JSON string as TCP stream to the server (?)
 {
     _jsonVariant.printTo(Serial);
 
@@ -109,6 +110,7 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port, Stri
 }
 
 bool SenderClass::sendUbidots(String token, String name)
+// transmit data to Ubidots server by using their POST method
 {
     _jsonVariant.printTo(Serial);
 
@@ -154,6 +156,7 @@ bool SenderClass::sendUbidots(String token, String name)
 }
 
 bool SenderClass::sendFHEM(String server, uint16_t port, String name)
+// transmit data to local FHEM server  using their POST method
 {
     _jsonVariant.printTo(Serial);
 
