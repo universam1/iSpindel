@@ -73,11 +73,11 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port, Stri
     // configure traged server and url
     String full_url = server + ":" + port + url;
     Serial.println("[HTTP] connecting to url: \"" + full_url + "\"");
-    if (strcmp(fingerprint, "")) {
+    if (fingerprint.length() != 40) {
       // use http
       http.begin(full_url);
     } else {
-      // use httpS
+      // use httpS with a 40 char fingerprint
       Serial.println("[HTTP] using https: expected fingerprint of server certificate: \"" + fingerprint+"\"");
       http.begin(full_url, fingerprint);
     }
