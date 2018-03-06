@@ -63,7 +63,7 @@ bool SenderClass::sendTCP(String server, uint16_t port)
     return true;
 }
 
-bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
+bool SenderClass::sendGenericPost(String server, String url, uint16_t port, String fingerprint)
 // transmit data to the given server by using the POST method and a JSON string
 {
     _jsonVariant.printTo(Serial);
