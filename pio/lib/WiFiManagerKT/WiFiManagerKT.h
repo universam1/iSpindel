@@ -55,6 +55,7 @@ case "Ubidots":
 	set('port',0);
 	set('fingerprint',0);
 	set('token',1);
+  set('db', 0);
   break;
 case "CraftBeerPi":
 	set('server',1);
@@ -62,13 +63,15 @@ case "CraftBeerPi":
   set('url',0);
 	set('fingerprint',0);
 	set('token',0);
+  set('db', 0);
   break;
 case "HTTP":
-  set('url',1);
-  set('port',1);
 	set('server',1);
+  set('port',1);
+  set('url',1);
 	set('fingerprint',0);
 	set('token',1);
+  set('db', 0);
   break;
 case "TControl":
   set('server',1);
@@ -76,6 +79,7 @@ case "TControl":
   set('url',0);
 	set('fingerprint',0);
   set('token',0);
+  set('db', 0);
   break;
 case "FHEM":
   set('server',1);
@@ -83,6 +87,7 @@ case "FHEM":
   set('url',0);
 	set('fingerprint',0);
   set('token',0);
+  set('db', 0);
   break;
 case "TCP":
   set('server',1);
@@ -90,6 +95,7 @@ case "TCP":
   set('url',0);
 	set('fingerprint',0);
   set('token',1);
+  set('db', 0);
   break;
 case "iSpindel.de":
 	set('server',0);
@@ -97,9 +103,17 @@ case "iSpindel.de":
   set('url',0);
 	set('fingerprint',0);
 	set('token',1);
+  set('db', 0);
   break;
+case "InfluxDB":
+  set('server',1);
+  set('port',1);
+  set('url',0);
+	set('fingerprint',0);
+  set('token',0);
+  set('db', 1);
 }};
-window.onload = function(e){ 
+window.onload = function(e){
  for (var i = 0; i < labels.length; i++) {
  if (labels[i].htmlFor != '') {
  var elem = $(labels[i].htmlFor);
@@ -113,11 +127,11 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=0>Ubidots</option>
 <option value=2>CraftBeerPi</option>
 <option value=3>HTTP</option>
-<option value=4>HTTPsecure</option>
-<option value=5>TControl</option>
-<option value=6>FHEM</option>
-<option value=7>TCP</option>
-<option value=8>iSpindel.de</option>
+<option value=4>TControl</option>
+<option value=5>FHEM</option>
+<option value=6>TCP</option>
+<option value=7>iSpindel.de</option>
+<option value=8>InfluxDB</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";

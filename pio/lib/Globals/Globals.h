@@ -21,13 +21,14 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "5.8.2"
+#define FIRMWAREVERSION "5.8.3"
 
 
 #define API_FHEM true
 #define API_UBIDOTS true
 #define API_GENERIC true
 #define API_TCONTROL true
+#define API_INFLUXDB true
 
 #ifndef DEBUG
 #define DEBUG 1 /* uncomment this line to enable serial diagnostic messages */
@@ -51,11 +52,11 @@ extern Ticker flasher;
 #define DTThingspeak 1
 #define DTCraftBeerPi 2
 #define DTHTTP 3
-#define DTHTTPsecure 4
-#define DTTcontrol 5
-#define DTFHEM  6
-#define DTTCP  7
-#define DTiSPINDELde 8
+#define DTTcontrol 4
+#define DTFHEM  5
+#define DTTCP  6
+#define DTiSPINDELde 7
+#define DTInfluxDB 8
 
 // Number of seconds after reset during which a 
 // subseqent reset will be considered a double reset.

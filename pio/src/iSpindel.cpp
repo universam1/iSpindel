@@ -64,6 +64,7 @@ char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
 char my_fingerprint[42]; // 40char + /0 (delimiter)
+char my_db[TKIDSIZE] = "ispindel";
 char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 String my_ssid;
@@ -170,6 +171,8 @@ bool readConfig()
             strcpy(my_url, json["URL"]);
           if (json.containsKey("Fingerprint"))
             strcpy(my_fingerprint, json["Fingerprint"]);
+          if (json.containsKey("DB"))
+            strcpy(my_db, json["DB"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
 
@@ -372,7 +375,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_url("url", "Server URL (/folder/file.php)", my_url, TKIDSIZE);
   WiFiManagerParameter custom_fingerprint("fingerprint", "Server Fingerprint (40 hex character, without colon or space)",
                                           my_fingerprint, sizeof(my_fingerprint));
-  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+  WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal",
                                       htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
@@ -390,6 +393,8 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_url);
   wifiManager.addParameter(&custom_fingerprint);
+  wifiManager.addParameter(&custom_db);
+  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
   wifiManager.addParameter(&custom_polynom);
   wifiManager.addParameter(&custom_vfact);
@@ -411,6 +416,7 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
   validateInput(custom_fingerprint.getValue(), my_fingerprint);
+  validateInput(custom_db.getValue(), my_db);
 
   strcpy(my_polynominal, custom_polynom.getValue());
   String tmp = custom_vfact.getValue();
@@ -464,6 +470,7 @@ bool saveConfig()
   json["Port"] = my_port;
   json["URL"] = my_url;
   json["Fingerprint"] = my_fingerprint;
+  json["DB"] = my_db;
   json["Vfact"] = my_vfact;
 
   // Store current Wifi credentials
@@ -510,6 +517,21 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     SerialOut(F("\ncalling Ubidots"), true);
     return sender.sendUbidots(my_token, my_name);
+  }
+#endif
+
+#ifdef API_INFLUXDB
+  if (service == DTInfluxDB)
+  {
+    sender.add("tilt", Tilt);
+    sender.add("temperature", Temperatur);
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    SerialOut(F("\ncalling InfluxDB"), true);
+    Serial.println(String("Sending to db: ") + my_db);
+    return sender.sendInfluxDB(my_server, my_port, my_db, my_name);
   }
 #endif
 

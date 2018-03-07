@@ -109,6 +109,56 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port, Stri
     http.end();
 }
 
+bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String name)
+{
+    HTTPClient http;
+
+    String uri = "/write?db=";
+    uri += db;
+
+    Serial.println(String("INFLUXDB: posting to db: ") + uri);
+    // configure traged server and url
+    http.begin(server, port, uri);
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    String msg;
+    msg += "measurements,source=";
+    msg += name;
+    msg += " ";
+
+    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    {
+        msg += kv.key;
+        msg += "=";
+        msg += kv.value.as<String>();
+        msg += ",";
+    }
+    msg.remove(msg.length() - 1);
+
+    Serial.println(String("POST data: ") + msg);
+
+    auto httpCode = http.POST(msg);
+    Serial.println(String("code: ") + httpCode);
+
+    // httpCode will be negative on error
+    if (httpCode > 0)
+    {
+        if (httpCode == HTTP_CODE_OK)
+        {
+            Serial.println(http.getString());
+        }
+    }
+    else
+    {
+        Serial.print(F("[HTTP] POST... failed, error: "));
+        Serial.println(http.errorToString(httpCode));
+    }
+
+    http.end();
+}
+
 bool SenderClass::sendUbidots(String token, String name)
 // transmit data to Ubidots server by using their POST method
 {
