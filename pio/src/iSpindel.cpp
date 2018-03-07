@@ -151,42 +151,42 @@ bool readConfig()
         {
           SerialOut(F("\nparsed json"));
 
-          if (json.containsKey("Name"))
-            strcpy(my_name, json["Name"]);
-          if (json.containsKey("Token"))
-            strcpy(my_token, json["Token"]);
-          if (json.containsKey("Server"))
-            strcpy(my_server, json["Server"]);
-          if (json.containsKey("Sleep"))
-            my_sleeptime = json["Sleep"];
-          if (json.containsKey("API"))
-            my_api = json["API"];
-          if (json.containsKey("Port"))
-            my_port = json["Port"];
-          if (json.containsKey("URL"))
-            strcpy(my_url, json["URL"]);
-          if (json.containsKey("DB"))
-            strcpy(my_db, json["DB"]);
-          if (json.containsKey("Vfact"))
-            my_vfact = json["Vfact"];
+          if (json.containsKey(F("Name")))
+            strcpy(my_name, json[F("Name")]);
+          if (json.containsKey(F("Token")))
+            strcpy(my_token, json[F("Token")]);
+          if (json.containsKey(F("Server")))
+            strcpy(my_server, json[F("Server")]);
+          if (json.containsKey(F("Sleep")))
+            my_sleeptime = json[F("Sleep")];
+          if (json.containsKey(F("API")))
+            my_api = json[F("API")];
+          if (json.containsKey(F("Port")))
+            my_port = json[F("Port")];
+          if (json.containsKey(F("URL")))
+            strcpy(my_url, json[F("URL")]);
+          if (json.containsKey(F("DB")))
+            strcpy(my_db, json[F("DB")]);
+          if (json.containsKey(F("Vfact")))
+            my_vfact = json[F("Vfact")];
 
-          if (json.containsKey("SSID"))
-            my_ssid = (const char *)json["SSID"];
-          if (json.containsKey("PSK"))
-            my_psk = (const char *)json["PSK"];
-          if (json.containsKey("POLY"))
-            strcpy(my_polynominal, json["POLY"]);
+          if (json.containsKey(F("SSID")))
+            my_ssid = (const char *)json[F("SSID")];
+          if (json.containsKey(F("PSK")))
+            my_psk = (const char *)json[F("PSK")];
+          if (json.containsKey(F("POLY")))
+            strcpy(my_polynominal, json[F("POLY")]);
 
           my_aX = UNINIT;
           my_aY = UNINIT;
           my_aZ = UNINIT;
 
-          if (json.containsKey("aX"))
-            my_aX = json["aX"];
-          if (json.containsKey("aY"))
-            my_aY = json["aY"];
-          if (json.containsKey("aZ"))
-            my_aZ = json["aZ"];
+          if (json.containsKey(F("aX")))
+            my_aX = json[F("aX")];
+          if (json.containsKey(F("aY")))
+            my_aY = json[F("aY")];
+          if (json.containsKey(F("aZ")))
+            my_aZ = json[F("aZ")];
           applyOffset();
 
           SerialOut(F("parsed config:"));
@@ -223,18 +223,18 @@ bool shouldStartConfig()
   // The ESP reset info is sill buggy. see http://www.esp8266.com/viewtopic.php?f=32&t=8411
   // The reset reason is "5" (woken from deep-sleep) in most cases (also after a power-cycle)
   // I added a single reset detection as workaround to enter the config-mode easier
-  SerialOut("Boot-Mode: ", false);
+  SerialOut(F("Boot-Mode: "), false);
   SerialOut(_reset_reason);
   bool _poweredOnOffOn = _reset_reason == REASON_DEFAULT_RST || _reset_reason == REASON_EXT_SYS_RST;
   if (_poweredOnOffOn)
-    SerialOut("power-cycle or reset detected, config mode");
+    SerialOut(F("power-cycle or reset detected, config mode"));
 
   bool _dblreset = drd.detectDoubleReset();
   if (_dblreset)
-    SerialOut("\nDouble Reset detected");
+    SerialOut(F("\nDouble Reset detected"));
   bool _validConf = readConfig();
   if (!_validConf)
-    SerialOut("\nERROR config corrupted");
+    SerialOut(F("\nERROR config corrupted"));
 
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
@@ -244,13 +244,13 @@ bool shouldStartConfig()
   {
     if (c > 10)
       break;
-    SerialOut('.', false);
+    SerialOut(F("."), false);
     delay(100);
     c++;
     _wifiCred = (WiFi.SSID() != "");
   }
   if (!_wifiCred)
-    SerialOut("\nERROR no Wifi credentials");
+    SerialOut(F("\nERROR no Wifi credentials"));
 
   if (_validConf && !_dblreset && _wifiCred && !_poweredOnOffOn)
   {
@@ -445,26 +445,26 @@ bool saveConfig()
   DynamicJsonBuffer jsonBuffer;
   JsonObject &json = jsonBuffer.createObject();
 
-  json["Name"] = my_name;
-  json["Token"] = my_token;
-  json["Sleep"] = my_sleeptime;
+  json[F("Name")] = my_name;
+  json[F("Token")] = my_token;
+  json[F("Sleep")] = my_sleeptime;
   // first reboot is for test
   my_sleeptime = 1;
-  json["Server"] = my_server;
-  json["API"] = my_api;
-  json["Port"] = my_port;
-  json["URL"] = my_url;
-  json["DB"] = my_db;
-  json["Vfact"] = my_vfact;
+  json[F("Server")] = my_server;
+  json[F("API")] = my_api;
+  json[F("Port")] = my_port;
+  json[F("URL")] = my_url;
+  json[F("DB")] = my_db;
+  json[F("Vfact")] = my_vfact;
 
   // Store current Wifi credentials
-  json["SSID"] = WiFi.SSID();
-  json["PSK"] = WiFi.psk();
+  json[F("SSID")] = WiFi.SSID();
+  json[F("PSK")] = WiFi.psk();
 
-  json["POLY"] = my_polynominal;
-  json["aX"] = my_aX;
-  json["aY"] = my_aY;
-  json["aZ"] = my_aZ;
+  json[F("POLY")] = my_polynominal;
+  json[F("aX")] = my_aX;
+  json[F("aY")] = my_aY;
+  json[F("aZ")] = my_aZ;
 
   File configFile = SPIFFS.open(CFGFILE, "w+");
   if (!configFile)
@@ -513,7 +513,7 @@ bool uploadData(uint8_t service)
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     SerialOut(F("\ncalling InfluxDB"), true);
-    Serial.println(String("Sending to db: ") + my_db);
+    Serial.println(String(F("Sending to db: ")) + my_db);
     return sender.sendInfluxDB(my_server, my_port, my_db, my_name);
   }
 #endif
@@ -602,7 +602,7 @@ void goodNight(uint32_t seconds)
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT:" + millis());
+    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + F("s; left: ") + left2sleep + F("s; RT:") + millis());
     ESP.deepSleep(MAXSLEEPTIME * 1e6, WAKE_RF_DISABLED);
     // workaround proper power state init
     delay(500);
@@ -614,7 +614,7 @@ void goodNight(uint32_t seconds)
     left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    SerialOut(String(F("\nFinal-sleep: ")) + _seconds + "s; RT:" + millis());
+    SerialOut(String(F("\nFinal-sleep: ")) + _seconds + F("s; RT:") + millis());
     // WAKE_RF_DEFAULT --> auto reconnect after wakeup
     ESP.deepSleep(_seconds * 1e6, WAKE_RF_DEFAULT);
     // workaround proper power state init
@@ -702,7 +702,7 @@ void getAccSample()
     accelgyro.getAcceleration(&ax, &az, &ay);
   else
   {
-    SerialOut(String("I2C ERROR: ") + res + " con:" + con);
+    SerialOut(String(F("I2C ERROR: ")) + res + F(" con:") + con);
   }
 }
 
@@ -718,9 +718,9 @@ float getTilt()
     start = millis();
     getAccSample();
     float _tilt = calculateTilt();
-    SerialOut("Spl ", false);
+    SerialOut(F("Spl "), false);
     SerialOut(i, false);
-    SerialOut(": ", false);
+    SerialOut(F(": "), false);
     SerialOut(_tilt);
     samples.add(_tilt);
   }
@@ -785,7 +785,7 @@ float calculateGravity()
   }
   else
   {
-    Serial.println(String("Parse error at ") + err);
+    Serial.println(String(F("Parse error at ")) + err);
   }
   return _gravity;
 }
@@ -805,7 +805,7 @@ bool isSafeMode(float _volt)
 {
   if (_volt < LOWBATT)
   {
-    SerialOut("\nWARNING: low Battery");
+    SerialOut(F("\nWARNING: low Battery"));
     return true;
   }
   else
@@ -887,13 +887,13 @@ void setup()
   while (fifoCount < packetSize)
   {
     //do stuff
-    Serial.println("wait DMP");
+    Serial.println(F("wait DMP"));
 
     fifoCount = accelgyro.getFIFOCount();
   }
   if (fifoCount == 1024)
   {
-    Serial.println("FIFO overflow");
+    Serial.println(F("FIFO overflow"));
     accelgyro.resetFIFO();
   }
   else
@@ -916,11 +916,11 @@ void setup()
       }
    */
 
-    Serial.print("euler\t");
+    Serial.print(F("euler\t"));
     Serial.print((euler[0] * 180 / M_PI));
-    Serial.print("\t");
+    Serial.print(F("\t"));
     Serial.print(euler[1] * 180 / M_PI);
-    Serial.print("\t");
+    Serial.print(F("\t"));
     Serial.println(euler[2] * 180 / M_PI);
 
     ax = euler[0];
@@ -988,7 +988,7 @@ void setup()
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    SerialOut("IP: ", false);
+    SerialOut(F("IP: "), false);
     SerialOut(WiFi.localIP());
     uploadData(my_api);
     delay(100); // workaround for https://github.com/esp8266/Arduino/issues/2750
@@ -996,7 +996,7 @@ void setup()
   else
   {
     connectBackupCredentials();
-    SerialOut("failed to connect");
+    SerialOut(F("failed to connect"));
   }
 
   // survive - 60min sleep time
