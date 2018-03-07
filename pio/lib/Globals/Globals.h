@@ -38,14 +38,14 @@ extern Ticker flasher;
 #define ADCDIVISOR 191.8
 #define ONE_WIRE_BUS D6  // DS18B20 on ESP pin12
 #define RESOLUTION 12 // 12bit resolution == 750ms update rate
-#define OWinterval (800 / (1 << (12 - RESOLUTION))) 
-#define CFGFILE "/config.json"
+#define OWinterval (800 / (1 << (12 - RESOLUTION)))
+#define CFGFILE F("/config.json")
 #define TKIDSIZE 40
 #define MEDIANROUNDS 7
 #define ACCINTERVAL 200
 #define MEDIANAVRG 3
 
-#define CBP_ENDPOINT "/api/hydrometer/v1/data"
+#define CBP_ENDPOINT F("/api/hydrometer/v1/data")
 
 #define DTUbiDots 0
 #define DTThingspeak 1
@@ -57,7 +57,7 @@ extern Ticker flasher;
 #define DTiSPINDELde 7
 #define DTInfluxDB 8
 
-// Number of seconds after reset during which a 
+// Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
 #define DRD_TIMEOUT 1
 // RTC Memory Address for the DoubleResetDetector to use
