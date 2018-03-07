@@ -126,7 +126,7 @@ case "Prometheus":
   set('port',1);
   set('db', 0);
   set('token',0);
-  set('url',1);
+  set('url',0);
   set('job',1);
   set('instance',1);
 }};

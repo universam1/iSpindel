@@ -148,7 +148,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     http.end();
 }
 
-bool SenderClass::sendPrometheus(String server, String url, uint16_t port, String job, String instance)
+bool SenderClass::sendPrometheus(String server, uint16_t port, String job, String instance)
 {
     HTTPClient http;
     

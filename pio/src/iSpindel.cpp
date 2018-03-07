@@ -541,7 +541,7 @@ bool uploadData(uint8_t service)
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     SerialOut(F("\ncalling Prometheus Pushgateway"), true);
-    return sender.sendPrometheus(my_server, my_url, my_port, my_job, my_instance);
+    return sender.sendPrometheus(my_server, my_port, my_job, my_instance);
   }
 #endif
 
