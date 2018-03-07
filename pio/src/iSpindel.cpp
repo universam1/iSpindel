@@ -536,7 +536,7 @@ bool uploadData(uint8_t service)
 #endif
 
 #ifdef API_GENERIC
-  if ((service == DTHTTP) || (service = DTHTTPsecure) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
+  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
   {
 
     sender.add("name", my_name);
@@ -554,12 +554,6 @@ bool uploadData(uint8_t service)
     {
       SerialOut(F("\ncalling HTTP"));
       return sender.sendGenericPost(my_server, my_url, my_port, my_fingerprint);
-    }
-    else if (service == DTHTTPsecure)
-    {
-      SerialOut(F("\ncalling HTTPS"));
-      
-      return sender.sendGenericPostSecure(my_server, my_url, my_port, my_fingerprint);
     }
     else if (service == DTCraftBeerPi)
     {
