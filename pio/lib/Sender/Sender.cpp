@@ -163,7 +163,7 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
     http.begin(server, port, uri);
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
-    http.addHeader("Content-Type", "text/plain");
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
     String msg;
 
@@ -181,7 +181,6 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
         msg += " ";
         msg += kv.value.as<String>();
         msg += "\n";
-
     }
 
     Serial.println(String("POST data: ") + msg);
