@@ -148,6 +148,60 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     http.end();
 }
 
+bool SenderClass::sendPrometheus(String server, String url, uint16_t port, String job, String instance)
+{
+    HTTPClient http;
+    
+    // the path looks like /metrics/job/<JOBNAME>[/instances/<INSTANCENAME>]
+    String uri = "/metrics/job/";
+    uri += job;
+    uri += "/instances/";
+    uri += instance;
+
+    Serial.println(String("PROMETHEUS: posting to Prometheus Pushgateway: ") + uri);
+    // configure traged server and url
+    http.begin(server, port, uri);
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    http.addHeader("Content-Type", "text/plain");
+
+    String msg;
+
+    //Build up the data for the Prometheus Pushgateway
+    //A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
+    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    {
+        msg += "# TYPE " + kv.key + " gauge\n";
+        msg += "# HELP approximate value of " + kv.key + "\n";
+        msg += kv.key;
+        msg += " ";
+        msg += kv.value.as<String>();
+        msg += "\n";
+
+    }
+
+    Serial.println(String("POST data: ") + msg);
+
+    auto httpCode = http.POST(msg);
+    Serial.println(String("code: ") + httpCode);
+
+    // httpCode will be negative on error
+    if (httpCode > 0)
+    {
+        if (httpCode == HTTP_CODE_OK)
+        {
+            Serial.println(http.getString());
+        }
+    }
+    else
+    {
+        Serial.print(F("[HTTP] POST... failed, error: "));
+        Serial.println(http.errorToString(httpCode));
+    }
+
+    http.end();
+}
+
 bool SenderClass::sendUbidots(String token, String name)
 {
     _jsonVariant.printTo(Serial);
