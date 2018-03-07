@@ -171,8 +171,12 @@ bool SenderClass::sendPrometheus(String server, String url, uint16_t port, Strin
     //A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
     for (const auto &kv : _jsonVariant.as<JsonObject>())
     {
-        msg += "# TYPE " + kv.key + " gauge\n";
-        msg += "# HELP approximate value of " + kv.key + "\n";
+        msg += "# TYPE ";
+        msg += kv.key;
+        msg += " gauge\n";
+        msg += "# HELP approximate value of ";
+        msg += kv.key;
+        msg += "\n";
         msg += kv.key;
         msg += " ";
         msg += kv.value.as<String>();
