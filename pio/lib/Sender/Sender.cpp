@@ -152,10 +152,10 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
 {
     HTTPClient http;
     
-    // the path looks like /metrics/job/<JOBNAME>[/instances/<INSTANCENAME>]
+    // the path looks like /metrics/job/<JOBNAME>[/instance/<INSTANCENAME>]
     String uri = "/metrics/job/";
     uri += job;
-    uri += "/instances/";
+    uri += "/instance/";
     uri += instance;
 
     Serial.println(String("PROMETHEUS: posting to Prometheus Pushgateway: ") + uri);
@@ -163,7 +163,7 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
     http.begin(server, port, uri);
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    http.addHeader("Content-Type", "text/plain");
 
     String msg;
 
@@ -174,9 +174,11 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
         msg += "# TYPE ";
         msg += kv.key;
         msg += " gauge\n";
-        msg += "# HELP approximate value of ";
+        msg += "# HELP ";
         msg += kv.key;
-        msg += "\n";
+        msg += " The approximate value of ";
+        msg += kv.key;
+        msg += ".\n";
         msg += kv.key;
         msg += " ";
         msg += kv.value.as<String>();
@@ -184,22 +186,19 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
     }
 
     Serial.println(String("POST data: ") + msg);
-
     auto httpCode = http.POST(msg);
-    Serial.println(String("code: ") + httpCode);
 
-    // httpCode will be negative on error
-    if (httpCode > 0)
+    // httpCode will be 202 on success
+    if (httpCode == 202)
     {
-        if (httpCode == HTTP_CODE_OK)
-        {
-            Serial.println(http.getString());
-        }
+        Serial.println(String("code: ") + httpCode);
+        Serial.println(http.getString());
     }
     else
     {
-        Serial.print(F("[HTTP] POST... failed, error: "));
+        Serial.println(String("code: ") + httpCode);
         Serial.println(http.errorToString(httpCode));
+        Serial.println(http.getString());
     }
 
     http.end();
