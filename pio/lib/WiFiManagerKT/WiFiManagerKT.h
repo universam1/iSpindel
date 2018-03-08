@@ -45,6 +45,9 @@ function set(id, show){
   $(id).style.display = show ? 'block':'none';
   $(id).label.style.display = show ? 'block':'none';}
 function c(l){s.value=l.innerText||l.textContent;p.focus();}
+function sTS(){
+  $('tempscale').value = parseInt($('TS').options[$('TS').selectedIndex].value);
+}
 function sAPI(){
 	var sel = $('API').options[$('API').selectedIndex].textContent;
 	$('selAPI').value = parseInt($('API').options[$('API').selectedIndex].value);
@@ -110,7 +113,8 @@ window.onload = function(e){
  if (labels[i].htmlFor != '') {
  var elem = $(labels[i].htmlFor);
  if (elem) elem.label = labels[i]; }}
-  $('API').value = $('selAPI').value; sAPI();};
+  $('API').value = $('selAPI').value; sAPI();
+  $('TS').value = $('tempscale').value; sTS();};
 </script>)V0G0N";
 
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
@@ -123,6 +127,13 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=6>TCP</option>
 <option value=7>iSpindel.de</option>
 <option value=8>InfluxDB</option>
+</select>)V0G0N";
+
+const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
+<select id="TS" onclick="sTS()">
+<option value=0>Celsius</option>
+<option value=1>Fahrenheit</option>
+<option value=2>Kelvin</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";
@@ -145,7 +156,7 @@ const char HTTP_END[] PROGMEM = "</div></body></html>";
 const char HTTP_UPDATE_FAI[] PROGMEM = "Update Failed!";
 const char HTTP_UPDATE_SUC[] PROGMEM = "Update Success! Rebooting...";
 
-#define WIFI_MANAGER_MAX_PARAMS 14
+#define WIFI_MANAGER_MAX_PARAMS 20
 
 class WiFiManagerParameter
 {
