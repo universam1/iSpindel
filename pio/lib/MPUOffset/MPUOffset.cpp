@@ -56,11 +56,11 @@ void MPUOffset::Initialize()
     // Serial.begin(115200);
 
     // // initialize device
-    // Serial.println("Initializing I2C devices...");
+    // Serial.println(F("Initializing I2C devices..."));
     // accelgyro.initialize();
 
     // verify connection
-    Serial.println("Testing device connections...");
+    Serial.println(F("Testing device connections..."));
     Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
     accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
       int Offset[6];
@@ -80,7 +80,7 @@ void MPUOffset::SetOffsets(int TheOffsets[6])
 void MPUOffset::ShowProgress()
   { if (LinesOut >= LinesBetweenHeaders)
       { // show header
-        Serial.println("\tXAccel\t\t\tYAccel\t\t\t\tZAccel");
+        Serial.println(F("\tXAccel\t\t\tYAccel\t\t\t\tZAccel"));
         LinesOut = 0;
       } // show header
     for (int i = iAx; i <= iAz; i++)
@@ -88,7 +88,7 @@ void MPUOffset::ShowProgress()
         Serial.print(LowOffset[i]),
         Serial.print(COMMA);
         Serial.print(HighOffset[i]);
-        Serial.print("] --> [");
+        Serial.print(F("] --> ["));
         Serial.print(LowValue[i]);
         Serial.print(COMMA);
         Serial.print(HighValue[i]);
@@ -156,9 +156,9 @@ void MPUOffset::PullBracketsOut()
   void MPUOffset::SetAveraging(int NewN)
   {
     N = NewN;
-    Serial.print("averaging ");
+    Serial.print(F("averaging "));
     Serial.print(N);
-    Serial.println(" readings each time");
+    Serial.println(F(" readings each time"));
   } // SetAveraging
 
   void MPUOffset::calibrate()
@@ -179,11 +179,11 @@ void MPUOffset::PullBracketsOut()
     Target[iAz] = 16384;
     SetAveraging(NFast);
 
-    Serial.println("expanding:");
+    Serial.println(F("expanding:"));
     ForceHeader();
     PullBracketsOut();
 
-    Serial.println("\nclosing in:");
+    Serial.println(F("\nclosing in:"));
     AllBracketsNarrow = false;
     ForceHeader();
     StillWorking = true;
@@ -232,10 +232,10 @@ void MPUOffset::PullBracketsOut()
       }   // closing in
       ShowProgress();
     } // still working
-    Serial.println("-------------- done --------------");
+    Serial.println(F("-------------- done --------------"));
     statustext = "done!";
     accelgyro.getAcceleration(&ax, &ay, &az);
-    Serial.print("a/g:\t");
+    Serial.print(F("a/g:\t"));
     Serial.print(ax);
     Serial.print("\t");
     Serial.print(ay);

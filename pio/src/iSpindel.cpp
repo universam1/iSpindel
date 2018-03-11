@@ -245,18 +245,18 @@ bool shouldStartConfig()
   // The ESP reset info is sill buggy. see http://www.esp8266.com/viewtopic.php?f=32&t=8411
   // The reset reason is "5" (woken from deep-sleep) in most cases (also after a power-cycle)
   // I added a single reset detection as workaround to enter the config-mode easier
-  SerialOut("Boot-Mode: ", false);
+  SerialOut(F("Boot-Mode: "), false);
   SerialOut(_reset_reason);
   bool _poweredOnOffOn = _reset_reason == REASON_DEFAULT_RST || _reset_reason == REASON_EXT_SYS_RST;
   if (_poweredOnOffOn)
-    SerialOut("power-cycle or reset detected, config mode");
+    SerialOut(F("power-cycle or reset detected, config mode"));
 
   bool _dblreset = drd.detectDoubleReset();
   if (_dblreset)
-    SerialOut("\nDouble Reset detected");
+    SerialOut(F("\nDouble Reset detected"));
   bool _validConf = readConfig();
   if (!_validConf)
-    SerialOut("\nERROR config corrupted");
+    SerialOut(F("\nERROR config corrupted"));
 
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
@@ -272,7 +272,7 @@ bool shouldStartConfig()
     _wifiCred = (WiFi.SSID() != "");
   }
   if (!_wifiCred)
-    SerialOut("\nERROR no Wifi credentials");
+    SerialOut(F("\nERROR no Wifi credentials"));
 
   if (_validConf && !_dblreset && _wifiCred && !_poweredOnOffOn)
   {
@@ -545,7 +545,7 @@ bool uploadData(uint8_t service)
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     SerialOut(F("\ncalling InfluxDB"), true);
-    Serial.println(String("Sending to db: ") + my_db);
+    Serial.println(String(F("Sending to db: ")) + my_db);
     return sender.sendInfluxDB(my_server, my_port, my_db, my_name);
   }
 #endif
@@ -677,7 +677,6 @@ void requestTemp()
     DS18B20.requestTemperatures();
     DSreqTime = millis();
     DSrequested = true;
-    // SerialOut("DEBUG DSreq:");
   }
 }
 
@@ -688,10 +687,7 @@ void initDS18B20()
   pinMode(ONE_WIRE_BUS, OUTPUT);
   digitalWrite(ONE_WIRE_BUS, LOW);
   delay(100);
-  // digitalWrite(ONE_WIRE_BUS, HIGH);
-  // delay(500);
-  // oneWire.reset();
-  // Start up the DS18B20
+ 
   DS18B20.begin();
   DS18B20.setWaitForConversion(false);
   DS18B20.getAddress(tempDeviceAddress, 0);
@@ -734,7 +730,7 @@ void getAccSample()
     accelgyro.getAcceleration(&ax, &az, &ay);
   else
   {
-    SerialOut(String("I2C ERROR: ") + res + " con:" + con);
+    SerialOut(String(F("I2C ERROR: ")) + res + " con:" + con);
   }
 }
 
@@ -750,7 +746,7 @@ float getTilt()
     start = millis();
     getAccSample();
     float _tilt = calculateTilt();
-    SerialOut("Spl ", false);
+    SerialOut(F("Spl "), false);
     SerialOut(i, false);
     SerialOut(": ", false);
     SerialOut(_tilt);
@@ -780,8 +776,6 @@ float getTemperature(bool block = false)
       pinMode(ONE_WIRE_BUS, OUTPUT);
       digitalWrite(ONE_WIRE_BUS, LOW);
       delay(100);
-      // digitalWrite(ONE_WIRE_BUS, HIGH);
-      // delay(500);
       oneWire.reset();
 
       if (block)
@@ -817,7 +811,7 @@ float calculateGravity()
   }
   else
   {
-    Serial.println(String("Parse error at ") + err);
+    Serial.println(String(F("Parse error at ")) + err);
   }
   return _gravity;
 }
@@ -837,7 +831,7 @@ bool isSafeMode(float _volt)
 {
   if (_volt < LOWBATT)
   {
-    SerialOut("\nWARNING: low Battery");
+    SerialOut(F("\nWARNING: low Battery"));
     return true;
   }
   else
@@ -857,7 +851,7 @@ void setup()
 
   Serial.begin(115200);
 
-  SerialOut("\nFW " FIRMWAREVERSION);
+  SerialOut(F("\nFW " FIRMWAREVERSION));
   SerialOut(ESP.getSdkVersion());
 
   sleepManager();
@@ -919,13 +913,13 @@ void setup()
   while (fifoCount < packetSize)
   {
     //do stuff
-    Serial.println("wait DMP");
+    Serial.println(F("wait DMP"));
 
     fifoCount = accelgyro.getFIFOCount();
   }
   if (fifoCount == 1024)
   {
-    Serial.println("FIFO overflow");
+    Serial.println(F("FIFO overflow"));
     accelgyro.resetFIFO();
   }
   else
@@ -948,7 +942,7 @@ void setup()
       }
    */
 
-    Serial.print("euler\t");
+    Serial.print(F("euler\t"));
     Serial.print((euler[0] * 180 / M_PI));
     Serial.print("\t");
     Serial.print(euler[1] * 180 / M_PI);
@@ -1020,7 +1014,7 @@ void setup()
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    SerialOut("IP: ", false);
+    SerialOut(F("IP: "), false);
     SerialOut(WiFi.localIP());
     uploadData(my_api);
     delay(100); // workaround for https://github.com/esp8266/Arduino/issues/2750
@@ -1028,7 +1022,7 @@ void setup()
   else
   {
     connectBackupCredentials();
-    SerialOut("failed to connect");
+    SerialOut(F("failed to connect"));
   }
 
   // survive - 60min sleep time

@@ -79,7 +79,7 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
     String json;
     _jsonVariant.printTo(json);
     auto httpCode = http.POST(json);
-    Serial.println(String("code: ") + httpCode);
+    Serial.println(String(F("code: ")) + httpCode);
 
     // httpCode will be negative on error
     if (httpCode > 0)
@@ -105,7 +105,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     String uri = "/write?db=";
     uri += db;
 
-    Serial.println(String("INFLUXDB: posting to db: ") + uri);
+    Serial.println(String(F("INFLUXDB: posting to db: ")) + uri);
     // configure traged server and url
     http.begin(server, port, uri);
     http.addHeader("User-Agent", "iSpindel");
@@ -126,10 +126,10 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     }
     msg.remove(msg.length() - 1);
 
-    Serial.println(String("POST data: ") + msg);
+    Serial.println(String(F("POST data: ")) + msg);
 
     auto httpCode = http.POST(msg);
-    Serial.println(String("code: ") + httpCode);
+    Serial.println(String(F("code: ")) + httpCode);
 
     // httpCode will be negative on error
     if (httpCode > 0)
