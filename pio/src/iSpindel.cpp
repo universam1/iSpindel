@@ -34,9 +34,9 @@ DeviceAddress tempDeviceAddress;
 Ticker flasher;
 RunningMedian samples = RunningMedian(MEDIANROUNDS);
 
-#define TEMP_CELSIUS      0
-#define TEMP_FAHRENHEIT   1
-#define TEMP_KELVIN       2
+#define TEMP_CELSIUS 0
+#define TEMP_FAHRENHEIT 1
+#define TEMP_KELVIN 2
 
 DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 
@@ -85,48 +85,23 @@ float pitch, roll;
 int16_t ax, ay, az;
 float Volt, Temperatur, Tilt, Gravity; // , corrGravity;
 
-
 bool DSrequested = false;
-
-bool isDebugEnabled()
-{
-#ifdef DEBUG
-  return true;
-#endif // DEBUG
-  return false;
-}
-
-// generic serial output
-template <typename T>
-void SerialOut(const T aValue, bool newLine = true)
-{
-  if (!isDebugEnabled())
-    return;
-  Serial.print(aValue);
-  if (newLine)
-    Serial.print("\n");
-}
-
-void SerialOut() { SerialOut(""); }
 
 float scaleTemperature(float t)
 {
   if (my_tempscale == TEMP_CELSIUS)
-     return t;
+    return t;
   else if (my_tempscale == TEMP_FAHRENHEIT)
-    return (1.8f*t+32);
+    return (1.8f * t + 32);
   else if (my_tempscale == TEMP_KELVIN)
     return t + 273.15f;
   else
     return t; // Invalid value for my_tempscale => default to celsius
-
-
 }
 
 // callback notifying us of the need to save config
 void saveConfigCallback()
 {
-  // WiFi.setAutoReconnect(true);
   shouldSaveConfig = true;
 }
 
@@ -134,30 +109,30 @@ void applyOffset()
 {
   if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT)
   {
-    SerialOut(F("applying offsets"));
+    CONSOLELN(F("applying offsets"));
     accelgyro.setXAccelOffset(my_aX);
     accelgyro.setYAccelOffset(my_aY);
     accelgyro.setZAccelOffset(my_aZ);
   }
   else
-    SerialOut(F("offsets not available"));
+    CONSOLELN(F("offsets not available"));
 }
 
 bool readConfig()
 {
-  SerialOut(F("mounting FS..."), false);
+  CONSOLE(F("mounting FS..."));
 
   if (SPIFFS.begin())
   {
-    SerialOut(F(" mounted!"));
+    CONSOLELN(F(" mounted!"));
     if (SPIFFS.exists(CFGFILE))
     {
       // file exists, reading and loading
-      SerialOut(F("reading config file"));
+      CONSOLELN(F("reading config file"));
       File configFile = SPIFFS.open(CFGFILE, "r");
       if (configFile)
       {
-        SerialOut(F("opened config file"));
+        CONSOLELN(F("opened config file"));
         size_t size = configFile.size();
         // Allocate a buffer to store contents of the file.
         std::unique_ptr<char[]> buf(new char[size]);
@@ -168,7 +143,7 @@ bool readConfig()
 
         if (json.success())
         {
-          SerialOut(F("\nparsed json"));
+          CONSOLELN(F("\nparsed json"));
 
           if (json.containsKey("Name"))
             strcpy(my_name, json["Name"]);
@@ -191,7 +166,6 @@ bool readConfig()
           if (json.containsKey("TS"))
             my_tempscale = json["TS"];
 
-
           if (json.containsKey("SSID"))
             my_ssid = (const char *)json["SSID"];
           if (json.containsKey("PSK"))
@@ -211,23 +185,24 @@ bool readConfig()
             my_aZ = json["aZ"];
           applyOffset();
 
-          SerialOut(F("parsed config:"));
-          if (isDebugEnabled)
-            json.printTo(Serial);
+          CONSOLELN(F("parsed config:"));
+#ifdef DEBUG
+          json.printTo(Serial);
+#endif
           return true;
         }
         else
         {
-          SerialOut(F("ERROR: failed to load json config"));
+          CONSOLELN(F("ERROR: failed to load json config"));
           return false;
         }
       }
-      SerialOut(F("ERROR: unable to open config file"));
+      CONSOLELN(F("ERROR: unable to open config file"));
     }
   }
   else
   {
-    SerialOut(F(" ERROR: failed to mount FS!"));
+    CONSOLELN(F(" ERROR: failed to mount FS!"));
     return false;
   }
 }
@@ -245,18 +220,18 @@ bool shouldStartConfig()
   // The ESP reset info is sill buggy. see http://www.esp8266.com/viewtopic.php?f=32&t=8411
   // The reset reason is "5" (woken from deep-sleep) in most cases (also after a power-cycle)
   // I added a single reset detection as workaround to enter the config-mode easier
-  SerialOut("Boot-Mode: ", false);
-  SerialOut(_reset_reason);
+  CONSOLE(F("Boot-Mode: "));
+  CONSOLELN(_reset_reason);
   bool _poweredOnOffOn = _reset_reason == REASON_DEFAULT_RST || _reset_reason == REASON_EXT_SYS_RST;
   if (_poweredOnOffOn)
-    SerialOut("power-cycle or reset detected, config mode");
+    CONSOLELN(F("power-cycle or reset detected, config mode"));
 
   bool _dblreset = drd.detectDoubleReset();
   if (_dblreset)
-    SerialOut("\nDouble Reset detected");
+    CONSOLELN(F("\nDouble Reset detected"));
   bool _validConf = readConfig();
   if (!_validConf)
-    SerialOut("\nERROR config corrupted");
+    CONSOLELN(F("\nERROR config corrupted"));
 
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
@@ -266,23 +241,23 @@ bool shouldStartConfig()
   {
     if (c > 10)
       break;
-    SerialOut('.', false);
+    CONSOLE('.');
     delay(100);
     c++;
     _wifiCred = (WiFi.SSID() != "");
   }
   if (!_wifiCred)
-    SerialOut("\nERROR no Wifi credentials");
+    CONSOLELN(F("\nERROR no Wifi credentials"));
 
   if (_validConf && !_dblreset && _wifiCred && !_poweredOnOffOn)
   {
-    SerialOut(F("\nwoken from deepsleep, normal mode"));
+    CONSOLELN(F("\nwoken from deepsleep, normal mode"));
     return false;
   }
   // config mode
   else
   {
-    SerialOut(F("\ngoing to Config Mode"));
+    CONSOLELN(F("\ngoing to Config Mode"));
     return true;
   }
 }
@@ -378,7 +353,7 @@ bool startConfiguration()
                                    TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token",  htmlencode(my_token).c_str(),
+  WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE);
   WiFiManagerParameter custom_server("server", "Server Address",
                                      my_server, TKIDSIZE);
@@ -391,8 +366,8 @@ bool startConfiguration()
                                     String(my_vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
-                                         String(my_tempscale).c_str(),
-                                         5, TYPE_HIDDEN, WFM_NO_LABEL);
+                                        String(my_tempscale).c_str(),
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
@@ -421,7 +396,7 @@ bool startConfiguration()
   wifiManager.setConfSSID(htmlencode(my_ssid));
   wifiManager.setConfPSK(htmlencode(my_psk));
 
-  SerialOut(F("started Portal"));
+  CONSOLELN(F("started Portal"));
   wifiManager.startConfigPortal("iSpindel");
 
   strcpy(my_polynominal, custom_polynom.getValue());
@@ -458,15 +433,15 @@ bool startConfiguration()
 
 void formatSpiffs()
 {
-  SerialOut(F("\nneed to format SPIFFS: "), false);
+  CONSOLE(F("\nneed to format SPIFFS: "));
   SPIFFS.end();
   SPIFFS.begin();
-  SerialOut(SPIFFS.format());
+  CONSOLELN(SPIFFS.format());
 }
 
 bool saveConfig()
 {
-  SerialOut(F("saving config..."), false);
+  CONSOLE(F("saving config..."));
 
   // if SPIFFS is not usable
   if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
@@ -501,18 +476,19 @@ bool saveConfig()
   File configFile = SPIFFS.open(CFGFILE, "w+");
   if (!configFile)
   {
-    SerialOut(F("failed to open config file for writing"), true);
+    CONSOLELN(F("failed to open config file for writing"));
     SPIFFS.end();
     return false;
   }
   else
   {
-    if (isDebugEnabled)
-      json.printTo(Serial);
+#ifdef DEBUG
+    json.printTo(Serial);
+#endif
     json.printTo(configFile);
     configFile.close();
     SPIFFS.end();
-    SerialOut(F("saved successfully"), true);
+    CONSOLELN(F("saved successfully"));
     return true;
   }
 }
@@ -530,7 +506,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
-    SerialOut(F("\ncalling Ubidots"), true);
+    CONSOLELN(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
   }
 #endif
@@ -544,8 +520,8 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
-    SerialOut(F("\ncalling InfluxDB"), true);
-    Serial.println(String("Sending to db: ") + my_db);
+    CONSOLELN(F("\ncalling InfluxDB"));
+    CONSOLELN(String(F("Sending to db: ")) + my_db);
     return sender.sendInfluxDB(my_server, my_port, my_db, my_name);
   }
 #endif
@@ -567,24 +543,24 @@ bool uploadData(uint8_t service)
 
     if (service == DTHTTP)
     {
-      SerialOut(F("\ncalling HTTP"));
+      CONSOLELN(F("\ncalling HTTP"));
       // return sender.send(my_server, my_url, my_port);
       return sender.sendGenericPost(my_server, my_url, my_port);
     }
     else if (service == DTCraftBeerPi)
     {
-      SerialOut(F("\ncalling CraftbeerPi"));
+      CONSOLELN(F("\ncalling CraftbeerPi"));
       // return sender.send(my_server, CBP_ENDPOINT, 5000);
       return sender.sendGenericPost(my_server, CBP_ENDPOINT, 5000);
     }
     else if (service == DTiSPINDELde)
     {
-      SerialOut(F("\ncalling iSPINDELde"));
+      CONSOLELN(F("\ncalling iSPINDELde"));
       return sender.sendTCP("ispindle.de", 9501);
     }
     else if (service == DTTCP)
     {
-      SerialOut(F("\ncalling TCP"));
+      CONSOLELN(F("\ncalling TCP"));
       return sender.sendTCP(my_server, my_port);
     }
   }
@@ -598,7 +574,7 @@ bool uploadData(uint8_t service)
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("ID", ESP.getChipId());
-    SerialOut(F("\ncalling FHEM"));
+    CONSOLELN(F("\ncalling FHEM"));
     return sender.sendFHEM(my_server, my_port, my_name);
   }
 #endif // DATABASESYSTEM ==
@@ -609,7 +585,7 @@ bool uploadData(uint8_t service)
     sender.add("D", Tilt);
     sender.add("U", Volt);
     sender.add("G", Gravity);
-    SerialOut(F("\ncalling TCONTROL"));
+    CONSOLELN(F("\ncalling TCONTROL"));
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
@@ -634,7 +610,7 @@ void goodNight(uint32_t seconds)
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    SerialOut(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT:" + millis());
+    CONSOLELN(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT:" + millis());
     ESP.deepSleep(MAXSLEEPTIME * 1e6, WAKE_RF_DISABLED);
     // workaround proper power state init
     delay(500);
@@ -646,7 +622,7 @@ void goodNight(uint32_t seconds)
     left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    SerialOut(String(F("\nFinal-sleep: ")) + _seconds + "s; RT:" + millis());
+    CONSOLELN(String(F("\nFinal-sleep: ")) + _seconds + "s; RT:" + millis());
     // WAKE_RF_DEFAULT --> auto reconnect after wakeup
     ESP.deepSleep(_seconds * 1e6, WAKE_RF_DEFAULT);
     // workaround proper power state init
@@ -666,7 +642,7 @@ void sleepManager()
   }
   else
   {
-    SerialOut(F("Worker run!"));
+    CONSOLELN(F("Worker run!"));
   }
 }
 
@@ -677,7 +653,6 @@ void requestTemp()
     DS18B20.requestTemperatures();
     DSreqTime = millis();
     DSrequested = true;
-    // SerialOut("DEBUG DSreq:");
   }
 }
 
@@ -688,10 +663,7 @@ void initDS18B20()
   pinMode(ONE_WIRE_BUS, OUTPUT);
   digitalWrite(ONE_WIRE_BUS, LOW);
   delay(100);
-  // digitalWrite(ONE_WIRE_BUS, HIGH);
-  // delay(500);
-  // oneWire.reset();
-  // Start up the DS18B20
+
   DS18B20.begin();
   DS18B20.setWaitForConversion(false);
   DS18B20.getAddress(tempDeviceAddress, 0);
@@ -734,7 +706,7 @@ void getAccSample()
     accelgyro.getAcceleration(&ax, &az, &ay);
   else
   {
-    SerialOut(String("I2C ERROR: ") + res + " con:" + con);
+    CONSOLELN(String(F("I2C ERROR: ")) + res + " con:" + con);
   }
 }
 
@@ -750,10 +722,10 @@ float getTilt()
     start = millis();
     getAccSample();
     float _tilt = calculateTilt();
-    SerialOut("Spl ", false);
-    SerialOut(i, false);
-    SerialOut(": ", false);
-    SerialOut(_tilt);
+    CONSOLE(F("Spl "));
+    CONSOLE(i);
+    CONSOLE(": ");
+    CONSOLELN(_tilt);
     samples.add(_tilt);
   }
   return samples.getAverage(MEDIANAVRG);
@@ -776,17 +748,15 @@ float getTemperature(bool block = false)
     if (t == DEVICE_DISCONNECTED_C || // DISCONNECTED
         t == 85.0)                    // we read 85 uninitialized
     {
-      SerialOut(F("ERROR: OW DISCONNECTED"));
+      CONSOLELN(F("ERROR: OW DISCONNECTED"));
       pinMode(ONE_WIRE_BUS, OUTPUT);
       digitalWrite(ONE_WIRE_BUS, LOW);
       delay(100);
-      // digitalWrite(ONE_WIRE_BUS, HIGH);
-      // delay(500);
       oneWire.reset();
 
       if (block)
       {
-        SerialOut(F("OW Retry"));
+        CONSOLELN(F("OW Retry"));
         initDS18B20();
         delay(OWinterval + 100);
         t = getTemperature(false);
@@ -817,7 +787,7 @@ float calculateGravity()
   }
   else
   {
-    Serial.println(String("Parse error at ") + err);
+    CONSOLELN(String(F("Parse error at ")) + err);
   }
   return _gravity;
 }
@@ -837,7 +807,7 @@ bool isSafeMode(float _volt)
 {
   if (_volt < LOWBATT)
   {
-    SerialOut("\nWARNING: low Battery");
+    CONSOLELN(F("\nWARNING: low Battery"));
     return true;
   }
   else
@@ -848,7 +818,7 @@ bool connectBackupCredentials()
 {
   WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
-  SerialOut(F("Rescue Wifi credentials"));
+  CONSOLELN(F("Rescue Wifi credentials"));
   delay(100);
 }
 
@@ -857,8 +827,8 @@ void setup()
 
   Serial.begin(115200);
 
-  SerialOut("\nFW " FIRMWAREVERSION);
-  SerialOut(ESP.getSdkVersion());
+  CONSOLELN(F("\nFW " FIRMWAREVERSION));
+  CONSOLELN(ESP.getSdkVersion());
 
   sleepManager();
 
@@ -877,7 +847,7 @@ void setup()
       drd.setRecentlyResetFlag();
       tmp = RTCVALIDFLAG;
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
-      Serial.println(F("reboot RFCAL"));
+      CONSOLELN(F("reboot RFCAL"));
       ESP.deepSleep(100000, WAKE_RFCAL);
       delay(500);
     }
@@ -919,13 +889,13 @@ void setup()
   while (fifoCount < packetSize)
   {
     //do stuff
-    Serial.println("wait DMP");
+    CONSOLELN(F("wait DMP"));
 
     fifoCount = accelgyro.getFIFOCount();
   }
   if (fifoCount == 1024)
   {
-    Serial.println("FIFO overflow");
+    CONSOLELN(F("FIFO overflow"));
     accelgyro.resetFIFO();
   }
   else
@@ -943,17 +913,17 @@ void setup()
 
     /*
       for (int i = 1; i < 64; i++) {
-        Serial.print(fifoBuffer[i]);
-        Serial.print(" ");
+        CONSOLE(fifoBuffer[i]);
+        CONSOLE(" ");
       }
    */
 
-    Serial.print("euler\t");
-    Serial.print((euler[0] * 180 / M_PI));
-    Serial.print("\t");
-    Serial.print(euler[1] * 180 / M_PI);
-    Serial.print("\t");
-    Serial.println(euler[2] * 180 / M_PI);
+    CONSOLE(F("euler\t"));
+    CONSOLE((euler[0] * 180 / M_PI));
+    CONSOLE("\t");
+    CONSOLE(euler[1] * 180 / M_PI);
+    CONSOLE("\t");
+    CONSOLELN(euler[2] * 180 / M_PI);
 
     ax = euler[0];
     ay = euler[2];
@@ -971,39 +941,39 @@ void setup()
   Temperatur = accelgyro.getTemperature() / 340.00 + 36.53;
   accelgyro.setSleepEnabled(true);
 
-  SerialOut(F("\na: "), false);
-  SerialOut(ax, false);
-  SerialOut(F("\t"), false);
-  SerialOut(ay, false);
-  SerialOut(F("\t"), false);
-  SerialOut(az, false);
+  CONSOLE(F("\na: "));
+  CONSOLE(ax);
+  CONSOLE(F("\t"));
+  CONSOLE(ay);
+  CONSOLE(F("\t"));
+  CONSOLE(az);
 
-  SerialOut(F("\tabsTilt: "), false);
-  SerialOut(Tilt, false);
-  SerialOut(F("\tT: "), false);
-  SerialOut(Temperatur, false);
-  SerialOut(F("\tV: "), false);
-  SerialOut(Volt, false);
+  CONSOLE(F("\tabsTilt: "));
+  CONSOLE(Tilt);
+  CONSOLE(F("\tT: "));
+  CONSOLE(Temperatur);
+  CONSOLE(F("\tV: "));
+  CONSOLE(Volt);
 
   // call as late as possible since DS needs converge time
   Temperatur = getTemperature(true);
-  SerialOut(F("\towT: "), false);
-  SerialOut(Temperatur, false);
+  CONSOLE(F("\towT: "));
+  CONSOLE(Temperatur);
 
   // calc gravity on user defined polynominal
   Gravity = calculateGravity();
-  SerialOut(F("\tGravity: "), false);
-  SerialOut(Gravity, true);
+  CONSOLE(F("\tGravity: "));
+  CONSOLELN(Gravity);
 
   // water anomaly correction
   // float _temp = Temperatur - 4; // polynominal at 4
   // float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
   // corrGravity = Gravity - (1 - wfact / 1000);
-  // SerialOut(F("\tcorrGravity: "), false);
-  // SerialOut(corrGravity, true);
+  // CONSOLE(F("\tcorrGravity: "));
+  // CONSOLELN(corrGravity);
 
   unsigned long startedAt = millis();
-  SerialOut(F("After waiting "), false);
+  CONSOLE(F("After waiting "));
   // int connRes = WiFi.waitForConnectResult();
   uint8_t wait = 0;
   while (WiFi.status() == WL_DISCONNECTED)
@@ -1014,21 +984,21 @@ void setup()
       break;
   }
   auto waited = (millis() - startedAt);
-  SerialOut(waited, false);
-  SerialOut(F("ms, result "), false);
-  SerialOut(WiFi.status());
+  CONSOLE(waited);
+  CONSOLE(F("ms, result "));
+  CONSOLELN(WiFi.status());
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    SerialOut("IP: ", false);
-    SerialOut(WiFi.localIP());
+    CONSOLE(F("IP: "));
+    CONSOLELN(WiFi.localIP());
     uploadData(my_api);
     delay(100); // workaround for https://github.com/esp8266/Arduino/issues/2750
   }
   else
   {
     connectBackupCredentials();
-    SerialOut("failed to connect");
+    CONSOLELN(F("failed to connect"));
   }
 
   // survive - 60min sleep time
@@ -1039,5 +1009,5 @@ void setup()
 
 void loop()
 {
-  SerialOut(F("should never be here!"));
+  CONSOLELN(F("should never be here!"));
 }

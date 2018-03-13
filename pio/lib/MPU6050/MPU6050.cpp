@@ -3296,17 +3296,17 @@ bool MPU6050_Base::writeMemoryBlock(const uint8_t *data, uint16_t dataSize, uint
             I2Cdev::readBytes(devAddr, MPU6050_RA_MEM_R_W, chunkSize, verifyBuffer);
             if (memcmp(progBuffer, verifyBuffer, chunkSize) != 0)
             {
-                /*Serial.print("Block write verification error, bank ");
+                /*Serial.print(F("Block write verification error, bank "));
                 Serial.print(bank, DEC);
-                Serial.print(", address ");
+                Serial.print(F(", address "));
                 Serial.print(address, DEC);
-                Serial.print("!\nExpected:");
+                Serial.print(F("!\nExpected:"));
                 for (j = 0; j < chunkSize; j++) {
                     Serial.print(" 0x");
                     if (progBuffer[j] < 16) Serial.print("0");
                     Serial.print(progBuffer[j], HEX);
                 }
-                Serial.print("\nReceived:");
+                Serial.print(F("\nReceived:"));
                 for (uint8_t j = 0; j < chunkSize; j++) {
                     Serial.print(" 0x");
                     if (verifyBuffer[i + j] < 16) Serial.print("0");
@@ -3376,11 +3376,11 @@ bool MPU6050_Base::writeDMPConfigurationSet(const uint8_t *data, uint16_t dataSi
         if (length > 0)
         {
             // regular block of data to write
-            /*Serial.print("Writing config block to bank ");
+            /*Serial.print(F("Writing config block to bank "));
             Serial.print(bank);
-            Serial.print(", offset ");
+            Serial.print(F(", offset "));
             Serial.print(offset);
-            Serial.print(", length=");
+            Serial.print(F(", length="));
             Serial.println(length);*/
             if (useProgMem)
             {
@@ -3411,9 +3411,9 @@ bool MPU6050_Base::writeDMPConfigurationSet(const uint8_t *data, uint16_t dataSi
             {
                 special = data[i++];
             }
-            /*Serial.print("Special command code ");
+            /*Serial.print(F("Special command code "));
             Serial.print(special, HEX);
-            Serial.println(" found...");*/
+            Serial.println(F(" found..."));*/
             if (special == 0x01)
             {
                 // enable DMP-related interrupts
