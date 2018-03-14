@@ -64,15 +64,24 @@ bool SenderClass::sendTCP(String server, uint16_t port)
     return true;
 }
 
-bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
+bool SenderClass::sendGenericPost(String server, String url, uint16_t port, String fingerprint)
 {
     _jsonVariant.printTo(Serial);
 
     HTTPClient http;
 
-    CONSOLELN(F("HTTPAPI: posting"));
     // configure traged server and url
-    http.begin(server, port, url);
+    String full_url = server + ":" + port + url;
+    CONSOLELN("[HTTP] connecting to url: \"" + full_url + "\"");
+    if (fingerprint.length() != 40) {
+      // use http
+      http.begin(full_url);
+    } else {
+      // use httpS with a 40 char fingerprint
+      CONSOLELN("[HTTP] using https: expected fingerprint of server certificate: \"" + fingerprint+"\"");
+      http.begin(full_url, fingerprint);
+    }
+
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
     http.addHeader("Content-Type", "application/json");

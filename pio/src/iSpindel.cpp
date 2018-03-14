@@ -67,6 +67,7 @@ char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
+char my_fingerprint[42]; // 40char + /0 (delimiter)
 char my_db[TKIDSIZE] = "ispindel";
 char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
@@ -159,6 +160,8 @@ bool readConfig()
             my_port = json["Port"];
           if (json.containsKey("URL"))
             strcpy(my_url, json["URL"]);
+          if (json.containsKey("Fingerprint"))
+            strcpy(my_fingerprint, json["Fingerprint"]);
           if (json.containsKey("DB"))
             strcpy(my_db, json["DB"]);
           if (json.containsKey("Vfact"))
@@ -355,12 +358,14 @@ bool startConfiguration()
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE);
-  WiFiManagerParameter custom_server("server", "Server Address",
+  WiFiManagerParameter custom_server("server", "Server Address (http://www.example.org)",
                                      my_server, TKIDSIZE);
-  WiFiManagerParameter custom_port("port", "Server Port",
+  WiFiManagerParameter custom_port("port", "Server Port (80)",
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
-  WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
+  WiFiManagerParameter custom_url("url", "Server URL (/folder/file.php)", my_url, TKIDSIZE);
+  WiFiManagerParameter custom_fingerprint("fingerprint", "Server Fingerprint (40 hex character, without colon or space)",
+                                          my_fingerprint, sizeof(my_fingerprint));
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
                                     String(my_vfact).c_str(), 7, TYPE_NUMBER);
@@ -387,6 +392,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_url);
+  wifiManager.addParameter(&custom_fingerprint);
   wifiManager.addParameter(&custom_db);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
@@ -411,6 +417,7 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
+  validateInput(custom_fingerprint.getValue(), my_fingerprint);
 
   String tmp = custom_vfact.getValue();
   tmp.trim();
@@ -460,6 +467,7 @@ bool saveConfig()
   json["API"] = my_api;
   json["Port"] = my_port;
   json["URL"] = my_url;
+  json["Fingerprint"] = my_fingerprint;
   json["DB"] = my_db;
   json["Vfact"] = my_vfact;
   json["TS"] = my_tempscale;
@@ -544,13 +552,11 @@ bool uploadData(uint8_t service)
     if (service == DTHTTP)
     {
       CONSOLELN(F("\ncalling HTTP"));
-      // return sender.send(my_server, my_url, my_port);
-      return sender.sendGenericPost(my_server, my_url, my_port);
+      return sender.sendGenericPost(my_server, my_url, my_port, my_fingerprint);
     }
     else if (service == DTCraftBeerPi)
     {
       CONSOLELN(F("\ncalling CraftbeerPi"));
-      // return sender.send(my_server, CBP_ENDPOINT, 5000);
       return sender.sendGenericPost(my_server, CBP_ENDPOINT, 5000);
     }
     else if (service == DTiSPINDELde)

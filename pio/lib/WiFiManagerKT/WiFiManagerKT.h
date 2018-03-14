@@ -57,6 +57,7 @@ case "Ubidots":
 	set('server',0);
 	set('url',0);
 	set('port',0);
+	set('fingerprint',0);
   set('db', 0);
   break;
 case "CraftBeerPi":
@@ -64,6 +65,7 @@ case "CraftBeerPi":
   set('port',0);
 	set('token',0);
 	set('server',1);
+  set('fingerprint',0);
   set('db', 0);
   break;
 case "HTTP":
@@ -71,6 +73,7 @@ case "HTTP":
   set('port',1);
 	set('token',1);
 	set('server',1);
+  set('fingerprint',0);
   set('db', 0);
   break;
 case "TControl":
@@ -78,6 +81,7 @@ case "TControl":
   set('port',0);
   set('token',0);
   set('url',0);
+	set('fingerprint',0);
   set('db', 0);
   break;
 case "FHEM":
@@ -85,6 +89,7 @@ case "FHEM":
   set('port',1);
   set('token',0);
   set('url',0);
+	set('fingerprint',0);
   set('db', 0);
   break;
 case "TCP":
@@ -92,11 +97,13 @@ case "TCP":
   set('port',1);
   set('token',1);
   set('url',0);
+	set('fingerprint',0);
   set('db', 0);
   break;
 case "iSpindel.de":
   set('url',0);
   set('port',0);
+	set('fingerprint',0);
 	set('token',1);
 	set('server',0);
   set('db', 0);
@@ -107,6 +114,7 @@ case "InfluxDB":
   set('db', 1);
   set('token',0);
   set('url',0);
+  set('fingerprint',0);
 }};
 window.onload = function(e){
  for (var i = 0; i < labels.length; i++) {
