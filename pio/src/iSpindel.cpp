@@ -107,6 +107,7 @@ void saveConfigCallback()
 }
 
 void applyOffset()
+// apply offset data from config file into the acceleration driver (next value-request will be corrected)
 {
   if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT)
   {
@@ -120,6 +121,7 @@ void applyOffset()
 }
 
 bool readConfig()
+// reads config-file from SPIF-File-System
 {
   CONSOLE(F("mounting FS..."));
 
@@ -239,6 +241,7 @@ bool shouldStartConfig()
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
   if (!_wifiCred)
+    // no wifi credentials avaliable, create your own network!
     WiFi.begin();
   while (!_wifiCred)
   {
@@ -274,6 +277,7 @@ void validateInput(const char *input, char *output)
 }
 
 String urlencode(String str)
+// encodes an string into an url by converting special characters into hexvalue (all outsinde 09AZaz)
 {
   String encodedString = "";
   char c;
@@ -316,6 +320,7 @@ String urlencode(String str)
 }
 
 String htmlencode(String str)
+// checks if string contains special characters out of 09azAZ and encodes in html style (&#hex;)
 {
   String encodedstr = "";
   char c;
@@ -439,6 +444,7 @@ bool startConfiguration()
 }
 
 void formatSpiffs()
+// erases all data from SPIF-file-system (kind of reset)
 {
   CONSOLE(F("\nneed to format SPIFFS: "));
   SPIFFS.end();
@@ -447,6 +453,7 @@ void formatSpiffs()
 }
 
 bool saveConfig()
+// saves config in JSON style into SPIF-file-system to survive reset
 {
   CONSOLE(F("saving config..."));
 
@@ -502,6 +509,7 @@ bool saveConfig()
 }
 
 bool uploadData(uint8_t service)
+// upload data to the configured server
 {
   SenderClass sender;
 
@@ -598,6 +606,7 @@ bool uploadData(uint8_t service)
 }
 
 void goodNight(uint32_t seconds)
+// prepare and go into deepsleep
 {
 
   uint32_t _seconds = seconds;
@@ -635,7 +644,11 @@ void goodNight(uint32_t seconds)
     delay(500);
   }
 }
+
 void sleepManager()
+// needed for realization of sleep times longer than the native max  ~75 (?) min
+// takes into account:
+// * double reset should follow up to setup --> deepsleep suppressed
 {
   uint32_t left2sleep, validflag;
   ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
@@ -653,6 +666,7 @@ void sleepManager()
 }
 
 void requestTemp()
+// request the temperature value of DS18B20 sensor (no value return)
 {
   if (DSrequested == false)
   {
@@ -663,8 +677,8 @@ void requestTemp()
 }
 
 void initDS18B20()
+// initialization of external HW: temperature sensor
 {
-
   // workaround for DS not enough power to boot
   pinMode(ONE_WIRE_BUS, OUTPUT);
   digitalWrite(ONE_WIRE_BUS, LOW);
@@ -678,6 +692,7 @@ void initDS18B20()
 }
 
 void initAccel()
+// initialization of external HW: acceleration sensor
 {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin(D3, D4);
@@ -695,6 +710,7 @@ void initAccel()
 }
 
 float calculateTilt()
+// converts the three undependend raw angles into a pitch and roll vector
 {
   float _ax = ax;
   float _ay = ay;
@@ -705,6 +721,7 @@ float calculateTilt()
 }
 
 void getAccSample()
+// request raw data of external HW: acceleration sensor
 {
   uint8_t res = Wire.status();
   uint8_t con = accelgyro.testConnection();
@@ -717,6 +734,7 @@ void getAccSample()
 }
 
 float getTilt()
+// reads raw data and convertes into pitch and roll values (includes average calculation for filtering)
 {
   // make sure enough time for Acc to start
   uint32_t start = ACCINTERVAL;
@@ -738,6 +756,7 @@ float getTilt()
 }
 
 float getTemperature(bool block = false)
+// reads the temperature value // error handling by missing sensor
 {
   // we need to wait for DS18b20 to finish conversion
   float t = Temperatur;
@@ -771,13 +790,16 @@ float getTemperature(bool block = false)
   }
   return t;
 }
+
 float getBattery()
+// get battery voltage (includes conversation of raw value)
 {
   analogRead(A0); // drop first read
   return analogRead(A0) / my_vfact;
 }
 
 float calculateGravity()
+// calculates gravity out of tilt and temperature by using calibration data & formula
 {
   double _tilt = Tilt;
   double _temp = Temperatur;
@@ -799,6 +821,7 @@ float calculateGravity()
 }
 
 void flash()
+// get a sample of all data
 {
   // triggers the LED
   Volt = getBattery();
@@ -810,6 +833,7 @@ void flash()
 }
 
 bool isSafeMode(float _volt)
+// check battery charge level: du we need to protect battery?
 {
   if (_volt < LOWBATT)
   {
@@ -821,6 +845,7 @@ bool isSafeMode(float _volt)
 }
 
 bool connectBackupCredentials()
+// try to connect to wifi by using backup credential
 {
   WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
@@ -829,6 +854,7 @@ bool connectBackupCredentials()
 }
 
 void setup()
+// main routine, runs after reset & after deepsleep phases
 {
 
   Serial.begin(115200);
@@ -885,8 +911,10 @@ void setup()
   Volt = getBattery();
   // we try to survive
   if (isSafeMode(Volt))
+    // Battery is low
     WiFi.setOutputPower(0);
   else
+    // normal operation
     WiFi.setOutputPower(20.5);
 
 #ifndef USE_DMP

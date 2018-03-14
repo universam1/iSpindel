@@ -125,6 +125,7 @@ window.onload = function(e){
   $('TS').value = $('tempscale').value; sTS();};
 </script>)V0G0N";
 
+//Values have to match with those from Globals.h!
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <select id="API" onclick="sAPI()">
 <option value=0>Ubidots</option>

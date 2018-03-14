@@ -66,6 +66,7 @@ extern Ticker flasher;
 
 #define CBP_ENDPOINT "/api/hydrometer/v1/data"
 
+//Values have to match with those from WiFiManagerKT.h!
 #define DTUbiDots 0
 #define DTThingspeak 1
 #define DTCraftBeerPi 2
