@@ -160,6 +160,62 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     http.end();
 }
 
+bool SenderClass::sendPrometheus(String server, uint16_t port, String job, String instance)
+{
+    HTTPClient http;
+    
+    // the path looks like /metrics/job/<JOBNAME>[/instance/<INSTANCENAME>]
+    String uri = "/metrics/job/";
+    uri += job;
+    uri += "/instance/";
+    uri += instance;
+
+    CONSOLELN(String("PROMETHEUS: posting to Prometheus Pushgateway: ") + uri);
+    // configure traged server and url
+    http.begin(server, port, uri);
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    http.addHeader("Content-Type", "text/plain");
+
+    String msg;
+
+    //Build up the data for the Prometheus Pushgateway
+    //A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
+    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    {
+        msg += "# TYPE ";
+        msg += kv.key;
+        msg += " gauge\n";
+        msg += "# HELP ";
+        msg += kv.key;
+        msg += " The approximate value of ";
+        msg += kv.key;
+        msg += ".\n";
+        msg += kv.key;
+        msg += " ";
+        msg += kv.value.as<String>();
+        msg += "\n";
+    }
+
+    CONSOLELN(String("POST data: ") + msg);
+    auto httpCode = http.POST(msg);
+
+    // httpCode will be 202 on success
+    if (httpCode == 202)
+    {
+        CONSOLELN(String("code: ") + httpCode);
+        CONSOLELN(http.getString());
+    }
+    else
+    {
+        CONSOLELN(String("code: ") + httpCode);
+        CONSOLELN(http.errorToString(httpCode));
+        CONSOLELN(http.getString());
+    }
+
+    http.end();
+}
+
 bool SenderClass::sendUbidots(String token, String name)
 // transmit data to Ubidots server by using their POST method
 {

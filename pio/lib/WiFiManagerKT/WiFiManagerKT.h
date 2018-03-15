@@ -55,10 +55,12 @@ switch(sel) {
 case "Ubidots":
   set('token',1);
   set('server',0);
-  set('url',0);
   set('port',0);
+  set('url',0);
   set('fingerprint',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "CraftBeerPi":
   set('token',0);
@@ -67,6 +69,8 @@ case "CraftBeerPi":
   set('url',0);
   set('fingerprint',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "HTTP":
   set('token',1);
@@ -75,6 +79,8 @@ case "HTTP":
   set('url',1);
   set('fingerprint',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "TControl":
   set('token',0);
@@ -83,6 +89,8 @@ case "TControl":
   set('url',0);
   set('fingerprint',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "FHEM":
   set('token',0);
@@ -91,6 +99,8 @@ case "FHEM":
   set('url',0);
   set('fingerprint',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "TCP":
   set('token',1);
@@ -99,6 +109,8 @@ case "TCP":
   set('url',0);
   set('fingerprint',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "iSpindel.de":
   set('token',1);
@@ -107,6 +119,8 @@ case "iSpindel.de":
   set('url',0);
   set('fingerprint',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "InfluxDB":
   set('token',0);
@@ -115,6 +129,18 @@ case "InfluxDB":
   set('url',0);
   set('fingerprint',0);
   set('db', 1);
+  set('job',0);
+  set('instance',0);
+  break;
+case "Prometheus":
+  set('token',0);
+  set('server',1);
+  set('port',1);
+  set('url',0);
+  set('fingerprint',0);
+  set('db', 0);
+  set('job',1);
+  set('instance',1);
 }};
 
 window.onload = function(e){
@@ -137,6 +163,7 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=6>TCP</option>
 <option value=7>iSpindel.de</option>
 <option value=8>InfluxDB</option>
+<option value=9>Prometheus</option>
 </select>)V0G0N";
 
 const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(

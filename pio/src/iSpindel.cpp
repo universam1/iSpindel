@@ -72,6 +72,8 @@ char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
 char my_fingerprint[42]; // 40char + /0 (delimiter)
 char my_db[TKIDSIZE] = "ispindel";
+char my_job[TKIDSIZE] = "ispindel";
+char my_instance[TKIDSIZE] = "000";
 char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 uint8_t my_api;
@@ -174,6 +176,11 @@ bool readConfig()
             strcpy(my_fingerprint, json["Fingerprint"]);
           if (json.containsKey("DB"))
             strcpy(my_db, json["DB"]);
+
+          if (json.containsKey("Job"))
+            strcpy(my_job, json["Job"]);
+          if (json.containsKey("Instance"))
+            strcpy(my_instance, json["Instance"]);            
 
           if (json.containsKey("POLY"))
             strcpy(my_polynominal, json["POLY"]);
@@ -376,10 +383,13 @@ bool startConfiguration()
   WiFiManagerParameter custom_fingerprint("fingerprint", "Server Fingerprint (40 hex character, without colon or space)",
                                           my_fingerprint, sizeof(my_fingerprint));
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
+  WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
+  WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
 
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal",
                                       htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
+
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
                                     String(my_vfact).c_str(), 7, TYPE_NUMBER);
 
@@ -402,6 +412,8 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_url);
   wifiManager.addParameter(&custom_fingerprint);
   wifiManager.addParameter(&custom_db);
+  wifiManager.addParameter(&custom_job);
+  wifiManager.addParameter(&custom_instance);
 
   wifiManager.addParameter(&custom_polynom_lbl);
   wifiManager.addParameter(&custom_polynom);
@@ -418,8 +430,8 @@ bool startConfiguration()
 
   validateInput(custom_name.getValue(), my_name);
   validateInput(custom_token.getValue(), my_token);
-  my_sleeptime = String(custom_sleep.getValue()).toInt();
 
+  my_sleeptime = String(custom_sleep.getValue()).toInt();
   my_api = String(custom_api.getValue()).toInt();
 
   validateInput(custom_server.getValue(), my_server);
@@ -427,6 +439,8 @@ bool startConfiguration()
   validateInput(custom_url.getValue(), my_url);
   validateInput(custom_fingerprint.getValue(), my_fingerprint);
   validateInput(custom_db.getValue(), my_db);
+  validateInput(custom_job.getValue(), my_job);
+  validateInput(custom_instance.getValue(), my_instance);
 
   strcpy(my_polynominal, custom_polynom.getValue());
 
@@ -489,13 +503,16 @@ bool saveConfig()
   json["URL"] = my_url;
   json["Fingerprint"] = my_fingerprint;
   json["DB"] = my_db;
-  json["TS"] = my_tempscale;
+  json["Job"] = my_job;
+  json["Instance"] = my_instance;
 
   json["POLY"] = my_polynominal;
+  json["TS"] = my_tempscale;
+  json["Vfact"] = my_vfact;
+
   json["aX"] = my_aX;
   json["aY"] = my_aY;
   json["aZ"] = my_aZ;
-  json["Vfact"] = my_vfact;
 
   File configFile = SPIFFS.open(CFGFILE, "w+");
   if (!configFile)
@@ -548,6 +565,20 @@ bool uploadData(uint8_t service)
     CONSOLELN(F("\ncalling InfluxDB"));
     CONSOLELN(String(F("Sending to db: ")) + my_db);
     return sender.sendInfluxDB(my_server, my_port, my_db, my_name);
+  }
+#endif
+
+#ifdef API_PROMETHEUS
+  if (service == DTPrometheus)
+  {
+    sender.add("tilt", Tilt);
+    sender.add("temperature", Temperatur);
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling Prometheus Pushgateway"));
+    return sender.sendPrometheus(my_server, my_port, my_job, my_instance);
   }
 #endif
 
