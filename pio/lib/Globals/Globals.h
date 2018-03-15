@@ -55,9 +55,9 @@ extern Ticker flasher;
 #define PORTALTIMEOUT 300
 
 #define ADCDIVISOR 191.8
-#define ONE_WIRE_BUS D6 // DS18B20 on ESP pin12
-#define RESOLUTION 12   // 12bit resolution == 750ms update rate
-#define OWinterval (800 / (1 << (12 - RESOLUTION)))
+#define ONE_WIRE_BUS D6  /* DS18B20 on ESP pin12 */
+#define RESOLUTION 12 /* 12bit resolution == 750ms update rate */
+#define OWinterval (800 / (1 << (12 - RESOLUTION))) 
 #define CFGFILE "/config.json"
 #define TKIDSIZE 40
 #define MEDIANROUNDS 7
@@ -66,6 +66,7 @@ extern Ticker flasher;
 
 #define CBP_ENDPOINT "/api/hydrometer/v1/data"
 
+//Values have to match with those from WiFiManagerKT.h!
 #define DTUbiDots 0
 #define DTThingspeak 1
 #define DTCraftBeerPi 2
@@ -87,8 +88,8 @@ extern Ticker flasher;
 
 // sleep management
 #define RTCSLEEPADDR 5
-#define MAXSLEEPTIME 3600UL //TODO
 #define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
+#define MAXSLEEPTIME 3600UL /* TODO */
 #define LOWBATT 3.3
 
 #define UNINIT 0
