@@ -377,11 +377,14 @@ bool startConfiguration()
   WiFiManagerParameter custom_fingerprint("fingerprint", "Server Fingerprint (40 hex character, without colon or space)",
                                           my_fingerprint, sizeof(my_fingerprint));
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
+
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal",
                                       htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
                                     String(my_vfact).c_str(), 7, TYPE_NUMBER);
+
+  WiFiManagerParameter custom_tempscale_hint("<label for=\"TS\">Unit of temperature</label>");
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
                                         String(my_tempscale).c_str(),
@@ -391,12 +394,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_sleep);
 
-  WiFiManagerParameter custom_tempscale_hint("<label for=\"TS\">Unit of temperature</label>");
-  wifiManager.addParameter(&custom_tempscale_hint);
-  wifiManager.addParameter(&tempscale_list);
-  wifiManager.addParameter(&custom_tempscale);
   wifiManager.addParameter(&custom_api_hint);
-
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
 
@@ -409,14 +407,15 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_polynom_lbl);
   wifiManager.addParameter(&custom_polynom);
   wifiManager.addParameter(&custom_vfact);
+  wifiManager.addParameter(&custom_tempscale_hint);
+  wifiManager.addParameter(&tempscale_list);
+  wifiManager.addParameter(&custom_tempscale);
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
   wifiManager.setConfPSK(htmlencode(my_psk));
 
   CONSOLELN(F("started Portal"));
   wifiManager.startConfigPortal("iSpindel");
-
-  strcpy(my_polynominal, custom_polynom.getValue());
 
   validateInput(custom_name.getValue(), my_name);
   validateInput(custom_token.getValue(), my_token);
@@ -429,6 +428,8 @@ bool startConfiguration()
   validateInput(custom_url.getValue(), my_url);
   validateInput(custom_fingerprint.getValue(), my_fingerprint);
   validateInput(custom_db.getValue(), my_db);
+
+  strcpy(my_polynominal, custom_polynom.getValue());
 
   String tmp = custom_vfact.getValue();
   tmp.trim();
