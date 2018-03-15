@@ -77,8 +77,9 @@ uint8_t my_api;
 uint32_t my_sleeptime = 15 * 60;
 uint16_t my_port = 80;
 float my_vfact = ADCDIVISOR;
-int16_t my_aX = UNINIT, my_aY = UNINIT, my_aZ = UNINIT;
 uint8_t my_tempscale = TEMP_CELSIUS;
+
+int16_t my_aX = UNINIT, my_aY = UNINIT, my_aZ = UNINIT;
 
 uint32_t DSreqTime;
 float pitch, roll;
@@ -148,6 +149,11 @@ bool readConfig()
         {
           CONSOLELN(F("\nparsed json"));
 
+          if (json.containsKey("SSID"))
+            my_ssid = (const char *)json["SSID"];
+          if (json.containsKey("PSK"))
+            my_psk = (const char *)json["PSK"];
+
           if (json.containsKey("Name"))
             strcpy(my_name, json["Name"]);
           if (json.containsKey("Token"))
@@ -166,17 +172,13 @@ bool readConfig()
             strcpy(my_fingerprint, json["Fingerprint"]);
           if (json.containsKey("DB"))
             strcpy(my_db, json["DB"]);
+
+          if (json.containsKey("POLY"))
+            strcpy(my_polynominal, json["POLY"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
           if (json.containsKey("TS"))
             my_tempscale = json["TS"];
-
-          if (json.containsKey("SSID"))
-            my_ssid = (const char *)json["SSID"];
-          if (json.containsKey("PSK"))
-            my_psk = (const char *)json["PSK"];
-          if (json.containsKey("POLY"))
-            strcpy(my_polynominal, json["POLY"]);
 
           my_aX = UNINIT;
           my_aY = UNINIT;
@@ -359,10 +361,11 @@ bool startConfiguration()
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
                                    TKIDSIZE);
-  WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
-                                    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE);
+  WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
+                                    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
+
   WiFiManagerParameter custom_server("server", "Server Address (http://www.example.org)",
                                      my_server, TKIDSIZE);
   WiFiManagerParameter custom_port("port", "Server Port (80)",
@@ -380,6 +383,7 @@ bool startConfiguration()
                                         5, TYPE_HIDDEN, WFM_NO_LABEL);
 
   wifiManager.addParameter(&custom_name);
+  wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_sleep);
   wifiManager.addParameter(&custom_vfact);
 
@@ -393,7 +397,6 @@ bool startConfiguration()
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
 
-  wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_url);
@@ -414,11 +417,12 @@ bool startConfiguration()
 
   validateInput(custom_name.getValue(), my_name);
   validateInput(custom_token.getValue(), my_token);
-  validateInput(custom_server.getValue(), my_server);
   validateInput(custom_db.getValue(), my_db);
   my_sleeptime = String(custom_sleep.getValue()).toInt();
 
   my_api = String(custom_api.getValue()).toInt();
+
+  validateInput(custom_server.getValue(), my_server);
   my_port = String(custom_port.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
@@ -465,6 +469,10 @@ bool saveConfig()
   DynamicJsonBuffer jsonBuffer;
   JsonObject &json = jsonBuffer.createObject();
 
+  // Store current Wifi credentials
+  json["SSID"] = WiFi.SSID();
+  json["PSK"] = WiFi.psk();
+
   json["Name"] = my_name;
   json["Token"] = my_token;
   json["Sleep"] = my_sleeptime;
@@ -478,10 +486,6 @@ bool saveConfig()
   json["DB"] = my_db;
   json["Vfact"] = my_vfact;
   json["TS"] = my_tempscale;
-
-  // Store current Wifi credentials
-  json["SSID"] = WiFi.SSID();
-  json["PSK"] = WiFi.psk();
 
   json["POLY"] = my_polynominal;
   json["aX"] = my_aX;
