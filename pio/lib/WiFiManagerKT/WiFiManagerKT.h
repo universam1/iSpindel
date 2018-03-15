@@ -53,69 +53,70 @@ function sAPI(){
 	$('selAPI').value = parseInt($('API').options[$('API').selectedIndex].value);
 switch(sel) {
 case "Ubidots":
-	set('token',1);
-	set('server',0);
-	set('url',0);
-	set('port',0);
-	set('fingerprint',0);
+  set('token',1);
+  set('server',0);
+  set('url',0);
+  set('port',0);
+  set('fingerprint',0);
   set('db', 0);
   break;
 case "CraftBeerPi":
-  set('url',0);
+  set('token',0);
+  set('server',1);
   set('port',0);
-	set('token',0);
-	set('server',1);
+  set('url',0);
   set('fingerprint',0);
   set('db', 0);
   break;
 case "HTTP":
-  set('url',1);
+  set('token',1);
+  set('server',1);
   set('port',1);
-	set('token',1);
-	set('server',1);
+  set('url',1);
   set('fingerprint',0);
   set('db', 0);
   break;
 case "TControl":
+  set('token',0);
   set('server',1);
   set('port',0);
-  set('token',0);
   set('url',0);
-	set('fingerprint',0);
+  set('fingerprint',0);
   set('db', 0);
   break;
 case "FHEM":
+  set('token',0);
   set('server',1);
   set('port',1);
-  set('token',0);
   set('url',0);
-	set('fingerprint',0);
+  set('fingerprint',0);
   set('db', 0);
   break;
 case "TCP":
+  set('token',1);
   set('server',1);
   set('port',1);
-  set('token',1);
   set('url',0);
-	set('fingerprint',0);
+  set('fingerprint',0);
   set('db', 0);
   break;
 case "iSpindel.de":
-  set('url',0);
+  set('token',1);
+  set('server',0);
   set('port',0);
-	set('fingerprint',0);
-	set('token',1);
-	set('server',0);
+  set('url',0);
+  set('fingerprint',0);
   set('db', 0);
   break;
 case "InfluxDB":
+  set('token',0);
   set('server',1);
   set('port',1);
-  set('db', 1);
-  set('token',0);
   set('url',0);
   set('fingerprint',0);
+  set('db', 1);
 }};
+
 window.onload = function(e){
  for (var i = 0; i < labels.length; i++) {
  if (labels[i].htmlFor != '') {
