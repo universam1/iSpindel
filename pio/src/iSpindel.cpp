@@ -63,11 +63,11 @@ float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravit
 
 bool shouldSaveConfig = false;
 
-char my_token[TKIDSIZE];
 String my_ssid;
 String my_psk;
 
 char my_name[TKIDSIZE] = "iSpindel000";
+char my_token[TKIDSIZE];
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
 char my_fingerprint[42]; // 40char + /0 (delimiter)
@@ -350,7 +350,6 @@ String htmlencode(String str)
 
 bool startConfiguration()
 {
-
   WiFiManager wifiManager;
 
   wifiManager.setConfigPortalTimeout(PORTALTIMEOUT);
@@ -364,6 +363,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
 
+  WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
   WiFiManagerParameter api_list(HTTP_API_LIST);
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
                                   20, TYPE_HIDDEN, WFM_NO_LABEL);
@@ -392,7 +392,6 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_tempscale_hint);
   wifiManager.addParameter(&tempscale_list);
   wifiManager.addParameter(&custom_tempscale);
-  WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
   wifiManager.addParameter(&custom_api_hint);
 
   wifiManager.addParameter(&api_list);
@@ -419,7 +418,6 @@ bool startConfiguration()
 
   validateInput(custom_name.getValue(), my_name);
   validateInput(custom_token.getValue(), my_token);
-  validateInput(custom_db.getValue(), my_db);
   my_sleeptime = String(custom_sleep.getValue()).toInt();
 
   my_api = String(custom_api.getValue()).toInt();
@@ -428,6 +426,7 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
   validateInput(custom_fingerprint.getValue(), my_fingerprint);
+  validateInput(custom_db.getValue(), my_db);
 
   String tmp = custom_vfact.getValue();
   tmp.trim();
