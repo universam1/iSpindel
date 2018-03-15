@@ -151,9 +151,8 @@ const char HTTP_HEAD_END[] PROGMEM = "</head><body><div class=\"container\">";
 const char HTTP_PORTAL_OPTIONS[] PROGMEM = "<form action=\"/iSpindel\" method=\"get\"><button class=\"btn\">iSpindel Info</button></form><br/><form action=\"/wifi\" method=\"get\"><button class=\"btn\">Configuration</button></form><br/><form action=\"/mnt\" method=\"get\"><button class=\"btn\">Maintenance</button></form><br/><form action=\"/i\" method=\"get\"><button class=\"btn\">Information</button></form><br/><form action=\"/close\" method=\"get\"><button class=\"btn\">Exit Portal</button></form><br/>";
 const char HTTP_ITEM[] PROGMEM = "<div><a href=\"#p\" onclick=\"c(this)\">{v}</a>&nbsp;<span class=\"q {i}\">{r}%</span></div>";
 const char JSON_ITEM[] PROGMEM = "{\"SSID\":\"{v}\", \"Encryption\":{i}, \"Quality\":\"{r}\"}";
-// const char HTTP_FORM_START[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" length=32 placeholder=\"SSID\"><label>Password</label><input id=\"p\" name=\"p\" length=64 placeholder=\"password\">";
-const char HTTP_FORM_START1[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" length=32 placeholder=\"SSID\" value=\"";
-const char HTTP_FORM_START2[] PROGMEM = "\"><label>Password</label><input id=\"p\" name=\"p\" length=64 placeholder=\"password\" value=\"";
+const char HTTP_FORM_START1[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" maxlength=32 required placeholder=\"SSID\" value=\"";
+const char HTTP_FORM_START2[] PROGMEM = "\"><label>Password</label><input id=\"p\" name=\"p\" maxlength=63 placeholder=\"password\" value=\"";
 const char HTTP_FORM_START3[] PROGMEM = "\">";
 
 const char HTTP_FORM_LABEL[] PROGMEM = "<label for=\"{i}\">{p}</label>";
