@@ -377,6 +377,9 @@ bool startConfiguration()
   WiFiManagerParameter custom_fingerprint("fingerprint", "Server Fingerprint (40 hex character, without colon or space)",
                                           my_fingerprint, sizeof(my_fingerprint));
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
+  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal",
+                                      htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
                                     String(my_vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
@@ -402,9 +405,8 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_url);
   wifiManager.addParameter(&custom_fingerprint);
   wifiManager.addParameter(&custom_db);
-  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
   wifiManager.addParameter(&custom_vfact);
 
