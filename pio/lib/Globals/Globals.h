@@ -27,6 +27,7 @@ extern Ticker flasher;
 #define API_GENERIC true
 #define API_TCONTROL true
 #define API_INFLUXDB true
+#define API_PROMETHEUS true
 
 #ifndef DEBUG
 #define DEBUG true
@@ -75,6 +76,7 @@ extern Ticker flasher;
 #define DTTCP 6
 #define DTiSPINDELde 7
 #define DTInfluxDB 8
+#define DTPrometheus 9
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
