@@ -8,6 +8,12 @@
 
 [![Build Status](https://travis-ci.org/universam1/iSpindel.svg?branch=master)](https://travis-ci.org/universam1/iSpindel)
 
+***
+
+# Featured in german brewing magazine [Braumagazin.de](http://braumagazin.de/?issue=2018-01)
+[![Braumagazin 1-18](/pics/Braumagazin.png)](http://braumagazin.de/?issue=2018-01)
+
+***
 
 If you like that project please vote for the [Hackaday.io *2017 Prize List*](https://hackaday.io/project/20421-ispindel)
 
