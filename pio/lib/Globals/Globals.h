@@ -53,25 +53,10 @@ extern Ticker flasher;
     } while (0)
 #endif
 
-/* ******************************************************************
- * Define witch board to use, either Wemos D1 mini or a plain ESP12F.
- * Remove the double // from the board you are using and add the
- * double // to the one not in use.
-****************************************************************** */
-//#define WEMOSD1
-#define ESP12F
-
 #define PORTALTIMEOUT 300
 
 #define ADCDIVISOR 191.8
-#ifdef defined(WEMOSD1)
-  #define ONE_WIRE_BUS D6 // DS18B20 on ESP pin12
-#elif defined(ESP12F)
-  #define ONE_WIRE_BUS 14 // DS18B20 on ESP GPIO14
-#else
-#error Unsupported board selection.
-#endif
-
+#define ONE_WIRE_BUS D6 // DS18B20 on ESP pin12
 #define RESOLUTION 12   // 12bit resolution == 750ms update rate
 #define OWinterval (800 / (1 << (12 - RESOLUTION)))
 #define CFGFILE "/config.json"

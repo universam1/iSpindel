@@ -166,7 +166,7 @@ bool readConfig()
           if (json.containsKey("Job"))
             strcpy(my_job, json["Job"]);
           if (json.containsKey("Instance"))
-            strcpy(my_instance, json["Instance"]);
+            strcpy(my_instance, json["Instance"]);            
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
           if (json.containsKey("TS"))
@@ -700,18 +700,10 @@ void initDS18B20()
 
 void initAccel()
 {
-// join I2C bus (I2Cdev library doesn't do this automatically)
-#ifdef defined(WEMOSD1)
+  // join I2C bus (I2Cdev library doesn't do this automatically)
   Wire.begin(D3, D4);
   Wire.setClock(100000);
   Wire.setClockStretchLimit(2 * 230);
-#elif defined(ESP12F)
-  Wire.begin(4, 5);
-  Wire.setClock(100000);
-  Wire.setClockStretchLimit(2 * 230);
-#else
-#error Unsupported board selection.
-#endif
 
   // init the Accel
   accelgyro.initialize();
