@@ -397,7 +397,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_db);
   wifiManager.addParameter(&custom_job);
   wifiManager.addParameter(&custom_instance);
-  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"0.00438*(tilt)*(tilt) + 0.13647*(tilt) - 6.96\"</label>");
+  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
