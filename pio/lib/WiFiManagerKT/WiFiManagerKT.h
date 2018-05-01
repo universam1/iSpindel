@@ -45,6 +45,9 @@ function set(id, show){
   $(id).style.display = show ? 'block':'none';
   $(id).label.style.display = show ? 'block':'none';}
 function c(l){s.value=l.innerText||l.textContent;p.focus();}
+function sTS(){
+  $('tempscale').value = parseInt($('TS').options[$('TS').selectedIndex].value);
+}
 function sAPI(){
 	var sel = $('API').options[$('API').selectedIndex].textContent;
 	$('selAPI').value = parseInt($('API').options[$('API').selectedIndex].value);
@@ -55,6 +58,8 @@ case "Ubidots":
 	set('url',0);
 	set('port',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "CraftBeerPi":
   set('url',0);
@@ -62,6 +67,8 @@ case "CraftBeerPi":
 	set('token',0);
 	set('server',1);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "HTTP":
   set('url',1);
@@ -69,6 +76,8 @@ case "HTTP":
 	set('token',1);
 	set('server',1);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "TControl":
   set('server',1);
@@ -76,6 +85,8 @@ case "TControl":
   set('token',0);
   set('url',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "FHEM":
   set('server',1);
@@ -83,6 +94,8 @@ case "FHEM":
   set('token',0);
   set('url',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "TCP":
   set('server',1);
@@ -90,6 +103,8 @@ case "TCP":
   set('token',1);
   set('url',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "iSpindel.de":
   set('url',0);
@@ -97,6 +112,8 @@ case "iSpindel.de":
 	set('token',1);
 	set('server',0);
   set('db', 0);
+  set('job',0);
+  set('instance',0);
   break;
 case "InfluxDB":
   set('server',1);
@@ -104,13 +121,25 @@ case "InfluxDB":
   set('db', 1);
   set('token',0);
   set('url',0);
+  set('job',0);
+  set('instance',0);
+  break;
+case "Prometheus":
+  set('server',1);
+  set('port',1);
+  set('db', 0);
+  set('token',0);
+  set('url',0);
+  set('job',1);
+  set('instance',1);
 }};
 window.onload = function(e){
  for (var i = 0; i < labels.length; i++) {
  if (labels[i].htmlFor != '') {
  var elem = $(labels[i].htmlFor);
  if (elem) elem.label = labels[i]; }}
-  $('API').value = $('selAPI').value; sAPI();};
+  $('API').value = $('selAPI').value; sAPI();
+  $('TS').value = $('tempscale').value; sTS();};
 </script>)V0G0N";
 
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
@@ -123,6 +152,14 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=6>TCP</option>
 <option value=7>iSpindel.de</option>
 <option value=8>InfluxDB</option>
+<option value=9>Prometheus</option>
+</select>)V0G0N";
+
+const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
+<select id="TS" onclick="sTS()">
+<option value=0>Celsius</option>
+<option value=1>Fahrenheit</option>
+<option value=2>Kelvin</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";
@@ -145,7 +182,7 @@ const char HTTP_END[] PROGMEM = "</div></body></html>";
 const char HTTP_UPDATE_FAI[] PROGMEM = "Update Failed!";
 const char HTTP_UPDATE_SUC[] PROGMEM = "Update Success! Rebooting...";
 
-#define WIFI_MANAGER_MAX_PARAMS 14
+#define WIFI_MANAGER_MAX_PARAMS 20
 
 class WiFiManagerParameter
 {

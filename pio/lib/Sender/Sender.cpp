@@ -6,6 +6,7 @@
  **************************************************************/
 
 #include "Sender.h"
+#include "Globals.h"
 
 #define UBISERVER "things.ubidots.com"
 #define CONNTIMEOUT 2000
@@ -37,13 +38,13 @@ bool SenderClass::sendTCP(String server, uint16_t port)
 
     if (_client.connect(server.c_str(), port))
     {
-        Serial.println(F("Sender: TCP stream"));
+        CONSOLELN(F("Sender: TCP stream"));
         _jsonVariant.printTo(_client);
         _client.println();
     }
     else
     {
-        Serial.println(F("\nERROR Sender: couldnt connect"));
+        CONSOLELN(F("\nERROR Sender: couldnt connect"));
     }
 
     int timeout = 0;
@@ -69,7 +70,7 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
 
     HTTPClient http;
 
-    Serial.println(F("HTTPAPI: posting"));
+    CONSOLELN(F("HTTPAPI: posting"));
     // configure traged server and url
     http.begin(server, port, url);
     http.addHeader("User-Agent", "iSpindel");
@@ -79,20 +80,20 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
     String json;
     _jsonVariant.printTo(json);
     auto httpCode = http.POST(json);
-    Serial.println(String("code: ") + httpCode);
+    CONSOLELN(String(F("code: ")) + httpCode);
 
     // httpCode will be negative on error
     if (httpCode > 0)
     {
         if (httpCode == HTTP_CODE_OK)
         {
-            Serial.println(http.getString());
+            CONSOLELN(http.getString());
         }
     }
     else
     {
-        Serial.print(F("[HTTP] POST... failed, error: "));
-        Serial.println(http.errorToString(httpCode));
+        CONSOLE(F("[HTTP] POST... failed, error: "));
+        CONSOLELN(http.errorToString(httpCode));
     }
 
     http.end();
@@ -105,7 +106,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     String uri = "/write?db=";
     uri += db;
 
-    Serial.println(String("INFLUXDB: posting to db: ") + uri);
+    CONSOLELN(String(F("INFLUXDB: posting to db: ")) + uri);
     // configure traged server and url
     http.begin(server, port, uri);
     http.addHeader("User-Agent", "iSpindel");
@@ -126,23 +127,79 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     }
     msg.remove(msg.length() - 1);
 
-    Serial.println(String("POST data: ") + msg);
+    CONSOLELN(String(F("POST data: ")) + msg);
 
     auto httpCode = http.POST(msg);
-    Serial.println(String("code: ") + httpCode);
+    CONSOLELN(String(F("code: ")) + httpCode);
 
     // httpCode will be negative on error
     if (httpCode > 0)
     {
         if (httpCode == HTTP_CODE_OK)
         {
-            Serial.println(http.getString());
+            CONSOLELN(http.getString());
         }
     }
     else
     {
-        Serial.print(F("[HTTP] POST... failed, error: "));
-        Serial.println(http.errorToString(httpCode));
+        CONSOLE(F("[HTTP] POST... failed, error: "));
+        CONSOLELN(http.errorToString(httpCode));
+    }
+
+    http.end();
+}
+
+bool SenderClass::sendPrometheus(String server, uint16_t port, String job, String instance)
+{
+    HTTPClient http;
+    
+    // the path looks like /metrics/job/<JOBNAME>[/instance/<INSTANCENAME>]
+    String uri = "/metrics/job/";
+    uri += job;
+    uri += "/instance/";
+    uri += instance;
+
+    CONSOLELN(String("PROMETHEUS: posting to Prometheus Pushgateway: ") + uri);
+    // configure traged server and url
+    http.begin(server, port, uri);
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    http.addHeader("Content-Type", "text/plain");
+
+    String msg;
+
+    //Build up the data for the Prometheus Pushgateway
+    //A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
+    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    {
+        msg += "# TYPE ";
+        msg += kv.key;
+        msg += " gauge\n";
+        msg += "# HELP ";
+        msg += kv.key;
+        msg += " The approximate value of ";
+        msg += kv.key;
+        msg += ".\n";
+        msg += kv.key;
+        msg += " ";
+        msg += kv.value.as<String>();
+        msg += "\n";
+    }
+
+    CONSOLELN(String("POST data: ") + msg);
+    auto httpCode = http.POST(msg);
+
+    // httpCode will be 202 on success
+    if (httpCode == 202)
+    {
+        CONSOLELN(String("code: ") + httpCode);
+        CONSOLELN(http.getString());
+    }
+    else
+    {
+        CONSOLELN(String("code: ") + httpCode);
+        CONSOLELN(http.errorToString(httpCode));
+        CONSOLELN(http.getString());
     }
 
     http.end();
@@ -154,7 +211,7 @@ bool SenderClass::sendUbidots(String token, String name)
 
     if (_client.connect(UBISERVER, 80))
     {
-        Serial.println(F("Sender: Ubidots posting"));
+        CONSOLELN(F("Sender: Ubidots posting"));
 
         String msg = F("POST /api/v1.6/devices/");
         msg += name;
@@ -165,15 +222,15 @@ bool SenderClass::sendUbidots(String token, String name)
         msg += "\r\n";
 
         _client.println(msg);
-        Serial.println(msg);
+        CONSOLELN(msg);
 
         _jsonVariant.printTo(_client);
         _client.println();
-        Serial.println(msg);
+        CONSOLELN(msg);
     }
     else
     {
-        Serial.println(F("\nERROR Sender: couldnt connect"));
+        CONSOLELN(F("\nERROR Sender: couldnt connect"));
     }
 
     int timeout = 0;
@@ -199,7 +256,7 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
 
     if (_client.connect(server.c_str(), port))
     {
-        Serial.println(F("\nSender: FHEM get"));
+        CONSOLELN(F("\nSender: FHEM get"));
 
         String msg = String("GET /fhem?cmd.Test=set%20");
         msg += name;
@@ -219,11 +276,11 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
         msg += F("\r\nConnection: close\r\n");
 
         _client.println(msg);
-        Serial.println(msg);
+        CONSOLELN(msg);
     }
     else
     {
-        Serial.println(F("\nERROR Sender: couldnt connect"));
+        CONSOLELN(F("\nERROR Sender: couldnt connect"));
     }
 
     int timeout = 0;
@@ -250,7 +307,7 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
     if (_client.connect(server.c_str(), port))
     {
 
-        Serial.println(F("Sender: TCONTROL"));
+        CONSOLELN(F("Sender: TCONTROL"));
         String msg;
 
         for (const auto &kv : _jsonVariant.as<JsonObject>())
@@ -263,11 +320,11 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
         msg.remove(msg.length() - 1);
 
         _client.println(msg);
-        Serial.println(msg);
+        CONSOLELN(msg);
     }
     else
     {
-        Serial.println(F("\nERROR Sender: couldnt connect"));
+        CONSOLELN(F("\nERROR Sender: couldnt connect"));
     }
 
     int timeout = 0;

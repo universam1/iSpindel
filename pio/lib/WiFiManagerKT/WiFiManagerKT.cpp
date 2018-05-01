@@ -229,7 +229,7 @@ void WiFiManager::handleUpdating()
   else if (upload.status == UPLOAD_FILE_ABORTED)
   {
     Update.end();
-    Serial.println("Update was aborted");
+    CONSOLELN("Update was aborted");
   }
   delay(0);
 }
@@ -253,12 +253,12 @@ void WiFiManager::handleUpdateDone()
   if (Update.hasError())
   {
     page += FPSTR(HTTP_UPDATE_FAI);
-    Serial.println("update failed");
+    CONSOLELN("update failed");
   }
   else
   {
     page += FPSTR(HTTP_UPDATE_SUC);
-    Serial.println("update done");
+    CONSOLELN("update done");
   }
   page += FPSTR(HTTP_END);
   server->send(200, "text/html", page);
@@ -1300,8 +1300,8 @@ void WiFiManager::DEBUG_WM(Generic text)
 {
   if (_debug)
   {
-    Serial.print("*WM: ");
-    Serial.println(text);
+    CONSOLE("*WM: ");
+    CONSOLELN(text);
   }
 }
 

@@ -8,6 +8,12 @@
 
 [![Build Status](https://travis-ci.org/universam1/iSpindel.svg?branch=master)](https://travis-ci.org/universam1/iSpindel)
 
+***
+
+# Featured in german brewing magazine [Braumagazin.de](http://braumagazin.de/?issue=2018-01)
+[![Braumagazin 1-18](/pics/Braumagazin.png)](http://braumagazin.de/?issue=2018-01)
+
+***
 
 If you like that project please vote for the [Hackaday.io *2017 Prize List*](https://hackaday.io/project/20421-ispindel)
 
@@ -38,6 +44,8 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 | Date       | Note                                                                                                                                                                                                                                                                                                                                                                                                 |
 | :--------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 15.03.2017 | Firmware 5.8.5: adding support for Prometheus Pushgateway, thanks to @jankeesv                                                                                                                                                                                                                                                                                                           |
+| 08.03.2017 | Firmware 5.8.4: adding support for logging temperature data in Fahrenheit and Kelvin, thanks to @iceaway                                                                                                                                                                                                                                                                                             |
 | 05.03.2017 | Firmware 5.8.3: Support for InfluxDB as additional backend, thanks to @iceaway                                                                                                                                                                                                                                                                                                                       |
 | 23.02.2017 | New drawer version 'mwx-Edition' using threaded bolt nut and washer - thanks to @mwx                                                                                                                                                                                                                                                                                                                 |
 | 21.02.2018 | Firmware 5.8.2: Extend token size to 40 char to support longer Ubidots token                                                                                                                                                                                                                                                                                                                         |
