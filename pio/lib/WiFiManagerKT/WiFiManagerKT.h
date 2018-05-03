@@ -58,6 +58,8 @@ case "Ubidots":
 	set('url',0);
 	set('port',0);
   set('db', 0);
+  set('username', 0);
+  set('password', 0);
   set('job',0);
   set('instance',0);
   break;
@@ -67,6 +69,8 @@ case "CraftBeerPi":
 	set('token',0);
 	set('server',1);
   set('db', 0);
+  set('username', 0);
+  set('password', 0);
   set('job',0);
   set('instance',0);
   break;
@@ -85,6 +89,8 @@ case "TControl":
   set('token',0);
   set('url',0);
   set('db', 0);
+  set('username', 0);
+  set('password', 0);
   set('job',0);
   set('instance',0);
   break;
@@ -94,6 +100,8 @@ case "FHEM":
   set('token',0);
   set('url',0);
   set('db', 0);
+  set('username', 0);
+  set('password', 0);
   set('job',0);
   set('instance',0);
   break;
@@ -103,6 +111,8 @@ case "TCP":
   set('token',1);
   set('url',0);
   set('db', 0);
+  set('username', 0);
+  set('password', 0);
   set('job',0);
   set('instance',0);
   break;
@@ -112,6 +122,8 @@ case "iSpindel.de":
 	set('token',1);
 	set('server',0);
   set('db', 0);
+  set('username', 0);
+  set('password', 0);
   set('job',0);
   set('instance',0);
   break;
@@ -119,6 +131,8 @@ case "InfluxDB":
   set('server',1);
   set('port',1);
   set('db', 1);
+  set('username', 1);
+  set('password', 1);
   set('token',0);
   set('url',0);
   set('job',0);
@@ -128,6 +142,8 @@ case "Prometheus":
   set('server',1);
   set('port',1);
   set('db', 0);
+  set('username', 0);
+  set('password', 0);
   set('token',0);
   set('url',0);
   set('job',1);
@@ -182,7 +198,7 @@ const char HTTP_END[] PROGMEM = "</div></body></html>";
 const char HTTP_UPDATE_FAI[] PROGMEM = "Update Failed!";
 const char HTTP_UPDATE_SUC[] PROGMEM = "Update Success! Rebooting...";
 
-#define WIFI_MANAGER_MAX_PARAMS 20
+#define WIFI_MANAGER_MAX_PARAMS 25
 
 class WiFiManagerParameter
 {
