@@ -99,7 +99,7 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
     http.end();
 }
 
-bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String name)
+bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password)
 {
     HTTPClient http;
 
@@ -109,6 +109,12 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     CONSOLELN(String(F("INFLUXDB: posting to db: ")) + uri);
     // configure traged server and url
     http.begin(server, port, uri);
+
+    if (username.length() > 0)
+    {
+      http.setAuthorization(username.c_str(), password.c_str());
+    }
+
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -147,6 +153,8 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     }
 
     http.end();
+
+    return true;
 }
 
 bool SenderClass::sendPrometheus(String server, uint16_t port, String job, String instance)

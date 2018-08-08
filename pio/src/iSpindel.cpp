@@ -68,6 +68,8 @@ char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
 char my_db[TKIDSIZE] = "ispindel";
+char my_username[TKIDSIZE];
+char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
 char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
@@ -176,10 +178,14 @@ bool readConfig()
             strcpy(my_url, json["URL"]);
           if (json.containsKey("DB"))
             strcpy(my_db, json["DB"]);
+          if (json.containsKey("Username"))
+            strcpy(my_username, json["Username"]);
+          if (json.containsKey("Password"))
+            strcpy(my_password, json["Password"]);
           if (json.containsKey("Job"))
             strcpy(my_job, json["Job"]);
           if (json.containsKey("Instance"))
-            strcpy(my_instance, json["Instance"]);            
+            strcpy(my_instance, json["Instance"]);
           if (json.containsKey("Vfact"))
             my_vfact = json["Vfact"];
           if (json.containsKey("TS"))
@@ -380,6 +386,8 @@ bool startConfiguration()
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
+  WiFiManagerParameter custom_username("username", "InfluxDB username", my_username, TKIDSIZE);
+  WiFiManagerParameter custom_password("password", "InfluxDB password", my_password, TKIDSIZE);
   WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
@@ -408,6 +416,8 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_url);
   wifiManager.addParameter(&custom_db);
+  wifiManager.addParameter(&custom_username);
+  wifiManager.addParameter(&custom_password);
   wifiManager.addParameter(&custom_job);
   wifiManager.addParameter(&custom_instance);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
@@ -427,6 +437,8 @@ bool startConfiguration()
   validateInput(custom_token.getValue(), my_token);
   validateInput(custom_server.getValue(), my_server);
   validateInput(custom_db.getValue(), my_db);
+  validateInput(custom_username.getValue(), my_username);
+  validateInput(custom_password.getValue(), my_password);
   validateInput(custom_job.getValue(), my_job);
   validateInput(custom_instance.getValue(), my_instance);
   my_sleeptime = String(custom_sleep.getValue()).toInt();
@@ -485,6 +497,8 @@ bool saveConfig()
   json["Port"] = my_port;
   json["URL"] = my_url;
   json["DB"] = my_db;
+  json["Username"] = my_username;
+  json["Password"] = my_password;
   json["Job"] = my_job;
   json["Instance"] = my_instance;
   json["Vfact"] = my_vfact;
@@ -549,8 +563,8 @@ bool uploadData(uint8_t service)
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling InfluxDB"));
-    CONSOLELN(String(F("Sending to db: ")) + my_db);
-    return sender.sendInfluxDB(my_server, my_port, my_db, my_name);
+    CONSOLELN(String(F("Sending to db: ")) + my_db + String(F(" w/ credentials: ")) + my_username + String(F(":")) + my_password);
+    return sender.sendInfluxDB(my_server, my_port, my_db, my_name, my_username, my_password);
   }
 #endif
 
