@@ -148,6 +148,17 @@ case "Prometheus":
   set('url',0);
   set('job',1);
   set('instance',1);
+  break;
+case "MQTT":
+  set('server',1);
+  set('port',1);
+  set('user', 1);
+  set('pw',1);
+  set('db', 0);
+  set('token',0);
+  set('url',0);
+  set('job',0);
+  set('instance',0);
 }};
 window.onload = function(e){
  for (var i = 0; i < labels.length; i++) {
@@ -169,6 +180,7 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=7>iSpindel.de</option>
 <option value=8>InfluxDB</option>
 <option value=9>Prometheus</option>
+<option value=10>MQTT</option>
 </select>)V0G0N";
 
 const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
