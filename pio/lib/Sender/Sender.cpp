@@ -7,6 +7,7 @@
 
 #include "Sender.h"
 #include "Globals.h"
+#include <PubSubClient.h>
 
 #define UBISERVER "things.ubidots.com"
 #define CONNTIMEOUT 2000
@@ -30,6 +31,47 @@ void SenderClass::add(String id, uint32_t value)
 void SenderClass::add(String id, int32_t value)
 {
     _jsonVariant[id] = value;
+}
+
+bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name) {
+	_mqttClient.setClient(_client);
+	_mqttClient.setServer(server.c_str(), port);
+	_mqttClient.setCallback([this](char* topic, byte* payload, unsigned int length) { this->mqttCallback(topic, payload, length); });
+
+	while (!_mqttClient.connected()) {
+		CONSOLELN(F("Attempting MQTT connection"));
+		// Attempt to connect
+		if (_mqttClient.connect(name.c_str(), username.c_str(), password.c_str())) {
+			CONSOLELN(F("Connected to MQTT"));
+		}
+		else {
+			CONSOLELN(F("Failed MQTT connection, return code:"));
+			CONSOLELN(_mqttClient.state());
+			CONSOLELN(F("Retrying MQTT connection in 5 seconds"));
+			// Wait 5 seconds before retrying
+			delay(5000);
+		}
+	}
+	//MQTT publish values
+	for (const auto &kv : _jsonVariant.as<JsonObject>())
+	{
+		CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key + "/" + kv.value.as<String>());
+		_mqttClient.publish(("ispindel/" + name + "/" + kv.key).c_str(), kv.value.as<String>().c_str());
+		_mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+	}
+
+	CONSOLELN(F("Closing MQTT connection"));
+	_mqttClient.disconnect();
+	delay(100); // allow gracefull session close
+	return true;
+}
+void SenderClass::mqttCallback(char* topic, byte* payload, unsigned int length) {
+	CONSOLELN(F("MQTT message arrived ["));
+	CONSOLELN(topic);
+	CONSOLELN(F("] "));
+	for (int i = 0; i < length; i++) {
+		CONSOLE((char)payload[i]);
+	}
 }
 
 bool SenderClass::sendTCP(String server, uint16_t port)
