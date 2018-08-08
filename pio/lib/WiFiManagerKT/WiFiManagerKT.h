@@ -152,9 +152,9 @@ case "Prometheus":
 case "MQTT":
   set('server',1);
   set('port',1);
-  set('user', 1);
-  set('pw',1);
   set('db', 0);
+  set('username', 1);
+  set('password',1);
   set('token',0);
   set('url',0);
   set('job',0);
