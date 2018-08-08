@@ -57,6 +57,8 @@ case "Ubidots":
 	set('server',0);
 	set('url',0);
 	set('port',0);
+  set('user', 0);
+  set('pw',0);
   set('db', 0);
   set('username', 0);
   set('password', 0);
@@ -66,6 +68,8 @@ case "Ubidots":
 case "CraftBeerPi":
   set('url',0);
   set('port',0);
+  set('user', 0);
+  set('pw',0);
 	set('token',0);
 	set('server',1);
   set('db', 0);
@@ -77,6 +81,8 @@ case "CraftBeerPi":
 case "HTTP":
   set('url',1);
   set('port',1);
+  set('user', 0);
+  set('pw',0);
 	set('token',1);
 	set('server',1);
   set('db', 0);
@@ -86,6 +92,8 @@ case "HTTP":
 case "TControl":
   set('server',1);
   set('port',0);
+  set('user', 0);
+  set('pw',0);
   set('token',0);
   set('url',0);
   set('db', 0);
@@ -97,6 +105,8 @@ case "TControl":
 case "FHEM":
   set('server',1);
   set('port',1);
+  set('user', 0);
+  set('pw',0);
   set('token',0);
   set('url',0);
   set('db', 0);
@@ -108,6 +118,8 @@ case "FHEM":
 case "TCP":
   set('server',1);
   set('port',1);
+  set('user', 0);
+  set('pw',0);
   set('token',1);
   set('url',0);
   set('db', 0);
@@ -119,6 +131,8 @@ case "TCP":
 case "iSpindel.de":
   set('url',0);
   set('port',0);
+  set('user', 0);
+  set('pw',0);
 	set('token',1);
 	set('server',0);
   set('db', 0);
@@ -130,6 +144,8 @@ case "iSpindel.de":
 case "InfluxDB":
   set('server',1);
   set('port',1);
+  set('user', 0);
+  set('pw',0);
   set('db', 1);
   set('username', 1);
   set('password', 1);
@@ -141,6 +157,8 @@ case "InfluxDB":
 case "Prometheus":
   set('server',1);
   set('port',1);
+  set('user', 0);
+  set('pw',0);
   set('db', 0);
   set('username', 0);
   set('password', 0);
@@ -148,6 +166,17 @@ case "Prometheus":
   set('url',0);
   set('job',1);
   set('instance',1);
+  break;
+case "MQTT":
+  set('server',1);
+  set('port',1);
+  set('user', 1);
+  set('pw',1);
+  set('db', 0);
+  set('token',0);
+  set('url',0);
+  set('job',0);
+  set('instance',0);
 }};
 window.onload = function(e){
  for (var i = 0; i < labels.length; i++) {
@@ -169,6 +198,7 @@ const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <option value=7>iSpindel.de</option>
 <option value=8>InfluxDB</option>
 <option value=9>Prometheus</option>
+<option value=10>MQTT</option>
 </select>)V0G0N";
 
 const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
