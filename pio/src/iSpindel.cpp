@@ -387,8 +387,8 @@ bool startConfiguration()
     TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
-  WiFiManagerParameter custom_username("username", "InfluxDB username", my_username, TKIDSIZE);
-  WiFiManagerParameter custom_password("password", "InfluxDB password", my_password, TKIDSIZE);
+  WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
+  WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
   WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
