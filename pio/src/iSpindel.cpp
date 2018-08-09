@@ -6,6 +6,7 @@ All rights reserverd by S.Lang <universam@web.de>
 **************************************************************/
 
 // includes go here
+#include <PubSubClient.h>
 #include "Globals.h"
 #include "MPUOffset.h"
 // #endif
@@ -371,31 +372,31 @@ bool startConfiguration()
 
   WiFiManagerParameter api_list(HTTP_API_LIST);
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
-                                  20, TYPE_HIDDEN, WFM_NO_LABEL);
+    20, TYPE_HIDDEN, WFM_NO_LABEL);
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
-                                   TKIDSIZE*2);
+    TKIDSIZE * 2);
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
-                                    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
+    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
-                                    TKIDSIZE*2);
+    TKIDSIZE * 2);
   WiFiManagerParameter custom_server("server", "Server Address",
-                                     my_server, TKIDSIZE);
+    my_server, TKIDSIZE);
   WiFiManagerParameter custom_port("port", "Server Port",
-                                   String(my_port).c_str(), TKIDSIZE,
-                                   TYPE_NUMBER);
+    String(my_port).c_str(), TKIDSIZE,
+    TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
-  WiFiManagerParameter custom_username("username", "InfluxDB username", my_username, TKIDSIZE);
-  WiFiManagerParameter custom_password("password", "InfluxDB password", my_password, TKIDSIZE);
+  WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
+  WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
   WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
-                                    String(my_vfact).c_str(), 7, TYPE_NUMBER);
+    String(my_vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
-                                        String(my_tempscale).c_str(),
-                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+    String(my_tempscale).c_str(),
+    5, TYPE_HIDDEN, WFM_NO_LABEL);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
@@ -422,7 +423,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_instance);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70*2, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70 * 2, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
@@ -481,7 +482,7 @@ bool saveConfig()
 
   // if SPIFFS is not usable
   if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
-      !SPIFFS.open(CFGFILE, "w"))
+    !SPIFFS.open(CFGFILE, "w"))
     formatSpiffs();
 
   DynamicJsonBuffer jsonBuffer;
@@ -549,6 +550,20 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
+  }
+#endif
+
+#ifdef API_MQTT
+  if (service == DTMQTT)
+  {
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling MQTT"));
+    return sender.sendMQTT(my_server, my_port, my_username, my_password, my_name);
   }
 #endif
 
@@ -804,7 +819,7 @@ float getTemperature(bool block = false)
     DSrequested = false;
 
     if (t == DEVICE_DISCONNECTED_C || // DISCONNECTED
-        t == 85.0)                    // we read 85 uninitialized
+      t == 85.0)                    // we read 85 uninitialized
     {
       CONSOLELN(F("ERROR: OW DISCONNECTED"));
       pinMode(ONE_WIRE_BUS, OUTPUT);
@@ -835,7 +850,7 @@ float calculateGravity()
   double _temp = Temperatur;
   float _gravity = 0;
   int err;
-  te_variable vars[] = {{"tilt", &_tilt}, {"temp", &_temp}};
+  te_variable vars[] = { { "tilt", &_tilt }, { "temp", &_temp } };
   te_expr *expr = te_compile(my_polynominal, vars, 2, &err);
 
   if (expr)
@@ -922,7 +937,7 @@ void setup()
     {
       // test if ssid exists
       if (WiFi.SSID() == "" &&
-          my_ssid != "" && my_psk != "")
+        my_ssid != "" && my_psk != "")
       {
         connectBackupCredentials();
       }
@@ -970,11 +985,11 @@ void setup()
     accelgyro.dmpGetEuler(euler, &q);
 
     /*
-      for (int i = 1; i < 64; i++) {
-        CONSOLE(fifoBuffer[i]);
-        CONSOLE(" ");
-      }
-   */
+    for (int i = 1; i < 64; i++) {
+    CONSOLE(fifoBuffer[i]);
+    CONSOLE(" ");
+    }
+    */
 
     CONSOLE(F("euler\t"));
     CONSOLE((euler[0] * 180 / M_PI));
