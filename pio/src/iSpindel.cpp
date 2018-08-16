@@ -543,7 +543,6 @@ bool uploadData(uint8_t service)
   {
     sender.add("tilt", Tilt);
     sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
@@ -558,6 +557,7 @@ bool uploadData(uint8_t service)
   {
     sender.add("tilt", Tilt);
     sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temp_units", tempScaleLabel());
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
