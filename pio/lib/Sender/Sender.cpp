@@ -69,7 +69,7 @@ void SenderClass::mqttCallback(char* topic, byte* payload, unsigned int length) 
 	CONSOLELN(F("MQTT message arrived ["));
 	CONSOLELN(topic);
 	CONSOLELN(F("] "));
-	for (int i = 0; i < length; i++) {
+	for (unsigned int i = 0; i < length; i++) {
 		CONSOLE((char)payload[i]);
 	}
 }
@@ -139,6 +139,7 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
     }
 
     http.end();
+    return true;
 }
 
 bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password)
@@ -253,6 +254,7 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
     }
 
     http.end();
+    return true;
 }
 
 bool SenderClass::sendUbidots(String token, String name)

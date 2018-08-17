@@ -395,7 +395,7 @@ boolean WiFiManager::startConfigPortal(char const *apName, char const *apPasswor
     yield();
   }
   WiFi.mode(WIFI_STA);
-  if (TimedOut & WiFi.status() != WL_CONNECTED)
+  if (TimedOut && WiFi.status() != WL_CONNECTED)
   {
     WiFi.begin();
     int connRes = waitForConnectResult();
@@ -1286,7 +1286,7 @@ int WiFiManager::scanWifiNetworks(int **indicesptr)
       int quality = getRSSIasQuality(WiFi.RSSI(indices[i]));
       if (!(_minimumQuality == -1 || _minimumQuality < quality))
       {
-        indices[i] == -1;
+        indices[i] = -1;
         DEBUG_WM(F("Skipping due to quality"));
       }
     }
@@ -1327,7 +1327,7 @@ int WiFiManager::getRSSIasQuality(int RSSI)
 /** Is this an IP? */
 boolean WiFiManager::isIp(String str)
 {
-  for (int i = 0; i < str.length(); i++)
+  for (unsigned int i = 0; i < str.length(); i++)
   {
     int c = str.charAt(i);
     if (c != '.' && (c < '0' || c > '9'))
