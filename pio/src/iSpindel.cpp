@@ -29,17 +29,19 @@ All rights reserverd by S.Lang <universam@web.de>
 
 // definitions go here
 MPU6050_Base accelgyro;
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature DS18B20(&oneWire);
+OneWire *oneWire;
+DallasTemperature DS18B20;
 DeviceAddress tempDeviceAddress;
 Ticker flasher;
 RunningMedian samples = RunningMedian(MEDIANROUNDS);
+DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 #define TEMP_CELSIUS 0
 #define TEMP_FAHRENHEIT 1
 #define TEMP_KELVIN 2
 
-DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
+int detectTempSensor(const uint8_t pins[]);
+bool testAccel();
 
 #ifdef USE_DMP
 #include "MPU6050.h"
@@ -83,14 +85,13 @@ uint16_t my_port = 80;
 float my_vfact = ADCDIVISOR;
 int16_t my_aX = UNINIT, my_aY = UNINIT, my_aZ = UNINIT;
 uint8_t my_tempscale = TEMP_CELSIUS;
+int8_t my_OWpin = -1;
 
-uint32_t DSreqTime;
+uint32_t DSreqTime = 0;
 float pitch, roll;
 
 int16_t ax, ay, az;
 float Volt, Temperatur, Tilt, Gravity; // , corrGravity;
-
-bool DSrequested = false;
 
 float scaleTemperature(float t)
 {
@@ -115,7 +116,6 @@ String tempScaleLabel(void)
   else
     return "C"; // Invalid value for my_tempscale => default to celsius
 }
-
 
 // callback notifying us of the need to save config
 void saveConfigCallback()
@@ -150,7 +150,6 @@ bool readConfig()
       File configFile = SPIFFS.open(CFGFILE, "r");
       if (configFile)
       {
-        CONSOLELN(F("opened config file"));
         size_t size = configFile.size();
         // Allocate a buffer to store contents of the file.
         std::unique_ptr<char[]> buf(new char[size]);
@@ -161,8 +160,6 @@ bool readConfig()
 
         if (json.success())
         {
-          CONSOLELN(F("\nparsed json"));
-
           if (json.containsKey("Name"))
             strcpy(my_name, json["Name"]);
           if (json.containsKey("Token"))
@@ -191,6 +188,8 @@ bool readConfig()
             my_vfact = json["Vfact"];
           if (json.containsKey("TS"))
             my_tempscale = json["TS"];
+          if (json.containsKey("OWpin"))
+            my_OWpin = json["OWpin"];
           if (json.containsKey("SSID"))
             my_ssid = (const char *)json["SSID"];
           if (json.containsKey("PSK"))
@@ -213,6 +212,7 @@ bool readConfig()
           CONSOLELN(F("parsed config:"));
 #ifdef DEBUG
           json.printTo(Serial);
+          CONSOLELN();
 #endif
           return true;
         }
@@ -233,7 +233,7 @@ bool readConfig()
   return true;
 }
 
-bool shouldStartConfig()
+bool shouldStartConfig(bool validConf)
 {
 
   // we make sure that configuration is properly set and we are not woken by
@@ -247,7 +247,7 @@ bool shouldStartConfig()
   // The reset reason is "5" (woken from deep-sleep) in most cases (also after a power-cycle)
   // I added a single reset detection as workaround to enter the config-mode easier
   CONSOLE(F("Boot-Mode: "));
-  CONSOLELN(_reset_reason);
+  CONSOLELN(ESP.getResetReason());
   bool _poweredOnOffOn = _reset_reason == REASON_DEFAULT_RST || _reset_reason == REASON_EXT_SYS_RST;
   if (_poweredOnOffOn)
     CONSOLELN(F("power-cycle or reset detected, config mode"));
@@ -255,9 +255,6 @@ bool shouldStartConfig()
   bool _dblreset = drd.detectDoubleReset();
   if (_dblreset)
     CONSOLELN(F("\nDouble Reset detected"));
-  bool _validConf = readConfig();
-  if (!_validConf)
-    CONSOLELN(F("\nERROR config corrupted"));
 
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
@@ -275,7 +272,7 @@ bool shouldStartConfig()
   if (!_wifiCred)
     CONSOLELN(F("\nERROR no Wifi credentials"));
 
-  if (_validConf && !_dblreset && _wifiCred && !_poweredOnOffOn)
+  if (validConf && !_dblreset && _wifiCred && !_poweredOnOffOn)
   {
     CONSOLELN(F("\nwoken from deepsleep, normal mode"));
     return false;
@@ -295,48 +292,6 @@ void validateInput(const char *input, char *output)
   tmp.replace(' ', '_');
   tmp.toCharArray(output, tmp.length() + 1);
 }
-
-// String urlencode(String str)
-// {
-//   String encodedString = "";
-//   char c;
-//   char code0;
-//   char code1;
-//   char code2;
-//   for (auto i = 0; i < str.length(); i++)
-//   {
-//     c = str.charAt(i);
-//     if (c == ' ')
-//     {
-//       encodedString += '+';
-//     }
-//     else if (isalnum(c))
-//     {
-//       encodedString += c;
-//     }
-//     else
-//     {
-//       code1 = (c & 0xf) + '0';
-//       if ((c & 0xf) > 9)
-//       {
-//         code1 = (c & 0xf) - 10 + 'A';
-//       }
-//       c = (c >> 4) & 0xf;
-//       code0 = c + '0';
-//       if (c > 9)
-//       {
-//         code0 = c - 10 + 'A';
-//       }
-//       code2 = '\0';
-//       encodedString += '%';
-//       encodedString += code0;
-//       encodedString += code1;
-//       //encodedString+=code2;
-//     }
-//     yield();
-//   }
-//   return encodedString;
-// }
 
 String htmlencode(String str)
 {
@@ -372,19 +327,19 @@ bool startConfiguration()
 
   WiFiManagerParameter api_list(HTTP_API_LIST);
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
-    20, TYPE_HIDDEN, WFM_NO_LABEL);
+                                  20, TYPE_HIDDEN, WFM_NO_LABEL);
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
-    TKIDSIZE * 2);
+                                   TKIDSIZE * 2);
   WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
-    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
+                                    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
-    TKIDSIZE * 2);
+                                    TKIDSIZE * 2);
   WiFiManagerParameter custom_server("server", "Server Address",
-    my_server, TKIDSIZE);
+                                     my_server, TKIDSIZE);
   WiFiManagerParameter custom_port("port", "Server Port",
-    String(my_port).c_str(), TKIDSIZE,
-    TYPE_NUMBER);
+                                   String(my_port).c_str(), TKIDSIZE,
+                                   TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
@@ -392,11 +347,11 @@ bool startConfiguration()
   WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
-    String(my_vfact).c_str(), 7, TYPE_NUMBER);
+                                    String(my_vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
-    String(my_tempscale).c_str(),
-    5, TYPE_HIDDEN, WFM_NO_LABEL);
+                                        String(my_tempscale).c_str(),
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
@@ -482,7 +437,7 @@ bool saveConfig()
 
   // if SPIFFS is not usable
   if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
-    !SPIFFS.open(CFGFILE, "w"))
+      !SPIFFS.open(CFGFILE, "w"))
     formatSpiffs();
 
   DynamicJsonBuffer jsonBuffer;
@@ -504,6 +459,7 @@ bool saveConfig()
   json["Instance"] = my_instance;
   json["Vfact"] = my_vfact;
   json["TS"] = my_tempscale;
+  json["OWpin"] = my_OWpin;
 
   // Store current Wifi credentials
   json["SSID"] = WiFi.SSID();
@@ -662,7 +618,7 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
-return false;
+  return false;
 }
 
 void goodNight(uint32_t seconds)
@@ -675,8 +631,8 @@ void goodNight(uint32_t seconds)
   drd.stop();
 
   // workaround for DS not floating
-  pinMode(ONE_WIRE_BUS, OUTPUT);
-  digitalWrite(ONE_WIRE_BUS, LOW);
+  pinMode(my_OWpin, OUTPUT);
+  digitalWrite(my_OWpin, LOW);
 
   // we need another incarnation before work run
   if (_seconds > MAXSLEEPTIME)
@@ -684,10 +640,8 @@ void goodNight(uint32_t seconds)
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    CONSOLELN(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT:" + millis());
+    CONSOLELN(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT: " + millis());
     ESP.deepSleep(MAXSLEEPTIME * 1e6, WAKE_RF_DISABLED);
-    // workaround proper power state init
-    delay(500);
   }
   // regular sleep with RF enabled after wakeup
   else
@@ -696,12 +650,12 @@ void goodNight(uint32_t seconds)
     left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    CONSOLELN(String(F("\nFinal-sleep: ")) + _seconds + "s; RT:" + millis());
+    CONSOLELN(String(F("\nFinal-sleep: ")) + _seconds + "s; RT: " + millis());
     // WAKE_RF_DEFAULT --> auto reconnect after wakeup
     ESP.deepSleep(_seconds * 1e6, WAKE_RF_DEFAULT);
-    // workaround proper power state init
-    delay(500);
   }
+  // workaround proper power state init
+  delay(500);
 }
 void sleepManager()
 {
@@ -722,25 +676,51 @@ void sleepManager()
 
 void requestTemp()
 {
-  if (!DSrequested)
+  if (!DSreqTime)
   {
     DS18B20.requestTemperatures();
     DSreqTime = millis();
-    DSrequested = true;
   }
 }
 
 void initDS18B20()
 {
-
-  // workaround for DS not enough power to boot
-  pinMode(ONE_WIRE_BUS, OUTPUT);
-  digitalWrite(ONE_WIRE_BUS, LOW);
+  if (my_OWpin == -1)
+  {
+    my_OWpin = detectTempSensor(OW_PINS);
+    if (my_OWpin == -1)
+    {
+      CONSOLELN(F("ERROR: cannot find a OneWire Temperature Sensor!"));
+      return;
+    }
+  }
+  pinMode(my_OWpin, OUTPUT);
+  digitalWrite(my_OWpin, LOW);
   delay(100);
-
+  oneWire = new OneWire(my_OWpin);
+  DS18B20 = DallasTemperature(oneWire);
   DS18B20.begin();
+
+  bool device = DS18B20.getAddress(tempDeviceAddress, 0);
+  if (!device)
+  {
+    my_OWpin = detectTempSensor(OW_PINS);
+    if (my_OWpin == -1)
+    {
+      CONSOLELN(F("ERROR: cannot find a OneWire Temperature Sensor!"));
+      return;
+    }
+    else
+    {
+      delete oneWire;
+      oneWire = new OneWire(my_OWpin);
+      DS18B20 = DallasTemperature(oneWire);
+      DS18B20.begin();
+      DS18B20.getAddress(tempDeviceAddress, 0);
+    }
+  }
+
   DS18B20.setWaitForConversion(false);
-  DS18B20.getAddress(tempDeviceAddress, 0);
   DS18B20.setResolution(tempDeviceAddress, RESOLUTION);
   requestTemp();
 }
@@ -754,12 +734,20 @@ void initAccel()
 
   // init the Accel
   accelgyro.initialize();
+  accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
+  accelgyro.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
   accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
   accelgyro.setTempSensorEnabled(true);
 #ifdef USE_DMP
   accelgyro.setDMPEnabled(true);
   packetSize = accelgyro.dmpGetFIFOPacketSize();
 #endif
+  accelgyro.setInterruptLatch(0); // pulse
+  accelgyro.setInterruptMode(1);  // Active Low
+  accelgyro.setInterruptDrive(1); // Open drain
+  accelgyro.setRate(17);
+  accelgyro.setIntDataReadyEnabled(true);
+  testAccel();
 }
 
 float calculateTilt()
@@ -772,31 +760,37 @@ float calculateTilt()
   return sqrt(pitch * pitch + roll * roll);
 }
 
-void getAccSample()
+bool testAccel()
 {
   uint8_t res = Wire.status();
-  uint8_t con = accelgyro.testConnection();
-  if (res == I2C_OK && con == true)
-    accelgyro.getAcceleration(&ax, &az, &ay);
-  else
-  {
-    CONSOLELN(String(F("I2C ERROR: ")) + res + " con:" + con);
-  }
+  if (res != I2C_OK)
+    CONSOLELN(String(F("I2C ERROR: ")) + res);
+
+  bool con = accelgyro.testConnection();
+  if (!con)
+    CONSOLELN(F("Acc Test Connection ERROR!"));
+
+  return res == I2C_OK && con == true;
+}
+
+void getAccSample()
+{
+  accelgyro.getAcceleration(&ax, &az, &ay);
 }
 
 float getTilt()
 {
-  // make sure enough time for Acc to start
-  uint32_t start = ACCINTERVAL;
+  uint32_t start;
 
   for (uint8_t i = 0; i < MEDIANROUNDS; i++)
   {
-    while (millis() - start < ACCINTERVAL)
-      yield();
     start = millis();
+    while (!accelgyro.getIntDataReadyStatus())
+      yield();
+    CONSOLE(String("IRQ: ") + (millis() - start));
     getAccSample();
     float _tilt = calculateTilt();
-    CONSOLE(F("Spl "));
+    CONSOLE(F("ms - Spl "));
     CONSOLE(i);
     CONSOLE(": ");
     CONSOLELN(_tilt);
@@ -807,38 +801,150 @@ float getTilt()
 
 float getTemperature(bool block = false)
 {
-  // we need to wait for DS18b20 to finish conversion
   float t = Temperatur;
 
+  // we need to wait for DS18b20 to finish conversion
+  if (!DSreqTime ||
+      (!block && (millis() - DSreqTime < OWinterval)))
+    return t;
+
   // if we need the result we have to block
-  while (block && (millis() - DSreqTime <= OWinterval))
+  while (millis() - DSreqTime < OWinterval)
     yield();
+  DSreqTime = 0;
 
-  if (millis() - DSreqTime >= OWinterval)
-  {
-    t = DS18B20.getTempCByIndex(0);
-    DSrequested = false;
+  t = DS18B20.getTempCByIndex(0);
 
-    if (t == DEVICE_DISCONNECTED_C || // DISCONNECTED
+  if (t == DEVICE_DISCONNECTED_C || // DISCONNECTED
       t == 85.0)                    // we read 85 uninitialized
-    {
-      CONSOLELN(F("ERROR: OW DISCONNECTED"));
-      pinMode(ONE_WIRE_BUS, OUTPUT);
-      digitalWrite(ONE_WIRE_BUS, LOW);
-      delay(100);
-      oneWire.reset();
+  {
+    CONSOLELN(F("ERROR: OW DISCONNECTED"));
+    pinMode(my_OWpin, OUTPUT);
+    digitalWrite(my_OWpin, LOW);
+    delay(100);
+    oneWire->reset();
 
-      if (block)
-      {
-        CONSOLELN(F("OW Retry"));
-        initDS18B20();
-        delay(OWinterval + 100);
-        t = getTemperature(false);
-      }
-    }
+    CONSOLELN(F("OW Retry"));
+    initDS18B20();
+    delay(OWinterval);
+    t = getTemperature(false);
   }
+
   return t;
 }
+
+int detectTempSensor(const uint8_t pins[])
+{
+
+  for (uint8_t p = 0; p < sizeof(pins); p++)
+  {
+    const byte pin = pins[p];
+    byte i;
+    byte present = 0;
+    byte type_s;
+    byte data[12];
+    byte addr[8];
+    float celsius;
+
+    CONSOLE(F("scanning for OW device on pin: "));
+    CONSOLELN(pin);
+    OneWire ds(pin);
+
+    if (!ds.search(addr))
+    {
+      CONSOLELN(F("No devices found!"));
+      ds.reset_search();
+      delay(250);
+      continue;
+    }
+
+    CONSOLE("Found device with ROM =");
+    for (i = 0; i < 8; i++)
+    {
+      CONSOLE(' ');
+      CONSOLE(addr[i], HEX);
+    }
+
+    if (OneWire::crc8(addr, 7) != addr[7])
+    {
+      CONSOLELN(" CRC is not valid!");
+      continue;
+    }
+    CONSOLELN();
+
+    // the first ROM byte indicates which chip
+    switch (addr[0])
+    {
+    case 0x10:
+      CONSOLELN("  Chip = DS18S20"); // or old DS1820
+      type_s = 1;
+      break;
+    case 0x28:
+      CONSOLELN("  Chip = DS18B20");
+      type_s = 0;
+      break;
+    case 0x22:
+      CONSOLELN("  Chip = DS1822");
+      type_s = 0;
+      break;
+    default:
+      CONSOLELN("Device is not a DS18x20 family device.");
+      continue;
+    }
+
+    ds.reset();
+    ds.select(addr);
+    ds.write(0x44, 1); // start conversion, with parasite power on at the end
+
+    delay(900); // maybe 750ms is enough, maybe not
+    present = ds.reset();
+    ds.select(addr);
+    ds.write(0xBE); // Read Scratchpad
+
+    CONSOLE("  Data = ");
+    CONSOLE(present, HEX);
+    CONSOLE(" ");
+    for (i = 0; i < 9; i++)
+    { // we need 9 bytes
+      data[i] = ds.read();
+      CONSOLE(data[i], HEX);
+      CONSOLE(" ");
+    }
+    CONSOLE(" CRC=");
+    CONSOLELN(OneWire::crc8(data, 8), HEX);
+
+    // Convert the data to actual temperature
+    int16_t raw = (data[1] << 8) | data[0];
+    if (type_s)
+    {
+      raw = raw << 3; // 9 bit resolution default
+      if (data[7] == 0x10)
+      {
+        // "count remain" gives full 12 bit resolution
+        raw = (raw & 0xFFF0) + 12 - data[6];
+      }
+    }
+    else
+    {
+      byte cfg = (data[4] & 0x60);
+      // at lower res, the low bits are undefined, so let's zero them
+      if (cfg == 0x00)
+        raw = raw & ~7; // 9 bit resolution, 93.75 ms
+      else if (cfg == 0x20)
+        raw = raw & ~3; // 10 bit res, 187.5 ms
+      else if (cfg == 0x40)
+        raw = raw & ~1; // 11 bit res, 375 ms
+      //// default is 12 bit resolution, 750 ms conversion time
+    }
+    celsius = (float)raw / 16.0;
+    CONSOLE(F("  Temperature = "));
+    CONSOLE(celsius);
+    CONSOLELN(F(" Celsius, "));
+    return pin;
+  }
+  return -1;
+}
+
 float getBattery()
 {
   analogRead(A0); // drop first read
@@ -851,7 +957,7 @@ float calculateGravity()
   double _temp = Temperatur;
   float _gravity = 0;
   int err;
-  te_variable vars[] = { { "tilt", &_tilt }, { "temp", &_temp } };
+  te_variable vars[] = {{"tilt", &_tilt}, {"temp", &_temp}};
   te_expr *expr = te_compile(my_polynominal, vars, 2, &err);
 
   if (expr)
@@ -870,7 +976,8 @@ void flash()
 {
   // triggers the LED
   Volt = getBattery();
-  getAccSample();
+  if (testAccel())
+    getAccSample();
   Tilt = calculateTilt();
   Temperatur = getTemperature(false);
   Gravity = calculateGravity();
@@ -906,11 +1013,14 @@ void setup()
 
   sleepManager();
 
-  initAccel();
+  bool validConf = readConfig();
+  if (!validConf)
+    CONSOLELN(F("\nERROR config corrupted"));
   initDS18B20();
+  initAccel();
 
   // decide whether we want configuration mode or normal mode
-  if (shouldStartConfig())
+  if (shouldStartConfig(validConf))
   {
     uint32_t tmp;
     ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
@@ -938,7 +1048,7 @@ void setup()
     {
       // test if ssid exists
       if (WiFi.SSID() == "" &&
-        my_ssid != "" && my_psk != "")
+          my_ssid != "" && my_psk != "")
       {
         connectBackupCredentials();
       }
@@ -1012,31 +1122,31 @@ void setup()
   }
 #endif
 
-  Temperatur = accelgyro.getTemperature() / 340.00 + 36.53;
+  float accTemp = accelgyro.getTemperature() / 340.00 + 36.53;
   accelgyro.setSleepEnabled(true);
 
-  CONSOLE(F("\na: "));
+  CONSOLE("x: ");
   CONSOLE(ax);
-  CONSOLE(F("\t"));
+  CONSOLE(" y: ");
   CONSOLE(ay);
-  CONSOLE(F("\t"));
-  CONSOLE(az);
+  CONSOLE(" z: ");
+  CONSOLELN(az);
 
-  CONSOLE(F("\tabsTilt: "));
-  CONSOLE(Tilt);
-  CONSOLE(F("\tT: "));
-  CONSOLE(Temperatur);
-  CONSOLE(F("\tV: "));
-  CONSOLE(Volt);
+  CONSOLE(F("Tilt: "));
+  CONSOLELN(Tilt);
+  CONSOLE("Tacc: ");
+  CONSOLELN(accTemp);
+  CONSOLE("Volt: ");
+  CONSOLELN(Volt);
 
   // call as late as possible since DS needs converge time
   Temperatur = getTemperature(true);
-  CONSOLE(F("\towT: "));
-  CONSOLE(Temperatur);
+  CONSOLE("Temp: ");
+  CONSOLELN(Temperatur);
 
   // calc gravity on user defined polynominal
   Gravity = calculateGravity();
-  CONSOLE(F("\tGravity: "));
+  CONSOLE(F("Gravity: "));
   CONSOLELN(Gravity);
 
   // water anomaly correction
@@ -1046,28 +1156,29 @@ void setup()
   // CONSOLE(F("\tcorrGravity: "));
   // CONSOLELN(corrGravity);
 
-  unsigned long startedAt = millis();
-  CONSOLE(F("After waiting "));
-  // int connRes = WiFi.waitForConnectResult();
-  uint8_t wait = 0;
-  while (WiFi.status() == WL_DISCONNECTED)
+  if (WiFi.status() != WL_CONNECTED)
   {
-    delay(100);
-    wait++;
-    if (wait > 50)
-      break;
+    unsigned long startedAt = millis();
+    CONSOLE(F("After waiting "));
+    // int connRes = WiFi.waitForConnectResult();
+    uint8_t wait = 0;
+    while (WiFi.status() == WL_DISCONNECTED)
+    {
+      delay(100);
+      wait++;
+      if (wait > 50)
+        break;
+    }
+    auto waited = (millis() - startedAt);
+    CONSOLE(waited);
+    CONSOLE(F("ms, result "));
+    CONSOLELN(WiFi.status());
   }
-  auto waited = (millis() - startedAt);
-  CONSOLE(waited);
-  CONSOLE(F("ms, result "));
-  CONSOLELN(WiFi.status());
-
   if (WiFi.status() == WL_CONNECTED)
   {
     CONSOLE(F("IP: "));
     CONSOLELN(WiFi.localIP());
     uploadData(my_api);
-    delay(100); // workaround for https://github.com/esp8266/Arduino/issues/2750
   }
   else
   {

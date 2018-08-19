@@ -33,45 +33,51 @@ void SenderClass::add(String id, int32_t value)
     _jsonVariant[id] = value;
 }
 
-bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name) {
-	_mqttClient.setClient(_client);
-	_mqttClient.setServer(server.c_str(), port);
-	_mqttClient.setCallback([this](char* topic, byte* payload, unsigned int length) { this->mqttCallback(topic, payload, length); });
+bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
+{
+    _mqttClient.setClient(_client);
+    _mqttClient.setServer(server.c_str(), port);
+    _mqttClient.setCallback([this](char *topic, byte *payload, unsigned int length) { this->mqttCallback(topic, payload, length); });
 
-	while (!_mqttClient.connected()) {
-		CONSOLELN(F("Attempting MQTT connection"));
-		// Attempt to connect
-		if (_mqttClient.connect(name.c_str(), username.c_str(), password.c_str())) {
-			CONSOLELN(F("Connected to MQTT"));
-		}
-		else {
-			CONSOLELN(F("Failed MQTT connection, return code:"));
-			CONSOLELN(_mqttClient.state());
-			CONSOLELN(F("Retrying MQTT connection in 5 seconds"));
-			// Wait 5 seconds before retrying
-			delay(5000);
-		}
-	}
-	//MQTT publish values
-	for (const auto &kv : _jsonVariant.as<JsonObject>())
-	{
-		CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key + "/" + kv.value.as<String>());
-		_mqttClient.publish(("ispindel/" + name + "/" + kv.key).c_str(), kv.value.as<String>().c_str());
-		_mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
-	}
+    while (!_mqttClient.connected())
+    {
+        CONSOLELN(F("Attempting MQTT connection"));
+        // Attempt to connect
+        if (_mqttClient.connect(name.c_str(), username.c_str(), password.c_str()))
+        {
+            CONSOLELN(F("Connected to MQTT"));
+        }
+        else
+        {
+            CONSOLELN(F("Failed MQTT connection, return code:"));
+            CONSOLELN(_mqttClient.state());
+            CONSOLELN(F("Retrying MQTT connection in 5 seconds"));
+            // Wait 5 seconds before retrying
+            delay(5000);
+        }
+    }
+    //MQTT publish values
+    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    {
+        CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key + "/" + kv.value.as<String>());
+        _mqttClient.publish(("ispindel/" + name + "/" + kv.key).c_str(), kv.value.as<String>().c_str());
+        _mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+    }
 
-	CONSOLELN(F("Closing MQTT connection"));
-	_mqttClient.disconnect();
-	delay(100); // allow gracefull session close
-	return true;
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    delay(100); // allow gracefull session close
+    return true;
 }
-void SenderClass::mqttCallback(char* topic, byte* payload, unsigned int length) {
-	CONSOLELN(F("MQTT message arrived ["));
-	CONSOLELN(topic);
-	CONSOLELN(F("] "));
-	for (unsigned int i = 0; i < length; i++) {
-		CONSOLE((char)payload[i]);
-	}
+void SenderClass::mqttCallback(char *topic, byte *payload, unsigned int length)
+{
+    CONSOLELN(F("MQTT message arrived ["));
+    CONSOLELN(topic);
+    CONSOLELN(F("] "));
+    for (unsigned int i = 0; i < length; i++)
+    {
+        CONSOLE((char)payload[i]);
+    }
 }
 
 bool SenderClass::sendTCP(String server, uint16_t port)
@@ -80,7 +86,7 @@ bool SenderClass::sendTCP(String server, uint16_t port)
 
     if (_client.connect(server.c_str(), port))
     {
-        CONSOLELN(F("Sender: TCP stream"));
+        CONSOLELN(F("\nSender: TCP stream"));
         _jsonVariant.printTo(_client);
         _client.println();
     }
@@ -139,6 +145,7 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
     }
 
     http.end();
+    delay(100); // allow gracefull session close
     return true;
 }
 
@@ -155,7 +162,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
 
     if (username.length() > 0)
     {
-      http.setAuthorization(username.c_str(), password.c_str());
+        http.setAuthorization(username.c_str(), password.c_str());
     }
 
     http.addHeader("User-Agent", "iSpindel");
@@ -196,14 +203,14 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     }
 
     http.end();
-
+    delay(100); // allow gracefull session close
     return true;
 }
 
 bool SenderClass::sendPrometheus(String server, uint16_t port, String job, String instance)
 {
     HTTPClient http;
-    
+
     // the path looks like /metrics/job/<JOBNAME>[/instance/<INSTANCENAME>]
     String uri = "/metrics/job/";
     uri += job;
@@ -254,6 +261,7 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
     }
 
     http.end();
+    delay(100); // allow gracefull session close
     return true;
 }
 
@@ -263,7 +271,7 @@ bool SenderClass::sendUbidots(String token, String name)
 
     if (_client.connect(UBISERVER, 80))
     {
-        CONSOLELN(F("Sender: Ubidots posting"));
+        CONSOLELN(F("\nSender: Ubidots posting"));
 
         String msg = F("POST /api/v1.6/devices/");
         msg += name;
@@ -274,8 +282,6 @@ bool SenderClass::sendUbidots(String token, String name)
         msg += "\r\n";
 
         _client.println(msg);
-        CONSOLELN(msg);
-
         _jsonVariant.printTo(_client);
         _client.println();
         CONSOLELN(msg);
@@ -359,7 +365,7 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
     if (_client.connect(server.c_str(), port))
     {
 
-        CONSOLELN(F("Sender: TCONTROL"));
+        CONSOLELN(F("\nSender: TCONTROL"));
         String msg;
 
         for (const auto &kv : _jsonVariant.as<JsonObject>())

@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "5.9.1"
+#define FIRMWAREVERSION "6.0.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -42,15 +42,15 @@ extern Ticker flasher;
 #define CONSOLELN CONSOLE
 #define CONSOLEF CONSOLE
 #else
-#define CONSOLE(x)       \
+#define CONSOLE(...)       \
     do                   \
     {                    \
-        Serial.print(x); \
+        Serial.print(__VA_ARGS__); \
     } while (0)
-#define CONSOLELN(x)      \
+#define CONSOLELN(...)      \
     do                     \
     {                      \
-        Serial.println(x); \
+        Serial.println(__VA_ARGS__); \
     } while (0)
 #endif
 
@@ -58,13 +58,13 @@ extern Ticker flasher;
 
 #define ADCDIVISOR 191.8
 #define ONE_WIRE_BUS D6 // DS18B20 on ESP pin12
+#define OW_PINS (const uint8_t[]){D1, D6}
 #define RESOLUTION 12   // 12bit resolution == 750ms update rate
-#define OWinterval (800 / (1 << (12 - RESOLUTION)))
+#define OWinterval (760 / (1 << (12 - RESOLUTION)))
 #define CFGFILE "/config.json"
 #define TKIDSIZE 40
-#define MEDIANROUNDS 7
-#define ACCINTERVAL 200
-#define MEDIANAVRG 3
+#define MEDIANROUNDS 39
+#define MEDIANAVRG 29
 
 #define CBP_ENDPOINT "/api/hydrometer/v1/data"
 
