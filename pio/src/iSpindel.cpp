@@ -33,7 +33,7 @@ OneWire *oneWire;
 DallasTemperature DS18B20;
 DeviceAddress tempDeviceAddress;
 Ticker flasher;
-RunningMedian samples = RunningMedian(MEDIANROUNDS);
+RunningMedian samples = RunningMedian(MEDIANROUNDSMAX);
 DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 #define TEMP_CELSIUS 0
@@ -725,6 +725,11 @@ void initDS18B20()
   requestTemp();
 }
 
+bool isDS18B20ready()
+{
+  return millis() - DSreqTime > OWinterval;
+}
+
 void initAccel()
 {
   // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -780,22 +785,28 @@ void getAccSample()
 
 float getTilt()
 {
-  uint32_t start;
+  uint32_t start = millis();
+  uint8_t i = 0;
 
-  for (uint8_t i = 0; i < MEDIANROUNDS; i++)
+  for (; i < MEDIANROUNDSMAX; i++)
   {
-    start = millis();
     while (!accelgyro.getIntDataReadyStatus())
-      yield();
-    CONSOLE(String("IRQ: ") + (millis() - start));
+      delay(2);
     getAccSample();
     float _tilt = calculateTilt();
-    CONSOLE(F("ms - Spl "));
-    CONSOLE(i);
-    CONSOLE(": ");
-    CONSOLELN(_tilt);
     samples.add(_tilt);
+
+    if (i >= MEDIANROUNDSMIN && isDS18B20ready())
+      break;
   }
+  CONSOLE("Samples:");
+  CONSOLE(++i);
+  CONSOLE(" min:");
+  CONSOLE(samples.getLowest());
+  CONSOLE(" max:");
+  CONSOLE(samples.getHighest());
+  CONSOLE(" time:");
+  CONSOLELN(millis() - start);
   return samples.getAverage(MEDIANAVRG);
 }
 
@@ -805,12 +816,12 @@ float getTemperature(bool block = false)
 
   // we need to wait for DS18b20 to finish conversion
   if (!DSreqTime ||
-      (!block && (millis() - DSreqTime < OWinterval)))
+      (!block && !isDS18B20ready()))
     return t;
 
   // if we need the result we have to block
-  while (millis() - DSreqTime < OWinterval)
-    yield();
+  while (!isDS18B20ready())
+    delay(10);
   DSreqTime = 0;
 
   t = DS18B20.getTempCByIndex(0);
