@@ -490,6 +490,28 @@ bool saveConfig()
   }
 }
 
+bool processResponse(String response)
+{
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject &json = jsonBuffer.parseObject(response);
+
+  if (json.success() && json.containsKey("interval"))
+  {
+    uint32_t interval = json["interval"];
+    if (interval != my_sleeptime &&
+        interval < 24 * 60 * 60 &&
+        interval > 10)
+    {
+      my_sleeptime = interval;
+      CONSOLE(F("Received new Interval config: "));
+      CONSOLELN(interval);
+      saveConfig();
+      return true;
+    }
+  }
+  return false;
+}
+
 bool uploadData(uint8_t service)
 {
   SenderClass sender;
@@ -572,13 +594,11 @@ bool uploadData(uint8_t service)
     if (service == DTHTTP)
     {
       CONSOLELN(F("\ncalling HTTP"));
-      // return sender.send(my_server, my_url, my_port);
       return sender.sendGenericPost(my_server, my_url, my_port);
     }
     else if (service == DTCraftBeerPi)
     {
       CONSOLELN(F("\ncalling CraftbeerPi"));
-      // return sender.send(my_server, CBP_ENDPOINT, 5000);
       return sender.sendGenericPost(my_server, CBP_ENDPOINT, 5000);
     }
     else if (service == DTiSPINDELde)
@@ -589,7 +609,8 @@ bool uploadData(uint8_t service)
     else if (service == DTTCP)
     {
       CONSOLELN(F("\ncalling TCP"));
-      return sender.sendTCP(my_server, my_port);
+      String response = sender.sendTCP(my_server, my_port);
+      return processResponse(response);
     }
   }
 #endif // DATABASESYSTEM
