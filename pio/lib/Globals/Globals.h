@@ -109,4 +109,7 @@ extern MPU6050_Base accelgyro;
 extern bool saveConfig();
 extern void formatSpiffs();
 
+float scaleTemperature(float t);
+String tempScaleLabel(void);
+
 #endif
