@@ -123,8 +123,10 @@ void SenderClass::mqttCallback(char *topic, byte *payload, unsigned int length)
     }
 }
 
-bool SenderClass::sendTCP(String server, uint16_t port)
+String SenderClass::sendTCP(String server, uint16_t port)
 {
+    int timeout = 0;
+    String response;
     _jsonVariant.printTo(Serial);
 
     if (_client.connect(server.c_str(), port))
@@ -138,7 +140,6 @@ bool SenderClass::sendTCP(String server, uint16_t port)
         CONSOLELN(F("\nERROR Sender: couldnt connect"));
     }
 
-    int timeout = 0;
     while (!_client.available() && timeout < CONNTIMEOUT)
     {
         timeout++;
@@ -146,13 +147,12 @@ bool SenderClass::sendTCP(String server, uint16_t port)
     }
     while (_client.available())
     {
-        char c = _client.read();
-        Serial.write(c);
+        response += _client.read();
     }
-    // currentValue = 0;
+    CONSOLELN(response);
     _client.stop();
-    delay(100); // allow gracefull session close
-    return true;
+    delay(50); // allow gracefull session close
+    return response;
 }
 
 bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
