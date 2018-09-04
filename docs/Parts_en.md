@@ -30,7 +30,7 @@ This is also offered by an online dispatch
 
 ### Components
 
-- [Wemos D1 mini](https://www.wemos.cc/product/d1-mini.html)
+- [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini)
 - `GY-521` Gyro & Acceleration Sensor (MPU-6050 on suitable breakout board)
 - [DS18B20 Temperature Sensor](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html)
 - Square grid 3x4cm or printed circuit board
