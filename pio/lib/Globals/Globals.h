@@ -30,12 +30,8 @@ extern Ticker flasher;
 #define API_PROMETHEUS true
 #define API_MQTT true
 
-#ifndef DEBUG
-#define DEBUG true
-#endif
-
 #ifdef NO_CONSOLE
-#define CONSOLE(x) \
+#define CONSOLE(...) \
     do             \
     {              \
     } while (0)
