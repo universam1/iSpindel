@@ -18,7 +18,9 @@ Correct, see Firmware Update
 - ***How can I calibrate the voltage display?***
 From firmware 3.0 on you can adjust the conversion factor. By default, factor 191.8 is used. You can adjust by this formula:
 ````
-displayed voltage / measured voltage * current factor (191.8) = new factor
+(displayed voltage / measured voltage) * current factor (191.8) = new factor
+
+The new factor should be between current factor more or less 20% (191.8*0.8 - 191.8*1.2).
 ````
 - ***Can I operate it in a stainless steel container? Is it possible to get through the faradic cage?***
 To achieve a sufficient WLAN signal strength you can do the following things:
