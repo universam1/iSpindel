@@ -505,8 +505,7 @@ bool processResponse(String response)
       my_sleeptime = interval;
       CONSOLE(F("Received new Interval config: "));
       CONSOLELN(interval);
-      saveConfig();
-      return true;
+      return saveConfig();
     }
   }
   return false;
