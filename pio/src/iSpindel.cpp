@@ -397,7 +397,13 @@ bool startConfiguration()
   validateInput(custom_password.getValue(), my_password);
   validateInput(custom_job.getValue(), my_job);
   validateInput(custom_instance.getValue(), my_instance);
-  my_sleeptime = String(custom_sleep.getValue()).toInt();
+
+  uint32_t value  = String(custom_sleep.getValue()).toInt();
+
+  if ((value > 10) && (value < MAXSLEEPTIME))
+  {
+    my_sleeptime = value;
+  }
 
   my_api = String(custom_api.getValue()).toInt();
   my_port = String(custom_port.getValue()).toInt();
