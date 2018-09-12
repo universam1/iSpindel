@@ -331,7 +331,7 @@ bool startConfiguration()
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
                                    TKIDSIZE * 2);
-  WiFiManagerParameter custom_sleep("sleep", "Update Intervall (s)",
+  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE * 2);
