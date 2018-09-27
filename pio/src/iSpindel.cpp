@@ -5,6 +5,8 @@ All rights reserverd by S.Lang <universam@web.de>
 
 **************************************************************/
 
+//#define NO_CONSOLE // Uncomment to disable console messages
+
 // includes go here
 #include <PubSubClient.h>
 #include "Globals.h"
@@ -25,7 +27,6 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "tinyexpr.h"
 
 #include "Sender.h"
-// !DEBUG 1
 
 // definitions go here
 MPU6050_Base accelgyro;
@@ -210,7 +211,7 @@ bool readConfig()
           applyOffset();
 
           CONSOLELN(F("parsed config:"));
-#ifdef DEBUG
+#ifndef NO_CONSOLE
           json.printTo(Serial);
           CONSOLELN();
 #endif
@@ -479,7 +480,7 @@ bool saveConfig()
   }
   else
   {
-#ifdef DEBUG
+#ifndef NO_CONSOLE
     json.printTo(Serial);
 #endif
     json.printTo(configFile);
