@@ -221,7 +221,12 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     {
         msg += kv.key;
         msg += "=";
-        msg += kv.value.as<String>();
+        // check if value is of type char, if so set value in double quotes
+        if ( kv.value.is<char*>() ) {
+            msg += '"' + kv.value.as<String>() + '"';
+        }else{
+            msg += kv.value.as<String>();
+        }
         msg += ",";
     }
     msg.remove(msg.length() - 1);
