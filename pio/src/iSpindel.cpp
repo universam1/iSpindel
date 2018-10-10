@@ -40,6 +40,9 @@ DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 #define TEMP_FAHRENHEIT 1
 #define TEMP_KELVIN 2
 
+#define SWITCHXYZ_NONE 0
+#define SWITCHXYZ_XZ 1
+
 int detectTempSensor(const uint8_t pins[]);
 bool testAccel();
 
@@ -86,6 +89,7 @@ float my_vfact = ADCDIVISOR;
 int16_t my_aX = UNINIT, my_aY = UNINIT, my_aZ = UNINIT;
 uint8_t my_tempscale = TEMP_CELSIUS;
 int8_t my_OWpin = -1;
+uint8_t my_switchXYZ = SWITCHXYZ_NONE;
 
 uint32_t DSreqTime = 0;
 float pitch, roll;
@@ -196,6 +200,8 @@ bool readConfig()
             my_psk = (const char *)json["PSK"];
           if (json.containsKey("POLY"))
             strcpy(my_polynominal, json["POLY"]);
+          if (json.containsKey("SwitchXYZ"))
+            my_switchXYZ = json["SwitchXYZ"];
 
           my_aX = UNINIT;
           my_aY = UNINIT;
@@ -352,15 +358,26 @@ bool startConfiguration()
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
                                         String(my_tempscale).c_str(),
                                         5, TYPE_HIDDEN, WFM_NO_LABEL);
+  WiFiManagerParameter switchXYZ_list(HTTP_SWITCHXYZ_LIST);
+  WiFiManagerParameter custom_switchXYZ("switchXYZ", "switchXYZ",
+                                        String(my_switchXYZ).c_str(), 
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
   wifiManager.addParameter(&custom_vfact);
 
+  WiFiManagerParameter custom_switchXYZ_hint("<label for=\"XYZ\">Switch Axis</label>");
+  wifiManager.addParameter(&custom_switchXYZ_hint);
+  wifiManager.addParameter(&custom_switchXYZ);
+  wifiManager.addParameter(&switchXYZ_list);
+
   WiFiManagerParameter custom_tempscale_hint("<label for=\"TS\">Unit of temperature</label>");
   wifiManager.addParameter(&custom_tempscale_hint);
   wifiManager.addParameter(&tempscale_list);
   wifiManager.addParameter(&custom_tempscale);
+
   WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
   wifiManager.addParameter(&custom_api_hint);
 
@@ -402,6 +419,8 @@ bool startConfiguration()
   my_api = String(custom_api.getValue()).toInt();
   my_port = String(custom_port.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
+  my_switchXYZ = String(custom_switchXYZ.getValue()).toInt();
+
   validateInput(custom_url.getValue(), my_url);
 
   String tmp = custom_vfact.getValue();
@@ -459,6 +478,7 @@ bool saveConfig()
   json["Instance"] = my_instance;
   json["Vfact"] = my_vfact;
   json["TS"] = my_tempscale;
+  json["SwitchXYZ"] = my_switchXYZ;
   json["OWpin"] = my_OWpin;
 
   // Store current Wifi credentials
@@ -777,9 +797,20 @@ void initAccel()
 
 float calculateTilt()
 {
-  float _ax = ax;
-  float _ay = ay;
-  float _az = az;
+  float _ax, _ay, _az;
+  switch(my_switchXYZ){
+    default: // Default
+      _ay = ay;
+      _ax = ax;
+      _az = az;
+      break;
+    case SWITCHXYZ_XZ: // Switch XZ Axis
+      _ax = az;
+      _ay = ay;
+      _az = ax;
+      break;
+  }
+
   float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
   float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
   return sqrt(pitch * pitch + roll * roll);

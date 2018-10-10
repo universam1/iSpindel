@@ -48,6 +48,9 @@ function c(l){s.value=l.innerText||l.textContent;p.focus();}
 function sTS(){
   $('tempscale').value = parseInt($('TS').options[$('TS').selectedIndex].value);
 }
+function sXYZ(){
+  $('switchXYZ').value = parseInt($('XYZ').options[$('XYZ').selectedIndex].value);
+}
 function sAPI(){
 	var sel = $('API').options[$('API').selectedIndex].textContent;
 	$('selAPI').value = parseInt($('API').options[$('API').selectedIndex].value);
@@ -161,12 +164,11 @@ case "MQTT":
   set('instance',0);
 }};
 window.onload = function(e){
- for (var i = 0; i < labels.length; i++) {
- if (labels[i].htmlFor != '') {
- var elem = $(labels[i].htmlFor);
- if (elem) elem.label = labels[i]; }}
-  $('API').value = $('selAPI').value; sAPI();
-  $('TS').value = $('tempscale').value; sTS();};
+ for (var i = 0; i < labels.length; i++) {if (labels[i].htmlFor != '') {var elem = $(labels[i].htmlFor);if (elem) elem.label = labels[i]; }}
+ $('API').value = $('selAPI').value; sAPI();
+ $('TS').value = $('tempscale').value; sTS();
+ $('XYZ').value = $('switchXYZ').value; sXYZ();
+};
 </script>)V0G0N";
 
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
@@ -188,6 +190,12 @@ const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
 <option value=0>Celsius</option>
 <option value=1>Fahrenheit</option>
 <option value=2>Kelvin</option>
+</select>)V0G0N";
+
+const char HTTP_SWITCHXYZ_LIST[] PROGMEM = R"V0G0N(
+<select id="XYZ" onclick="sXYZ()">
+<option value=0>Original</option>
+<option value=1>X and Z axis switched</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";
