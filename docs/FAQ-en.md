@@ -1,6 +1,9 @@
 # Questions and answers FAQ
 
-- ***It doesn't work, I don't see anything****  
+- ***Do I have to tare the iSpindle with weights?***  
+It is indispensable to enable the iSpindle functionality! Add weights such as nuts, lead balls etc. to the bottom  until the inclination is 25° from the vertical. See also example pictures in the documentation. Normally about 20g are sufficient. +/- 5° deviations are often still acceptable.
+
+- ***It doesn't work, I don't see anything***  
 The best way to find out what the iSpindle is doing as information is to read it's log. This can be done via a serial monitor like HTerm or Arduino IDE. Connect the spindle via Micro USB, then open the Com Port with the serial monitor above and read it. Set baud rate to `115200`. It brings light into the dark.
 
 Here is a youtube howto: https://youtu.be/6xDW5GbIbUw

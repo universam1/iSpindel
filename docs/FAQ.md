@@ -1,5 +1,8 @@
 # Fragen und Antworten FAQ
 
+- ***Muss ich die iSpindel mit Gewichten tarieren?***  
+Dies ist unabdingbar um die Funktion der iSpindel überhaupt zu ermöglichen! Füge am Boden des Petlings Gewichte wie Muttern, Bleikugeln o.ä. hinzu bis die Neigung 25° von der Vertikalen beträgt. Siehe dazu auch Beispielbilder in der Dokumentation. Normalerweise sind etwa 20g ausreichend. +/- 5° Abweichung sind oft noch akzeptabel.
+
 - ***Es funktioniert nicht, ich sehe nichts***  
 Am Besten du liest mit was die Spindel als Informationen ausgiebt. Das geht über einen Serial Monitor wie HTerm oder Arduino. Die Spindel per Micro USB anschliessen, dann den Com Port mit obigen Serial Monitor öffnen und mitlesen, Baud `115200`. 
 Ein Youtube HowTo: https://youtu.be/6xDW5GbIbUw
