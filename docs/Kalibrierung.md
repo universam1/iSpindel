@@ -2,15 +2,21 @@
 
 >Zur Umrechnung von Winkel ° in °Plato, SG, %mas o.Ä. ist es initial nötig eine Referenzkurve zu kalibrieren. Die gewonnenen Referenzen können dann vereinfacht über eine Excel Tabelle in eine Funktion überführt werden, die zur Darstellung hinterlegt wird. Da jede selbstgebaute Spindel andere Messwerte ergeben wird, muss man diesen Prozess einmalig durchführen.
 
+>Stelle sicher dass die iSpindel im normalen Wasser ca. 25° Neigung von der Vertikalen aufweist. Gegebenenfalls noch weiter austarieren. Meistens sind ca. 20g an zusätzlichem Gewicht nötig.
+
 ***
 
 # Inhalt
 
-- [Variante A (vereinfacht)](#variante-a-(vereinfacht))
-- [Variante B Schnellvergärung (genauer)](#variante-b-schnellvergärung-(genauer))
-- [Variante C Referenzen einer Gärung ziehen (empfohlen)](#variante-C-Referenzen-ziehen)
-- [Formel errechnen](#formel)
-- [Speichern in iSpindel](#speichern)
+- [Kalibrierung](#kalibrierung)
+- [Inhalt](#inhalt)
+  - [Variante A (vereinfacht)](#variante-a-vereinfacht)
+  - [Variante B Schnellvergärung (genauer)](#variante-b-schnellverg%C3%A4rung-genauer)
+  - [Variante C Referenzen ziehen (empfohlen)](#variante-c-referenzen-ziehen-empfohlen)
+- [Formel](#formel)
+- [Speichern](#speichern)
+  - [in iSpindel hinterlegen](#in-ispindel-hinterlegen)
+  - [Alternativ: in Ubidots nach-berechnen](#alternativ-in-ubidots-nach-berechnen)
 
 ***
 
@@ -20,8 +26,8 @@
 >  
 >  Alternativ: Im Konfigurationsmodus kann die ```Info``` Seite aufgerufen werden und dort den Winkel abgelesen werden.
 
-1. iSpindel in Reinwasser 0 °Plato legen, ***Winkel notieren***
-1. Zuckerwasser mit ca. 20 °Plato herstellen, oder höchsten Wert den man voraussichtlich erreichen wird. ***Plato messen und Winkel notieren***  
+1. iSpindel in Reinwasser 0 °Plato legen, ***Winkel notieren (sollte ca. 25° Neigung aus der Vertikalen sein)***
+2. Zuckerwasser mit ca. 20 °Plato herstellen, oder höchsten Wert den man voraussichtlich erreichen wird. ***Plato messen und Winkel notieren***  
 *Beispiel 400ml Wasser + 100g Kristallzucker auflösen*
 1. Wasser weiter verdünnen auf ca. 15 °Plato, ***Plato messen und Winkel notieren***   
 *Beispiel +166ml Wasser hinzufügen*
@@ -44,7 +50,7 @@
 
 > Zum Ablessen des Neigungswinkels empfiehlt es sich, die iSpindel mit Ubidots zu verbinden und einen sehr kurzen Intervall (20 Sekunden) zu setzen. Damit kann die Neigung über die Webseite verfolgt werden.  
 
-1. iSpindel in Reinwasser 0 °Plato legen, ***Winkel notieren***
+1. iSpindel in Reinwasser 0 °Plato legen, ***Winkel notieren (sollte ca. 25° Neigung aus der Vertikalen sein)***
 1. Zuckerwasser mit ca. 20 °Plato herstellen, oder höchsten Wert den man voraussichtlich erreichen wird.  
 *Beispiel 800ml Wasser + 200g Kristallzucker auflösen*
 1. Hefe hinzufügen und Spindel einlegen. ***Plato messen und Winkel notieren*** 

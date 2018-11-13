@@ -38,150 +38,62 @@ const char HTTP_HEAD[] PROGMEM = "<!DOCTYPE html><html lang=\"en\"><head><meta n
 
 const char HTTP_STYLE[] PROGMEM = "<style>body,textarea,input,select{background: 0;border-radius: 0;font: 16px sans-serif;margin: 0}textarea,input,select{outline: 0;font-size: 14px;border: 1px solid #ccc;padding: 8px;width: 90%}.btn a{text-decoration: none}.container{margin: auto;width: 90%}@media(min-width:1200px){.container{margin: auto;width: 30%}}@media(min-width:768px) and (max-width:1200px){.container{margin: auto;width: 50%}}.btn,h2{font-size: 2em}h1{font-size: 3em}.btn{background: #0ae;border-radius: 4px;border: 0;color: #fff;cursor: pointer;display: inline-block;margin: 2px 0;padding: 10px 14px 11px;width: 100%}.btn:hover{background: #09d}.btn:active,.btn:focus{background: #08b}label>*{display: inline}form>*{display: block;margin-bottom: 10px}textarea:focus,input:focus,select:focus{border-color: #5ab}.msg{background: #def;border-left: 5px solid #59d;padding: 1.5em}.q{float: right;width: 64px;text-align: right}.l{background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAALVBMVEX///8EBwfBwsLw8PAzNjaCg4NTVVUjJiZDRUUUFxdiZGSho6OSk5Pg4eFydHTCjaf3AAAAZElEQVQ4je2NSw7AIAhEBamKn97/uMXEGBvozkWb9C2Zx4xzWykBhFAeYp9gkLyZE0zIMno9n4g19hmdY39scwqVkOXaxph0ZCXQcqxSpgQpONa59wkRDOL93eAXvimwlbPbwwVAegLS1HGfZAAAAABJRU5ErkJggg==') no-repeat left center;background-size: 1em}input[type='checkbox']{float: left;width: 20px}.table td{padding:.5em;text-align:left}.table tbody>:nth-child(2n-1){background:#ddd}</style>";
 
-const char HTTP_SCRIPT[] PROGMEM = R"V0G0N(<script>
-var $ = function(id) { return document.getElementById(id);};
+const char HTTP_SCRIPT[] PROGMEM = R"V0G0N(
+<script>
+var lAPI = [
+{"name":"Ubidots",    "token":1,"server":0,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"empty",      "token":1,"server":0,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"CraftBeerPi","token":0,"server":1,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"HTTP",       "token":1,"server":1,"url":1,"port":1,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"TControl",   "token":0,"server":1,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"FHEM",       "token":0,"server":1,"url":0,"port":1,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"TCP",        "token":1,"server":1,"url":0,"port":1,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"iSpindel.de","token":1,"server":0,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"InfluxDB",   "token":0,"server":1,"url":0,"port":1,"db":1,"username":1,"password":1,"job":0,"instance":0},
+{"name":"Prometheus", "token":0,"server":1,"url":0,"port":1,"db":0,"username":0,"password":0,"job":1,"instance":1},
+{"name":"MQTT",       "token":0,"server":1,"url":0,"port":1,"db":0,"username":1,"password":1,"job":0,"instance":0}];
+
+var $ = function (id) { return document.getElementById(id); };
 var labels = document.getElementsByTagName('LABEL');
-function set(id, show){
-  $(id).style.display = show ? 'block':'none';
-  $(id).label.style.display = show ? 'block':'none';}
-function c(l){s.value=l.innerText||l.textContent;p.focus();}
-function sTS(){
+function set(id, show) {
+  if ($(id)) {
+    $(id).style.display = show ? 'block' : 'none';
+    $(id).label.style.display = show ? 'block' : 'none';
+  }
+};
+function c(l) { s.value = l.innerText || l.textContent; p.focus(); };
+function sTS() {
   $('tempscale').value = parseInt($('TS').options[$('TS').selectedIndex].value);
-}
-function sAPI(){
-	var sel = $('API').options[$('API').selectedIndex].textContent;
-	$('selAPI').value = parseInt($('API').options[$('API').selectedIndex].value);
-switch(sel) {
-case "Ubidots":
-	set('token',1);
-	set('server',0);
-	set('url',0);
-	set('port',0);
-  set('db', 0);
-  set('username', 0);
-  set('password', 0);
-  set('job',0);
-  set('instance',0);
-  break;
-case "CraftBeerPi":
-  set('url',0);
-  set('port',0);
-	set('token',0);
-	set('server',1);
-  set('db', 0);
-  set('username', 0);
-  set('password', 0);
-  set('job',0);
-  set('instance',0);
-  break;
-case "HTTP":
-  set('url',1);
-  set('port',1);
-	set('token',1);
-	set('server',1);
-  set('db', 0);
-  set('job',0);
-  set('instance',0);
-  break;
-case "TControl":
-  set('server',1);
-  set('port',0);
-  set('token',0);
-  set('url',0);
-  set('db', 0);
-  set('username', 0);
-  set('password', 0);
-  set('job',0);
-  set('instance',0);
-  break;
-case "FHEM":
-  set('server',1);
-  set('port',1);
-  set('token',0);
-  set('url',0);
-  set('db', 0);
-  set('username', 0);
-  set('password', 0);
-  set('job',0);
-  set('instance',0);
-  break;
-case "TCP":
-  set('server',1);
-  set('port',1);
-  set('token',1);
-  set('url',0);
-  set('db', 0);
-  set('username', 0);
-  set('password', 0);
-  set('job',0);
-  set('instance',0);
-  break;
-case "iSpindel.de":
-  set('url',0);
-  set('port',0);
-	set('token',1);
-	set('server',0);
-  set('db', 0);
-  set('username', 0);
-  set('password', 0);
-  set('job',0);
-  set('instance',0);
-  break;
-case "InfluxDB":
-  set('server',1);
-  set('port',1);
-  set('db', 1);
-  set('username', 1);
-  set('password', 1);
-  set('token',0);
-  set('url',0);
-  set('job',0);
-  set('instance',0);
-  break;
-case "Prometheus":
-  set('server',1);
-  set('port',1);
-  set('db', 0);
-  set('username', 0);
-  set('password', 0);
-  set('token',0);
-  set('url',0);
-  set('job',1);
-  set('instance',1);
-  break;
-case "MQTT":
-  set('server',1);
-  set('port',1);
-  set('db', 0);
-  set('username', 1);
-  set('password',1);
-  set('token',0);
-  set('url',0);
-  set('job',0);
-  set('instance',0);
-}};
-window.onload = function(e){
- for (var i = 0; i < labels.length; i++) {
- if (labels[i].htmlFor != '') {
- var elem = $(labels[i].htmlFor);
- if (elem) elem.label = labels[i]; }}
-  $('API').value = $('selAPI').value; sAPI();
-  $('TS').value = $('tempscale').value; sTS();};
-</script>)V0G0N";
+};
+function sAPI(val) {
+  $('selAPI').value = val;
+  var obj = lAPI[parseInt(val)];
+  Object.keys(obj).forEach(function (key) { set(key, obj[key]);});
+};
+function fillopt() {
+  for (el in lAPI) {
+    if (lAPI[el].name == "empty") { continue; }
+    var opt = document.createElement("option");
+    opt.value = el;
+    opt.innerHTML = lAPI[el].name;
+    $('API').appendChild(opt);
+  }
+};
+window.onload = function (e) {
+  for (var i = 0; i < labels.length; i++) {
+    if (labels[i].htmlFor != '') {
+      var elem = $(labels[i].htmlFor);
+      if (elem) elem.label = labels[i];
+    }
+  }
+  $('API').value = $('selAPI').value;
+  sAPI($('selAPI').value);
+  $('TS').value = $('tempscale').value; sTS();
+  fillopt();
+};</script>)V0G0N";
 
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
-<select id="API" onclick="sAPI()">
-<option value=0>Ubidots</option>
-<option value=2>CraftBeerPi</option>
-<option value=3>HTTP</option>
-<option value=4>TControl</option>
-<option value=5>FHEM</option>
-<option value=6>TCP</option>
-<option value=7>iSpindel.de</option>
-<option value=8>InfluxDB</option>
-<option value=9>Prometheus</option>
-<option value=10>MQTT</option>
-</select>)V0G0N";
+<select id="API" onchange="sAPI(this.options[this.selectedIndex].value);"></select>)V0G0N";
 
 const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
 <select id="TS" onclick="sTS()">
