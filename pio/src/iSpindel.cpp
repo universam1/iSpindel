@@ -66,8 +66,8 @@ float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravit
 
 bool shouldSaveConfig = false;
 
-char my_token[TKIDSIZE];
-char my_name[TKIDSIZE] = "iSpindel000";
+char my_token[TKIDSIZE*2];
+char my_name[TKIDSIZE*2] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
 char my_db[TKIDSIZE] = "ispindel";
@@ -574,6 +574,22 @@ bool uploadData(uint8_t service)
   }
 #endif
 
+#ifdef API_BREWERSFRIEND
+  if (service == DTBrewersFriend)
+  {
+    sender.add("name", my_name);
+    sender.add("angle", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temp_units", tempScaleLabel());
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling Brewersfriend"));
+    return sender.sendBrewersfriend(my_token, my_name);
+  }
+#endif
+
 #ifdef API_GENERIC
   if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
   {
@@ -627,6 +643,7 @@ bool uploadData(uint8_t service)
     return sender.sendFHEM(my_server, my_port, my_name);
   }
 #endif // DATABASESYSTEM ==
+
 #ifdef API_TCONTROL
   if (service == DTTcontrol)
   {

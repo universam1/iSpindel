@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.0.2"
+#define FIRMWAREVERSION "6.0.3"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -29,6 +29,7 @@ extern Ticker flasher;
 #define API_INFLUXDB true
 #define API_PROMETHEUS true
 #define API_MQTT true
+#define API_BREWERSFRIEND true
 
 #ifndef DEBUG
 #define DEBUG true
@@ -83,6 +84,7 @@ extern Ticker flasher;
 #define DTInfluxDB 8
 #define DTPrometheus 9
 #define DTMQTT 10
+#define DTBrewersFriend 11
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
