@@ -26,6 +26,7 @@ public:
   bool sendMQTT(String server, uint16_t port, String username, String password, String name);
   bool sendFHEM(String server, uint16_t port, String name);
   bool sendTCONTROL(String server, uint16_t port);
+  bool sendBrewersfriend(String token, String name);
   void add(String id, float value);
   void add(String id, String value);
   void add(String id, int32_t value);

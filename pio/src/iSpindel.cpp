@@ -682,6 +682,21 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, 4968);
   }
 #endif // DATABASESYSTEM ==
+#ifdef API_BREWERSFRIEND
+  if (service == DTBrewersFriend)
+  {
+    sender.add("name", my_name);
+    sender.add("angle", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temp_units", tempScaleLabel());
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling Brewersfriend"));
+    return sender.sendBrewersfriend(my_token, my_name);
+  }
+#endif // DATABASESYSTEM ==
   return false;
 }
 
