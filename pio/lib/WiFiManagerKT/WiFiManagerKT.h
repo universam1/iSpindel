@@ -51,7 +51,8 @@ var lAPI = [
 {"name":"iSpindel.de","token":1,"server":0,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
 {"name":"InfluxDB",   "token":0,"server":1,"url":0,"port":1,"db":1,"username":1,"password":1,"job":0,"instance":0},
 {"name":"Prometheus", "token":0,"server":1,"url":0,"port":1,"db":0,"username":0,"password":0,"job":1,"instance":1},
-{"name":"MQTT",       "token":0,"server":1,"url":0,"port":1,"db":0,"username":1,"password":1,"job":0,"instance":0}];
+{"name":"MQTT",       "token":0,"server":1,"url":0,"port":1,"db":0,"username":1,"password":1,"job":0,"instance":0},
+{"name":"Brewersfriend", "token":1,"server":0,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0}];
 
 var $ = function (id) { return document.getElementById(id); };
 var labels = document.getElementsByTagName('LABEL');
