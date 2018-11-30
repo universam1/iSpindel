@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <title>iSpindel Calibration</title>
     <script src="https://code.jquery.com/jquery.min.js"></script>
     <script src="https://Tom-Alexander.github.io/regression-js/jquery.flot.js"></script>
     <!-- 
@@ -174,34 +175,6 @@ Vito Tai. 2017.
             }
         });
         /*** end of Regression.JS **/
-        var q = function(s) {
-            return document.querySelector(s);
-        };
-
-        function s_ajax(b) {
-            var c = new XMLHttpRequest();
-            c.onreadystatechange = function() {
-                if (c.readyState == 4) {
-                    if (c.status == 200) {
-                        b.success(c.responseText)
-                    } else {
-                        c.onerror(c.status)
-                    }
-                }
-            };
-            c.ontimeout = function() {
-                if (typeof b["timeout"] != "undefined") b.timeout();
-                else c.onerror(-1)
-            }, c.onerror = function(a) {
-                if (typeof b["fail"] != "undefined") b.fail(a)
-            };
-            c.open(b.m, b.url, true);
-            if (typeof b["data"] != "undefined") {
-                c.setRequestHeader("Content-Type", (typeof b["mime"] != "undefined") ? b["mime"] : "application/x-www-form-urlencoded");
-                c.send(b.data)
-            } else c.send()
-        }
-
         function C2F(c) {
             return (c * 1.8 + 32);
         }
@@ -234,7 +207,7 @@ Vito Tai. 2017.
 
 
         function applyTempCal() {
-            var cal = parseFloat(q("#tempcalvalue").value);
+            var cal = parseFloat($("#tempcalvalue").val());
             if (isNaN(cal)) {
                 alert("invalid calibration value");
                 return;
@@ -254,36 +227,36 @@ Vito Tai. 2017.
         }
 
         function setSg(sgn, bx) {
-            q("#sgvalue").innerHTML = sgn.toFixed(3);
-            q("#brixvalue").innerHTML = bx.toFixed(1);
+            $("#sgvalue").html(sgn.toFixed(3));
+            $("#brixvalue").html(bx.toFixed(1));
             window.sg = sgn;
             window.brix = bx;
         }
 
         function sgchanged() {
-            var sg = q("#sginput").value.trim();
-            if (sg == "") return;
-            var tc = q("#tempcorrect").checked;
-            var ct = q("#sgcorrect").value.trim();
-            //clear brix to avoid confusing
-            q("#brixinput").value = "";
-            var sgn = parseFloat(sg);
-            if (tc) {
-                sqn = BrewMath.sgTempCorrectedC(sgn, SSE.temp, ct);
-            }
-            var bx = BrewMath.sg2brix(sgn);
+            var sg = parseFloat($("#sginput").val());
+            if (isNaN(sg)) return;
+            var temp = parseFloat($("#worttemp").val());
+            if (isNaN(temp)) return;
 
+            var tc = $("#tempcorrect").prop("checked");
+            var ct = $("#sgcorrect").val().trim();
+            var useF = window.temp_unit == "F";
+            //clear brix to avoid confusing
+            $("#brixinput").val("");
+            var sgn = tc ? (useF ? BrewMath.sgTempCorrected(sg, temp, ct) : BrewMath.sgTempCorrectedC(sg, temp, ct)) : sg;
+            var bx = BrewMath.sg2plato(sgn);
             setSg(sgn, bx);
         }
 
         function brixchanged() {
-            var brix = q("#brixinput").value.trim();
+            var brix = $("#brixinput").val().trim();
             if (brix == "") return;
-            var wc = q("#wortcorrect").value.trim();
+            var wc = $("#wortcorrect").val().trim();
 
-            q("#sginput").value = "";
+            $("#sginput").val("");
             var bx = parseFloat(brix) / parseFloat(wc);
-            var sgn = BrewMath.brix2sg(bx);
+            var sgn = BrewMath.plato2sg(bx);
             setSg(sgn, bx);
         }
 
@@ -320,37 +293,34 @@ Vito Tai. 2017.
                 td2.innerHTML = this.points[i][0];
                 var td3 = document.createElement("td");
 
-                td3.className = "pl_brix";
-                td3.innerHTML = BrewMath.sg2brix(this.points[i][1]).toFixed(1); //this.points[i][1];
+                var precision = window.use_plato ? 2 : 4;
 
                 var td4 = document.createElement("td");
                 td4.className = "pl_sg";
-                td4.innerHTML = this.points[i][1]; // BrewMath.brix2sg(this.points[i][1]).toFixed(3);
-
+                td4.innerHTML = this.points[i][1].toFixed(precision);
                 var td5i = document.createElement("td");
                 td5i.className = "pl_2ndvalue";
                 if (typeof window.secValue != "undefined")
-                    td5i.innerHTML = window.secValue[i].toFixed(3);
+                    td5i.innerHTML = window.secValue[i].toFixed(precision);
 
                 var td5 = document.createElement("td");
                 td5.className = "pl_2nderror";
                 if (typeof window.secondError != "undefined")
-                    td5.innerHTML = window.secondError[i].toFixed(4);
+                    td5.innerHTML = window.secondError[i].toFixed(precision);
 
                 var td6i = document.createElement("td");
                 td6i.className = "pl_3rdvalue";
                 if (typeof window.thirdValue != "undefined")
-                    td6i.innerHTML = window.thirdValue[i].toFixed(3);
+                    td6i.innerHTML = window.thirdValue[i].toFixed(precision);
 
 
                 var td6 = document.createElement("td");
                 td6.className = "pl_3rderror";
                 if (typeof window.thirdError != "undefined")
-                    td6.innerHTML = window.thirdError[i].toFixed(4);
+                    td6.innerHTML = window.thirdError[i].toFixed(precision);
 
                 tr.appendChild(td1);
                 tr.appendChild(td2);
-                tr.appendChild(td3);
                 tr.appendChild(td4);
                 tr.appendChild(td5i);
                 tr.appendChild(td5);
@@ -390,8 +360,8 @@ Vito Tai. 2017.
                         show: true
                     }
                 }, ]);
-                q("#secondpoly").innerHTML = secondRegression.string;
-                q("#thirdpoly").innerHTML = thirdRegression.string;
+                $("#secondpoly").html(secondRegression.string);
+                $("#thirdpoly").html(thirdRegression.string);
                 // caluate errors
                 var sec_error = [];
                 var sec_value = [];
@@ -419,70 +389,73 @@ Vito Tai. 2017.
                 window.thirdValue = third_value;
             },
             adddata: function() {
-                var tilt = parseFloat(q("#tiltinput").value);
-                var sg = window.sg;
-                if (isNaN(tilt) || isNaN(sg)) {
+                var tilt = parseFloat($("#tiltinput").val());
+                var gravity = window.use_plato ? window.brix : window.sg;
+                if (isNaN(tilt) || isNaN(gravity)) {
                     alert("invalid value");
                     return;
                 }
-                this.points.push([tilt, sg]);
+                this.points.push([tilt, gravity]);
                 this.points.sort(function(a, b) {
                     return a[0] - b[0];
                 });
                 this.list();
             },
+            change_gu: function() {
 
+                for (var i = 0; i < this.points.length; i++) {
+                    this.points[i][1] = window.use_plato ? BrewMath.sg2plato(this.points[i][1]) : BrewMath.plato2sg(this.points[i][1]);
+                }
+                this.list();
+            }
         };
 
-        function setformula(order) {
-            var coeffs;
-            if (order == 2) {
-                if (typeof window.equation2nd == "undefined") {
-                    alert("The formula is not yet derived.");
-                    return;
-                }
-                coeffs = "a0=" + window.equation2nd[0] +
-                    "&a1=" + window.equation2nd[1] +
-                    "&a2=" + window.equation2nd[2];
-
-
-            } else {
-                if (typeof window.equation3rd == "undefined") {
-                    alert("The formula is not yet derived.");
-                    return;
-                }
-                coeffs = "a0=" + window.equation3rd[0] +
-                    "&a1=" + window.equation3rd[1] +
-                    "&a2=" + window.equation3rd[2] +
-                    "&a3=" + window.equation3rd[3];
-            }
-            console.log("set equation:" + coeffs);
-            s_ajax({
-                url: equrl,
-                m: "POST",
-                data: coeffs,
-                success: function(d) {
-                    alert("done");
-                },
-                fail: function(d) {
-                    alert("failed:" + d);
-                }
-            });
+        function temperatureunit(celisus) {
+            window.temp_unit = celisus ? "C" : "F";
         }
 
-        function loaded() {}
+        function tempunitchange() {
+            temperatureunit($("#tu_select").val() == "C");
+        }
 
-        function resettarget() {
-            s_ajax({
-                url: reseturl,
-                m: "GET",
-                success: function(d) {
-                    alert("HailHydro will restart after 3 seconds.");
-                },
-                fail: function(d) {
-                    alert("failed:" + d);
-                }
-            })
+        function using_plato(plato) {
+            window.use_plato = plato;
+            if (plato) {
+                $("#result_sg").hide();
+                $("#result_plato").show();
+                $(".sg-row").hide();
+                $(".plato-row").show();
+            } else {
+                $("#result_sg").show();
+                $("#result_plato").hide();
+                $(".sg-row").show();
+                $(".plato-row").hide();
+            }
+            TiltPoints.change_gu();
+        }
+
+        function gravityunitchange() {
+            using_plato($("#gu_select").val() == "gu_plato");
+        }
+
+        function instrument(hydro) {
+            if (hydro) {
+                $("#hydrometer_input").show();
+                $("#refractometer_input").hide();
+            } else {
+                $("#hydrometer_input").hide();
+                $("#refractometer_input").show();
+            }
+        }
+
+        function instrumentchange() {
+            instrument($("#instrument").val() == "hydro");
+        }
+
+        function loaded() {
+            //default to sg
+            using_plato(false);
+            instrument(true);
         }
     </script>
     <style>
@@ -556,21 +529,47 @@ Vito Tai. 2017.
 </head>
 
 <body onload="loaded()">
-    <div class="sectitle gravity_cal"> Gravity Calibration</div>
+    <div class="sectitle gravity_cal"> iSpindel Calibration</div>
     <div class="secdiv gravity_cal">
         <table>
             <tr>
                 <td colspan="2">
                     <fieldset id="inputpoints">
                         <div>
-                            SG or Plato:<input type="text" size="6" id="sginput" value="" onchange="sgchanged()"></input>
-                            <input type="checkbox" id="tempcorrect" onchange="sgchanged()"></input>Temperature Corrected. CAL@
-                            <input type="text" size="3" id="sgcorrect" value="20" onchange="sgchanged()">&deg;C ,or <br> BRIX:
-                            <input type="text" size="6" id="brixinput" onchange="brixchanged()">&deg;Bx </input>@Wort Correction:
-                            <input type="text" size="4" id="wortcorrect" value="1.0" onchange="brixchanged()"></input>
+                            Gravity Unit:
+                            <select id=gu_select onchange="gravityunitchange()">
+                                <option value="gu_sg" selected>Specific Gravity(eg. 1.050)</option>
+                                <option value="gu_plato">Plato (&deg;P)</option>
+                            </select>
                         </div>
+                        <hr>
                         <div>
-                            SG/Plato=<span id="sgvalue"></span>, Brix:<span id="brixvalue"></span>&deg;Bx, Tilt:<input type="text" size="6" id="tiltinput"></input>
+                            Measurement: <select id="instrument" onchange="instrumentchange()">
+								<option value="hydro">Hydrometer</option>
+								<option value="refrac">Refractometer</option>
+							</select>
+                            <div id=hydrometer_input>
+                                Reading:
+                                <input type="text" size="6" id="sginput" value="" onchange="sgchanged()"></input>
+                                <input type="checkbox" id="tempcorrect" onchange="sgchanged()"></input>
+                                Temperature Corrected. Wort Temperature <input type="text" size="3" id="worttemp" value="20" onchange="sgchanged()"> CAL@ <input type="text" size="3" id="sgcorrect" value="20" onchange="sgchanged()">
+                                <select id=tu_select onchange="tempunitchange()">
+										<option value="C" selected>Celsius(&deg;C) </option>
+										<option value="F">Fahrenheit (&deg;F)</option>
+									</select>
+
+                            </div>
+                            <div id=refractometer_input>
+                                Reading:<input type="text" size="6" id="brixinput" onchange="brixchanged()">&deg;P </input>@Wort Correction:
+                                <input type="text" size="4" id="wortcorrect" value="1.0" onchange="brixchanged()"></input>
+                            </div>
+
+                        </div>
+                        <hr>
+                        <div>
+                            Tilt:<input type="text" size="6" id="tiltinput"></input>
+                            <span id="result_sg">SG: <span id="sgvalue"></span> </span>
+                            <span id="result_plato">Plato: <span id="brixvalue"></span>&deg;P </span>
                             <button onclick="TiltPoints.adddata();">Add Data</button>
                         </div>
                     </fieldset>
@@ -583,8 +582,7 @@ Vito Tai. 2017.
                         <tr>
                             <th></th>
                             <th>Tilt</th>
-                            <th>Plato</th>
-                            <th>SG</th>
+                            <th><span class="plato-row">Plato</span> <span class="sg-row">SG</span> </th>
                             <th>Degree 2 Value</th>
                             <th>Degree 2 Error</th>
                             <th>Degree 3 Value</th>
