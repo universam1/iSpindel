@@ -12,7 +12,6 @@ All rights reserverd by S.Lang <universam@web.de>
 // #endif
 #include "OneWire.h"
 #include "Wire.h"
-// #include <Ticker.h>
 #include "DallasTemperature.h"
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
 #include "RunningMedian.h"
@@ -39,6 +38,12 @@ DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 #define TEMP_CELSIUS 0
 #define TEMP_FAHRENHEIT 1
 #define TEMP_KELVIN 2
+
+//If you are using WROOM or ESP-12 board set NOADC to True to enable internal battery sensor;
+#define NOADC false
+#if NOADC
+  ADC_MODE(ADC_VCC);    //enable Get.Vcc to check power supply;
+#endif
 
 int detectTempSensor(const uint8_t pins[]);
 bool testAccel();
@@ -638,7 +643,22 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
-  return false;
+  
+#ifdef API_BLYNK
+  if (service == DTBLYNK)
+  {
+    String tempToSend = String(scaleTemperature(Temperatur),1);
+    tempToSend += tempScaleLabel();
+
+    sender.add("1", String(Tilt,1)+"°");
+    sender.add("2", tempToSend);
+    sender.add("3", String(Volt,2));
+    sender.add("4", String(Gravity,3));
+    return sender.sendBlynk(my_token);
+  }
+#endif
+
+return false;
 }
 
 void goodNight(uint32_t seconds)
@@ -978,8 +998,14 @@ int detectTempSensor(const uint8_t pins[])
 
 float getBattery()
 {
-  analogRead(A0); // drop first read
-  return analogRead(A0) / my_vfact;
+  float _battery;
+  #if NOADC
+    _battery = ESP.getVcc()/1000.00f;
+  #else
+    _battery = analogRead(A0) / my_vfact; // drop first read
+  #endif
+
+  return _battery;
 }
 
 float calculateGravity()
@@ -1016,8 +1042,15 @@ void flash()
 }
 
 bool isSafeMode(float _volt)
-{
-  if (_volt < LOWBATT)
+{ 
+  //When using internal converter 3.04V is the critical level
+  #if NOADC
+    float _lowbatt = 3.04;
+  #else
+    float _lowbatt = LOWBATT;
+  #endif
+
+  if (_volt < _lowbatt)
   {
     CONSOLELN(F("\nWARNING: low Battery"));
     return true;

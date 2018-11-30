@@ -8,8 +8,11 @@
 #include "Sender.h"
 #include "Globals.h"
 #include <PubSubClient.h>
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
 
 #define UBISERVER "things.ubidots.com"
+#define BLYNKSERVER "blynk-cloud.com"
 #define CONNTIMEOUT 2000
 
 SenderClass::SenderClass()
@@ -448,4 +451,113 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
     _client.stop();
     delay(100); // allow gracefull session close
     return true;
+}
+
+//Blynk HTTP was taking 2 seconds longer and did not show in the App
+//when device was connected, therefore best to use their API.
+bool SenderClass::sendBlynk(char* token)
+{
+    _jsonVariant.printTo(Serial);
+
+    Blynk.config(token);
+
+    byte i = 0;
+    int _pin = 0;
+    String _value;
+
+    while (!Blynk.connected() && i<10)
+    {
+      Blynk.run();
+      i++;
+      delay(50);
+    }
+
+    if (Blynk.connected())
+    {
+        for (const auto &kv : _jsonVariant.as<JsonObject>())
+        {
+            _pin = atoi(kv.key);
+            _value = kv.value.as<String>();
+            Blynk.virtualWrite(_pin,_value);
+        }
+    }
+
+    else {
+        CONSOLELN(F("\nFailed to connect to Blynk, going to sleep"));
+        return false;
+    }
+    
+    delay(300);     //delay to allow last value to be sent;
+    return true;
+}
+
+bool SenderClass::sendBlynkHTTP(String token)
+{
+    //http://blynk-cloud.com/auth_token/update/pin
+    _jsonVariant.printTo(Serial);
+
+    String msg = String("PUT /");
+    msg += token;
+    msg += "/update/V";
+
+    String _msg;
+    String _value;
+    String _key;
+
+    //Blynk does not allow multiple pins write via POST, PUT or GET, therefore we ned to send multiple writes.
+    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    {
+        if (_client.connect(BLYNKSERVER, 80))
+        {
+            CONSOLELN(F("\nConnection OK, Sender: Blynk PUT"));
+
+            _msg = msg;
+
+            _msg += String(kv.key);
+            _value = String("[\"") + kv.value.as<String>() + "\"]";
+            _client.print(_msg);
+
+            //https://github.com/blynkkk/blynk-library/blob/2013a8b86e5a429532ab9fe3a7fe7c2dbe9b0536/examples/Boards_With_HTTP_API/ESP8266/ESP8266.ino#L72
+            _client.println(F(" HTTP/1.1"));
+            _client.print(F("Host: ")); 
+            _client.println(BLYNKSERVER);
+            _client.println(F("Connection: close"));
+            if (_value.length()) {
+                _client.println(F("Content-Type: application/json"));
+                _client.print(F("Content-Length: ")); _client.println(_value.length());
+                _client.println();
+                _client.print(_value);
+            } else {
+                _client.println();
+            }
+
+            int timeout = millis() + CONNTIMEOUT;
+            while (_client.available() == 0) {
+                if (timeout - millis() < 0) {
+                    CONSOLELN(F("\n>>> Client Timeout !"));
+                    _client.stop();
+                    return false;
+                }
+            }
+
+            while (_client.available())
+            {
+                char c = _client.read();
+                Serial.write(c);  
+            }
+    
+            _client.stop();
+        }
+        else{
+            CONSOLELN(F("\nERROR Sender: couldnt connect"));
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool SenderClass::sendBlynkEmail(String Subject, String Content)
+{
+    Blynk.email(Subject, Content);
 }

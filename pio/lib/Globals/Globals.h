@@ -29,6 +29,13 @@ extern Ticker flasher;
 #define API_INFLUXDB true
 #define API_PROMETHEUS true
 #define API_MQTT true
+#define API_BLYNK true
+
+//#define BLYNK_DEBUG
+#define APP_DEBUG
+#define BLYNK_PRINT Serial
+#define BLYNK_NO_BUILTIN
+#define BLYNK_MAX_SENDBYTES 1200
 
 #ifndef DEBUG
 #define DEBUG true
@@ -83,6 +90,7 @@ extern Ticker flasher;
 #define DTInfluxDB 8
 #define DTPrometheus 9
 #define DTMQTT 10
+#define DTBLYNK 11
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.

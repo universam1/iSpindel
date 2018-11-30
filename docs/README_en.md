@@ -37,6 +37,7 @@ iSpindle (iSpindel) Documentation
   - [Sled](#sled)
 - [Configuration](#configuration)
   - [Ubidots](#ubidots)
+  - [Blynk](#Blynk)
   - [Portal](#portal)
 - [Graphical User Interface](#graphical-user-interface)
   - [Calibrating the Spindle](#calibration)
@@ -111,6 +112,19 @@ alt="Druck" width="240" height="180" border="10" /></a>
 - Next, you must go to the menu  ```API Credentials``` to get a ```Token``` to be used by the iSpindle to authorize writing data to the Ubidots account.
 ***Write this down.***  
 ![Token](/pics/UbiToken.jpg)  
+
+### Blynk
+[Getting Started with Blynk](https://www.blynk.cc/getting-started/)
+<li>Download Blynk App:&nbsp;<a href="http://j.mp/blynk_Android" rel="nofollow">http://j.mp/blynk_Android</a>&nbsp;or&nbsp;<a href="http://j.mp/blynk_iOS" rel="nofollow">http://j.mp/blynk_iOS</a></li>
+<li>Touch the QR-code icon and point the camera to the code below
+<ul>
+<li style="text-align: center;"><img src="https://image.ibb.co/gxZFDz/Untitled.png" alt="" width="274" height="98" /></li>
+</ul>
+</li>
+<li>Don't forget to save yout Auth Token as you will need it later on the Configuration Portal.</li>
+<li>Enjoy the app!</li>
+</ol>
+<p style="text-align: center;">&nbsp;<img src="/pics/Blynk Dashboard.jpg" alt="" width="188" height="334" />&nbsp;<img src="/pics/Blynk Clone.jpg" alt="" width="188" height="334" /></p>
 
 ### Portal
 
