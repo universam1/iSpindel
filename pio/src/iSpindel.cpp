@@ -66,7 +66,7 @@ float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravit
 
 bool shouldSaveConfig = false;
 
-char my_token[TKIDSIZE];
+char my_token[TKIDSIZE * 2];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
@@ -75,7 +75,7 @@ char my_username[TKIDSIZE];
 char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
-char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
+char my_polynominal[100] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 String my_ssid;
 String my_psk;
@@ -334,7 +334,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
-                                    TKIDSIZE * 2);
+                                    TKIDSIZE * 2 * 2);
   WiFiManagerParameter custom_server("server", "Server Address",
                                      my_server, TKIDSIZE);
   WiFiManagerParameter custom_port("port", "Server Port",
@@ -378,7 +378,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_instance);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70 * 2, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100 * 2, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
