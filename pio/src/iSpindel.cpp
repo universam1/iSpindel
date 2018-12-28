@@ -3,16 +3,17 @@
 "iSpindel"
 All rights reserverd by S.Lang <universam@web.de>
 
+Blynk Version support added by Leonardo Bispo
+
 **************************************************************/
 
 // includes go here
 #include <PubSubClient.h>
 #include "Globals.h"
 #include "MPUOffset.h"
-// #endif
 #include "OneWire.h"
 #include "Wire.h"
-// #include <Ticker.h>
+#include <BlynkSimpleEsp8266.h>   //https://github.com/blynkkk/blynk-library
 #include "DallasTemperature.h"
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
 #include "RunningMedian.h"
@@ -35,10 +36,17 @@ DeviceAddress tempDeviceAddress;
 Ticker flasher;
 RunningMedian samples = RunningMedian(MEDIANROUNDSMAX);
 DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
+//WidgetTerminal terminal(V0);        //Blynk App Terminal to VirtualPin 0
 
 #define TEMP_CELSIUS 0
 #define TEMP_FAHRENHEIT 1
 #define TEMP_KELVIN 2
+
+//If you are using WROOM or ESP-12 board set NOADC to True to enable internal battery sensor;
+#define NOADC true
+#if NOADC
+  ADC_MODE(ADC_VCC);    //enable Get.Vcc to check power supply;
+#endif
 
 int detectTempSensor(const uint8_t pins[]);
 bool testAccel();
@@ -65,6 +73,8 @@ float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravit
 #endif
 
 bool shouldSaveConfig = false;
+bool enterCalibMode = false;
+bool syncOK = false;
 
 char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
@@ -638,12 +648,99 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
-  return false;
+  
+#ifdef API_BLYNK
+  if (service == DTBLYNK)
+  {
+    Blynk.config(my_token);
+    
+    byte i = 0;
+
+    while (!Blynk.connected() && i<10)
+    {
+      Blynk.run();
+      i++;
+      delay(50);
+    }
+    
+    Serial.print("Try to connect: ");
+    Serial.println(i);
+
+    if (Blynk.connected())
+    {
+      //Blynk.syncVirtual(V0);
+
+      //this is holding the sync, need a timeout here.
+      //while (!syncOK && i<200)
+      //{
+      //  delay(50);
+      //  i++;
+      //}
+
+      Serial.println(syncOK);
+
+      if (enterCalibMode)
+      {
+        //terminal.println("We sent you an email");
+        //terminal.println(":)");
+        //terminal.flush();
+        //Blynk.email("Calibration steps", "Please follow the steps found here http://www.ispindel.de/docs/Calibration_en.html#easy-method-(I) in order to find your Polynomial Formula, please enter here your parameters after.");
+      }
+
+      Blynk.virtualWrite(V1, Tilt);
+      Blynk.virtualWrite(V2, scaleTemperature(Temperatur));
+      //Blynk.virtualWrite(V4, String(Gravity,1));
+      Blynk.virtualWrite(V4, random(1000,1050));
+      Blynk.virtualWrite(V3, Volt);
+      Blynk.virtualWrite(V5, 0);
+
+      delay(100);        //workaround for Blynk to send data, whithout it the last value is not being sent as it goes to sleep
+    }
+    
+    else CONSOLELN(F("\nFailed to connect to Blynk, going to sleep"));
+
+    return true;
+  }
+#endif
+
+return false;
 }
+
+/*BLYNK_WRITE(V0){
+  //Ignore UPPER case
+  String msgTerminal = param.asStr();
+  msgTerminal.toLowerCase();
+
+  if (String("calib") == msgTerminal) 
+  {
+    terminal.println("Calibration mode");
+    enterCalibMode = true;
+  }
+
+  else if (String(":)") == msgTerminal) enterCalibMode = true;
+
+  else if (msgTerminal == "POLYNOMIAL FACTOR") Volt = 6;
+
+  else if (String("abort") == msgTerminal)
+  {
+    terminal.print("Leaving calibration, sleep time = ");
+    terminal.print(my_sleeptime);
+    terminal.println(" seconds");
+    terminal.flush();
+    
+    //sanity check, theoretically it should be false already
+    enterCalibMode = false;
+  }
+
+  syncOK = true;
+  Serial.print("DONE ");
+  Serial.println(syncOK);
+}
+*/
 
 void goodNight(uint32_t seconds)
 {
-
+  
   uint32_t _seconds = seconds;
   uint32_t left2sleep = 0;
   uint32_t validflag = RTCVALIDFLAG;
@@ -753,7 +850,7 @@ bool isDS18B20ready()
 void initAccel()
 {
   // join I2C bus (I2Cdev library doesn't do this automatically)
-  Wire.begin(D3, D4);
+  Wire.begin(D3, D4);   //D3 = GPIO 0 and D4 = GPIO 2
   Wire.setClock(100000);
   Wire.setClockStretchLimit(2 * 230);
 
@@ -1016,10 +1113,19 @@ void flash()
 }
 
 bool isSafeMode(float _volt)
-{
-  if (_volt < LOWBATT)
+{ 
+  //When using internal converter 3.04V is the critical level for 14500 batteries
+  #if NOADC
+    float _lowbatt = 3.04;
+  #else
+    float _lowbatt = LOWBATT;
+  #endif
+
+  if (_volt < _lowbatt)
   {
     CONSOLELN(F("\nWARNING: low Battery"));
+    if (my_api == DTBLYNK) Blynk.email("LOW BATTERY","LOW BATTERY");
+    //TODO set a flag on the RTC memory to stop sending emails.
     return true;
   }
   else
@@ -1032,6 +1138,11 @@ void connectBackupCredentials()
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
   CONSOLELN(F("Rescue Wifi credentials"));
   delay(100);
+}
+
+void check90deg()
+{
+
 }
 
 void setup()
@@ -1047,15 +1158,15 @@ void setup()
   bool validConf = readConfig();
   if (!validConf)
     CONSOLELN(F("\nERROR config corrupted"));
-  initDS18B20();
-  initAccel();
+  //initDS18B20();
+  //initAccel();
 
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig(validConf))
   {
     uint32_t tmp;
     ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
-
+    
     // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
     if (tmp != RTCVALIDFLAG)
     {
@@ -1072,7 +1183,7 @@ void setup()
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
     }
 
-    flasher.attach(1, flash);
+    //flasher.attach(1, flash);
 
     // rescue if wifi credentials lost because of power loss
     if (!startConfiguration())
@@ -1091,7 +1202,13 @@ void setup()
   }
   // to make sure we wake up with STA but AP
   WiFi.mode(WIFI_STA);
+  
+#if NOADC
+  Volt = ESP.getVcc()/1000.00f;
+#else          
   Volt = getBattery();
+#endif
+
   // we try to survive
   if (isSafeMode(Volt))
     WiFi.setOutputPower(0);
@@ -1099,7 +1216,7 @@ void setup()
     WiFi.setOutputPower(20.5);
 
 #ifndef USE_DMP
-  Tilt = getTilt();
+  //Tilt = getTilt();
 #else
   while (fifoCount < packetSize)
   {
@@ -1163,6 +1280,9 @@ void setup()
   CONSOLE(" z: ");
   CONSOLELN(az);
 
+  CONSOLE(F("Millis: "));
+  CONSOLELN(millis());
+
   CONSOLE(F("Tilt: "));
   CONSOLELN(Tilt);
   CONSOLE("Tacc: ");
@@ -1197,7 +1317,8 @@ void setup()
     {
       delay(100);
       wait++;
-      if (wait > 50)
+      if (wait>100)       //Changed as it failed to connect when 50
+      //if (wait > 50)
         break;
     }
     auto waited = (millis() - startedAt);
@@ -1220,10 +1341,15 @@ void setup()
   // survive - 60min sleep time
   if (isSafeMode(Volt))
     my_sleeptime = EMERGENCYSLEEP;
-  goodNight(my_sleeptime);
+
+  if (!enterCalibMode)  goodNight(my_sleeptime);
+  else                  goodNight(30);
 }
 
 void loop()
 {
   CONSOLELN(F("should never be here!"));
 }
+
+//disable init and readings;
+//attach flash
