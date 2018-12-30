@@ -3,14 +3,13 @@
 "iSpindel"
 All rights reserverd by S.Lang <universam@web.de>
 
-Blynk Version support added by Leonardo Bispo
-
 **************************************************************/
 
 // includes go here
 #include <PubSubClient.h>
 #include "Globals.h"
 #include "MPUOffset.h"
+// #endif
 #include "OneWire.h"
 #include "Wire.h"
 #include "DallasTemperature.h"
@@ -35,7 +34,6 @@ DeviceAddress tempDeviceAddress;
 Ticker flasher;
 RunningMedian samples = RunningMedian(MEDIANROUNDSMAX);
 DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
-//WidgetTerminal terminal(V0);        //Blynk App Terminal to VirtualPin 0
 
 #define TEMP_CELSIUS 0
 #define TEMP_FAHRENHEIT 1
@@ -72,10 +70,8 @@ float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravit
 #endif
 
 bool shouldSaveConfig = false;
-bool enterCalibMode = false;
-bool syncOK = false;
 
-char my_token[TKIDSIZE * 2];
+char my_token[TKIDSIZE];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
 char my_url[TKIDSIZE];
@@ -84,7 +80,7 @@ char my_username[TKIDSIZE];
 char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
-char my_polynominal[100] = "-0.00031*tilt^2+0.557*tilt-14.054";
+char my_polynominal[70] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 String my_ssid;
 String my_psk;
@@ -343,7 +339,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
-                                    TKIDSIZE * 2 * 2);
+                                    TKIDSIZE * 2);
   WiFiManagerParameter custom_server("server", "Server Address",
                                      my_server, TKIDSIZE);
   WiFiManagerParameter custom_port("port", "Server Port",
@@ -387,7 +383,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_instance);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100 * 2, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 70 * 2, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
@@ -667,7 +663,7 @@ return false;
 
 void goodNight(uint32_t seconds)
 {
-  
+
   uint32_t _seconds = seconds;
   uint32_t left2sleep = 0;
   uint32_t validflag = RTCVALIDFLAG;
@@ -777,7 +773,7 @@ bool isDS18B20ready()
 void initAccel()
 {
   // join I2C bus (I2Cdev library doesn't do this automatically)
-  Wire.begin(D3, D4);   //D3 = GPIO 0 and D4 = GPIO 2
+  Wire.begin(D3, D4);
   Wire.setClock(100000);
   Wire.setClockStretchLimit(2 * 230);
 
@@ -1057,8 +1053,6 @@ bool isSafeMode(float _volt)
   if (_volt < _lowbatt)
   {
     CONSOLELN(F("\nWARNING: low Battery"));
-    if (my_api == DTBLYNK) Blynk.email("LOW BATTERY","LOW BATTERY");
-    //TODO set a flag on the RTC memory to stop sending emails.
     return true;
   }
   else
@@ -1071,11 +1065,6 @@ void connectBackupCredentials()
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
   CONSOLELN(F("Rescue Wifi credentials"));
   delay(100);
-}
-
-void check90deg()
-{
-
 }
 
 void setup()
@@ -1091,15 +1080,15 @@ void setup()
   bool validConf = readConfig();
   if (!validConf)
     CONSOLELN(F("\nERROR config corrupted"));
-  //initDS18B20();
-  //initAccel();
+  initDS18B20();
+  initAccel();
 
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig(validConf))
   {
     uint32_t tmp;
     ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
-    
+
     // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
     if (tmp != RTCVALIDFLAG)
     {
@@ -1116,7 +1105,7 @@ void setup()
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
     }
 
-    //flasher.attach(1, flash);
+    flasher.attach(1, flash);
 
     // rescue if wifi credentials lost because of power loss
     if (!startConfiguration())
@@ -1135,13 +1124,7 @@ void setup()
   }
   // to make sure we wake up with STA but AP
   WiFi.mode(WIFI_STA);
-  
-#if NOADC
-  Volt = ESP.getVcc()/1000.00f;
-#else          
   Volt = getBattery();
-#endif
-
   // we try to survive
   if (isSafeMode(Volt))
     WiFi.setOutputPower(0);
@@ -1149,7 +1132,7 @@ void setup()
     WiFi.setOutputPower(20.5);
 
 #ifndef USE_DMP
-  //Tilt = getTilt();
+  Tilt = getTilt();
 #else
   while (fifoCount < packetSize)
   {
@@ -1213,9 +1196,6 @@ void setup()
   CONSOLE(" z: ");
   CONSOLELN(az);
 
-  CONSOLE(F("Millis: "));
-  CONSOLELN(millis());
-
   CONSOLE(F("Tilt: "));
   CONSOLELN(Tilt);
   CONSOLE("Tacc: ");
@@ -1250,8 +1230,7 @@ void setup()
     {
       delay(100);
       wait++;
-      if (wait>100)       //Changed as it failed to connect when 50
-      //if (wait > 50)
+      if (wait > 50)
         break;
     }
     auto waited = (millis() - startedAt);
@@ -1274,15 +1253,10 @@ void setup()
   // survive - 60min sleep time
   if (isSafeMode(Volt))
     my_sleeptime = EMERGENCYSLEEP;
-
-  if (!enterCalibMode)  goodNight(my_sleeptime);
-  else                  goodNight(30);
+  goodNight(my_sleeptime);
 }
 
 void loop()
 {
   CONSOLELN(F("should never be here!"));
 }
-
-//disable init and readings;
-//attach flash

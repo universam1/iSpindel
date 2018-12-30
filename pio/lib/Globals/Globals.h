@@ -8,7 +8,7 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
-#define BLYNK_DEBUG
+//#define BLYNK_DEBUG
 #define APP_DEBUG
 #define BLYNK_PRINT Serial
 #define BLYNK_NO_BUILTIN
