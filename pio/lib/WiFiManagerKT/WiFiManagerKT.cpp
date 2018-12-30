@@ -977,7 +977,7 @@ void WiFiManager::handleiSpindel()
   page += Volt;
   page += F("V</td></tr>");
   page += F("<tr><td>Gravity:</td><td>");
-  page += Gravity;
+  page += String(Gravity, 3);
   page += F("</td></tr>");
   page += F("</table></h2>");
   page += F("<hr><dl>");
