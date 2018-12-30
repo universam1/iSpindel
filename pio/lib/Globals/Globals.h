@@ -8,6 +8,12 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
+#define BLYNK_DEBUG
+#define APP_DEBUG
+#define BLYNK_PRINT Serial
+#define BLYNK_NO_BUILTIN
+#define BLYNK_MAX_SENDBYTES 1200
+
 #pragma once
 //#define USE_DMP false
 #include <Arduino.h>
@@ -30,12 +36,6 @@ extern Ticker flasher;
 #define API_PROMETHEUS true
 #define API_MQTT true
 #define API_BLYNK true
-
-//#define BLYNK_DEBUG
-#define APP_DEBUG
-#define BLYNK_PRINT Serial
-#define BLYNK_NO_BUILTIN
-#define BLYNK_MAX_SENDBYTES 1200
 
 #ifndef DEBUG
 #define DEBUG true
@@ -104,6 +104,7 @@ extern Ticker flasher;
 // sleep management
 #define RTCSLEEPADDR 5
 #define MAXSLEEPTIME 3600UL //TODO
+// since 2.4.1 we can use ESP.deepSleepMax()
 #define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
 #define LOWBATT 3.3
 
