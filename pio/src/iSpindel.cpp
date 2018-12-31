@@ -638,6 +638,21 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
+
+#ifdef API_BLYNK
+  if (service == DTBLYNK)
+  {
+    String tempToSend = String(scaleTemperature(Temperatur),1);
+    tempToSend += tempScaleLabel();
+
+    sender.add("1", String(Tilt, 1)+"°");
+    sender.add("2", tempToSend);
+    sender.add("3", String(Volt, 2));
+    sender.add("4", String(Gravity*1000, 0));
+    return sender.sendBlynk(my_token);
+  }
+#endif
+
   return false;
 }
 
