@@ -638,6 +638,19 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
+#ifdef API_THINGSPEAK
+  if (service == DTThingspeak)
+  {
+    sender.add("field1", scaleTemperature(Temperatur));
+    sender.add("field2", Tilt);
+    sender.add("field3", Volt);
+    sender.add("field4", Gravity);
+    sender.add("field5", my_sleeptime);
+    sender.add("field6", WiFi.RSSI());
+    CONSOLELN(F("\ncalling Thingspeak"));
+    return sender.sendThingSpeak(my_token);
+  }
+#endif // DATABASESYSTEM ==
   return false;
 }
 

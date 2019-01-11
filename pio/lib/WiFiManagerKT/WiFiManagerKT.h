@@ -42,7 +42,7 @@ const char HTTP_SCRIPT[] PROGMEM = R"V0G0N(
 <script>
 var lAPI = [
 {"name":"Ubidots",    "token":1,"server":0,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"empty",      "token":1,"server":0,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
+{"name":"Thingspeak", "token":1,"server":0,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
 {"name":"CraftBeerPi","token":0,"server":1,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
 {"name":"HTTP",       "token":1,"server":1,"url":1,"port":1,"db":0,"username":0,"password":0,"job":0,"instance":0},
 {"name":"TControl",   "token":0,"server":1,"url":0,"port":0,"db":0,"username":0,"password":0,"job":0,"instance":0},

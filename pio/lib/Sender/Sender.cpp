@@ -12,6 +12,7 @@
 #define UBISERVER "things.ubidots.com"
 #define CONNTIMEOUT 2000
 
+
 SenderClass::SenderClass()
 {
     _jsonVariant = _jsonBuffer.createObject();
@@ -448,4 +449,43 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
     _client.stop();
     delay(100); // allow gracefull session close
     return true;
+}
+
+bool SenderClass::sendThingSpeak(String token)
+{
+  if (_client.connect("api.thingspeak.com", 80))
+  {
+
+    CONSOLELN(F("\nSender: Thingspeak posting"));
+
+    String msg = "GET https://api.thingspeak.com/update?api_key=";
+    msg += token;
+
+    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    {
+        msg += "&";
+        msg += kv.key;
+        msg += "=";
+        msg += kv.value.as<String>();
+    }
+
+
+    _client.println(msg);
+    _jsonVariant.printTo(_client);
+    _client.println();
+    CONSOLELN(msg);
+
+
+
+
+}
+else
+{
+  CONSOLELN(F("\nERROR Sender: couldnt connect"));
+}
+
+// currentValue = 0;
+_client.stop();
+delay(100); // allow gracefull session close
+return true;
 }

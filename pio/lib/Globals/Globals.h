@@ -28,6 +28,7 @@ extern Ticker flasher;
 #define API_TCONTROL true
 #define API_INFLUXDB true
 #define API_PROMETHEUS true
+#define API_THINGSPEAK true
 #define API_MQTT true
 
 #ifndef DEBUG
