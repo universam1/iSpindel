@@ -201,7 +201,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
 
     CONSOLELN(String(F("INFLUXDB: posting to db: ")) + uri);
     // configure traged server and url
-    http.begin(server, port, uri);
+    http.begin(server + ':' port + uri);
 
     if (username.length() > 0)
     {
