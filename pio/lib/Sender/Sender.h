@@ -11,6 +11,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
+#include <FirebaseArduino.h>
 #include <PubSubClient.h>
 
 class SenderClass
@@ -30,6 +31,7 @@ public:
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
   void mqttCallback(char* topic, byte* payload, unsigned int length);
+  bool sendFirebaseDB(String server, String url, String token);
   // ~SenderClass();
 
 private:

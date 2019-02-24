@@ -83,6 +83,7 @@ extern Ticker flasher;
 #define DTInfluxDB 8
 #define DTPrometheus 9
 #define DTMQTT 10
+#define DTFirebase 11
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.

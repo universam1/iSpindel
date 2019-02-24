@@ -155,6 +155,31 @@ String SenderClass::sendTCP(String server, uint16_t port)
     return response;
 }
 
+bool SenderClass::sendFirebaseDB(String server, String url, String token)
+{
+    _jsonVariant.printTo(Serial);
+
+    // configure Firebase HOST and PATH
+    Firebase.begin(server, token);
+
+    CONSOLELN(F("FIREBASE DB: posting"));
+   
+    //Push Json data object to Firebase
+    Firebase.push(url, _jsonVariant);
+
+    if (Firebase.failed()) {
+        CONSOLELN(F("posting error"));
+        CONSOLELN(Firebase.error());
+    }
+
+    if (Firebase.success()) {
+        CONSOLELN(F("POST success to Firebase!"));
+    }
+
+    delay(100); // allow gracefull session close
+    return true;
+}
+
 bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
 {
     _jsonVariant.printTo(Serial);

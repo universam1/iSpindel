@@ -575,7 +575,7 @@ bool uploadData(uint8_t service)
 #endif
 
 #ifdef API_GENERIC
-  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
+  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTFirebase) || (service == DTiSPINDELde) || (service == DTTCP))
   {
 
     sender.add("name", my_name);
@@ -594,6 +594,11 @@ bool uploadData(uint8_t service)
     {
       CONSOLELN(F("\ncalling HTTP"));
       return sender.sendGenericPost(my_server, my_url, my_port);
+    }
+    else if (service == DTFirebase)
+    {
+      CONSOLELN(F("\ncalling Firebase Database"));
+      return sender.sendFirebaseDB(my_server, my_url, my_token);
     }
     else if (service == DTCraftBeerPi)
     {
