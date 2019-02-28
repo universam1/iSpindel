@@ -86,8 +86,9 @@ window.onload = function (e) {
       if (elem) elem.label = labels[i];
     }
   }
-  $('API').value = $('selAPI').value;
-  sAPI($('selAPI').value);
+  value = $('selAPI').value;
+  $('API').querySelector('option[value="'+value+'"]').selected = true;
+  sAPI(value);
   $('TS').value = $('tempscale').value; sTS();
   fillopt();
 };</script>)V0G0N";
