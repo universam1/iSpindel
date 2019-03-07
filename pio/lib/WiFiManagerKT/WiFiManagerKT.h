@@ -87,10 +87,10 @@ window.onload = function (e) {
     }
   }
   value = $('selAPI').value;
-  $('API').querySelector('option[value="'+value+'"]').selected = true;
   sAPI(value);
   $('TS').value = $('tempscale').value; sTS();
   fillopt();
+  $('API').querySelector('option[value="'+value+'"]').selected = true;
 };</script>)V0G0N";
 
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(

@@ -43,6 +43,7 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 | Date       | Note                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 7.3.2019   | Firmware 6.0.5: Fix Javascript issue with selection of the Service Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | 19.12.2018 | Firmware 6.0.4: Higher precision for polynominal possible                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | 19.12.2018 | Firmware 6.0.3: Higher precision for gravity displayed in status page                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | 24.10.2018 | Firmware 6.0.2: Display issues on MacOS resolved                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -96,29 +97,37 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 ## Inhaltverzeichnis
 
-- [Lizenz](#lizenz)
-- [Prinzip](#prinzip)
-  - [Metazentrum](#metazentrum)
-- [Aufbau](#aufbau)
-  - [Varianten](#varianten)
-  - [Bauteile](#bauteile)
-  - [Schaltplan](#schaltplan)
-  - [Schlitten](#schlitten)
-- [Konfiguration](#konfiguration)
-  - [Ubidots](#ubidots)
-  - [Portal](#portal)
-  - [Scripting](#scripting)
-- [Software](#software)
-  - [Firmware Update](#firmware-flashen-from-source)
-  - [Compile](#compile-from-source)
-- [Anzeige](#anzeige)
-  - [Kalibrierung der Spindel](#kalibrierung)
-  - [Ubidots Graphen](#ubidots-graphen)
-  - [CraftBeerPi](#craftbeerpi)
-  - [FHEM](#fhem)
-  - [iSpindel TCP Server](#ispindel-tcp-server)
-- [FAQ](docs/FAQ.md)
-- [Software](#software)
+- [iSpindel - *DIY electronic Hydrometer*](#ispindel---diy-electronic-hydrometer)
+- [www.ispindel.de](#wwwispindelde)
+- [Featured in german brewing magazine Braumagazin.de](#featured-in-german-brewing-magazine-braumagazinde)
+  - [Documentation in other languages](#documentation-in-other-languages)
+    - [English Documentation (work in progress) :us:](#english-documentation-work-in-progress-us)
+    - [Nederlandse Vertaling (lopende werkzaamheden) :nl:](#nederlandse-vertaling-lopende-werkzaamheden-nl)
+    - [Documentação em Português (trabalho em andamento) :pt:](#documenta%C3%A7%C3%A3o-em-portugu%C3%AAs-trabalho-em-andamento-pt)
+  - [Firmware download here](#firmware-download-here)
+  - [ChangeLog](#changelog)
+  - [Inhaltverzeichnis](#inhaltverzeichnis)
+  - [Lizenz](#lizenz)
+  - [Prinzip](#prinzip)
+    - [*Metazentrum*](#metazentrum)
+  - [Aufbau](#aufbau)
+    - [Varianten](#varianten)
+    - [Bauteile](#bauteile)
+    - [Schaltplan](#schaltplan)
+    - [Schlitten](#schlitten)
+  - [Konfiguration](#konfiguration)
+    - [Ubidots](#ubidots)
+    - [Portal](#portal)
+    - [Scripting](#scripting)
+  - [Anzeige](#anzeige)
+    - [Ubidots Graphen](#ubidots-graphen)
+    - [CraftBeerPi](#craftbeerpi)
+    - [FHEM](#fhem)
+    - [iSpindel-TCP-Server](#ispindel-tcp-server)
+  - [Kalibrierung](#kalibrierung)
+  - [Software](#software)
+    - [Firmware flashen](#firmware-flashen)
+    - [Compile from Source](#compile-from-source)
 
 
 ***
