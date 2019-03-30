@@ -638,6 +638,24 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, my_port);
   }
 #endif // DATABASESYSTEM ==
+
+#ifdef API_BLYNK
+  if (service == DTBLYNK)
+  {
+    String tempToSend = String( scaleTemperature( Temperatur ), 1 );
+    sender.add("20", tempToSend);           //send temperature without the unit to the graph first
+
+    tempToSend += "°";
+    tempToSend += tempScaleLabel();
+
+    sender.add("1", String(Tilt, 1)+"°");
+    sender.add("2", tempToSend);
+    sender.add("3", String(Volt, 2));
+    sender.add("4", String(Gravity*1000, 0));
+    return sender.sendBlynk(my_token);
+  }
+#endif
+
   return false;
 }
 
@@ -1219,7 +1237,13 @@ void setup()
 
   // survive - 60min sleep time
   if (isSafeMode(Volt))
+  {
     my_sleeptime = EMERGENCYSLEEP;
+    
+    if( my_api == DTBLYNK )
+      SenderClass::sendBlynkEmail("🚨 WARNING: low Battery", String(Volt, 2) + "V Low Battery");
+  }
+
   goodNight(my_sleeptime);
 }
 

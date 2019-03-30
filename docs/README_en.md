@@ -38,6 +38,7 @@ iSpindle (iSpindel) Documentation
 - [Configuration](#configuration)
   - [Ubidots](#ubidots)
   - [Portal](#portal)
+  - [Blynk](#blynk)
 - [Graphical User Interface](#graphical-user-interface)
   - [Calibrating the Spindle](#calibration)
   - [Ubidots Graphen](#ubidots-graphen)
@@ -128,6 +129,16 @@ By saving your settings or waiting timeout of 5min it will end the Portal thus A
 
 > In Ubidots you can monitor the update of data unders ```Sources``` where the iSpindel will create a new device itself.  
 In the ```Dashboard``` now you can create your nice graphs.
+
+### Blynk
+
+* Download Blynk App: [Android](http://j.mp/blynk_Android) [iOS](http://j.mp/blynk_iOS)
+* Touch the QR-code icon and point the camera to the code below
+<p><img src="https://image.ibb.co/gxZFDz/Untitled.png" height="95" /></p>
+
+![Blynk QR](/pics/BlynkQR.jpg)![Blynk App](/pics/BlynkApp.jpg)
+
+* Enjoy the app!
 
 ***
 ## Graphical User Interface
