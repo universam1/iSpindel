@@ -69,7 +69,7 @@ bool shouldSaveConfig = false;
 char my_token[TKIDSIZE * 2];
 char my_name[TKIDSIZE] = "iSpindel000";
 char my_server[TKIDSIZE];
-char my_url[TKIDSIZE];
+char my_url[TKIDSIZE * 2];
 char my_db[TKIDSIZE] = "ispindel";
 char my_username[TKIDSIZE];
 char my_password[TKIDSIZE];
@@ -340,7 +340,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_port("port", "Server Port",
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
-  WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE);
+  WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE * 2);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
