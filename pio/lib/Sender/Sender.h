@@ -10,7 +10,7 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
+#include <ArduinoJson.h>
 #include <PubSubClient.h>
 
 class SenderClass
@@ -29,17 +29,14 @@ public:
   void add(String id, String value);
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
-  void mqttCallback(char* topic, byte* payload, unsigned int length);
+  void stopclient();
+  void mqttCallback(char *topic, byte *payload, unsigned int length);
   // ~SenderClass();
 
 private:
   WiFiClient _client;
   PubSubClient _mqttClient;
-
-  // StaticJsonBuffer<200> _jsonBuffer;
-  DynamicJsonBuffer _jsonBuffer;
-  // JsonObject data;
-  JsonVariant _jsonVariant;
+  StaticJsonDocument<1024> _doc;
 };
 
 #endif

@@ -155,63 +155,63 @@ bool readConfig()
         std::unique_ptr<char[]> buf(new char[size]);
 
         configFile.readBytes(buf.get(), size);
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject &json = jsonBuffer.parseObject(buf.get());
+        DynamicJsonDocument doc(1024);
+        DeserializationError error = deserializeJson(doc, buf.get());
 
-        if (json.success())
+        if (!error)
         {
-          if (json.containsKey("Name"))
-            strcpy(my_name, json["Name"]);
-          if (json.containsKey("Token"))
-            strcpy(my_token, json["Token"]);
-          if (json.containsKey("Server"))
-            strcpy(my_server, json["Server"]);
-          if (json.containsKey("Sleep"))
-            my_sleeptime = json["Sleep"];
-          if (json.containsKey("API"))
-            my_api = json["API"];
-          if (json.containsKey("Port"))
-            my_port = json["Port"];
-          if (json.containsKey("URL"))
-            strcpy(my_url, json["URL"]);
-          if (json.containsKey("DB"))
-            strcpy(my_db, json["DB"]);
-          if (json.containsKey("Username"))
-            strcpy(my_username, json["Username"]);
-          if (json.containsKey("Password"))
-            strcpy(my_password, json["Password"]);
-          if (json.containsKey("Job"))
-            strcpy(my_job, json["Job"]);
-          if (json.containsKey("Instance"))
-            strcpy(my_instance, json["Instance"]);
-          if (json.containsKey("Vfact"))
-            my_vfact = json["Vfact"];
-          if (json.containsKey("TS"))
-            my_tempscale = json["TS"];
-          if (json.containsKey("OWpin"))
-            my_OWpin = json["OWpin"];
-          if (json.containsKey("SSID"))
-            my_ssid = (const char *)json["SSID"];
-          if (json.containsKey("PSK"))
-            my_psk = (const char *)json["PSK"];
-          if (json.containsKey("POLY"))
-            strcpy(my_polynominal, json["POLY"]);
+          if (doc.containsKey("Name"))
+            strcpy(my_name, doc["Name"]);
+          if (doc.containsKey("Token"))
+            strcpy(my_token, doc["Token"]);
+          if (doc.containsKey("Server"))
+            strcpy(my_server, doc["Server"]);
+          if (doc.containsKey("Sleep"))
+            my_sleeptime = doc["Sleep"];
+          if (doc.containsKey("API"))
+            my_api = doc["API"];
+          if (doc.containsKey("Port"))
+            my_port = doc["Port"];
+          if (doc.containsKey("URL"))
+            strcpy(my_url, doc["URL"]);
+          if (doc.containsKey("DB"))
+            strcpy(my_db, doc["DB"]);
+          if (doc.containsKey("Username"))
+            strcpy(my_username, doc["Username"]);
+          if (doc.containsKey("Password"))
+            strcpy(my_password, doc["Password"]);
+          if (doc.containsKey("Job"))
+            strcpy(my_job, doc["Job"]);
+          if (doc.containsKey("Instance"))
+            strcpy(my_instance, doc["Instance"]);
+          if (doc.containsKey("Vfact"))
+            my_vfact = doc["Vfact"];
+          if (doc.containsKey("TS"))
+            my_tempscale = doc["TS"];
+          if (doc.containsKey("OWpin"))
+            my_OWpin = doc["OWpin"];
+          if (doc.containsKey("SSID"))
+            my_ssid = (const char *)doc["SSID"];
+          if (doc.containsKey("PSK"))
+            my_psk = (const char *)doc["PSK"];
+          if (doc.containsKey("POLY"))
+            strcpy(my_polynominal, doc["POLY"]);
 
           my_aX = UNINIT;
           my_aY = UNINIT;
           my_aZ = UNINIT;
 
-          if (json.containsKey("aX"))
-            my_aX = json["aX"];
-          if (json.containsKey("aY"))
-            my_aY = json["aY"];
-          if (json.containsKey("aZ"))
-            my_aZ = json["aZ"];
+          if (doc.containsKey("aX"))
+            my_aX = doc["aX"];
+          if (doc.containsKey("aY"))
+            my_aY = doc["aY"];
+          if (doc.containsKey("aZ"))
+            my_aZ = doc["aZ"];
           applyOffset();
 
           CONSOLELN(F("parsed config:"));
 #ifdef DEBUG
-          json.printTo(Serial);
+          serializeJson(doc, Serial);
           CONSOLELN();
 #endif
           return true;
@@ -440,35 +440,34 @@ bool saveConfig()
       !SPIFFS.open(CFGFILE, "w"))
     formatSpiffs();
 
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject &json = jsonBuffer.createObject();
+  DynamicJsonDocument doc(1024);
 
-  json["Name"] = my_name;
-  json["Token"] = my_token;
-  json["Sleep"] = my_sleeptime;
+  doc["Name"] = my_name;
+  doc["Token"] = my_token;
+  doc["Sleep"] = my_sleeptime;
   // first reboot is for test
   my_sleeptime = 1;
-  json["Server"] = my_server;
-  json["API"] = my_api;
-  json["Port"] = my_port;
-  json["URL"] = my_url;
-  json["DB"] = my_db;
-  json["Username"] = my_username;
-  json["Password"] = my_password;
-  json["Job"] = my_job;
-  json["Instance"] = my_instance;
-  json["Vfact"] = my_vfact;
-  json["TS"] = my_tempscale;
-  json["OWpin"] = my_OWpin;
+  doc["Server"] = my_server;
+  doc["API"] = my_api;
+  doc["Port"] = my_port;
+  doc["URL"] = my_url;
+  doc["DB"] = my_db;
+  doc["Username"] = my_username;
+  doc["Password"] = my_password;
+  doc["Job"] = my_job;
+  doc["Instance"] = my_instance;
+  doc["Vfact"] = my_vfact;
+  doc["TS"] = my_tempscale;
+  doc["OWpin"] = my_OWpin;
 
   // Store current Wifi credentials
-  json["SSID"] = WiFi.SSID();
-  json["PSK"] = WiFi.psk();
+  doc["SSID"] = WiFi.SSID();
+  doc["PSK"] = WiFi.psk();
 
-  json["POLY"] = my_polynominal;
-  json["aX"] = my_aX;
-  json["aY"] = my_aY;
-  json["aZ"] = my_aZ;
+  doc["POLY"] = my_polynominal;
+  doc["aX"] = my_aX;
+  doc["aY"] = my_aY;
+  doc["aZ"] = my_aZ;
 
   File configFile = SPIFFS.open(CFGFILE, "w+");
   if (!configFile)
@@ -480,9 +479,9 @@ bool saveConfig()
   else
   {
 #ifdef DEBUG
-    json.printTo(Serial);
+    serializeJson(doc, Serial);
 #endif
-    json.printTo(configFile);
+    serializeJson(doc, configFile);
     configFile.close();
     SPIFFS.end();
     CONSOLELN(F("saved successfully"));
@@ -492,22 +491,24 @@ bool saveConfig()
 
 bool processResponse(String response)
 {
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject &json = jsonBuffer.parseObject(response);
+  DynamicJsonDocument doc(1024);
 
-  if (json.success() && json.containsKey("interval"))
-  {
-    uint32_t interval = json["interval"];
-    if (interval != my_sleeptime &&
-        interval < 24 * 60 * 60 &&
-        interval > 10)
+  DeserializationError error = deserializeJson(doc, response);
+  if (error)
+
+    if (!error && doc.containsKey("interval"))
     {
-      my_sleeptime = interval;
-      CONSOLE(F("Received new Interval config: "));
-      CONSOLELN(interval);
-      return saveConfig();
+      uint32_t interval = doc["interval"];
+      if (interval != my_sleeptime &&
+          interval < 24 * 60 * 60 &&
+          interval > 10)
+      {
+        my_sleeptime = interval;
+        CONSOLE(F("Received new Interval config: "));
+        CONSOLELN(interval);
+        return saveConfig();
+      }
     }
-  }
   return false;
 }
 
@@ -635,7 +636,7 @@ bool uploadData(uint8_t service)
     sender.add("U", Volt);
     sender.add("G", Gravity);
     CONSOLELN(F("\ncalling TCONTROL"));
-    return sender.sendTCONTROL(my_server, my_port);
+    return sender.sendTCONTROL(my_server, 4968);
   }
 #endif // DATABASESYSTEM ==
   return false;

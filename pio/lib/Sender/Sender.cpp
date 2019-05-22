@@ -12,25 +12,28 @@
 #define UBISERVER "things.ubidots.com"
 #define CONNTIMEOUT 2000
 
-SenderClass::SenderClass()
-{
-    _jsonVariant = _jsonBuffer.createObject();
-}
+SenderClass::SenderClass() {}
+
 void SenderClass::add(String id, float value)
 {
-    _jsonVariant[id] = value;
+    _doc[id] = value;
 }
 void SenderClass::add(String id, String value)
 {
-    _jsonVariant[id] = value;
+    _doc[id] = value;
 }
 void SenderClass::add(String id, uint32_t value)
 {
-    _jsonVariant[id] = value;
+    _doc[id] = value;
 }
 void SenderClass::add(String id, int32_t value)
 {
-    _jsonVariant[id] = value;
+    _doc[id] = value;
+}
+void SenderClass::stopclient()
+{
+    _client.stop();
+    delay(100); // allow gracefull session close
 }
 
 bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
@@ -58,40 +61,40 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
             switch (Status)
             {
             case -4:
-              CONSOLELN(F("Connection timeout"));
-              break;
+                CONSOLELN(F("Connection timeout"));
+                break;
 
             case -3:
-              CONSOLELN(F("Connection lost"));
-              break;
+                CONSOLELN(F("Connection lost"));
+                break;
 
             case -2:
-              CONSOLELN(F("Connect failed"));
-              break;
+                CONSOLELN(F("Connect failed"));
+                break;
 
             case -1:
-              CONSOLELN(F("Disconnected"));
-              break;
+                CONSOLELN(F("Disconnected"));
+                break;
 
             case 1:
-              CONSOLELN(F("Bad protocol"));
-              break;
+                CONSOLELN(F("Bad protocol"));
+                break;
 
             case 2:
-              CONSOLELN(F("Bad client ID"));
-              break;
+                CONSOLELN(F("Bad client ID"));
+                break;
 
             case 3:
-              CONSOLELN(F("Unavailable"));
-              break;
+                CONSOLELN(F("Unavailable"));
+                break;
 
             case 4:
-              CONSOLELN(F("Bad credentials"));
-              break;
+                CONSOLELN(F("Bad credentials"));
+                break;
 
             case 5:
-              CONSOLELN(F("Unauthorized"));
-              break;
+                CONSOLELN(F("Unauthorized"));
+                break;
             }
             CONSOLELN(F("Retrying MQTT connection in 5 seconds"));
             // Wait 5 seconds before retrying
@@ -99,17 +102,18 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
             delay(5000);
         }
     }
+
     //MQTT publish values
-    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    for (const auto &kv : _doc.as<JsonObject>())
     {
-        CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key + "/" + kv.value.as<String>());
-        _mqttClient.publish(("ispindel/" + name + "/" + kv.key).c_str(), kv.value.as<String>().c_str());
+        CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key().c_str() + "/" + kv.value().as<char *>());
+        _mqttClient.publish(("ispindel/" + name + "/" + kv.key().c_str()).c_str(), kv.value().as<String>().c_str());
         _mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
     }
 
     CONSOLELN(F("Closing MQTT connection"));
     _mqttClient.disconnect();
-    delay(100); // allow gracefull session close
+    stopclient();
     return true;
 }
 void SenderClass::mqttCallback(char *topic, byte *payload, unsigned int length)
@@ -127,12 +131,12 @@ String SenderClass::sendTCP(String server, uint16_t port)
 {
     int timeout = 0;
     String response;
-    _jsonVariant.printTo(Serial);
+    serializeJson(_doc, Serial);
 
     if (_client.connect(server.c_str(), port))
     {
         CONSOLELN(F("\nSender: TCP stream"));
-        _jsonVariant.printTo(_client);
+        serializeJson(_doc, _client);
         _client.println();
     }
     else
@@ -150,26 +154,24 @@ String SenderClass::sendTCP(String server, uint16_t port)
         response += _client.read();
     }
     CONSOLELN(response);
-    _client.stop();
-    delay(50); // allow gracefull session close
+    stopclient();
     return response;
 }
 
 bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
 {
-    _jsonVariant.printTo(Serial);
-
+    serializeJson(_doc, Serial);
     HTTPClient http;
 
     CONSOLELN(F("HTTPAPI: posting"));
     // configure traged server and url
-    http.begin(server, port, url);
+    http.begin(_client, server, port, url);
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
     http.addHeader("Content-Type", "application/json");
 
     String json;
-    _jsonVariant.printTo(json);
+    serializeJson(_doc, json);
     auto httpCode = http.POST(json);
     CONSOLELN(String(F("code: ")) + httpCode);
 
@@ -188,7 +190,7 @@ bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
     }
 
     http.end();
-    delay(100); // allow gracefull session close
+    stopclient();
     return true;
 }
 
@@ -201,7 +203,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
 
     CONSOLELN(String(F("INFLUXDB: posting to db: ")) + uri);
     // configure traged server and url
-    http.begin(server + ':' + port + uri);
+    http.begin(_client, server, port, uri);
 
     if (username.length() > 0)
     {
@@ -217,15 +219,18 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     msg += name;
     msg += " ";
 
-    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    for (const auto &kv : _doc.to<JsonObject>())
     {
-        msg += kv.key;
+        msg += kv.key().c_str();
         msg += "=";
         // check if value is of type char, if so set value in double quotes
-        if ( kv.value.is<char*>() ) {
-            msg += '"' + kv.value.as<String>() + '"';
-        }else{
-            msg += kv.value.as<String>();
+        if (kv.value().is<char *>())
+        {
+            msg += '"' + kv.value().as<String>() + '"';
+        }
+        else
+        {
+            msg += kv.value().as<String>();
         }
         msg += ",";
     }
@@ -251,7 +256,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     }
 
     http.end();
-    delay(100); // allow gracefull session close
+    stopclient();
     return true;
 }
 
@@ -267,7 +272,7 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
 
     CONSOLELN(String("PROMETHEUS: posting to Prometheus Pushgateway: ") + uri);
     // configure traged server and url
-    http.begin(server, port, uri);
+    http.begin(_client, server, port, uri);
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
     http.addHeader("Content-Type", "text/plain");
@@ -276,19 +281,19 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
 
     //Build up the data for the Prometheus Pushgateway
     //A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
-    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    for (const auto &kv : _doc.to<JsonObject>())
     {
         msg += "# TYPE ";
-        msg += kv.key;
+        msg += kv.key().c_str();
         msg += " gauge\n";
         msg += "# HELP ";
-        msg += kv.key;
+        msg += kv.key().c_str();
         msg += " The approximate value of ";
-        msg += kv.key;
+        msg += kv.key().c_str();
         msg += ".\n";
-        msg += kv.key;
+        msg += kv.key().c_str();
         msg += " ";
-        msg += kv.value.as<String>();
+        msg += kv.value().as<String>();
         msg += "\n";
     }
 
@@ -309,13 +314,13 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
     }
 
     http.end();
-    delay(100); // allow gracefull session close
+    stopclient();
     return true;
 }
 
 bool SenderClass::sendUbidots(String token, String name)
 {
-    _jsonVariant.printTo(Serial);
+    serializeJson(_doc, Serial);
 
     if (_client.connect(UBISERVER, 80))
     {
@@ -326,11 +331,11 @@ bool SenderClass::sendUbidots(String token, String name)
         msg += "?token=";
         msg += token;
         msg += F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
-        msg += _jsonVariant.measureLength();
+        msg += measureJson(_doc);
         msg += "\r\n";
 
         _client.println(msg);
-        _jsonVariant.printTo(_client);
+        serializeJson(_doc, _client);
         _client.println();
         CONSOLELN(msg);
     }
@@ -352,13 +357,13 @@ bool SenderClass::sendUbidots(String token, String name)
     }
     // currentValue = 0;
     _client.stop();
-    delay(100); // allow gracefull session close
+    stopclient();
     return true;
 }
 
 bool SenderClass::sendFHEM(String server, uint16_t port, String name)
 {
-    _jsonVariant.printTo(Serial);
+    serializeJson(_doc, Serial);
 
     if (_client.connect(server.c_str(), port))
     {
@@ -367,10 +372,10 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
         String msg = String("GET /fhem?cmd.Test=set%20");
         msg += name;
 
-        for (const auto &kv : _jsonVariant.as<JsonObject>())
+        for (const auto &kv : _doc.to<JsonObject>())
         {
             msg += "%20";
-            msg += kv.value.as<String>();
+            msg += kv.value().as<String>();
         }
 
         msg += F("&XHR=1 HTTP/1.1\r\nHost: ");
@@ -402,13 +407,13 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
     }
     // currentValue = 0;
     _client.stop();
-    delay(100); // allow gracefull session close
+    stopclient();
     return true;
 }
 
 bool SenderClass::sendTCONTROL(String server, uint16_t port)
 {
-    _jsonVariant.printTo(Serial);
+    serializeJson(_doc, Serial);
 
     if (_client.connect(server.c_str(), port))
     {
@@ -416,11 +421,11 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
         CONSOLELN(F("\nSender: TCONTROL"));
         String msg;
 
-        for (const auto &kv : _jsonVariant.as<JsonObject>())
+        for (const auto &kv : _doc.to<JsonObject>())
         {
-            msg += kv.key;
+            msg += kv.key().c_str();
             msg += ": ";
-            msg += kv.value.as<String>();
+            msg += kv.value().as<String>();
             msg += " ";
         }
         msg.remove(msg.length() - 1);
@@ -444,8 +449,6 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
         char c = _client.read();
         Serial.write(c);
     }
-    // currentValue = 0;
-    _client.stop();
-    delay(100); // allow gracefull session close
+    stopclient();
     return true;
 }
