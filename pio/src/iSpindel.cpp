@@ -91,7 +91,7 @@ uint32_t DSreqTime = 0;
 float pitch, roll;
 
 int16_t ax, ay, az;
-float Volt, Temperatur, Tilt, Gravity; // , corrGravity;
+float Volt, Temperatur, Tilt, Gravity, Tds; // , corrGravity;
 
 float scaleTemperature(float t)
 {
@@ -525,6 +525,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tds", Tds);
     CONSOLELN(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
   }
@@ -540,6 +541,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tds", Tds);
     CONSOLELN(F("\ncalling MQTT"));
     return sender.sendMQTT(my_server, my_port, my_username, my_password, my_name);
   }
@@ -555,6 +557,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tds", Tds);
     CONSOLELN(F("\ncalling InfluxDB"));
     CONSOLELN(String(F("Sending to db: ")) + my_db + String(F(" w/ credentials: ")) + my_username + String(F(":")) + my_password);
     return sender.sendInfluxDB(my_server, my_port, my_db, my_name, my_username, my_password);
@@ -570,6 +573,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tds", Tds);
     CONSOLELN(F("\ncalling Prometheus Pushgateway"));
     return sender.sendPrometheus(my_server, my_port, my_job, my_instance);
   }
@@ -590,6 +594,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tds", Tds);
 
     if (service == DTHTTP)
     {
@@ -979,8 +984,34 @@ int detectTempSensor(const uint8_t pins[])
 
 float getBattery()
 {
+  // TODO: switch A0 to read from Battery pin
   analogRead(A0); // drop first read
   return analogRead(A0) / my_vfact;
+}
+
+float getTds()
+{
+  // TODO: switch A0 to read from TDS pin
+  // we could use an  FSA3157 to toggle between battery and tds probe.
+  
+  int R1 = 1000;
+  int Ra = 25; //Resistance of powering Pins
+  float TemperatureCoef = 0.019;
+  float PPMconversion=0.7;
+  float K=2.88;
+  float Vin = 5;
+
+  float Vdrop, Rc, EC, ppm, EC25;
+
+  int raw;
+
+  analogRead(A0);
+  raw = analogRead(A0);
+  Vdrop= (Vin*raw)/1024.0;
+  Rc=(Vdrop*R1)/(Vin-Vdrop)-Ra;
+  EC = 1000/(Rc*K);
+  EC25  =  EC/ (1+ TemperatureCoef*(Temperatur-25.0));
+  return (EC25)*(PPMconversion*1000);
 }
 
 float calculateGravity()
@@ -1013,6 +1044,7 @@ void flash()
   Tilt = calculateTilt();
   Temperatur = getTemperature(false);
   Gravity = calculateGravity();
+  Tds = getTds();
   requestTemp();
 }
 
