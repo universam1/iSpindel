@@ -46,9 +46,9 @@ Here is how to do that using NODEMUCU FIRMWARE PROGRAMMER
 To initialize:
 
 In the Config Tab
-		      1st column			    2nd column
+		1st column		2nd column
 1st Line:	INTERNAL://NODEMCU	0x00000
-2nd Line:	INTERNAL://BLANK		0x01000
+2nd Line:	INTERNAL://BLANK	0x01000
 
 In the Advanced Tab
 Set the Baudrate to 115200
@@ -60,7 +60,7 @@ To flash with the iSpindel firmware:
 
 In the Config Tab
 
-		        1st column			        2nd column
+		1st column		2nd column
 1st Line: 	C:\iSpindel-6.0.6.bin 	0x00000
 Where “C:\iSpindel-6.0.6.bin” is to be replaced by the path to your firmware file
 Make sure all the other lines in the Config tab are cleared and only the checkbox in front of your firmware path is checked.
