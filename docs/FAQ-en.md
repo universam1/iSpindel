@@ -31,3 +31,46 @@ To achieve a sufficient WLAN signal strength you can do the following things:
   - Break open the faradic cage. This is possible by electrically separating the lid from the pot. Can be achieved by applying a silicone sealant between the two parts.
   - Use a passive antenna. Use a shielded cable that is stripped from both ends (i. e. Lambda/4), where one side ends in the pot, exactly 3.2mm. This is transmitted passively from the inside to the outside and vice versa. A good example can be found here: http://hobbybrauer.de/forum/viewtopic.php?p=208782#p208782
   - Install a wifi range extender next to the barrel to increase the signal level.
+
+-  ***What should I do if my iSpindel isn't working properly after flashing it with the firmware?***
+
+For unclear reasons sometimes it looks like flashing of the iSpindel went well while it actually didn’t which could lead to unpredictable behavior.
+This behavior could be but is not limited to:
+-	the blue led of the wemos stays on permanently
+-	parts of configuration is not saved, e.g. offset tilt
+
+The solution to this can be initializing the memory of the wemos before flashing it with the iSpindel firmware.(as if you were formatting a new harddrive before you can use it)
+
+Here is how to do that using NODEMUCU FIRMWARE PROGRAMMER
+
+To initialize:
+
+In the Config Tab
+		      1st column			    2nd column
+1st Line:	INTERNAL://NODEMCU	0x00000
+2nd Line:	INTERNAL://BLANK		0x01000
+
+In the Advanced Tab
+Set the Baudrate to 115200
+
+In the Operation Tab
+Click Flash(E) and wait till the flashing is done
+
+To flash with the iSpindel firmware:
+
+In the Config Tab
+
+		        1st column			        2nd column
+1st Line: 	C:\iSpindel-6.0.6.bin 	0x00000
+Where “C:\iSpindel-6.0.6.bin” is to be replaced by the path to your firmware file
+Make sure all the other lines in the Config tab are cleared and only the checkbox in front of your firmware path is checked.
+
+In the Advanced Tab
+Set the Baudrate to 115200
+
+In the Operation Tab
+Click Flash(E) and wait till the flashing is done
+
+It now should work properly.
+
+Source: https://www.homebrewtalk.com/forum/threads/ispindle-diy-electronic-hydrometer.598187/page-19#post-8366882
