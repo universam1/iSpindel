@@ -494,8 +494,6 @@ bool processResponse(String response)
   DynamicJsonDocument doc(1024);
 
   DeserializationError error = deserializeJson(doc, response);
-  if (error)
-
     if (!error && doc.containsKey("interval"))
     {
       uint32_t interval = doc["interval"];
