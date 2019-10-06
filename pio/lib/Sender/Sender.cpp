@@ -281,7 +281,7 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
 
     //Build up the data for the Prometheus Pushgateway
     //A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
-    for (const auto &kv : _doc.to<JsonObject>())
+    for (const auto &kv : _doc.as<JsonObject>())
     {
         msg += "# TYPE ";
         msg += kv.key().c_str();
