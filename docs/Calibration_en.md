@@ -19,27 +19,27 @@ It's recommended you connect the iSpindel with [Ubidots](https://ubidots.com/) f
 > ***Write down the tilt of the iSpindel***
 
 2. Make a solution of sugar in water with the highest anticipated density. If you are brewing strong beers with a high starting density, you should have reference measurements in this high range. For most brewers a solution with a density around 1.085 or around 20 degrees Plato will do.      
-> *Example for sugar soluion: 400 ml with 100 g sugar*     
+> *Example for sugar solution: 400 ml with 100 g sugar*     
 > ***Measure the density or the degrees Plato and write it down with the tilt of the iSpindel***
 
-3. Dillute the solution above with water until it reaches 15 degrees Plato or density 1.061       
->*Example for sugar solution: dillute the solution of point 2 with 166 ml of water*     
+3. Dilute the solution above with water until it reaches 15 degrees Plato or density 1.061       
+>*Example for sugar solution: dilute the solution of point 2 with 166 ml of water*     
 >***Measure the density or the degrees Plato and write it down with the tilt of the iSpindel***        
 
-4. Dillute the solution from the point above till it reaches approximately 10 degrees Plato, SG 1.040 of 10 degrees Brix.       
->*Example: Dillute the solution from point 3 with 333 ml of water.*        
+4. Dilute the solution from the point above till it reaches approximately 10 degrees Plato, SG 1.040 of 10 degrees Brix.       
+>*Example: Dilute the solution from point 3 with 333 ml of water.*        
 >***Measure the density or the degrees Plato and write it down with the tilt of the iSpindel***     
 
-5. Dillute the solution from the point above till it reaches approximately 7.5 degrees Plato, SG 1.030 or 7.5 degrees Brix.
->*Example: Dillute the solution from point 4 with 333 ml of water.*        
+5. Dilute the solution from the point above till it reaches approximately 7.5 degrees Plato, SG 1.030 or 7.5 degrees Brix.
+>*Example: Dilute the solution from point 4 with 333 ml of water.*        
 >***Measure the density or the degrees Plato and write it down with the tilt of the iSpindel***     
 
-6. Dillute the solution from the point above till it reaches approximately 5 degrees Plato, SG 1.020 or 5 degrees Brix
->*Example: Dillute the solution from point 5 with 333 ml of water*        
+6. Dilute the solution from the point above till it reaches approximately 5 degrees Plato, SG 1.020 or 5 degrees Brix
+>*Example: Dilute the solution from point 5 with 333 ml of water*        
 >***Measure the density or the degrees Plato and write it down with the tilt of the iSpindel***   
 
-7. Dillute the solution from the point above till it reaches approximately 2.5 degrees Plato, SG 1.010 or 2.5 degrees Brix.     
->*Example: Dillute the solution from point 6 with 2000 ml of water.*      
+7. Dilute the solution from the point above till it reaches approximately 2.5 degrees Plato, SG 1.010 or 2.5 degrees Brix.     
+>*Example: Dilute the solution from point 6 with 2000 ml of water.*      
 >***Measure the density or the degrees Plato and write it down with the tilt of the iSpindel        
 >Enter the measured points in the Excel sheet (see below). This Excel sheet will calculate the formula for the reference***
 
@@ -78,7 +78,7 @@ The measured values can be entered in the field SG/Plato or BRIX plus the corres
 - ## Excel Sheet
 
 The measured values can be entered in the Excel sheet. This sheet will calculate a formula that will predict the density or the degrees of Plato given an tilt value. This formula has to be entered in Firmware to be able to get readings in density or degrees Plato.
-Other reading, such as apparent attenuation or alcohol % can be obtained in similiar manners with the use of a 'Derived Variable' in [Ubidots](https://ubidots.com/).
+Other readings, such as apparent attenuation or alcohol % can be obtained in similar manners with the use of a 'Derived Variable' in [Ubidots](https://ubidots.com/).
 
 1. First enter the measured values in Excel:    
 [Download Excel table](https://github.com/universam1/iSpindel/blob/master/docs/Kalibrierung_en.xlsm)

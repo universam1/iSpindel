@@ -4,13 +4,13 @@
 It is indispensable to enable the iSpindle functionality! Add weights such as nuts, lead balls etc. to the bottom  until the inclination is 25° from the vertical. See also example pictures in the documentation. Normally about 20g are sufficient. +/- 5° deviations are often still acceptable.
 
 - ***It doesn't work, I don't see anything***  
-The best way to find out what the iSpindle is doing as information is to read it's log. This can be done via a serial monitor like HTerm or Arduino IDE. Connect the spindle via Micro USB, then open the Com Port with the serial monitor above and read it. Set baud rate to `115200`. It brings light into the dark.
+The best way to find out what the iSpindle is doing  is to read its log. This can be done via a serial monitor like HTerm or Arduino IDE. Connect the spindle via Micro USB, then open the £COM Port with the serial monitor above and read it. Set baud rate to `115200`. It brings light into the dark.
 
-Here is a youtube howto: https://youtu.be/6xDW5GbIbUw
+Here is a youtube how-to (in German): https://youtu.be/6xDW5GbIbUw
 
 - ***How get to the iSpindel - the portal***  
-Switch it on, press the reset button 3-4 times which sets up an access point. That means you will see a new Wifi network "iSpindel" where you connect to with your computer, smartphone or tablet. Now the browser should automatically redirect you to the page[http://192.168.4.1](http://192.168.4.1). If not, navigate there yourself.
-If you are now on the portal page, under `Configuration` you can enter your token and the wifi password that you need for your network. Then click on `safe` and it will send the data to Ubidots. This means that the **iSpindel is not reachable in normal operation**, until you manually start the portal again.
+Switch it on, press the reset button 3-4 times which sets up an access point. That means you will see a new Wifi network "iSpindel" where you connect to with your computer, smartphone or tablet. Now the browser should automatically redirect you to the page [http://192.168.4.1](http://192.168.4.1). If not, navigate there yourself.
+If you are now on the portal page, under `Configuration` you can enter your token and the wifi password that you need for your network. Then click on `save` and it will send the data to Ubidots. This means that the **iSpindel is not reachable in normal operation**, until you manually start the portal again.
 
 - ***Why can't I access the iSpindle in normal operation***  
 The critical part of the battery life time is that the iSpindle is active as short as possible and maximum time being in`deep sleep`! The Wemos in active operation requires more than 300x of energy, so this trick is indispensable to achieve the runtime.
@@ -36,7 +36,7 @@ To achieve a sufficient WLAN signal strength you can do the following things:
 
 For unclear reasons sometimes it looks like flashing of the iSpindel went well while it actually didn’t which could lead to unpredictable behavior.
 This behavior could be but is not limited to:
--	the blue led of the wemos stays on permanently
+-	the blue LED of the wemos stays on permanently
 -	parts of configuration is not saved, e.g. offset tilt
 
 The solution to this can be initializing the memory of the wemos before flashing it with the iSpindel firmware.(as if you were formatting a new harddrive before you can use it)
