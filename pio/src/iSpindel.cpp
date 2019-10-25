@@ -344,7 +344,7 @@ bool startConfiguration()
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_channel("channel", "Channelnumber",
-                                   String(my_channel).c_str(), 6, TYPE_NUMBER);
+                                   String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE * 2);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
