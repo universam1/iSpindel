@@ -492,7 +492,7 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
 //when device was connected, therefore best to use their API.
 bool SenderClass::sendBlynk(char* token)
 {
-    _jsonVariant.printTo(Serial);
+    serializeJson(_doc, Serial);
 
     Blynk.config(token);
 
@@ -511,10 +511,10 @@ bool SenderClass::sendBlynk(char* token)
     {
         CONSOLELN(F("\nConnected to the Blynk server, sending data"));
 
-        for (const auto &kv : _jsonVariant.as<JsonObject>())
+        for (const auto &kv : _doc.to<JsonObject>())
         {
-            _pin = atoi(kv.key);
-            _value = kv.value.as<String>();
+            _pin = atoi(kv.key().c_str());
+            _value = kv.value().as<String>();
             Blynk.virtualWrite(_pin, _value);
         }
     }
@@ -531,7 +531,7 @@ bool SenderClass::sendBlynk(char* token)
 bool SenderClass::sendBlynkHTTP(String token)
 {
     //http://blynk-cloud.com/auth_token/update/pin
-    _jsonVariant.printTo(Serial);
+    serializeJson(_doc, Serial);
 
     String msg = String("PUT /");
     msg += token;
@@ -542,7 +542,7 @@ bool SenderClass::sendBlynkHTTP(String token)
     String _key;
 
     //Blynk does not allow multiple pins write via POST, PUT or GET, therefore we ned to send multiple writes.
-    for (const auto &kv : _jsonVariant.as<JsonObject>())
+    for (const auto &kv : _doc.to<JsonObject>())
     {
         if (_client.connect(BLYNKSERVER, 80))
         {
@@ -550,8 +550,8 @@ bool SenderClass::sendBlynkHTTP(String token)
 
             _msg = msg;
 
-            _msg += String(kv.key);
-            _value = String("[\"") + kv.value.as<String>() + "\"]";
+            _msg += String(kv.key().c_str());
+            _value = String("[\"") + kv.value().as<String>() + "\"]";
             _client.print(_msg);
 
             //https://github.com/blynkkk/blynk-library/blob/2013a8b86e5a429532ab9fe3a7fe7c2dbe9b0536/examples/Boards_With_HTTP_API/ESP8266/ESP8266.ino#L72
@@ -679,11 +679,11 @@ uint8_t SenderClass::blynkTerminal(String token)
             
             _client.stop();
             response.toLowerCase();
-            DynamicJsonBuffer jsonBuffer;
-            JsonArray& root = jsonBuffer.parseArray(response);
+            DynamicJsonDocument jsonBuffer(1024);
+            deserializeJson(jsonBuffer, response);
             CONSOLE(response);
 
-            if(root[root.size()-1] == "abort")
+            if(jsonBuffer[jsonBuffer.size()-1] == "abort")
             {
                 CONSOLELN(F("\nAborting, back to normal mode, cleaning terminal."));
                 terminal.println("Aborting.....");
@@ -693,7 +693,7 @@ uint8_t SenderClass::blynkTerminal(String token)
                 return 10;
             }
 
-            if(root[root.size()-1] == "conf")
+            if(jsonBuffer[jsonBuffer.size()-1] == "conf")
             {
                 CONSOLELN(F("\nConfig mode, calling WiFi Manager"));
                 terminal.println("Entering configuration mode, connect to the AP;");
@@ -701,7 +701,7 @@ uint8_t SenderClass::blynkTerminal(String token)
                 return 2;
             }
 
-            else if(root[root.size()-1] == "calib")
+            else if(jsonBuffer[jsonBuffer.size()-1] == "calib")
             {
                 CONSOLELN(F("\nCalibration mode, sleeptime = 30 s"));
                 terminal.println("Calibration mode, sleeptime = 30 s");
