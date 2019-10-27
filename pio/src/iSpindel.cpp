@@ -82,6 +82,7 @@ String my_psk;
 uint8_t my_api;
 uint32_t my_sleeptime = 15 * 60;
 uint16_t my_port = 80;
+uint32_t my_channel;
 float my_vfact = ADCDIVISOR;
 int16_t my_aX = UNINIT, my_aY = UNINIT, my_aZ = UNINIT;
 uint8_t my_tempscale = TEMP_CELSIUS;
@@ -172,6 +173,8 @@ bool readConfig()
             my_api = doc["API"];
           if (doc.containsKey("Port"))
             my_port = doc["Port"];
+          if (doc.containsKey("Channel"))
+            my_channel = doc["Channel"];
           if (doc.containsKey("URL"))
             strcpy(my_url, doc["URL"]);
           if (doc.containsKey("DB"))
@@ -340,6 +343,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_port("port", "Server Port",
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
+  WiFiManagerParameter custom_channel("channel", "Channelnumber",
+                                   String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
   WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE * 2);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
@@ -370,6 +375,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
+  wifiManager.addParameter(&custom_channel);
   wifiManager.addParameter(&custom_url);
   wifiManager.addParameter(&custom_db);
   wifiManager.addParameter(&custom_username);
@@ -401,6 +407,7 @@ bool startConfiguration()
 
   my_api = String(custom_api.getValue()).toInt();
   my_port = String(custom_port.getValue()).toInt();
+  my_channel = String(custom_channel.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
   validateInput(custom_url.getValue(), my_url);
 
@@ -450,6 +457,7 @@ bool saveConfig()
   doc["Server"] = my_server;
   doc["API"] = my_api;
   doc["Port"] = my_port;
+  doc["Channel"] = my_channel;
   doc["URL"] = my_url;
   doc["DB"] = my_db;
   doc["Username"] = my_username;
@@ -540,6 +548,21 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling MQTT"));
     return sender.sendMQTT(my_server, my_port, my_username, my_password, my_name);
+  }
+#endif
+
+#ifdef API_THINGSPEAK
+  if (service == DTTHINGSPEAK)
+  {
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temp_units", tempScaleLabel());
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling ThingSpeak"));
+    return sender.sendThingSpeak(my_token, my_channel);
   }
 #endif
 
