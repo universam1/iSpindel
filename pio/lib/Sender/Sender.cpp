@@ -219,7 +219,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     msg += name;
     msg += " ";
 
-    for (const auto &kv : _doc.to<JsonObject>())
+    for (const auto &kv : _doc.as<JsonObject>())
     {
         msg += kv.key().c_str();
         msg += "=";
