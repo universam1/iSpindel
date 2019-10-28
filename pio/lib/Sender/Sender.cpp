@@ -511,7 +511,7 @@ bool SenderClass::sendBlynk(char* token)
     {
         CONSOLELN(F("\nConnected to the Blynk server, sending data"));
 
-        for (const auto &kv : _doc.to<JsonObject>())
+        for (const auto &kv : _doc.as<JsonObject>())
         {
             _pin = atoi(kv.key().c_str());
             _value = kv.value().as<String>();
@@ -542,7 +542,7 @@ bool SenderClass::sendBlynkHTTP(String token)
     String _key;
 
     //Blynk does not allow multiple pins write via POST, PUT or GET, therefore we ned to send multiple writes.
-    for (const auto &kv : _doc.to<JsonObject>())
+    for (const auto &kv : _doc.as<JsonObject>())
     {
         if (_client.connect(BLYNKSERVER, 80))
         {
