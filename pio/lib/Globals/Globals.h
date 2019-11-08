@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.1.1"
+#define FIRMWAREVERSION "6.1.2"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -105,11 +105,11 @@ extern Ticker flasher;
 
 extern int16_t ax, ay, az;
 extern float Volt, Temperatur, Tilt, Gravity;
-extern int16_t my_aX, my_aY, my_aZ;
 
 extern MPU6050_Base accelgyro;
 extern bool saveConfig();
-extern void formatSpiffs();
+extern bool saveConfig(int16_t, int16_t, int16_t);
+extern bool formatSpiffs();
 
 float scaleTemperature(float t);
 String tempScaleLabel(void);

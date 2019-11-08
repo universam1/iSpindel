@@ -128,10 +128,12 @@ void applyOffset()
 {
   if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT)
   {
-    CONSOLELN(F("applying offsets"));
+    CONSOLELN(String("applying offsets: ") + my_aX + ":" + my_aY + ":" + my_aZ);
     accelgyro.setXAccelOffset(my_aX);
     accelgyro.setYAccelOffset(my_aY);
     accelgyro.setZAccelOffset(my_aZ);
+
+    CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
   }
   else
     CONSOLELN(F("offsets not available"));
@@ -141,15 +143,29 @@ bool readConfig()
 {
   CONSOLE(F("mounting FS..."));
 
-  if (SPIFFS.begin())
+  if (!SPIFFS.begin())
+  {
+    CONSOLELN(F(" ERROR: failed to mount FS!"));
+    return false;
+  }
+  else
   {
     CONSOLELN(F(" mounted!"));
-    if (SPIFFS.exists(CFGFILE))
+    if (!SPIFFS.exists(CFGFILE))
+    {
+      CONSOLELN(F("ERROR: failed to load json config"));
+      return false;
+    }
+    else
     {
       // file exists, reading and loading
       CONSOLELN(F("reading config file"));
       File configFile = SPIFFS.open(CFGFILE, "r");
-      if (configFile)
+      if (!configFile)
+      {
+        CONSOLELN(F("ERROR: unable to open config file"));
+      }
+      else
       {
         size_t size = configFile.size();
         // Allocate a buffer to store contents of the file.
@@ -199,17 +215,13 @@ bool readConfig()
             my_psk = (const char *)doc["PSK"];
           if (doc.containsKey("POLY"))
             strcpy(my_polynominal, doc["POLY"]);
-
-          my_aX = UNINIT;
-          my_aY = UNINIT;
-          my_aZ = UNINIT;
-
           if (doc.containsKey("aX"))
             my_aX = doc["aX"];
           if (doc.containsKey("aY"))
             my_aY = doc["aY"];
           if (doc.containsKey("aZ"))
             my_aZ = doc["aZ"];
+
           applyOffset();
 
           CONSOLELN(F("parsed config:"));
@@ -217,21 +229,9 @@ bool readConfig()
           serializeJson(doc, Serial);
           CONSOLELN();
 #endif
-          return true;
-        }
-        else
-        {
-          CONSOLELN(F("ERROR: failed to load json config"));
-          return false;
         }
       }
-      CONSOLELN(F("ERROR: unable to open config file"));
     }
-  }
-  else
-  {
-    CONSOLELN(F(" ERROR: failed to mount FS!"));
-    return false;
   }
   return true;
 }
@@ -430,24 +430,41 @@ bool startConfiguration()
   return false;
 }
 
-void formatSpiffs()
+bool formatSpiffs()
 {
   CONSOLE(F("\nneed to format SPIFFS: "));
   SPIFFS.end();
   SPIFFS.begin();
   CONSOLELN(SPIFFS.format());
+  return SPIFFS.begin();
+}
+
+bool saveConfig(int16_t aX, int16_t aY, int16_t aZ)
+{
+  my_aX = aX;
+  my_aY = aY;
+  my_aZ = aZ;
+  CONSOLELN(String("new offsets: ") + my_aX + ":" + my_aY + ":" + my_aZ);
+
+  return saveConfig();
 }
 
 bool saveConfig()
 {
-  CONSOLE(F("saving config..."));
+  CONSOLE(F("saving config...\n"));
 
   // if SPIFFS is not usable
-  if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
-      !SPIFFS.open(CFGFILE, "w"))
-    formatSpiffs();
+  if (!SPIFFS.begin())
+  {
+    Serial.println("Failed to mount file system");
+    if (!formatSpiffs())
+    {
+      Serial.println("Failed to format file system - hardware issues!");
+      return false;
+    }
+  }
 
-  DynamicJsonDocument doc(1024);
+  DynamicJsonDocument doc(JSON_OBJECT_SIZE(23));
 
   doc["Name"] = my_name;
   doc["Token"] = my_token;
@@ -477,7 +494,7 @@ bool saveConfig()
   doc["aY"] = my_aY;
   doc["aZ"] = my_aZ;
 
-  File configFile = SPIFFS.open(CFGFILE, "w+");
+  File configFile = SPIFFS.open(CFGFILE, "w");
   if (!configFile)
   {
     CONSOLELN(F("failed to open config file for writing"));
@@ -486,11 +503,13 @@ bool saveConfig()
   }
   else
   {
+    serializeJson(doc, configFile);
 #ifdef DEBUG
     serializeJson(doc, Serial);
 #endif
-    serializeJson(doc, configFile);
+    configFile.flush();
     configFile.close();
+    SPIFFS.gc();
     SPIFFS.end();
     CONSOLELN(F("saved successfully"));
     return true;
@@ -502,19 +521,19 @@ bool processResponse(String response)
   DynamicJsonDocument doc(1024);
 
   DeserializationError error = deserializeJson(doc, response);
-    if (!error && doc.containsKey("interval"))
+  if (!error && doc.containsKey("interval"))
+  {
+    uint32_t interval = doc["interval"];
+    if (interval != my_sleeptime &&
+        interval < 24 * 60 * 60 &&
+        interval > 10)
     {
-      uint32_t interval = doc["interval"];
-      if (interval != my_sleeptime &&
-          interval < 24 * 60 * 60 &&
-          interval > 10)
-      {
-        my_sleeptime = interval;
-        CONSOLE(F("Received new Interval config: "));
-        CONSOLELN(interval);
-        return saveConfig();
-      }
+      my_sleeptime = interval;
+      CONSOLE(F("Received new Interval config: "));
+      CONSOLELN(interval);
+      return saveConfig();
     }
+  }
   return false;
 }
 
