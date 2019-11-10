@@ -68,8 +68,8 @@ bool shouldSaveConfig = false;
 
 char my_token[TKIDSIZE * 2];
 char my_name[TKIDSIZE] = "iSpindel000";
-char my_server[TKIDSIZE];
-char my_url[URLSIZE];
+char my_server[DNSSIZE];
+char my_uri[DNSSIZE];
 char my_db[TKIDSIZE] = "ispindel";
 char my_username[TKIDSIZE];
 char my_password[TKIDSIZE];
@@ -191,8 +191,8 @@ bool readConfig()
             my_port = doc["Port"];
           if (doc.containsKey("Channel"))
             my_channel = doc["Channel"];
-          if (doc.containsKey("URL"))
-            strcpy(my_url, doc["URL"]);
+          if (doc.containsKey("URI"))
+            strcpy(my_uri, doc["URI"]);
           if (doc.containsKey("DB"))
             strcpy(my_db, doc["DB"]);
           if (doc.containsKey("Username"))
@@ -339,13 +339,13 @@ bool startConfiguration()
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE * 2 * 2);
   WiFiManagerParameter custom_server("server", "Server Address",
-                                     my_server, TKIDSIZE);
+                                     my_server, DNSSIZE);
   WiFiManagerParameter custom_port("port", "Server Port",
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_channel("channel", "Channelnumber",
                                       String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
-  WiFiManagerParameter custom_url("url", "Server URL", my_url, URLSIZE);
+  WiFiManagerParameter custom_url("uri", "Path / URI", my_uri, DNSSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
@@ -409,7 +409,7 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   my_channel = String(custom_channel.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
-  validateInput(custom_url.getValue(), my_url);
+  validateInput(custom_url.getValue(), my_uri);
 
   String tmp = custom_vfact.getValue();
   tmp.trim();
@@ -464,7 +464,7 @@ bool saveConfig()
     }
   }
 
-  DynamicJsonDocument doc(JSON_OBJECT_SIZE(23));
+  DynamicJsonDocument doc(1024);
 
   doc["Name"] = my_name;
   doc["Token"] = my_token;
@@ -475,7 +475,7 @@ bool saveConfig()
   doc["API"] = my_api;
   doc["Port"] = my_port;
   doc["Channel"] = my_channel;
-  doc["URL"] = my_url;
+  doc["URI"] = my_uri;
   doc["DB"] = my_db;
   doc["Username"] = my_username;
   doc["Password"] = my_password;
@@ -511,7 +511,7 @@ bool saveConfig()
     configFile.close();
     SPIFFS.gc();
     SPIFFS.end();
-    CONSOLELN(F("saved successfully"));
+    CONSOLELN(F("\nsaved successfully"));
     return true;
   }
 }
@@ -634,7 +634,7 @@ bool uploadData(uint8_t service)
     if (service == DTHTTP)
     {
       CONSOLELN(F("\ncalling HTTP"));
-      return sender.sendGenericPost(my_server, my_url, my_port);
+      return sender.sendGenericPost(my_server, my_uri, my_port);
     }
     else if (service == DTCraftBeerPi)
     {
