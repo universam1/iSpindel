@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.1.2"
+#define FIRMWAREVERSION "6.1.3"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -65,6 +65,7 @@ extern Ticker flasher;
 #define OWinterval (760 / (1 << (12 - RESOLUTION)))
 #define CFGFILE "/config.json"
 #define TKIDSIZE 40
+#define URLSIZE 256
 
 #define MEDIANROUNDSMAX 49
 #define MEDIANROUNDSMIN 29
