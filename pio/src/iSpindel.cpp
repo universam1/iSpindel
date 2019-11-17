@@ -28,7 +28,7 @@ All rights reserverd by S.Lang <universam@web.de>
 // !DEBUG 1
 
 // definitions go here
-MPU6050_Base accelgyro;
+MPU6050 accelgyro;
 OneWire *oneWire;
 DallasTemperature DS18B20;
 DeviceAddress tempDeviceAddress;
@@ -84,7 +84,7 @@ uint32_t my_sleeptime = 15 * 60;
 uint16_t my_port = 80;
 uint32_t my_channel;
 float my_vfact = ADCDIVISOR;
-int16_t my_aX = UNINIT, my_aY = UNINIT, my_aZ = UNINIT;
+int16_t my_Offset[6];
 uint8_t my_tempscale = TEMP_CELSIUS;
 int8_t my_OWpin = -1;
 
@@ -126,12 +126,16 @@ void saveConfigCallback()
 
 void applyOffset()
 {
-  if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT)
+  if (my_Offset[0] != UNINIT && my_Offset[1] != UNINIT && my_Offset[2] != UNINIT)
   {
-    CONSOLELN(String("applying offsets: ") + my_aX + ":" + my_aY + ":" + my_aZ);
-    accelgyro.setXAccelOffset(my_aX);
-    accelgyro.setYAccelOffset(my_aY);
-    accelgyro.setZAccelOffset(my_aZ);
+    CONSOLELN(String("applying offsets: ") + my_Offset[0] + ":" + my_Offset[1] + ":" + my_Offset[2]);
+    accelgyro.setXAccelOffset(my_Offset[0]);
+    accelgyro.setYAccelOffset(my_Offset[1]);
+    accelgyro.setZAccelOffset(my_Offset[2]);
+    accelgyro.setXGyroOffset(my_Offset[3]);
+    accelgyro.setYGyroOffset(my_Offset[4]);
+    accelgyro.setZGyroOffset(my_Offset[5]);
+    delay(1);
 
     CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
   }
@@ -168,14 +172,14 @@ bool readConfig()
       else
       {
         size_t size = configFile.size();
-        // Allocate a buffer to store contents of the file.
-        std::unique_ptr<char[]> buf(new char[size]);
-
-        configFile.readBytes(buf.get(), size);
-        DynamicJsonDocument doc(1024);
-        DeserializationError error = deserializeJson(doc, buf.get());
-
-        if (!error)
+        DynamicJsonDocument doc(size * 2);
+        DeserializationError error = deserializeJson(doc, configFile);
+        if (error)
+        {
+          CONSOLE(F("deserializeJson() failed: "));
+          CONSOLELN(error.c_str());
+        }
+        else
         {
           if (doc.containsKey("Name"))
             strcpy(my_name, doc["Name"]);
@@ -215,14 +219,14 @@ bool readConfig()
             my_psk = (const char *)doc["PSK"];
           if (doc.containsKey("POLY"))
             strcpy(my_polynominal, doc["POLY"]);
-          if (doc.containsKey("aX"))
-            my_aX = doc["aX"];
-          if (doc.containsKey("aY"))
-            my_aY = doc["aY"];
-          if (doc.containsKey("aZ"))
-            my_aZ = doc["aZ"];
 
-          applyOffset();
+          if (doc.containsKey("Offset"))
+          {
+            for (size_t i = 0; i < (sizeof(my_Offset) / sizeof(*my_Offset)); i++)
+            {
+              my_Offset[i] = doc["Offset"][i];
+            }
+          }
 
           CONSOLELN(F("parsed config:"));
 #ifdef DEBUG
@@ -439,12 +443,11 @@ bool formatSpiffs()
   return SPIFFS.begin();
 }
 
-bool saveConfig(int16_t aX, int16_t aY, int16_t aZ)
+bool saveConfig(int16_t Offset[6])
 {
-  my_aX = aX;
-  my_aY = aY;
-  my_aZ = aZ;
-  CONSOLELN(String("new offsets: ") + my_aX + ":" + my_aY + ":" + my_aZ);
+  std::copy(Offset, Offset + 6, my_Offset);
+  CONSOLELN(String("new offsets: ") + Offset[0] + ":" + Offset[1] + ":" + Offset[2]);
+  CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
 
   return saveConfig();
 }
@@ -464,7 +467,7 @@ bool saveConfig()
     }
   }
 
-  DynamicJsonDocument doc(1024);
+  DynamicJsonDocument doc(2048);
 
   doc["Name"] = my_name;
   doc["Token"] = my_token;
@@ -484,15 +487,15 @@ bool saveConfig()
   doc["Vfact"] = my_vfact;
   doc["TS"] = my_tempscale;
   doc["OWpin"] = my_OWpin;
-
-  // Store current Wifi credentials
+  doc["POLY"] = my_polynominal;
   doc["SSID"] = WiFi.SSID();
   doc["PSK"] = WiFi.psk();
 
-  doc["POLY"] = my_polynominal;
-  doc["aX"] = my_aX;
-  doc["aY"] = my_aY;
-  doc["aZ"] = my_aZ;
+  JsonArray array = doc.createNestedArray("Offset");
+  for (auto &&i : my_Offset)
+  {
+    array.add(i);
+  }
 
   File configFile = SPIFFS.open(CFGFILE, "w");
   if (!configFile)
@@ -798,6 +801,7 @@ void initAccel()
   Wire.setClock(100000);
   Wire.setClockStretchLimit(2 * 230);
 
+  testAccel();
   // init the Accel
   accelgyro.initialize();
   accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
@@ -813,7 +817,7 @@ void initAccel()
   accelgyro.setInterruptDrive(1); // Open drain
   accelgyro.setRate(17);
   accelgyro.setIntDataReadyEnabled(true);
-  testAccel();
+  applyOffset();
 }
 
 float calculateTilt()
