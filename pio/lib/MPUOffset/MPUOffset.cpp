@@ -4,24 +4,24 @@ const char LBRACKET = '[';
 const char RBRACKET = ']';
 const char COMMA = ',';
 
-const int iAx = 0;
-const int iAy = 1;
-const int iAz = 2;
-const int iGx = 3;
-const int iGy = 4;
-const int iGz = 5;
+const int16_t iAx = 0;
+const int16_t iAy = 1;
+const int16_t iAz = 2;
+const int16_t iGx = 3;
+const int16_t iGy = 4;
+const int16_t iGz = 5;
 
-const int NFast = 1000;  // the bigger, the better (but slower)
-const int NSlow = 10000; // ..
-const int LinesBetweenHeaders = 5;
-int LowValue[6];
-int HighValue[6];
-int Smoothed[6];
-int LowOffset[6];
-int HighOffset[6];
-int Target[6];
-int LinesOut;
-int N;
+const int16_t NFast = 1000;  // the bigger, the better (but slower)
+const int16_t NSlow = 10000; // ..
+const int16_t LinesBetweenHeaders = 5;
+int16_t LowValue[6];
+int16_t HighValue[6];
+int16_t Smoothed[6];
+int16_t LowOffset[6];
+int16_t HighOffset[6];
+int16_t Target[6];
+int16_t LinesOut;
+int16_t N;
 String statustext = "idle";
 
 MPUOffset::MPUOffset() {}
@@ -70,12 +70,37 @@ void MPUOffset::Initialize()
   Serial.println(F("Testing device connections..."));
   Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
   accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
-  int Offset[6];
 
   SetOffsets(Offset);
+
+  accelgyro.CalibrateAccel(6);
+  accelgyro.CalibrateGyro(6);
+  Serial.println("\nat 600 Readings");
+  accelgyro.PrintActiveOffsets();
+  Serial.println();
+  // accelgyro.CalibrateAccel(1);
+  // accelgyro.CalibrateGyro(1);
+  // Serial.println("700 Total Readings");
+  // accelgyro.PrintActiveOffsets();
+  // Serial.println();
+  // accelgyro.CalibrateAccel(1);
+  // accelgyro.CalibrateGyro(1);
+  // Serial.println("800 Total Readings");
+  // accelgyro.PrintActiveOffsets();
+  // Serial.println();
+  // accelgyro.CalibrateAccel(1);
+  // accelgyro.CalibrateGyro(1);
+  // Serial.println("900 Total Readings");
+  // accelgyro.PrintActiveOffsets();
+  // Serial.println();
+  // accelgyro.CalibrateAccel(1);
+  // accelgyro.CalibrateGyro(1);
+  // Serial.println("1000 Total Readings");
+  // accelgyro.PrintActiveOffsets();
+  // Serial.println("\n\n Any of the above offsets will work nice \n\n Lets proof the PID tuning using another method:");
 } // Initialize
 
-void MPUOffset::SetOffsets(int TheOffsets[6])
+void MPUOffset::SetOffsets(int16_t TheOffsets[6])
 {
   accelgyro.setXAccelOffset(TheOffsets[iAx]);
   accelgyro.setYAccelOffset(TheOffsets[iAy]);
@@ -179,7 +204,7 @@ void MPUOffset::PullBracketsOut()
   } // keep going
 } // PullBracketOut
 
-void MPUOffset::SetAveraging(int NewN)
+void MPUOffset::SetAveraging(int16_t NewN)
 {
   N = NewN;
   Serial.print(F("averaging "));
@@ -189,87 +214,16 @@ void MPUOffset::SetAveraging(int NewN)
 
 void MPUOffset::calibrate()
 {
-  boolean StillWorking;
-  int NewOffset[6];
-  boolean AllBracketsNarrow;
-
-  uint32_t starttime = millis();
-
   Initialize();
-  for (int i = iAx; i <= iGz; i++)
-  {                // set targets and initial guesses
-    Target[i] = 0; // must fix for ZAccel
-    HighOffset[i] = 0;
-    LowOffset[i] = 0;
-  } // set targets and initial guesses
-  Target[iAz] = 16384;
-  SetAveraging(NFast);
 
-  Serial.println(F("expanding:"));
-  ForceHeader();
-  PullBracketsOut();
+  Offset[iAx] = accelgyro.getXAccelOffset();
+  Offset[iAy] = accelgyro.getYAccelOffset();
+  Offset[iAz] = accelgyro.getZAccelOffset();
+  Offset[iGx] = accelgyro.getXGyroOffset();
+  Offset[iGy] = accelgyro.getYGyroOffset();
+  Offset[iGz] = accelgyro.getZGyroOffset();
 
-  Serial.println(F("\nclosing in:"));
-  AllBracketsNarrow = false;
-  ForceHeader();
-  StillWorking = true;
-  while (StillWorking)
-  {
-    statustext = String(F("calibrating... [")) + String((millis() - starttime) / 1000) + "s]";
-    StillWorking = false;
-    if (AllBracketsNarrow && (N == NFast))
-    {
-      SetAveraging(NSlow);
-    }
-    else
-    {
-      AllBracketsNarrow = true;
-    } // tentative
-    for (int i = iAx; i <= iGz; i++)
-    {
-      if (HighOffset[i] <= (LowOffset[i] + 1))
-      {
-        NewOffset[i] = LowOffset[i];
-      }
-      else
-      { // binary search
-        StillWorking = true;
-        NewOffset[i] = (LowOffset[i] + HighOffset[i]) / 2;
-        if (HighOffset[i] > (LowOffset[i] + 10))
-        {
-          AllBracketsNarrow = false;
-        }
-      } // binary search
-    }
-    SetOffsets(NewOffset);
-    GetSmoothed();
-    for (int i = iAx; i <= iGz; i++)
-    { // closing in
-      if (Smoothed[i] > Target[i])
-      { // use lower half
-        HighOffset[i] = NewOffset[i];
-        HighValue[i] = Smoothed[i];
-      } // use lower half
-      else
-      { // use upper half
-        LowOffset[i] = NewOffset[i];
-        LowValue[i] = Smoothed[i];
-      } // use upper half
-    }   // closing in
-    ShowProgress();
-  } // still working
-  Serial.println(F("-------------- done --------------"));
-  statustext = "done!";
-  accelgyro.getAcceleration(&ax, &ay, &az);
-  Serial.print(F("a/g:\t"));
-  Serial.print(ax);
-  Serial.print("\t");
-  Serial.print(ay);
-  Serial.print("\t");
-  Serial.print(az);
-  Serial.println();
-
-  saveConfig(NewOffset[iAx], NewOffset[iAy], NewOffset[iAz]);
+  saveConfig(Offset);
 
 } // setup
 
