@@ -64,8 +64,117 @@ function set(id, show) {
 };
 function c(l) { s.value = l.innerText || l.textContent; p.focus(); };
 function sTS() {
-  $('tempscale').value = parseInt($('TS').options[$('TS').selectedIndex].value);
+
+	$('tempscale').value = parseInt($('TS').options[$('TS').selectedIndex].value);
+	updateCaltempVisual($('caltemp').value);
 };
+
+function toggleATCInputs() {
+
+	if (document.getElementById('ATCENABLED').checked)
+	{	
+		$('atcenabled').value = "1";
+        document.getElementById('ATCDIV').style.display = 'block';
+	}
+	else
+	{
+		$('atcenabled').value = "0";
+        document.getElementById('ATCDIV').style.display = 'none';
+	}
+};
+
+function updateCaltempVisual(t) // t must be in deg C
+{
+	switch ($('tempscale').value)
+	{
+		case "1":
+			$('CALTEMPVISUAL').value = (1.8 * parseFloat(t) + 32).toString();
+			break;
+		case "2":
+			$('CALTEMPVISUAL').value = (parseFloat(t) + 273.15).toString();
+			break;
+		
+		case "0":
+		default:
+		$('CALTEMPVISUAL').value = t;
+	} 
+}
+
+function validateUpdateCaltemp(t, min, max)
+{
+	temperature = parseFloat(t);
+	if (isNaN(temperature))
+	{
+    resetCalTempToDefault();
+		alert("Please enter a number");
+		return;
+	}
+
+	switch ($('tempscale').value)
+	{
+		case "1":
+			caltemp_val = (temperature-32)/1.8;
+			min_scaled = min*1.8+32;
+			max_scaled = max*1.8+32;
+			units = "F";
+			break;
+		case "2":
+			caltemp_val = temperature - 273.15;
+			min_scaled = min+273.15;
+			max_scaled = max+273.15;
+			units = "K";
+			break;
+		
+		case "0":
+		default:
+			caltemp_val = temperature;
+			min_scaled = min;
+			max_scaled = max;
+			units = "C";
+	} 
+
+	if (temperature <= min_scaled || temperature >= max_scaled)
+	{
+		alert("Valid: " + (min_scaled+1).toString() + units + "..." + (max_scaled-1).toString() + units);
+    resetCalTempToDefault();
+    return;
+	}
+	
+	$('caltemp').value = caltemp_val.toString();
+}
+
+function resetCalTempToDefault()
+{
+	$('caltemp').value = "20"; // reset to default 20c
+	updateCaltempVisual("20");
+}
+
+function selectGU()
+{
+	$('gravityunit').value = parseInt($('GU').options[$('GU').selectedIndex].value);
+}
+
+function selectFormulaType(value)
+{
+	if (value == 1)
+	{
+		document.getElementById('FORMULATYPEINTERNALDIV').style.display = 'none';
+		document.getElementById('FORMULATYPECUSTOMDIV').style.display = 'block';
+	}
+	else
+	{
+		document.getElementById('FORMULATYPECUSTOMDIV').style.display = 'none';
+		document.getElementById('FORMULATYPEINTERNALDIV').style.display = 'block';
+	}
+	
+	$('formula_type').value = parseInt($('FORMULATYPE').options[$('FORMULATYPE').selectedIndex].value);
+}
+
+function atcOpTypeChanged()
+{
+	$('atc_op_t').value = parseInt($('OPERATIONTYPE').options[$('OPERATIONTYPE').selectedIndex].value);
+}
+
 function sAPI(val) {
   $('selAPI').value = val;
   var obj = lAPI[parseInt(val)];
@@ -92,17 +201,84 @@ window.onload = function (e) {
   $('TS').value = $('tempscale').value; sTS();
   fillopt();
   $('API').querySelector('option[value="'+value+'"]').selected = true;
+
+  $('ATCENABLED').checked = parseInt($('atcenabled').value) > 0; 
+  toggleATCInputs();
 };</script>)V0G0N";
 
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
 <select id="API" onchange="sAPI(this.options[this.selectedIndex].value);"></select>)V0G0N";
 
 const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
-<select id="TS" onclick="sTS()">
+<select id="TS" onchange="sTS()">
 <option value=0>Celsius</option>
 <option value=1>Fahrenheit</option>
 <option value=2>Kelvin</option>
 </select>)V0G0N";
+
+const char HTML_ATC_CHECKBOX[] PROGMEM = R"ATC(
+<hr>
+<input type="checkbox" id="ATCENABLED" onclick="toggleATCInputs()">
+<label for="ATCENABLED">Automatic Temperature Correction (ATC)</label>
+)ATC";
+
+const char HTML_DIV_BEGIN_ATC_SECTION[] PROGMEM = R"ATC(
+<div id="ATCDIV" style="display:none">
+)ATC";
+
+const char HTML_DIV_END[] PROGMEM = R"ATC(
+</div>
+)ATC";
+
+const char HTML_ATC_FORMULATYPE_BLOCK[] PROGMEM = R"ATC(
+<label for="FORMULATYPE"  style="margin-top:10px;margin-bottom:10px;display:block;">Formula:</label>
+<select id="FORMULATYPE" onchange="selectFormulaType(this.value)">
+<option value=0>Internal</option>
+<option value=1>Custom</option>
+</select>
+)ATC";
+
+const char HTML_DIV_BEGIN_FORMULATYPE_INTERNAL[] PROGMEM = R"ATC(
+<div id="FORMULATYPEINTERNALDIV" style="display:block">
+)ATC";
+
+const char HTML_GU_LIST_LABEL[] PROGMEM = R"ATC(
+<label for="GU"  style="margin-top:10px;margin-bottom:10px;display:block;">Gravity units:</label>
+)ATC";
+
+const char HTML_GU_LIST[] PROGMEM = R"ATC(
+<select id="GU" onchange="selectGU()">
+<option value=0>SG</option>
+<option value=1>Plato</option>
+</select>
+)ATC";
+
+const char HTML_ATC_CALIBRATION_TEMP_VISUAL[] PROGMEM = R"ATC(
+<label for="CALTEMPVISUAL" style="margin-top:10px;margin-bottom:10px;display:block;">Calibration Temperature</label>
+<input id="CALTEMPVISUAL" length=5 placeholder="" value="20" type="number" step="any" oninput = "validateUpdateCaltemp(value, 0, 100)">
+<! –– caltemp is always in celsius --->
+)ATC";
+
+const char HTML_DIV_BEGIN_FORMULATYPE_CUSTOM[] PROGMEM = R"ATC(
+<div id="FORMULATYPECUSTOMDIV" style="display:none">
+)ATC";
+
+const char HTML_ATC_CUSTOM_FORMULA_LABEL[] PROGMEM = R"ATC(
+<label for="custom_formula" style="margin-top:10px;margin-bottom:10px;display:block;">ATC formula (max. 100 chars)<br/>ex. "1.313454-0.132674*t+0.00205779*t^2-0.000002627634*t^3"
+<br/>Variables:<br/>t - temperature<br/>ct - calibration temperature<br/>g - gravity</label>
+)ATC";
+
+const char HTML_ATC_CUSTOM_OPERATION_TYPE_LABEL[] PROGMEM = R"ATC(
+  <label for="OPERATIONTYPE"  style="margin-top:10px;margin-bottom:10px;display:block;">Above calculated value must be:</label>
+)ATC";
+
+const char HTML_ATC_CUSTOM_OPERATION_TYPE_LIST[] PROGMEM = R"ATC(
+<select id="OPERATIONTYPE" onchange="atcOpTypeChanged()">
+<option value=0>..added to gravity readings</option>
+<option value=1>..multiplied by gravity readings</option>
+<option value=2>..used instead of gravity readings</option>
+</select>
+)ATC";
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";
 const char TYPE_NUMBER[] = "type=\"number\" step=\"any\"";
@@ -124,7 +300,7 @@ const char HTTP_END[] PROGMEM = "</div></body></html>";
 const char HTTP_UPDATE_FAI[] PROGMEM = "Update Failed!";
 const char HTTP_UPDATE_SUC[] PROGMEM = "Update Success! Rebooting...";
 
-#define WIFI_MANAGER_MAX_PARAMS 25
+#define WIFI_MANAGER_MAX_PARAMS 45
 
 class WiFiManagerParameter
 {

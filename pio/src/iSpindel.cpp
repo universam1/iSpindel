@@ -40,6 +40,26 @@ DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 #define TEMP_FAHRENHEIT 1
 #define TEMP_KELVIN 2
 
+typedef enum tag_GRAVITY_UNITS
+{
+  GRAVITY_UNITS_SG,
+  GRAVITY_UNITS_PLATO
+} GRAVITY_UNITS;
+
+typedef enum tag_ATC_FORMULA_TYPE
+{
+  ATC_FORMULA_INTERNAL,
+  ATC_FORMULA_CUSTOM
+} ATC_FORMULA_TYPE;
+
+typedef enum tag_ATC_CUSTOM_OP_TYPE
+{
+  ATC_OPT_ADD,
+  ATC_OPT_MUL,
+  ATC_OPT_USEASIS
+} ATC_CUSTOM_OP_TYPE;
+
+
 int detectTempSensor(const uint8_t pins[]);
 bool testAccel();
 
@@ -86,6 +106,14 @@ uint32_t my_channel;
 float my_vfact = ADCDIVISOR;
 int16_t my_Offset[6];
 uint8_t my_tempscale = TEMP_CELSIUS;
+
+uint8_t my_useATC = 0;
+ATC_FORMULA_TYPE my_atcFormulaType = ATC_FORMULA_INTERNAL;
+GRAVITY_UNITS my_gravityUnits = GRAVITY_UNITS_SG;
+int16_t my_atcCalibrationTemp = 20; // always in deg C, will be converted when/if needed
+ATC_CUSTOM_OP_TYPE my_atcOpt = ATC_OPT_ADD;
+char my_custom_atc_formula[100] = "";
+
 int8_t my_OWpin = -1;
 
 uint32_t DSreqTime = 0;
@@ -370,6 +398,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_tempscale_hint);
   wifiManager.addParameter(&tempscale_list);
   wifiManager.addParameter(&custom_tempscale);
+
   WiFiManagerParameter custom_api_hint("<hr><label for=\"API\">Service Type</label>");
   wifiManager.addParameter(&custom_api_hint);
 
@@ -386,10 +415,85 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_password);
   wifiManager.addParameter(&custom_job);
   wifiManager.addParameter(&custom_instance);
+  
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100 * 2, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100*2);
   wifiManager.addParameter(&custom_polynom);
+
+  // ATC section
+  WiFiManagerParameter atc_checkbox(HTML_ATC_CHECKBOX);
+  wifiManager.addParameter(&atc_checkbox);
+  WiFiManagerParameter atc_enabled("atcenabled", "atcenabled",
+                                        String(my_useATC).c_str(),
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  wifiManager.addParameter(&atc_enabled);
+
+  WiFiManagerParameter atc_div_begin(HTML_DIV_BEGIN_ATC_SECTION);
+  wifiManager.addParameter(&atc_div_begin);
+
+  WiFiManagerParameter atc_formula_block(HTML_ATC_FORMULATYPE_BLOCK);
+  wifiManager.addParameter(&atc_formula_block);
+  WiFiManagerParameter atc_formula_type("formula_type", "formula_type",
+                                        String(my_atcFormulaType).c_str(),
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  wifiManager.addParameter(&atc_formula_type);
+
+  // internal formula type --------------------------------------->>>
+  WiFiManagerParameter atc_formula_internal_div(HTML_DIV_BEGIN_FORMULATYPE_INTERNAL);
+  wifiManager.addParameter(&atc_formula_internal_div);
+
+
+  WiFiManagerParameter gu_list_label(HTML_GU_LIST_LABEL);
+  wifiManager.addParameter(&gu_list_label);
+  WiFiManagerParameter gu_list(HTML_GU_LIST);
+  wifiManager.addParameter(&gu_list);
+
+  WiFiManagerParameter gravity_unit("gravityunit", "gravityunit",
+                                        String(my_gravityUnits).c_str(),
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  wifiManager.addParameter(&gravity_unit);
+
+  WiFiManagerParameter caltemp_visual(HTML_ATC_CALIBRATION_TEMP_VISUAL);
+  wifiManager.addParameter(&caltemp_visual);
+  
+  WiFiManagerParameter calibration_temp("caltemp", "caltemp",
+                                        String(my_atcCalibrationTemp).c_str(),
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  wifiManager.addParameter(&calibration_temp);
+
+  WiFiManagerParameter internal_formula_div_end(HTML_DIV_END);
+  wifiManager.addParameter(&internal_formula_div_end); // end of internal formula type div
+  // <<---------------------------------------
+
+  // custom formula type --------------------------------------->>>
+  WiFiManagerParameter atc_formula_custom_div(HTML_DIV_BEGIN_FORMULATYPE_CUSTOM);
+  wifiManager.addParameter(&atc_formula_custom_div);
+
+  WiFiManagerParameter custom_formula_label(HTML_ATC_CUSTOM_FORMULA_LABEL);
+  wifiManager.addParameter(&custom_formula_label);
+  WiFiManagerParameter custom_formula("custom_formula", "Input your formula", htmlencode(my_custom_atc_formula).c_str(), 100*2, "", WFM_NO_LABEL);
+  wifiManager.addParameter(&custom_formula);
+
+
+  WiFiManagerParameter cop_list_label(HTML_ATC_CUSTOM_OPERATION_TYPE_LABEL);
+  wifiManager.addParameter(&cop_list_label);
+  WiFiManagerParameter cop_list(HTML_ATC_CUSTOM_OPERATION_TYPE_LIST);
+  wifiManager.addParameter(&cop_list);
+  WiFiManagerParameter atc_op_t("atc_op_t", "atc_op_t",
+                                        String(my_atcOpt).c_str(),
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  wifiManager.addParameter(&atc_op_t);
+
+
+  WiFiManagerParameter custom_formula_div_end(HTML_DIV_END);
+  wifiManager.addParameter(&custom_formula_div_end); // end of custom formula type div
+  // <<---------------------------------------
+
+  WiFiManagerParameter atc_div_end(HTML_DIV_END);
+  wifiManager.addParameter(&atc_div_end); // end of ATC section div
+
+  // end of ATC section
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
   wifiManager.setConfPSK(htmlencode(my_psk));
