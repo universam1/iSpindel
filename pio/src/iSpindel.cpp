@@ -1071,12 +1071,32 @@ bool isSafeMode(float _volt)
     return false;
 }
 
-void connectBackupCredentials()
+bool connectBackupCredentials()
 {
   WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
-  CONSOLELN(F("Rescue Wifi credentials"));
-  delay(100);
+  CONSOLELN(F("Rescued Wifi credentials"));
+
+  CONSOLE(F("   -> waited for "));
+  unsigned long startedAt = millis();
+  // int connRes = WiFi.waitForConnectResult();
+  uint8_t wait = 0;
+  while (WiFi.status() == WL_DISCONNECTED)
+  {
+    delay(200);
+    wait++;
+    if (wait > 50)
+      break;
+  }
+  auto waited = (millis() - startedAt);
+  CONSOLE(waited);
+  CONSOLE(F("ms, result "));
+  CONSOLELN(WiFi.status());
+
+  if (WiFi.status() == WL_DISCONNECTED)
+    return false;
+  else
+    return true;
 }
 
 void setup()
@@ -1240,7 +1260,7 @@ void setup()
     uint8_t wait = 0;
     while (WiFi.status() == WL_DISCONNECTED)
     {
-      delay(100);
+      delay(200);
       wait++;
       if (wait > 50)
         break;
@@ -1258,8 +1278,12 @@ void setup()
   }
   else
   {
-    connectBackupCredentials();
-    CONSOLELN(F("failed to connect"));
+    CONSOLELN(F("Failed to connect -> trying to restore connection..."));
+
+    if (connectBackupCredentials())
+      CONSOLE(F("   -> Connection restored!"));
+    else
+      CONSOLE(F("   -> Failed to restore connection..."));
   }
 
   // survive - 60min sleep time
