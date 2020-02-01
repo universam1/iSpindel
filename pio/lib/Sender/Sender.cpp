@@ -193,14 +193,14 @@ bool SenderClass::sendThingSpeak(String token, long Channel)
     }
 
 
-bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
+bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
 {
     serializeJson(_doc, Serial);
     HTTPClient http;
 
     CONSOLELN(F("HTTPAPI: posting"));
-    // configure traged server and url
-    http.begin(_client, server, port, url);
+    // configure traged server and uri
+    http.begin(_client, server, port, uri);
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
     http.addHeader("Content-Type", "application/json");
