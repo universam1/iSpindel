@@ -116,7 +116,7 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
 By pressing the  ```Reset Button``` the Wemos creates an access point, which allows you to make the necessary settings to configure the device. **In `operation mode` this portal is not active or accessible because the principle of this design is based on shorted possible acitve time. Basically it will wake up, send its data and deep sleep again. This takes now less than 3s which is directly related to its long life run time.
 
-> The ```iSpindel``` signalises the `config mode` by blinking the LED in a 1s interval.  
+> The ```iSpindel``` signals the `config mode` by blinking the LED at a 1s interval.  
 By saving your settings or waiting timeout of 5min it will end the Portal thus AccessPoint and try to go into `operation mode`.
 
 

@@ -28,7 +28,7 @@ All rights reserverd by S.Lang <universam@web.de>
 // !DEBUG 1
 
 // definitions go here
-MPU6050_Base accelgyro;
+MPU6050 accelgyro;
 OneWire *oneWire;
 DallasTemperature DS18B20;
 DeviceAddress tempDeviceAddress;
@@ -68,8 +68,8 @@ bool shouldSaveConfig = false;
 
 char my_token[TKIDSIZE * 2];
 char my_name[TKIDSIZE] = "iSpindel000";
-char my_server[TKIDSIZE];
-char my_url[TKIDSIZE * 2];
+char my_server[DNSSIZE];
+char my_uri[DNSSIZE];
 char my_db[TKIDSIZE] = "ispindel";
 char my_username[TKIDSIZE];
 char my_password[TKIDSIZE];
@@ -82,8 +82,9 @@ String my_psk;
 uint8_t my_api;
 uint32_t my_sleeptime = 15 * 60;
 uint16_t my_port = 80;
+uint32_t my_channel;
 float my_vfact = ADCDIVISOR;
-int16_t my_aX = UNINIT, my_aY = UNINIT, my_aZ = UNINIT;
+int16_t my_Offset[6];
 uint8_t my_tempscale = TEMP_CELSIUS;
 int8_t my_OWpin = -1;
 
@@ -125,12 +126,18 @@ void saveConfigCallback()
 
 void applyOffset()
 {
-  if (my_aX != UNINIT && my_aY != UNINIT && my_aZ != UNINIT)
+  if (my_Offset[0] != UNINIT && my_Offset[1] != UNINIT && my_Offset[2] != UNINIT)
   {
-    CONSOLELN(F("applying offsets"));
-    accelgyro.setXAccelOffset(my_aX);
-    accelgyro.setYAccelOffset(my_aY);
-    accelgyro.setZAccelOffset(my_aZ);
+    CONSOLELN(String("applying offsets: ") + my_Offset[0] + ":" + my_Offset[1] + ":" + my_Offset[2]);
+    accelgyro.setXAccelOffset(my_Offset[0]);
+    accelgyro.setYAccelOffset(my_Offset[1]);
+    accelgyro.setZAccelOffset(my_Offset[2]);
+    accelgyro.setXGyroOffset(my_Offset[3]);
+    accelgyro.setYGyroOffset(my_Offset[4]);
+    accelgyro.setZGyroOffset(my_Offset[5]);
+    delay(1);
+
+    CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
   }
   else
     CONSOLELN(F("offsets not available"));
@@ -140,25 +147,39 @@ bool readConfig()
 {
   CONSOLE(F("mounting FS..."));
 
-  if (SPIFFS.begin())
+  if (!SPIFFS.begin())
+  {
+    CONSOLELN(F(" ERROR: failed to mount FS!"));
+    return false;
+  }
+  else
   {
     CONSOLELN(F(" mounted!"));
-    if (SPIFFS.exists(CFGFILE))
+    if (!SPIFFS.exists(CFGFILE))
+    {
+      CONSOLELN(F("ERROR: failed to load json config"));
+      return false;
+    }
+    else
     {
       // file exists, reading and loading
       CONSOLELN(F("reading config file"));
       File configFile = SPIFFS.open(CFGFILE, "r");
-      if (configFile)
+      if (!configFile)
+      {
+        CONSOLELN(F("ERROR: unable to open config file"));
+      }
+      else
       {
         size_t size = configFile.size();
-        // Allocate a buffer to store contents of the file.
-        std::unique_ptr<char[]> buf(new char[size]);
-
-        configFile.readBytes(buf.get(), size);
-        DynamicJsonDocument doc(1024);
-        DeserializationError error = deserializeJson(doc, buf.get());
-
-        if (!error)
+        DynamicJsonDocument doc(size * 2);
+        DeserializationError error = deserializeJson(doc, configFile);
+        if (error)
+        {
+          CONSOLE(F("deserializeJson() failed: "));
+          CONSOLELN(error.c_str());
+        }
+        else
         {
           if (doc.containsKey("Name"))
             strcpy(my_name, doc["Name"]);
@@ -172,8 +193,10 @@ bool readConfig()
             my_api = doc["API"];
           if (doc.containsKey("Port"))
             my_port = doc["Port"];
-          if (doc.containsKey("URL"))
-            strcpy(my_url, doc["URL"]);
+          if (doc.containsKey("Channel"))
+            my_channel = doc["Channel"];
+          if (doc.containsKey("URI"))
+            strcpy(my_uri, doc["URI"]);
           if (doc.containsKey("DB"))
             strcpy(my_db, doc["DB"]);
           if (doc.containsKey("Username"))
@@ -197,38 +220,22 @@ bool readConfig()
           if (doc.containsKey("POLY"))
             strcpy(my_polynominal, doc["POLY"]);
 
-          my_aX = UNINIT;
-          my_aY = UNINIT;
-          my_aZ = UNINIT;
-
-          if (doc.containsKey("aX"))
-            my_aX = doc["aX"];
-          if (doc.containsKey("aY"))
-            my_aY = doc["aY"];
-          if (doc.containsKey("aZ"))
-            my_aZ = doc["aZ"];
-          applyOffset();
+          if (doc.containsKey("Offset"))
+          {
+            for (size_t i = 0; i < (sizeof(my_Offset) / sizeof(*my_Offset)); i++)
+            {
+              my_Offset[i] = doc["Offset"][i];
+            }
+          }
 
           CONSOLELN(F("parsed config:"));
 #ifdef DEBUG
           serializeJson(doc, Serial);
           CONSOLELN();
 #endif
-          return true;
-        }
-        else
-        {
-          CONSOLELN(F("ERROR: failed to load json config"));
-          return false;
         }
       }
-      CONSOLELN(F("ERROR: unable to open config file"));
     }
-  }
-  else
-  {
-    CONSOLELN(F(" ERROR: failed to mount FS!"));
-    return false;
   }
   return true;
 }
@@ -336,11 +343,13 @@ bool startConfiguration()
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE * 2 * 2);
   WiFiManagerParameter custom_server("server", "Server Address",
-                                     my_server, TKIDSIZE);
+                                     my_server, DNSSIZE);
   WiFiManagerParameter custom_port("port", "Server Port",
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
-  WiFiManagerParameter custom_url("url", "Server URL", my_url, TKIDSIZE * 2);
+  WiFiManagerParameter custom_channel("channel", "Channelnumber",
+                                      String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
+  WiFiManagerParameter custom_url("uri", "Path / URI", my_uri, DNSSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
@@ -370,6 +379,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
+  wifiManager.addParameter(&custom_channel);
   wifiManager.addParameter(&custom_url);
   wifiManager.addParameter(&custom_db);
   wifiManager.addParameter(&custom_username);
@@ -401,8 +411,9 @@ bool startConfiguration()
 
   my_api = String(custom_api.getValue()).toInt();
   my_port = String(custom_port.getValue()).toInt();
+  my_channel = String(custom_channel.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
-  validateInput(custom_url.getValue(), my_url);
+  validateInput(custom_url.getValue(), my_uri);
 
   String tmp = custom_vfact.getValue();
   tmp.trim();
@@ -423,24 +434,40 @@ bool startConfiguration()
   return false;
 }
 
-void formatSpiffs()
+bool formatSpiffs()
 {
   CONSOLE(F("\nneed to format SPIFFS: "));
   SPIFFS.end();
   SPIFFS.begin();
   CONSOLELN(SPIFFS.format());
+  return SPIFFS.begin();
+}
+
+bool saveConfig(int16_t Offset[6])
+{
+  std::copy(Offset, Offset + 6, my_Offset);
+  CONSOLELN(String("new offsets: ") + Offset[0] + ":" + Offset[1] + ":" + Offset[2]);
+  CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
+
+  return saveConfig();
 }
 
 bool saveConfig()
 {
-  CONSOLE(F("saving config..."));
+  CONSOLE(F("saving config...\n"));
 
   // if SPIFFS is not usable
-  if (!SPIFFS.begin() || !SPIFFS.exists(CFGFILE) ||
-      !SPIFFS.open(CFGFILE, "w"))
-    formatSpiffs();
+  if (!SPIFFS.begin())
+  {
+    Serial.println("Failed to mount file system");
+    if (!formatSpiffs())
+    {
+      Serial.println("Failed to format file system - hardware issues!");
+      return false;
+    }
+  }
 
-  DynamicJsonDocument doc(1024);
+  DynamicJsonDocument doc(2048);
 
   doc["Name"] = my_name;
   doc["Token"] = my_token;
@@ -450,7 +477,8 @@ bool saveConfig()
   doc["Server"] = my_server;
   doc["API"] = my_api;
   doc["Port"] = my_port;
-  doc["URL"] = my_url;
+  doc["Channel"] = my_channel;
+  doc["URI"] = my_uri;
   doc["DB"] = my_db;
   doc["Username"] = my_username;
   doc["Password"] = my_password;
@@ -459,17 +487,17 @@ bool saveConfig()
   doc["Vfact"] = my_vfact;
   doc["TS"] = my_tempscale;
   doc["OWpin"] = my_OWpin;
-
-  // Store current Wifi credentials
+  doc["POLY"] = my_polynominal;
   doc["SSID"] = WiFi.SSID();
   doc["PSK"] = WiFi.psk();
 
-  doc["POLY"] = my_polynominal;
-  doc["aX"] = my_aX;
-  doc["aY"] = my_aY;
-  doc["aZ"] = my_aZ;
+  JsonArray array = doc.createNestedArray("Offset");
+  for (auto &&i : my_Offset)
+  {
+    array.add(i);
+  }
 
-  File configFile = SPIFFS.open(CFGFILE, "w+");
+  File configFile = SPIFFS.open(CFGFILE, "w");
   if (!configFile)
   {
     CONSOLELN(F("failed to open config file for writing"));
@@ -478,13 +506,15 @@ bool saveConfig()
   }
   else
   {
+    serializeJson(doc, configFile);
 #ifdef DEBUG
     serializeJson(doc, Serial);
 #endif
-    serializeJson(doc, configFile);
+    configFile.flush();
     configFile.close();
+    SPIFFS.gc();
     SPIFFS.end();
-    CONSOLELN(F("saved successfully"));
+    CONSOLELN(F("\nsaved successfully"));
     return true;
   }
 }
@@ -494,19 +524,19 @@ bool processResponse(String response)
   DynamicJsonDocument doc(1024);
 
   DeserializationError error = deserializeJson(doc, response);
-    if (!error && doc.containsKey("interval"))
+  if (!error && doc.containsKey("interval"))
+  {
+    uint32_t interval = doc["interval"];
+    if (interval != my_sleeptime &&
+        interval < 24 * 60 * 60 &&
+        interval > 10)
     {
-      uint32_t interval = doc["interval"];
-      if (interval != my_sleeptime &&
-          interval < 24 * 60 * 60 &&
-          interval > 10)
-      {
-        my_sleeptime = interval;
-        CONSOLE(F("Received new Interval config: "));
-        CONSOLELN(interval);
-        return saveConfig();
-      }
+      my_sleeptime = interval;
+      CONSOLE(F("Received new Interval config: "));
+      CONSOLELN(interval);
+      return saveConfig();
     }
+  }
   return false;
 }
 
@@ -540,6 +570,21 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling MQTT"));
     return sender.sendMQTT(my_server, my_port, my_username, my_password, my_name);
+  }
+#endif
+
+#ifdef API_THINGSPEAK
+  if (service == DTTHINGSPEAK)
+  {
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temp_units", tempScaleLabel());
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling ThingSpeak"));
+    return sender.sendThingSpeak(my_token, my_channel);
   }
 #endif
 
@@ -592,7 +637,7 @@ bool uploadData(uint8_t service)
     if (service == DTHTTP)
     {
       CONSOLELN(F("\ncalling HTTP"));
-      return sender.sendGenericPost(my_server, my_url, my_port);
+      return sender.sendGenericPost(my_server, my_uri, my_port);
     }
     else if (service == DTCraftBeerPi)
     {
@@ -756,6 +801,7 @@ void initAccel()
   Wire.setClock(100000);
   Wire.setClockStretchLimit(2 * 230);
 
+  testAccel();
   // init the Accel
   accelgyro.initialize();
   accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
@@ -771,7 +817,7 @@ void initAccel()
   accelgyro.setInterruptDrive(1); // Open drain
   accelgyro.setRate(17);
   accelgyro.setIntDataReadyEnabled(true);
-  testAccel();
+  applyOffset();
 }
 
 float calculateTilt()
@@ -1025,12 +1071,32 @@ bool isSafeMode(float _volt)
     return false;
 }
 
-void connectBackupCredentials()
+bool connectBackupCredentials()
 {
   WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
-  CONSOLELN(F("Rescue Wifi credentials"));
-  delay(100);
+  CONSOLELN(F("Rescued Wifi credentials"));
+
+  CONSOLE(F("   -> waited for "));
+  unsigned long startedAt = millis();
+  // int connRes = WiFi.waitForConnectResult();
+  uint8_t wait = 0;
+  while (WiFi.status() == WL_DISCONNECTED)
+  {
+    delay(200);
+    wait++;
+    if (wait > 50)
+      break;
+  }
+  auto waited = (millis() - startedAt);
+  CONSOLE(waited);
+  CONSOLE(F("ms, result "));
+  CONSOLELN(WiFi.status());
+
+  if (WiFi.status() == WL_DISCONNECTED)
+    return false;
+  else
+    return true;
 }
 
 void setup()
@@ -1194,7 +1260,7 @@ void setup()
     uint8_t wait = 0;
     while (WiFi.status() == WL_DISCONNECTED)
     {
-      delay(100);
+      delay(200);
       wait++;
       if (wait > 50)
         break;
@@ -1212,8 +1278,12 @@ void setup()
   }
   else
   {
-    connectBackupCredentials();
-    CONSOLELN(F("failed to connect"));
+    CONSOLELN(F("Failed to connect -> trying to restore connection..."));
+
+    if (connectBackupCredentials())
+      CONSOLE(F("   -> Connection restored!"));
+    else
+      CONSOLE(F("   -> Failed to restore connection..."));
   }
 
   // survive - 60min sleep time

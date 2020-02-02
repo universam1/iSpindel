@@ -8,6 +8,7 @@
 #include "Sender.h"
 #include "Globals.h"
 #include <PubSubClient.h>
+#include <ThingSpeak.h>
 
 #define UBISERVER "things.ubidots.com"
 #define CONNTIMEOUT 2000
@@ -158,14 +159,46 @@ String SenderClass::sendTCP(String server, uint16_t port)
     return response;
 }
 
-bool SenderClass::sendGenericPost(String server, String url, uint16_t port)
+bool SenderClass::sendThingSpeak(String token, long Channel)
+{
+    int field = 0;
+    unsigned long channelNumber = Channel; 
+    const char * writeAPIKey = token.c_str();
+    
+    serializeJson(_doc, Serial);
+    ThingSpeak.begin(_client);
+
+    CONSOLELN(F("\nSender: ThingSpeak posting"));
+   
+    for (const auto &kv : _doc.as<JsonObject>())
+    {   
+        field++;  
+        ThingSpeak.setField(field, kv.value().as<String>());
+    }
+    // write to the ThingSpeak channel 
+    int x = ThingSpeak.writeFields(channelNumber, writeAPIKey);
+
+    if(x == 200){
+     Serial.println("Channel update successful.");
+    }
+    else{
+     Serial.println("Problem updating channel. HTTP error code " + String(x));
+     return false;
+    }
+    _client.stop();
+    stopclient();
+    return true;
+    }
+
+
+bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
 {
     serializeJson(_doc, Serial);
     HTTPClient http;
 
     CONSOLELN(F("HTTPAPI: posting"));
-    // configure traged server and url
-    http.begin(_client, server, port, url);
+    // configure traged server and uri
+    http.begin(_client, server, port, uri);
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
     http.addHeader("Content-Type", "application/json");

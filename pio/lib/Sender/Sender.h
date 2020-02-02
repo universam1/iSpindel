@@ -18,7 +18,8 @@ class SenderClass
 public:
   SenderClass();
   String sendTCP(String server, uint16_t port = 80);
-  bool sendGenericPost(String server, String url, uint16_t port = 80);
+  bool sendThingSpeak(String token, long Channel);
+  bool sendGenericPost(String server, String uri, uint16_t port = 80);
   bool sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password);
   bool sendPrometheus(String server, uint16_t port, String job, String instance);
   bool sendUbidots(String token, String name);

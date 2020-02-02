@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.1.1"
+#define FIRMWAREVERSION "6.2.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -29,6 +29,7 @@ extern Ticker flasher;
 #define API_INFLUXDB true
 #define API_PROMETHEUS true
 #define API_MQTT true
+#define API_THINGSPEAK true
 
 #ifndef DEBUG
 #define DEBUG true
@@ -64,6 +65,7 @@ extern Ticker flasher;
 #define OWinterval (760 / (1 << (12 - RESOLUTION)))
 #define CFGFILE "/config.json"
 #define TKIDSIZE 40
+#define DNSSIZE 253
 
 #define MEDIANROUNDSMAX 49
 #define MEDIANROUNDSMIN 29
@@ -83,6 +85,7 @@ extern Ticker flasher;
 #define DTInfluxDB 8
 #define DTPrometheus 9
 #define DTMQTT 10
+#define DTTHINGSPEAK 11
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
@@ -103,11 +106,12 @@ extern Ticker flasher;
 
 extern int16_t ax, ay, az;
 extern float Volt, Temperatur, Tilt, Gravity;
-extern int16_t my_aX, my_aY, my_aZ;
 
-extern MPU6050_Base accelgyro;
+extern MPU6050 accelgyro;
 extern bool saveConfig();
-extern void formatSpiffs();
+extern bool saveConfig(int16_t Offset[6]);
+extern bool formatSpiffs();
+extern void flash();
 
 float scaleTemperature(float t);
 String tempScaleLabel(void);
