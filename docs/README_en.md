@@ -139,7 +139,7 @@ In the ```Dashboard``` now you can create your nice graphs.
 * Touch the QR-code icon and point the camera to the code below
 <p><img src="https://image.ibb.co/gxZFDz/Untitled.png" height="95" /></p>
 
-<p><img src="./pics/BlynkApp.jpg" width="35%" />  <img src="./pics/BlynkQR.jpg" width="35%" /></p>
+<img src="/pics/BlynkApp.jpg" width="35%" />  <img src="/pics/BlynkQR.jpg" width="35%" />
 
 * Enjoy the app!
 

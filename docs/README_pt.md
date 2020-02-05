@@ -144,7 +144,7 @@ Na aba ```Dashboard``` você poderá criar diversos gráficos customizados.
 * Clique no icone QR-code e leia o codigo com a camera do celular
 <p><img src="https://image.ibb.co/gxZFDz/Untitled.png" height="95" /></p>
 
-<p><img src="./pics/BlynkApp.jpg" width="35%" />  <img src="./pics/BlynkQR.jpg" width="35%" /></p>
+<img src="/pics/BlynkApp.jpg" width="35%" />  <img src="/pics/BlynkQR.jpg" width="35%" />
 
 * Enjoy the app!
 
