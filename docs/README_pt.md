@@ -43,6 +43,7 @@ Documentação do iSpindle (iSpindel)
 - [Configuração](#configuração)
   - [Ubidots](#ubidots)
   - [Portal](#portal)
+  - [Blynk](#blynk)
 - [Interface Gráfica do Usuário](#interface-gráfica-usuário)
   - [Calibrando o iSpindle](#calibração)
   - [Gráficos Ubidots](#gráficos-ubidots)
@@ -133,6 +134,29 @@ Ao salvar as configurações ou após expirar o tempo de 5 minutos o dispositivo
 
 > No site Ubidots você pode monitorar os dados enviados na aba ```Sources```, local onde o iSpindel criará um dispositivo por conta própria.  
 Na aba ```Dashboard``` você poderá criar diversos gráficos customizados.
+
+### Blynk
+
+#### Clonar Exemplo do App
+
+* Para esse exemplo você precisara de 1800 (4x200 + 100 + 900) pontos de energia, que estão inclusos inicialmente no App;
+* Download Blynk App: [Android](http://j.mp/blynk_Android) [iOS](http://j.mp/blynk_iOS)
+* Clique no icone QR-code e leia o codigo com a camera do celular
+<p><img src="https://image.ibb.co/gxZFDz/Untitled.png" height="95" /></p>
+
+<p><img src="./pics/BlynkApp.jpg" width="35%" />  <img src="./pics/BlynkQR.jpg" width="35%" /></p>
+
+* Enjoy the app!
+
+#### Using your own App
+
+* Caso você quiser modificar o App ou criar seu próprio layout, a definição dos pinos e a seguinte:
+1. V20 - Temperatura sem unidade;
+2. V30 - Bateria sem unidade;
+3. V1 - String Tilt em graus;
+4. V2 - String Temperatura graus `C ou F ou K`;
+5. V3 - String Bateria `Volts`;
+6. V4 - Gravidade;
 
 ***
 ## Interface Gráfica do Usuário
