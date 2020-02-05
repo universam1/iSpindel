@@ -111,10 +111,6 @@ extern Ticker flasher;
 #define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
 #define LOWBATT 3.3
 
-//flag to stop sending multiple emails when low battery is detected
-#define RTCEMAILADDR RTCSLEEPADDR+1+1
-#define RTCTERMADDR  RTCEMAILADDR+1
-
 #define UNINIT 0
 
 extern int16_t ax, ay, az;
