@@ -109,7 +109,7 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
     //MQTT publish values
     for (const auto &kv : _doc.as<JsonObject>())
     {
-        CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key().c_str() + "/" + kv.value().as<char *>());
+        CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key().c_str() + "/" + kv.value().as<String>());
         _mqttClient.publish(("ispindel/" + name + "/" + kv.key().c_str()).c_str(), kv.value().as<String>().c_str());
         _mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
     }
