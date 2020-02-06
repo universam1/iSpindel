@@ -30,6 +30,14 @@ extern Ticker flasher;
 #define API_PROMETHEUS true
 #define API_MQTT true
 #define API_THINGSPEAK true
+#define API_BLYNK true
+
+//#define BLYNK_DEBUG
+//#define APP_DEBUG
+//#define BLYNK_PRINT Serial
+#define BLYNK_NO_BUILTIN
+#define BLYNK_NO_FANCY_LOGO
+#define BLYNK_MAX_SENDBYTES 1200
 
 #ifndef DEBUG
 #define DEBUG true
@@ -86,6 +94,7 @@ extern Ticker flasher;
 #define DTPrometheus 9
 #define DTMQTT 10
 #define DTTHINGSPEAK 11
+#define DTBLYNK 12
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.

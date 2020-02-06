@@ -9,8 +9,10 @@
 #include "Globals.h"
 #include <PubSubClient.h>
 #include <ThingSpeak.h>
+#include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
 
 #define UBISERVER "things.ubidots.com"
+#define BLYNKSERVER "blynk-cloud.com"
 #define CONNTIMEOUT 2000
 
 SenderClass::SenderClass() {}
@@ -483,5 +485,45 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
         Serial.write(c);
     }
     stopclient();
+    return true;
+}
+
+//Blynk HTTP was taking 2 seconds longer and did not show in the App
+//when device was connected, therefore best to use their API.
+bool SenderClass::sendBlynk(char* token)
+{
+    serializeJson(_doc, Serial);
+
+    Blynk.config(token);
+
+    byte i = 0;
+    int _pin = 0;
+    String _value;
+
+    while (!Blynk.connected() && i<100)
+    {
+      Blynk.run();
+      i++;
+      delay(50);
+    }
+        
+    if (Blynk.connected())
+    {
+        CONSOLELN(F("\nConnected to the Blynk server, sending data"));
+
+        for (const auto &kv : _doc.as<JsonObject>())
+        {
+            _pin = atoi(kv.key().c_str());
+            _value = kv.value().as<String>();
+            Blynk.virtualWrite(_pin, _value);
+        }
+    }
+
+    else {
+        CONSOLELN(F("\nFailed to connect to Blynk, going to sleep"));
+        return false;
+    }
+    
+    delay(150);     //delay to allow last value to be sent;
     return true;
 }

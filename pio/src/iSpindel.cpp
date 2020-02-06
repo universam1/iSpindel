@@ -682,6 +682,26 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, 4968);
   }
 #endif // DATABASESYSTEM ==
+
+#ifdef API_BLYNK
+  if (service == DTBLYNK)
+  {
+    String tempToSend = String( scaleTemperature( Temperatur ), 1 );
+    sender.add("20", tempToSend);           //send temperature without the unit to the graph first
+    String voltToSend = String(Volt, 2);
+    sender.add("30", voltToSend);           //send temperature without the unit to the graph first
+
+    tempToSend += "°";
+    tempToSend += tempScaleLabel();         // Add temperature unit to the String
+
+    sender.add("1", String(Tilt, 1)+"°");
+    sender.add("2", tempToSend);
+    sender.add("3", voltToSend+"V");
+    sender.add("4", String(Gravity, 2));
+    return sender.sendBlynk(my_token);
+  }
+#endif
+
   return false;
 }
 
@@ -1288,7 +1308,10 @@ void setup()
 
   // survive - 60min sleep time
   if (isSafeMode(Volt))
+  {
     my_sleeptime = EMERGENCYSLEEP;
+  }
+
   goodNight(my_sleeptime);
 }
 
