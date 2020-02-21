@@ -114,6 +114,15 @@ int16_t my_atcCalibrationTemp = 20; // always in deg C, will be converted when/i
 ATC_CUSTOM_OP_TYPE my_atcOpt = ATC_OPT_ADD;
 char my_custom_atc_formula[100] = "";
 
+const char JSON_TITLE_ATC_OBJECT[] = "atc";
+const char JSON_TITLE_ATC_ENABLED[] = "atc_enabled";
+const char JSON_TITLE_ATC_FORMULA_TYPE[] = "atc_formula_type";
+const char JSON_TITLE_ATC_GUS[] = "atc_gravity_units";
+const char JSON_TITLE_ATC_CALIBRATION_TEMP[] = "atc_calibration_temp";
+const char JSON_TITLE_ATC_CUSTOM_FORMULA[] = "atc_custom_formula";
+const char JSON_TITLE_ATC_CUSTOM_OPERATION_TYPE[] = "atc_custom_opt";
+
+
 int8_t my_OWpin = -1;
 
 uint32_t DSreqTime = 0;
@@ -254,6 +263,43 @@ bool readConfig()
             {
               my_Offset[i] = doc["Offset"][i];
             }
+          }
+
+          if (doc.containsKey(JSON_TITLE_ATC_OBJECT))
+          {
+            JsonObject atc_obj = doc[JSON_TITLE_ATC_OBJECT];
+            uint32_t iread_val = 0;
+
+            if (atc_obj.containsKey(JSON_TITLE_ATC_ENABLED))
+              my_useATC = atc_obj[JSON_TITLE_ATC_ENABLED];
+
+            if (atc_obj.containsKey(JSON_TITLE_ATC_FORMULA_TYPE))
+              {
+              iread_val = atc_obj[JSON_TITLE_ATC_FORMULA_TYPE];
+              my_atcFormulaType = static_cast<ATC_FORMULA_TYPE>(iread_val);
+              }
+
+            if (atc_obj.containsKey(JSON_TITLE_ATC_GUS))
+              {
+              iread_val = atc_obj[JSON_TITLE_ATC_GUS];
+              my_gravityUnits = static_cast<GRAVITY_UNITS>(iread_val);
+              }            
+
+            CONSOLELN(String("my_gravityUnits:") + my_gravityUnits);
+
+            if (atc_obj.containsKey(JSON_TITLE_ATC_CALIBRATION_TEMP))
+              my_atcCalibrationTemp = atc_obj[JSON_TITLE_ATC_CALIBRATION_TEMP];
+
+            if (doc.containsKey(JSON_TITLE_ATC_CUSTOM_FORMULA))
+              strcpy(my_custom_atc_formula, atc_obj[JSON_TITLE_ATC_CUSTOM_FORMULA]);
+
+            if (atc_obj.containsKey(JSON_TITLE_ATC_CUSTOM_OPERATION_TYPE))
+            {
+              iread_val = atc_obj[JSON_TITLE_ATC_CUSTOM_OPERATION_TYPE];
+              my_atcOpt = static_cast<ATC_CUSTOM_OP_TYPE>(iread_val);
+            } 
+
+            CONSOLELN(String("my_atcOpt:") + my_atcOpt);
           }
 
           CONSOLELN(F("parsed config:"));
@@ -519,6 +565,17 @@ bool startConfiguration()
   my_tempscale = String(custom_tempscale.getValue()).toInt();
   validateInput(custom_url.getValue(), my_uri);
 
+  // ATC section
+  my_useATC = String(atc_enabled.getValue()).toInt();
+  my_atcFormulaType = static_cast<ATC_FORMULA_TYPE>(String(atc_formula_type.getValue()).toInt());
+  // --- internal formula params
+  my_gravityUnits = static_cast<GRAVITY_UNITS>(String(gravity_unit.getValue()).toInt());
+  my_atcCalibrationTemp = String(calibration_temp.getValue()).toInt();
+  // --- custom formula params
+  strcpy(my_custom_atc_formula, custom_formula.getValue());
+  my_atcOpt = static_cast<ATC_CUSTOM_OP_TYPE>(String(atc_op_t.getValue()).toInt());
+  // end of ATC section
+
   String tmp = custom_vfact.getValue();
   tmp.trim();
   tmp.replace(',', '.');
@@ -600,6 +657,18 @@ bool saveConfig()
   {
     array.add(i);
   }
+
+// ATC section
+  JsonObject atc_block = doc.createNestedObject(JSON_TITLE_ATC_OBJECT);
+  atc_block[JSON_TITLE_ATC_ENABLED] = my_useATC;
+  atc_block[JSON_TITLE_ATC_FORMULA_TYPE] = static_cast<uint32_t>(my_atcFormulaType);
+
+  atc_block[JSON_TITLE_ATC_GUS] = static_cast<uint32_t>(my_gravityUnits);
+  atc_block[JSON_TITLE_ATC_CALIBRATION_TEMP] = my_atcCalibrationTemp;
+
+  atc_block[JSON_TITLE_ATC_CUSTOM_FORMULA] = my_custom_atc_formula;
+  atc_block[JSON_TITLE_ATC_CUSTOM_OPERATION_TYPE] = static_cast<uint32_t>(my_atcOpt);
+// end of ATC section
 
   File configFile = SPIFFS.open(CFGFILE, "w");
   if (!configFile)
