@@ -285,8 +285,6 @@ bool readConfig()
               my_gravityUnits = static_cast<GRAVITY_UNITS>(iread_val);
               }            
 
-            CONSOLELN(String("my_gravityUnits:") + my_gravityUnits);
-
             if (atc_obj.containsKey(JSON_TITLE_ATC_CALIBRATION_TEMP))
               my_atcCalibrationTemp = atc_obj[JSON_TITLE_ATC_CALIBRATION_TEMP];
 
@@ -298,8 +296,6 @@ bool readConfig()
               iread_val = atc_obj[JSON_TITLE_ATC_CUSTOM_OPERATION_TYPE];
               my_atcOpt = static_cast<ATC_CUSTOM_OP_TYPE>(iread_val);
             } 
-
-            CONSOLELN(String("my_atcOpt:") + my_atcOpt);
           }
 
           CONSOLELN(F("parsed config:"));
