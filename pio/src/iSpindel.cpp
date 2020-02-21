@@ -288,7 +288,7 @@ bool readConfig()
             if (atc_obj.containsKey(JSON_TITLE_ATC_CALIBRATION_TEMP))
               my_atcCalibrationTemp = atc_obj[JSON_TITLE_ATC_CALIBRATION_TEMP];
 
-            if (doc.containsKey(JSON_TITLE_ATC_CUSTOM_FORMULA))
+            if (atc_obj.containsKey(JSON_TITLE_ATC_CUSTOM_FORMULA))
               strcpy(my_custom_atc_formula, atc_obj[JSON_TITLE_ATC_CUSTOM_FORMULA]);
 
             if (atc_obj.containsKey(JSON_TITLE_ATC_CUSTOM_OPERATION_TYPE))

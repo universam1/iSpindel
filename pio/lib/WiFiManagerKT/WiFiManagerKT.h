@@ -83,6 +83,15 @@ function toggleATCInputs() {
 	}
 };
 
+function initATCFields()
+{
+  $('FORMULATYPE').value = $('formula_type').value;
+  $('GU').value = $('gravityunit').value;
+  updateCaltempVisual($('caltemp').value);
+
+  $('OPERATIONTYPE').value = $('atc_op_t').value;
+}
+
 function updateCaltempVisual(t) // t must be in deg C
 {
 	switch ($('tempscale').value)
@@ -202,6 +211,8 @@ window.onload = function (e) {
   fillopt();
   $('API').querySelector('option[value="'+value+'"]').selected = true;
 
+  initATCFields();
+  selectFormulaType($('formula_type').value);
   $('ATCENABLED').checked = parseInt($('atcenabled').value) > 0; 
   toggleATCInputs();
 };</script>)V0G0N";
