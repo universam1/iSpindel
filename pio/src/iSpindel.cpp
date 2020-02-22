@@ -573,6 +573,21 @@ bool uploadData(uint8_t service)
   }
 #endif
 
+#ifdef API_MQTTJSON
+  if (service == DTMQTTJSON)
+  {
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temp_units", tempScaleLabel());
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling MQTT"));
+    return sender.sendMQTTJSON(my_server, my_port, my_username, my_password, my_name);
+  }
+#endif
+
 #ifdef API_THINGSPEAK
   if (service == DTTHINGSPEAK)
   {

@@ -119,6 +119,100 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
     stopclient();
     return true;
 }
+bool SenderClass::sendMQTTJSON(String server, uint16_t port, String username, String password, String name)
+{
+    _mqttClient.setClient(_client);
+    _mqttClient.setServer(server.c_str(), port);
+    _mqttClient.setCallback([this](char *topic, byte *payload, unsigned int length) { this->mqttCallback(topic, payload, length); });
+
+    byte i = 0;
+
+    while (!_mqttClient.connected() && (i < 3))
+    {
+        CONSOLELN(F("Attempting MQTT connection"));
+        // Attempt to connect
+        if (_mqttClient.connect(name.c_str(), username.c_str(), password.c_str()))
+        {
+            CONSOLELN(F("Connected to MQTT"));
+        }
+        else
+        {
+            CONSOLE(F("Failed MQTT connection, return code:"));
+
+            int Status = _mqttClient.state();
+
+            switch (Status)
+            {
+            case -4:
+                CONSOLELN(F("Connection timeout"));
+                break;
+
+            case -3:
+                CONSOLELN(F("Connection lost"));
+                break;
+
+            case -2:
+                CONSOLELN(F("Connect failed"));
+                break;
+
+            case -1:
+                CONSOLELN(F("Disconnected"));
+                break;
+
+            case 1:
+                CONSOLELN(F("Bad protocol"));
+                break;
+
+            case 2:
+                CONSOLELN(F("Bad client ID"));
+                break;
+
+            case 3:
+                CONSOLELN(F("Unavailable"));
+                break;
+
+            case 4:
+                CONSOLELN(F("Bad credentials"));
+                break;
+
+            case 5:
+                CONSOLELN(F("Unauthorized"));
+                break;
+            }
+            CONSOLELN(F("Retrying MQTT connection in 5 seconds"));
+            // Wait 5 seconds before retrying
+            i++;
+            delay(5000);
+        }
+    }
+
+    //MQTT publish values
+    char json[128];
+    serializeJson(_doc, json);
+    CONSOLELN(("MQTT publish: ispindel/" + name + "/json").c_str());
+    int jsonlen = strlen(json);
+    //CONSOLE("Length of json: ");
+    //CONSOLELN(jsonlen);
+    //Start a multi-part publish
+    //Needed to use multi-part as message size with headers was exceeding
+    //MQTT's configured max packet size. Increasing this was resulting in crashes.
+    //Multi-part upload allows for room to grow.
+    _mqttClient.loop();
+    _mqttClient.beginPublish(("ispindel/" + name + "/json").c_str(), jsonlen, false);
+    for (int i=0 ; i < jsonlen; i++){
+            CONSOLE(json[i]);
+            _mqttClient.write(json[i]);
+        }
+    int multipartpublish = _mqttClient.endPublish();
+    CONSOLE("MultiPartPublishResult:");
+    CONSOLELN(multipartpublish);
+    _mqttClient.loop();
+
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return true;
+}
 void SenderClass::mqttCallback(char *topic, byte *payload, unsigned int length)
 {
     CONSOLELN(F("MQTT message arrived ["));
