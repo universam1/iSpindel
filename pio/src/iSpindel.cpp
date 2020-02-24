@@ -25,6 +25,8 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "tinyexpr.h"
 
 #include "Sender.h"
+
+#include "ATCModule.h"
 // !DEBUG 1
 
 // definitions go here
@@ -39,26 +41,6 @@ DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 #define TEMP_CELSIUS 0
 #define TEMP_FAHRENHEIT 1
 #define TEMP_KELVIN 2
-
-typedef enum tag_GRAVITY_UNITS
-{
-  GRAVITY_UNITS_SG,
-  GRAVITY_UNITS_PLATO
-} GRAVITY_UNITS;
-
-typedef enum tag_ATC_FORMULA_TYPE
-{
-  ATC_FORMULA_INTERNAL,
-  ATC_FORMULA_CUSTOM
-} ATC_FORMULA_TYPE;
-
-typedef enum tag_ATC_CUSTOM_OP_TYPE
-{
-  ATC_OPT_ADD,
-  ATC_OPT_MUL,
-  ATC_OPT_USEASIS
-} ATC_CUSTOM_OP_TYPE;
-
 
 int detectTempSensor(const uint8_t pins[]);
 bool testAccel();
@@ -112,7 +94,7 @@ ATC_FORMULA_TYPE my_atcFormulaType = ATC_FORMULA_INTERNAL;
 GRAVITY_UNITS my_gravityUnits = GRAVITY_UNITS_SG;
 int16_t my_atcCalibrationTemp = 20; // always in deg C, will be converted when/if needed
 ATC_CUSTOM_OP_TYPE my_atcOpt = ATC_OPT_ADD;
-char my_custom_atc_formula[100] = "";
+char my_custom_atc_formula[ATC_CUSTOM_FORMULA_LENGTH] = "";
 
 const char JSON_TITLE_ATC_OBJECT[] = "atc";
 const char JSON_TITLE_ATC_ENABLED[] = "atc_enabled";
@@ -514,7 +496,7 @@ bool startConfiguration()
 
   WiFiManagerParameter custom_formula_label(HTML_ATC_CUSTOM_FORMULA_LABEL);
   wifiManager.addParameter(&custom_formula_label);
-  WiFiManagerParameter custom_formula("custom_formula", "Input your formula", htmlencode(my_custom_atc_formula).c_str(), 100*2, "", WFM_NO_LABEL);
+  WiFiManagerParameter custom_formula("custom_formula", "Input your formula", htmlencode(my_custom_atc_formula).c_str(), ATC_CUSTOM_FORMULA_LENGTH*2, "", WFM_NO_LABEL);
   wifiManager.addParameter(&custom_formula);
 
 
@@ -1214,6 +1196,13 @@ float calculateGravity()
   {
     CONSOLELN(String(F("Parse error at ")) + err);
   }
+
+  // temp correction
+  if (my_useATC)
+    {
+      _gravity = ATCModule::getCorrectedGravity(_gravity);
+    }
+
   return _gravity;
 }
 
