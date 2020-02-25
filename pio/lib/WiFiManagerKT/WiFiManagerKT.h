@@ -114,42 +114,11 @@ function validateUpdateCaltemp(t, min, max)
 	temperature = parseFloat(t);
 	if (isNaN(temperature))
 	{
-    resetCalTempToDefault();
-		alert("Please enter a number");
+		resetCalTempToDefault();
 		return;
 	}
 
-	switch ($('tempscale').value)
-	{
-		case "1":
-			caltemp_val = (temperature-32)/1.8;
-			min_scaled = min*1.8+32;
-			max_scaled = max*1.8+32;
-			units = "F";
-			break;
-		case "2":
-			caltemp_val = temperature - 273.15;
-			min_scaled = min+273.15;
-			max_scaled = max+273.15;
-			units = "K";
-			break;
-		
-		case "0":
-		default:
-			caltemp_val = temperature;
-			min_scaled = min;
-			max_scaled = max;
-			units = "C";
-	} 
-
-	if (temperature <= min_scaled || temperature >= max_scaled)
-	{
-		alert("Valid: " + (min_scaled+1).toString() + units + "..." + (max_scaled-1).toString() + units);
-    resetCalTempToDefault();
-    return;
-	}
-	
-	$('caltemp').value = caltemp_val.toString();
+	$('caltemp').value = temperature.toString();
 }
 
 function resetCalTempToDefault()
@@ -266,7 +235,7 @@ const char HTML_GU_LIST[] PROGMEM = R"ATC(
 
 const char HTML_ATC_CALIBRATION_TEMP_VISUAL[] PROGMEM = R"ATC(
 <label for="CALTEMPVISUAL" style="margin-top:10px;margin-bottom:10px;display:block;">Calibration Temperature</label>
-<input id="CALTEMPVISUAL" length=5 placeholder="" value="20" type="number" step="any" oninput = "validateUpdateCaltemp(value, 0, 100)">
+<input id="CALTEMPVISUAL" length=5 placeholder="" value="20" type="number" step="any" onchange = "validateUpdateCaltemp(value)">
 <! –– caltemp is always in celsius --->
 )ATC";
 
