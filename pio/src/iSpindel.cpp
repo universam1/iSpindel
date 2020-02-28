@@ -21,6 +21,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
+#include <WiFiClientSecure.h> //
 #include <FS.h>          //this needs to be first
 #include "tinyexpr.h"
 
@@ -35,6 +36,7 @@ DeviceAddress tempDeviceAddress;
 Ticker flasher;
 RunningMedian samples = RunningMedian(MEDIANROUNDSMAX);
 DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
+bool clearDesired = false;
 
 #define TEMP_CELSIUS 0
 #define TEMP_FAHRENHEIT 1
@@ -522,14 +524,19 @@ bool saveConfig()
 bool processResponse(String response)
 {
   DynamicJsonDocument doc(1024);
-
   DeserializationError error = deserializeJson(doc, response);
-  if (!error && doc.containsKey("interval"))
+  CONSOLELN(error.c_str());
+  if (!error && (doc.containsKey("interval") || doc["state"]["interval"]))
   {
-    uint32_t interval = doc["interval"];
+    uint32_t interval;
+    if(doc.containsKey("interval"))
+      interval = doc["interval"];
+    else
+      interval = doc["state"]["interval"];
+    Serial.printf("\r\ninterval: %u", interval);
     if (interval != my_sleeptime &&
         interval < 24 * 60 * 60 &&
-        interval > 10)
+        interval >= 9)
     {
       my_sleeptime = interval;
       CONSOLE(F("Received new Interval config: "));
@@ -537,6 +544,8 @@ bool processResponse(String response)
       return saveConfig();
     }
   }
+  else
+    CONSOLE(F("Error parsing"));
   return false;
 }
 
@@ -570,6 +579,26 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling MQTT"));
     return sender.sendMQTT(my_server, my_port, my_username, my_password, my_name);
+  }
+#endif
+
+#ifdef API_AWSIOT
+  if (service == DTAWSIOT)
+  {
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temp_units", tempScaleLabel());
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN(F("\ncalling AWS IOT"));
+    String ret = sender.sendAWSIoT(my_server, my_port, my_name);
+    if(ret.length() > 0)
+      return processResponse(ret);
+    else
+     return true;
+
   }
 #endif
 

@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.2.0"
+#define FIRMWAREVERSION "6.3.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -29,6 +29,7 @@ extern Ticker flasher;
 #define API_INFLUXDB true
 #define API_PROMETHEUS true
 #define API_MQTT true
+#define API_AWSIOT true
 #define API_THINGSPEAK true
 #define API_BLYNK true
 
@@ -65,7 +66,7 @@ extern Ticker flasher;
 
 #define PORTALTIMEOUT 300
 
-#define ADCDIVISOR 191.8
+#define ADCDIVISOR 200
 #define ONE_WIRE_BUS D6 // DS18B20 on ESP pin12
 #define OW_PINS \
     (const uint8_t[]) { D1, D6 }
@@ -93,8 +94,9 @@ extern Ticker flasher;
 #define DTInfluxDB 8
 #define DTPrometheus 9
 #define DTMQTT 10
-#define DTTHINGSPEAK 11
-#define DTBLYNK 12
+#define DTAWSIOT 11
+#define DTTHINGSPEAK 12
+#define DTBLYNK 13
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
@@ -124,5 +126,6 @@ extern void flash();
 
 float scaleTemperature(float t);
 String tempScaleLabel(void);
+
 
 #endif

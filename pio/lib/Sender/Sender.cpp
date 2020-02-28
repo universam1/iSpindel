@@ -11,9 +11,139 @@
 #include <ThingSpeak.h>
 #include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
 
+// For AWS IoT
+#include <WiFiClientSecure.h>
+#include <ArduinoJson.h>
+#include <MQTT.h>
+#include <time.h>
+
+#define emptyString String()
+
+#include "../../secrets.h"
+
+#if !(ARDUINOJSON_VERSION_MAJOR == 6 and ARDUINOJSON_VERSION_MINOR >= 7)
+#error "Install ArduinoJson v6.7.0-beta or higher"
+#endif
+
+const int MQTT_PORT = 8883;
+char topic[100];
+char jsonBuffer[200];
+String response;
+
+const char MQTT_TOPIC_PFX[] = "$aws/things/";
+const char MQTT_PUB_TOPIC_SFX[] = "/shadow/update";
+const char MQTT_SUB_TOPIC_SFX[] = "/shadow/update/delta";
+// const char MQTT_SUB_TOPIC[] = "$aws/things/" THINGNAME "/shadow/update";
+// const char MQTT_PUB_TOPIC[] = "$aws/things/" THINGNAME "/shadow/update";
+
+#ifdef USE_SUMMER_TIME_DST
+uint8_t DST = 1;
+#else
+uint8_t DST = 0;
+#endif
+
+WiFiClientSecure net;
+
+#ifdef ESP8266
+BearSSL::X509List cert(cacert);
+BearSSL::X509List client_crt(client_cert);
+BearSSL::PrivateKey key(privkey);
+#endif
+
+MQTTClient _awsIoTClient(200);
+
+unsigned long lastMillis = 0;
+time_t now;
+time_t nowish = 1510592825;
+
+// End of for AWS IoT
+
 #define UBISERVER "things.ubidots.com"
 #define BLYNKSERVER "blynk-cloud.com"
 #define CONNTIMEOUT 2000
+
+void NTPConnect(void)
+{
+  Serial.print("Setting time using SNTP");
+  configTime(TIME_ZONE * 3600, DST * 3600, "pool.ntp.org", "time.nist.gov");
+  now = time(nullptr);
+  while (now < nowish)
+  {
+    delay(500);
+    Serial.print(".");
+    now = time(nullptr);
+  }
+  Serial.println("done!");
+  struct tm timeinfo;
+  gmtime_r(&now, &timeinfo);
+  Serial.print("Current time: ");
+  Serial.print(asctime(&timeinfo));
+}
+
+void lwMQTTErr(lwmqtt_err_t reason)
+{
+  if (reason == lwmqtt_err_t::LWMQTT_SUCCESS)
+    Serial.print("Success");
+  else if (reason == lwmqtt_err_t::LWMQTT_BUFFER_TOO_SHORT)
+    Serial.print("Buffer too short");
+  else if (reason == lwmqtt_err_t::LWMQTT_VARNUM_OVERFLOW)
+    Serial.print("Varnum overflow");
+  else if (reason == lwmqtt_err_t::LWMQTT_NETWORK_FAILED_CONNECT)
+    Serial.print("Network failed connect");
+  else if (reason == lwmqtt_err_t::LWMQTT_NETWORK_TIMEOUT)
+    Serial.print("Network timeout");
+  else if (reason == lwmqtt_err_t::LWMQTT_NETWORK_FAILED_READ)
+    Serial.print("Network failed read");
+  else if (reason == lwmqtt_err_t::LWMQTT_NETWORK_FAILED_WRITE)
+    Serial.print("Network failed write");
+  else if (reason == lwmqtt_err_t::LWMQTT_REMAINING_LENGTH_OVERFLOW)
+    Serial.print("Remaining length overflow");
+  else if (reason == lwmqtt_err_t::LWMQTT_REMAINING_LENGTH_MISMATCH)
+    Serial.print("Remaining length mismatch");
+  else if (reason == lwmqtt_err_t::LWMQTT_MISSING_OR_WRONG_PACKET)
+    Serial.print("Missing or wrong packet");
+  else if (reason == lwmqtt_err_t::LWMQTT_CONNECTION_DENIED)
+    Serial.print("Connection denied");
+  else if (reason == lwmqtt_err_t::LWMQTT_FAILED_SUBSCRIPTION)
+    Serial.print("Failed subscription");
+  else if (reason == lwmqtt_err_t::LWMQTT_SUBACK_ARRAY_OVERFLOW)
+    Serial.print("Suback array overflow");
+  else if (reason == lwmqtt_err_t::LWMQTT_PONG_TIMEOUT)
+    Serial.print("Pong timeout");
+}
+
+void lwMQTTErrConnection(lwmqtt_return_code_t reason)
+{
+  if (reason == lwmqtt_return_code_t::LWMQTT_CONNECTION_ACCEPTED)
+    Serial.print("Connection Accepted");
+  else if (reason == lwmqtt_return_code_t::LWMQTT_UNACCEPTABLE_PROTOCOL)
+    Serial.print("Unacceptable Protocol");
+  else if (reason == lwmqtt_return_code_t::LWMQTT_IDENTIFIER_REJECTED)
+    Serial.print("Identifier Rejected");
+  else if (reason == lwmqtt_return_code_t::LWMQTT_SERVER_UNAVAILABLE)
+    Serial.print("Server Unavailable");
+  else if (reason == lwmqtt_return_code_t::LWMQTT_BAD_USERNAME_OR_PASSWORD)
+    Serial.print("Bad UserName/Password");
+  else if (reason == lwmqtt_return_code_t::LWMQTT_NOT_AUTHORIZED)
+    Serial.print("Not Authorized");
+  else if (reason == lwmqtt_return_code_t::LWMQTT_UNKNOWN_RETURN_CODE)
+    Serial.print("Unknown Return Code");
+}
+
+void messageReceived(String &topic, String &payload)
+{
+  Serial.println("\r\nReceived [" + topic + "]: " + payload);
+  DynamicJsonDocument doc(200);
+  DeserializationError error = deserializeJson(doc, payload);
+  CONSOLELN(error.c_str());
+  if (!error &&  doc["state"]["interval"])
+    response = payload;
+  else
+  {
+    response = "";
+  }
+  Serial.println("\r\nresponse:" + response);
+}
 
 SenderClass::SenderClass() {}
 
@@ -37,6 +167,74 @@ void SenderClass::stopclient()
 {
     _client.stop();
     delay(100); // allow gracefull session close
+}
+
+String SenderClass::sendAWSIoT(String AWSIoTEndpoint, uint16_t port, String thingName)
+{
+    NTPConnect();
+    net.setTrustAnchors(&cert);
+    net.setClientRSACert(&client_crt, &key);
+    net.setBufferSizes(4096, 4096);
+
+    _awsIoTClient.begin(AWSIoTEndpoint.c_str(), port, net);
+    _awsIoTClient.onMessage(messageReceived);
+
+    byte i = 0;
+
+    while (!_awsIoTClient.connected() && (i < 3))
+    {
+        CONSOLELN(F("Attempting MQTT connection"));
+        // Attempt to connect
+        if (_awsIoTClient.connect(thingName.c_str()))
+        {
+            CONSOLELN(F("Connected to MQTT"));
+//            if (!_awsIoTClient.subscribe(MQTT_SUB_TOPIC))
+            strcpy(topic,MQTT_TOPIC_PFX);
+            strcat(topic, thingName.c_str());
+            strcat(topic, MQTT_SUB_TOPIC_SFX);
+            if (!_awsIoTClient.subscribe(topic))
+                lwMQTTErr(_awsIoTClient.lastError());
+        }
+        else
+        {
+          Serial.print("SSL Error Code: ");
+          Serial.println(net.getLastSSLError());
+          Serial.print("failed, reason -> ");
+          lwMQTTErrConnection(_awsIoTClient.returnCode());
+          Serial.println(" < try again in 5 seconds");
+
+        }
+    }
+    strcpy(topic,MQTT_TOPIC_PFX);
+    strcat(topic, thingName.c_str());
+    strcat(topic, MQTT_PUB_TOPIC_SFX);
+    snprintf(jsonBuffer, sizeof(jsonBuffer), "{\"state\":{\"reported\":");
+    serializeJson(_doc, &jsonBuffer[strlen(jsonBuffer)], sizeof(jsonBuffer)-strlen(jsonBuffer));
+    snprintf(jsonBuffer+strlen(jsonBuffer), sizeof(jsonBuffer)-strlen(jsonBuffer),"}}");
+    Serial.print(jsonBuffer);
+    if (!_awsIoTClient.publish(topic, jsonBuffer))
+    {
+      CONSOLELN(F("\r\nPublish failed"));
+      lwMQTTErr(_awsIoTClient.lastError());
+    }
+    memset(jsonBuffer, sizeof(jsonBuffer), 0);
+    delay(500); // Delay 1000ms
+    _awsIoTClient.loop();
+    delay(500); // Delay 1000ms
+    if(response.length() > 0)
+    {
+      snprintf(jsonBuffer, sizeof(jsonBuffer), "{\"state\":{\"desired\":null}}");
+      if (!_awsIoTClient.publish(topic, jsonBuffer))
+      {
+        CONSOLELN(F("\r\nClear Desired failed"));
+        lwMQTTErr(_awsIoTClient.lastError());
+      }
+    }
+    CONSOLELN(F("\r\nClosing MQTT connection"));
+    _awsIoTClient.disconnect();
+    net.stop();
+    delay(100); // allow gracefull session close
+    return response;
 }
 
 bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
@@ -164,20 +362,20 @@ String SenderClass::sendTCP(String server, uint16_t port)
 bool SenderClass::sendThingSpeak(String token, long Channel)
 {
     int field = 0;
-    unsigned long channelNumber = Channel; 
+    unsigned long channelNumber = Channel;
     const char * writeAPIKey = token.c_str();
-    
+
     serializeJson(_doc, Serial);
     ThingSpeak.begin(_client);
 
     CONSOLELN(F("\nSender: ThingSpeak posting"));
-   
+
     for (const auto &kv : _doc.as<JsonObject>())
-    {   
-        field++;  
+    {
+        field++;
         ThingSpeak.setField(field, kv.value().as<String>());
     }
-    // write to the ThingSpeak channel 
+    // write to the ThingSpeak channel
     int x = ThingSpeak.writeFields(channelNumber, writeAPIKey);
 
     if(x == 200){
@@ -506,7 +704,7 @@ bool SenderClass::sendBlynk(char* token)
       i++;
       delay(50);
     }
-        
+
     if (Blynk.connected())
     {
         CONSOLELN(F("\nConnected to the Blynk server, sending data"));
@@ -523,7 +721,7 @@ bool SenderClass::sendBlynk(char* token)
         CONSOLELN(F("\nFailed to connect to Blynk, going to sleep"));
         return false;
     }
-    
+
     delay(150);     //delay to allow last value to be sent;
     return true;
 }
