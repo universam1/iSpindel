@@ -199,7 +199,7 @@ const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
 const char HTML_ATC_CHECKBOX[] PROGMEM = R"ATC(
 <hr>
 <input type="checkbox" id="ATCENABLED" onclick="toggleATCInputs()">
-<label for="ATCENABLED">Automatic Temperature Correction (ATC)</label>
+<label for="ATCENABLED">Automatic Temperature Compensation (ATC)</label>
 )ATC";
 
 const char HTML_DIV_BEGIN_ATC_SECTION[] PROGMEM = R"ATC(

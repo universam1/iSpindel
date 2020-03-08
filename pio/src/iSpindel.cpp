@@ -1197,7 +1197,7 @@ float calculateGravity()
     CONSOLELN(String(F("Parse error at ")) + err);
   }
 
-  // temp correction
+  // temp compensation
   if (my_useATC)
     {
       _gravity = ATCModule::getCorrectedGravity(_gravity);
