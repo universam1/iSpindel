@@ -90,9 +90,12 @@ window.onload = function (e) {
   }
   value = $('selAPI').value;
   sAPI(value);
-  $('TS').value = $('tempscale').value; sTS();
+  $('TS').value = $('tempscale').value;
   fillopt();
   $('API').querySelector('option[value="'+value+'"]').selected = true;
+}
+window.onchange = function (e) {
+  sTS();
 };</script>)V0G0N";
 
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
