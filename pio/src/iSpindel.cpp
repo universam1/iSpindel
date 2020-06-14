@@ -172,7 +172,7 @@ bool readConfig()
       else
       {
         size_t size = configFile.size();
-        DynamicJsonDocument doc(size * 2);
+        DynamicJsonDocument doc(size * 3);
         DeserializationError error = deserializeJson(doc, configFile);
         if (error)
         {
