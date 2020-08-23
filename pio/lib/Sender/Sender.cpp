@@ -237,7 +237,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
     uri += db;
 
     CONSOLELN(String(F("INFLUXDB: posting to db: ")) + uri);
-    // configure traged server and url
+    // configure traged server and uri
     http.begin(_client, server, port, uri);
 
     if (username.length() > 0)
@@ -306,7 +306,7 @@ bool SenderClass::sendPrometheus(String server, uint16_t port, String job, Strin
     uri += instance;
 
     CONSOLELN(String("PROMETHEUS: posting to Prometheus Pushgateway: ") + uri);
-    // configure traged server and url
+    // configure traged server and uri
     http.begin(_client, server, port, uri);
     http.addHeader("User-Agent", "iSpindel");
     http.addHeader("Connection", "close");
