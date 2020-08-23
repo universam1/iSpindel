@@ -490,11 +490,11 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
 
 //Blynk HTTP was taking 2 seconds longer and did not show in the App
 //when device was connected, therefore best to use their API.
-bool SenderClass::sendBlynk(char* token)
+bool SenderClass::sendBlynk(const char *token, const char *server, uint16_t port)
 {
     serializeJson(_doc, Serial);
 
-    Blynk.config(token);
+    Blynk.config(token, server, port);
 
     byte i = 0;
     int _pin = 0;

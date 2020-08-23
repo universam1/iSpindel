@@ -95,6 +95,7 @@ extern Ticker flasher;
 #define DTMQTT 10
 #define DTTHINGSPEAK 11
 #define DTBLYNK 12
+#define DTLOCALBLYNK 13
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
