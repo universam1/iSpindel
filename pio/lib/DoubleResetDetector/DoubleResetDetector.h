@@ -28,7 +28,7 @@ public:
 	void stop();
 	void clearRecentlyResetFlag();
 	void setRecentlyResetFlag();
-	
+
 private:
 	int timeout;
 	int address;

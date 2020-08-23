@@ -23,7 +23,8 @@
 #undef min
 #undef max
 #include <algorithm>
-extern "C" {
+extern "C"
+{
 #include "user_interface.h"
 }
 

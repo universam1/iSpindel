@@ -686,17 +686,17 @@ bool uploadData(uint8_t service)
 #ifdef API_BLYNK
   if (service == DTBLYNK)
   {
-    String tempToSend = String( scaleTemperature( Temperatur ), 1 );
-    sender.add("20", tempToSend);           //send temperature without the unit to the graph first
+    String tempToSend = String(scaleTemperature(Temperatur), 1);
+    sender.add("20", tempToSend); //send temperature without the unit to the graph first
     String voltToSend = String(Volt, 2);
-    sender.add("30", voltToSend);           //send temperature without the unit to the graph first
+    sender.add("30", voltToSend); //send temperature without the unit to the graph first
 
     tempToSend += "°";
-    tempToSend += tempScaleLabel();         // Add temperature unit to the String
+    tempToSend += tempScaleLabel(); // Add temperature unit to the String
 
-    sender.add("1", String(Tilt, 1)+"°");
+    sender.add("1", String(Tilt, 1) + "°");
     sender.add("2", tempToSend);
-    sender.add("3", voltToSend+"V");
+    sender.add("3", voltToSend + "V");
     sender.add("4", String(Gravity, 2));
     return sender.sendBlynk(my_token);
   }

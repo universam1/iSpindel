@@ -8,50 +8,61 @@
 #include "DoubleResetDetector.h"
 
 // Flag which will be stored in RTC memory.
-// A uint32_t is used so that two different magic numbers can be used, 
+// A uint32_t is used so that two different magic numbers can be used,
 // without accidentally overwriting memory used for another purpose.
 uint32_t doubleResetDetectorFlag;
 
-DoubleResetDetector::DoubleResetDetector(int timeout, int address) {
-	this->timeout = timeout*1000;
+DoubleResetDetector::DoubleResetDetector(int timeout, int address)
+{
+	this->timeout = timeout * 1000;
 	this->address = address;
 	doubleResetDetected = false;
 	waitingForDoubleReset = false;
 }
 
-bool DoubleResetDetector::detectDoubleReset() {
+bool DoubleResetDetector::detectDoubleReset()
+{
 	doubleResetDetected = detectRecentlyResetFlag();
-	if (doubleResetDetected) {
+	if (doubleResetDetected)
+	{
 		clearRecentlyResetFlag();
-	} else {
+	}
+	else
+	{
 		setRecentlyResetFlag();
 		waitingForDoubleReset = true;
 	}
 	return doubleResetDetected;
 }
 
-void DoubleResetDetector::loop() {
-	if (waitingForDoubleReset && millis() > timeout) stop();
+void DoubleResetDetector::loop()
+{
+	if (waitingForDoubleReset && millis() > timeout)
+		stop();
 }
 
-void DoubleResetDetector::stop() {
+void DoubleResetDetector::stop()
+{
 	clearRecentlyResetFlag();
 	waitingForDoubleReset = false;
 }
 
-bool DoubleResetDetector::detectRecentlyResetFlag() {
+bool DoubleResetDetector::detectRecentlyResetFlag()
+{
 	doubleResetDetectorFlag = DOUBLERESETDETECTOR_FLAG_CLEAR;
 	ESP.rtcUserMemoryRead(address, &doubleResetDetectorFlag, sizeof(doubleResetDetectorFlag));
 	doubleResetDetected = doubleResetDetectorFlag == DOUBLERESETDETECTOR_FLAG_SET;
 	return doubleResetDetected;
 }
 
-void DoubleResetDetector::setRecentlyResetFlag() {
+void DoubleResetDetector::setRecentlyResetFlag()
+{
 	doubleResetDetectorFlag = DOUBLERESETDETECTOR_FLAG_SET;
 	ESP.rtcUserMemoryWrite(address, &doubleResetDetectorFlag, sizeof(doubleResetDetectorFlag));
 }
 
-void DoubleResetDetector::clearRecentlyResetFlag() {
+void DoubleResetDetector::clearRecentlyResetFlag()
+{
 	doubleResetDetectorFlag = DOUBLERESETDETECTOR_FLAG_CLEAR;
 	ESP.rtcUserMemoryWrite(address, &doubleResetDetectorFlag, sizeof(doubleResetDetectorFlag));
 }
