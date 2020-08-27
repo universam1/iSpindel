@@ -349,7 +349,7 @@ bool startConfiguration()
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_channel("channel", "Channelnumber",
                                       String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
-  WiFiManagerParameter custom_url("uri", "Path / URI", my_uri, DNSSIZE);
+  WiFiManagerParameter custom_uri("uri", "Path / URI", my_uri, DNSSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
@@ -380,7 +380,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_channel);
-  wifiManager.addParameter(&custom_url);
+  wifiManager.addParameter(&custom_uri);
   wifiManager.addParameter(&custom_db);
   wifiManager.addParameter(&custom_username);
   wifiManager.addParameter(&custom_password);
@@ -413,7 +413,7 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   my_channel = String(custom_channel.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
-  validateInput(custom_url.getValue(), my_uri);
+  validateInput(custom_uri.getValue(), my_uri);
 
   String tmp = custom_vfact.getValue();
   tmp.trim();
