@@ -259,7 +259,15 @@ Vito Tai. 2017.
             var sgn = BrewMath.plato2sg(bx);
             setSg(sgn, bx);
         }
-
+        function formatEquation(equ){
+            str="" + equ[0];
+            for(var i=1;i< equ.length;i++){
+                var term="";
+                for(var x=0;x<i;x++) term += "*tilt";
+                str += ((equ[i]>0)? " + ":"") + equ[i] +" " + term;
+            }
+            return str;
+        }
         var TiltPoints = {
             points: [],
             clear: function() {
@@ -393,10 +401,16 @@ Vito Tai. 2017.
                 }
 
                 $.plot($('#graph'), lines);
-                $("#firstpoly").html(firstRegression.string);
-                if(this.points.length > 2) $("#secondpoly").html(secondRegression.string);
-                if(this.points.length > 3) $("#thirdpoly").html(thirdRegression.string);
+                /*
+                $("#firstpoly").html(toTilt(firstRegression.string));
+                if(this.points.length > 2) $("#secondpoly").html(toTilt(secondRegression.string));
+                if(this.points.length > 3) $("#thirdpoly").html(toTilt(thirdRegression.string));
+                */
+                $("#firstpoly").html(formatEquation(firstRegression.equation));
+                if(this.points.length > 2) $("#secondpoly").html(formatEquation(secondRegression.equation));
+                if(this.points.length > 3) $("#thirdpoly").html(formatEquation(thirdRegression.equation));
                 // caluate errors
+
                 var secoe, thridoe;
 
                 var first_error = [];
@@ -666,13 +680,13 @@ Vito Tai. 2017.
                 </td>
                 <tr>
                     <tr>
-                        <td colspan="2">Degree 1:<span id="firstpoly"></span></td>
+                        <td colspan="2">Degree 1: <span id="firstpoly"></span></td>
                     </tr>
                     <tr>
-                        <td colspan="2">Degree 2:<span id="secondpoly"></span></td>
+                        <td colspan="2">Degree 2: <span id="secondpoly"></span></td>
                     </tr>
                     <tr>
-                        <td colspan="2">Degree 3:<span id="thirdpoly"></span></td>
+                        <td colspan="2">Degree 3: <span id="thirdpoly"></span></td>
                     </tr>
         </table>
     </div>
