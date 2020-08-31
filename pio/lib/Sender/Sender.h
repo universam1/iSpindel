@@ -27,12 +27,14 @@ public:
   bool sendFHEM(String server, uint16_t port, String name);
   bool sendTCONTROL(String server, uint16_t port);
   bool sendBlynk(char* token);
+  bool sendBrewblox(String server, uint16_t port, String topic, String username, String password, String name);
   void add(String id, float value);
   void add(String id, String value);
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
   void stopclient();
   void mqttCallback(char *topic, byte *payload, unsigned int length);
+  bool mqttConnect(const String &server, uint16_t port, const String &name, const String &username, const String &password);
   // ~SenderClass();
 
 private:

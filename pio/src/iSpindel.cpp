@@ -701,6 +701,18 @@ bool uploadData(uint8_t service)
   }
 #endif
 
+#ifdef API_BREWBLOX
+  if (service == DTBREWBLOX)
+  {
+    sender.add("Tilt[deg]", Tilt);
+    sender.add("Temperature[deg" + tempScaleLabel() + "]", scaleTemperature(Temperatur));
+    sender.add("Battery[V]", Volt);
+    sender.add("Gravity", Gravity);
+    sender.add("Rssi[dBm]", WiFi.RSSI());
+    CONSOLELN(F("\ncalling BREWBLOX"));
+    return sender.sendBrewblox(my_server, my_port, my_uri, my_username, my_password, my_name);
+  }
+#endif
   return false;
 }
 

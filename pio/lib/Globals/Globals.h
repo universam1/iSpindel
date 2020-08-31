@@ -31,6 +31,7 @@ extern Ticker flasher;
 #define API_MQTT true
 #define API_THINGSPEAK true
 #define API_BLYNK true
+#define API_BREWBLOX true
 
 //#define BLYNK_DEBUG
 //#define APP_DEBUG
@@ -95,6 +96,7 @@ extern Ticker flasher;
 #define DTMQTT 10
 #define DTTHINGSPEAK 11
 #define DTBLYNK 12
+#define DTBREWBLOX 13
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
