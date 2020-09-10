@@ -118,6 +118,24 @@ String tempScaleLabel(void)
     return "C"; // Invalid value for my_tempscale => default to celsius
 }
 
+String getReportJson(void)
+{
+  String result;
+  const size_t capacity = JSON_OBJECT_SIZE(8);
+  DynamicJsonDocument doc(capacity);
+
+  doc["temperature"] = scaleTemperature(Temperatur);
+  doc["battery"] = Volt;
+  doc["interval"] = my_sleeptime;
+  doc["gravity"] = Gravity;
+  doc["tilt"] = Tilt;
+  doc["temp_units"] = tempScaleLabel();
+  doc["RSSI"] = WiFi.RSSI();
+
+  serializeJson(doc, result);
+  return result;
+}
+
 // callback notifying us of the need to save config
 void saveConfigCallback()
 {
@@ -141,6 +159,142 @@ void applyOffset()
   }
   else
     CONSOLELN(F("offsets not available"));
+}
+
+// same structure may be received by persistent mqtt messages in order to update settings live
+bool LoadSettingsFromJson(DynamicJsonDocument doc)
+{
+  bool somethingChanged = false;
+
+  if (doc.containsKey("Name"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_name, doc["Name"]) != 0);
+    strcpy(my_name, doc["Name"]);
+  }
+
+  if (doc.containsKey("Token"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_token, doc["Token"]) != 0);
+    strcpy(my_token, doc["Token"]);
+  }
+
+  if (doc.containsKey("Server"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_server, doc["Server"]) != 0);
+    strcpy(my_server, doc["Server"]);
+  }
+
+  if (doc.containsKey("Sleep"))
+  {
+    somethingChanged = somethingChanged || (my_sleeptime != doc["Sleep"]);
+    my_sleeptime = doc["Sleep"];
+  }
+
+  if (doc.containsKey("API"))
+  {
+    somethingChanged = somethingChanged || (my_api != doc["API"]);
+    my_api = doc["API"];
+  }
+
+  if (doc.containsKey("Port"))
+  {
+    somethingChanged = somethingChanged || (my_port != doc["Port"]);
+    my_port = doc["Port"];
+  }
+
+  if (doc.containsKey("Channel"))
+  {
+    somethingChanged = somethingChanged || (my_channel != doc["Channel"]);
+    my_channel = doc["Channel"];
+  }
+
+  if (doc.containsKey("URI"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_uri, doc["URI"]) != 0);
+    strcpy(my_uri, doc["URI"]);
+  }
+
+  if (doc.containsKey("DB"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_db, doc["DB"]) != 0);
+    strcpy(my_db, doc["DB"]);
+  }
+
+  if (doc.containsKey("Username"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_username, doc["Username"]) != 0);
+    strcpy(my_username, doc["Username"]);
+  }
+
+  if (doc.containsKey("Password"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_password, doc["Password"]) != 0);
+    strcpy(my_password, doc["Password"]);
+  }
+
+  if (doc.containsKey("Job"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_job, doc["Job"]) != 0);
+    strcpy(my_job, doc["Job"]);
+  }
+
+  if (doc.containsKey("Instance"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_instance, doc["Instance"]) != 0);
+    strcpy(my_instance, doc["Instance"]);
+  }
+
+  if (doc.containsKey("Vfact"))
+  {
+    somethingChanged = somethingChanged || (my_vfact != doc["Vfact"]);
+    my_vfact = doc["Vfact"];
+  }
+
+  if (doc.containsKey("TS"))
+  {
+    somethingChanged = somethingChanged || (my_tempscale != doc["TS"]);
+    my_tempscale = doc["TS"];
+  }
+
+  if (doc.containsKey("OWpin"))
+  {
+    somethingChanged = somethingChanged || (my_OWpin != doc["OWpin"]);
+    my_OWpin = doc["OWpin"];
+  }
+
+  if (doc.containsKey("SSID"))
+  {
+    somethingChanged = somethingChanged || (!my_ssid.equalsIgnoreCase(doc["SSID"]));
+    my_ssid = (const char *)doc["SSID"];
+  }
+
+  if (doc.containsKey("PSK"))
+  {
+    somethingChanged = somethingChanged || (!my_psk.equalsIgnoreCase(doc["PSK"]));
+    my_psk = (const char *)doc["PSK"];
+  }
+
+  if (doc.containsKey("POLY"))
+  {
+    somethingChanged = somethingChanged || (strcmp(my_polynominal, doc["POLY"]) != 0);
+    strcpy(my_polynominal, doc["POLY"]);
+  }
+
+  if (doc.containsKey("Offset"))
+  {
+    int32_t key1 = 0;
+    int32_t key2 = 0;
+
+    for (size_t i = 0; i < (sizeof(my_Offset) / sizeof(*my_Offset)); i++)
+    {
+      key1 += my_Offset[i];
+      my_Offset[i] = doc["Offset"][i];
+      key2 += my_Offset[i];
+    }
+    somethingChanged = somethingChanged || (key1 != key2);
+  }
+
+  return somethingChanged;
 }
 
 bool readConfig()
@@ -181,52 +335,7 @@ bool readConfig()
         }
         else
         {
-          if (doc.containsKey("Name"))
-            strcpy(my_name, doc["Name"]);
-          if (doc.containsKey("Token"))
-            strcpy(my_token, doc["Token"]);
-          if (doc.containsKey("Server"))
-            strcpy(my_server, doc["Server"]);
-          if (doc.containsKey("Sleep"))
-            my_sleeptime = doc["Sleep"];
-          if (doc.containsKey("API"))
-            my_api = doc["API"];
-          if (doc.containsKey("Port"))
-            my_port = doc["Port"];
-          if (doc.containsKey("Channel"))
-            my_channel = doc["Channel"];
-          if (doc.containsKey("URI"))
-            strcpy(my_uri, doc["URI"]);
-          if (doc.containsKey("DB"))
-            strcpy(my_db, doc["DB"]);
-          if (doc.containsKey("Username"))
-            strcpy(my_username, doc["Username"]);
-          if (doc.containsKey("Password"))
-            strcpy(my_password, doc["Password"]);
-          if (doc.containsKey("Job"))
-            strcpy(my_job, doc["Job"]);
-          if (doc.containsKey("Instance"))
-            strcpy(my_instance, doc["Instance"]);
-          if (doc.containsKey("Vfact"))
-            my_vfact = doc["Vfact"];
-          if (doc.containsKey("TS"))
-            my_tempscale = doc["TS"];
-          if (doc.containsKey("OWpin"))
-            my_OWpin = doc["OWpin"];
-          if (doc.containsKey("SSID"))
-            my_ssid = (const char *)doc["SSID"];
-          if (doc.containsKey("PSK"))
-            my_psk = (const char *)doc["PSK"];
-          if (doc.containsKey("POLY"))
-            strcpy(my_polynominal, doc["POLY"]);
-
-          if (doc.containsKey("Offset"))
-          {
-            for (size_t i = 0; i < (sizeof(my_Offset) / sizeof(*my_Offset)); i++)
-            {
-              my_Offset[i] = doc["Offset"][i];
-            }
-          }
+          LoadSettingsFromJson(doc);
 
           CONSOLELN(F("parsed config:"));
 #ifdef DEBUG
@@ -524,7 +633,14 @@ bool processResponse(String response)
   DynamicJsonDocument doc(1024);
 
   DeserializationError error = deserializeJson(doc, response);
-  if (!error && doc.containsKey("interval"))
+  if (error)
+  {
+    return false;
+  }
+
+  bool updated = LoadSettingsFromJson(doc);
+
+  if (doc.containsKey("interval"))
   {
     uint32_t interval = doc["interval"];
     if (interval != my_sleeptime &&
@@ -534,10 +650,15 @@ bool processResponse(String response)
       my_sleeptime = interval;
       CONSOLE(F("Received new Interval config: "));
       CONSOLELN(interval);
-      return saveConfig();
+      updated = true;
     }
   }
-  return false;
+
+  if (updated)
+  {
+    return saveConfig();
+  }
+  return true;
 }
 
 bool uploadData(uint8_t service)
@@ -559,6 +680,7 @@ bool uploadData(uint8_t service)
 #endif
 
 #ifdef API_MQTT
+  sender.registerMqttCallback(processResponse, true);
   if (service == DTMQTT)
   {
     sender.add("tilt", Tilt);
@@ -568,6 +690,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("report", getReportJson());
     CONSOLELN(F("\ncalling MQTT"));
     return sender.sendMQTT(my_server, my_port, my_username, my_password, my_name);
   }
@@ -686,17 +809,17 @@ bool uploadData(uint8_t service)
 #ifdef API_BLYNK
   if (service == DTBLYNK)
   {
-    String tempToSend = String( scaleTemperature( Temperatur ), 1 );
-    sender.add("20", tempToSend);           //send temperature without the unit to the graph first
+    String tempToSend = String(scaleTemperature(Temperatur), 1);
+    sender.add("20", tempToSend); //send temperature without the unit to the graph first
     String voltToSend = String(Volt, 2);
-    sender.add("30", voltToSend);           //send temperature without the unit to the graph first
+    sender.add("30", voltToSend); //send temperature without the unit to the graph first
 
     tempToSend += "°";
-    tempToSend += tempScaleLabel();         // Add temperature unit to the String
+    tempToSend += tempScaleLabel(); // Add temperature unit to the String
 
-    sender.add("1", String(Tilt, 1)+"°");
+    sender.add("1", String(Tilt, 1) + "°");
     sender.add("2", tempToSend);
-    sender.add("3", voltToSend+"V");
+    sender.add("3", voltToSend + "V");
     sender.add("4", String(Gravity, 2));
     return sender.sendBlynk(my_token);
   }

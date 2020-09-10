@@ -39,6 +39,12 @@ void SenderClass::stopclient()
     delay(100); // allow gracefull session close
 }
 
+void SenderClass::registerMqttCallback(MessageCallback callbackProc, bool clearReceivedPersistentMessage)
+{
+    ClearMqttPersistentMessage = clearReceivedPersistentMessage;
+    messageCallbackProc = callbackProc;
+}
+
 bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
 {
     _mqttClient.setClient(_client);
@@ -49,9 +55,20 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
 
     while (!_mqttClient.connected() && (i < 3))
     {
+        bool lConnected = false;
         CONSOLELN(F("Attempting MQTT connection"));
         // Attempt to connect
-        if (_mqttClient.connect(name.c_str(), username.c_str(), password.c_str()))
+        // when username/password is empty mqtt will not connect on some broker servers, should call connect without sending login parameters
+        if (username.isEmpty())
+        {
+            lConnected = _mqttClient.connect(name.c_str());
+        }
+        else
+        {
+            lConnected = _mqttClient.connect(name.c_str(), username.c_str(), password.c_str());
+        }
+
+        if (lConnected)
         {
             CONSOLELN(F("Connected to MQTT"));
         }
@@ -105,6 +122,17 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
             delay(5000);
         }
     }
+    // should not continue if no connected
+    if (!_mqttClient.connected())
+    {
+        CONSOLELN(F("Failed MQTT connection: Max retry reach! Messages not sent!"));
+        return false;
+    }
+    //register to "ispindel/*/settings" topic to receive any persistent message that may contain settings update
+    if (!_mqttClient.subscribe(("ispindel/" + name + "/settings").c_str()))
+    {
+        CONSOLELN(F("ERROR: Can not subscribe callbacks"));
+    }
 
     //MQTT publish values
     for (const auto &kv : _doc.as<JsonObject>())
@@ -114,6 +142,18 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
         _mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
     }
 
+    // callbacks may be triggerd with a little delay so ... hold on a/2 second
+    _mqttClient.loop();
+    delay(500);
+
+    //should we clear the persistent settings messsage?
+    if (MqttTopicToClear != "")
+    {
+        CONSOLE("Send empty persistent message to ");
+        CONSOLE(MqttTopicToClear);
+        _mqttClient.publish(MqttTopicToClear.c_str(), NULL, true);
+    }
+
     CONSOLELN(F("Closing MQTT connection"));
     _mqttClient.disconnect();
     stopclient();
@@ -121,12 +161,23 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
 }
 void SenderClass::mqttCallback(char *topic, byte *payload, unsigned int length)
 {
-    CONSOLELN(F("MQTT message arrived ["));
-    CONSOLELN(topic);
+    CONSOLE(F("MQTT message arrived ["));
+    CONSOLE(topic);
     CONSOLELN(F("] "));
     for (unsigned int i = 0; i < length; i++)
     {
         CONSOLE((char)payload[i]);
+    }
+    CONSOLELN("");
+
+    if (messageCallbackProc != NULL)
+    {
+        // can not sent message directly from mqtt callback function. Instruct to be done before disconnecting
+        if (ClearMqttPersistentMessage)
+        {
+            MqttTopicToClear = topic;
+        }
+        messageCallbackProc(String((char *)payload));
     }
 }
 
@@ -164,33 +215,33 @@ String SenderClass::sendTCP(String server, uint16_t port)
 bool SenderClass::sendThingSpeak(String token, long Channel)
 {
     int field = 0;
-    unsigned long channelNumber = Channel; 
-    const char * writeAPIKey = token.c_str();
-    
+    unsigned long channelNumber = Channel;
+    const char *writeAPIKey = token.c_str();
+
     serializeJson(_doc, Serial);
     ThingSpeak.begin(_client);
 
     CONSOLELN(F("\nSender: ThingSpeak posting"));
-   
+
     for (const auto &kv : _doc.as<JsonObject>())
-    {   
-        field++;  
+    {
+        field++;
         ThingSpeak.setField(field, kv.value().as<String>());
     }
-    // write to the ThingSpeak channel 
+    // write to the ThingSpeak channel
     int x = ThingSpeak.writeFields(channelNumber, writeAPIKey);
 
     if(x == 200){
-     Serial.println("Channel update successful.");
+        Serial.println("Channel update successful.");
     }
     else{
-     Serial.println("Problem updating channel. HTTP error code " + String(x));
-     return false;
+        Serial.println("Problem updating channel. HTTP error code " + String(x));
+        return false;
     }
     _client.stop();
     stopclient();
     return true;
-    }
+}
 
 
 bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
@@ -490,7 +541,7 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
 
 //Blynk HTTP was taking 2 seconds longer and did not show in the App
 //when device was connected, therefore best to use their API.
-bool SenderClass::sendBlynk(char* token)
+bool SenderClass::sendBlynk(char *token)
 {
     serializeJson(_doc, Serial);
 
@@ -500,13 +551,13 @@ bool SenderClass::sendBlynk(char* token)
     int _pin = 0;
     String _value;
 
-    while (!Blynk.connected() && i<100)
+    while (!Blynk.connected() && i < 100)
     {
-      Blynk.run();
-      i++;
-      delay(50);
+        Blynk.run();
+        i++;
+        delay(50);
     }
-        
+
     if (Blynk.connected())
     {
         CONSOLELN(F("\nConnected to the Blynk server, sending data"));
@@ -523,7 +574,7 @@ bool SenderClass::sendBlynk(char* token)
         CONSOLELN(F("\nFailed to connect to Blynk, going to sleep"));
         return false;
     }
-    
-    delay(150);     //delay to allow last value to be sent;
+
+    delay(150); //delay to allow last value to be sent;
     return true;
 }

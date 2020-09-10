@@ -15,6 +15,8 @@
 
 class SenderClass
 {
+  using MessageCallback = bool (*)(String);
+
 public:
   SenderClass();
   String sendTCP(String server, uint16_t port = 80);
@@ -26,19 +28,23 @@ public:
   bool sendMQTT(String server, uint16_t port, String username, String password, String name);
   bool sendFHEM(String server, uint16_t port, String name);
   bool sendTCONTROL(String server, uint16_t port);
-  bool sendBlynk(char* token);
+  bool sendBlynk(char *token);
   void add(String id, float value);
   void add(String id, String value);
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
   void stopclient();
   void mqttCallback(char *topic, byte *payload, unsigned int length);
+  void registerMqttCallback(MessageCallback callbackProc, bool clearReceivedPersistentMessage = false);
   // ~SenderClass();
 
 private:
   WiFiClient _client;
   PubSubClient _mqttClient;
   StaticJsonDocument<1024> _doc;
+  MessageCallback messageCallbackProc;
+  bool ClearMqttPersistentMessage = false;
+  String MqttTopicToClear;
 };
 
 #endif
