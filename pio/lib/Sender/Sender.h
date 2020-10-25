@@ -20,6 +20,7 @@ public:
   String sendTCP(String server, uint16_t port = 80);
   bool sendThingSpeak(String token, long Channel);
   bool sendGenericPost(String server, String uri, uint16_t port = 80);
+  bool sendGenericPut(String server, String uri, uint16_t port = 80);
   bool sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password);
   bool sendPrometheus(String server, uint16_t port, String job, String instance);
   bool sendUbidots(String token, String name);
@@ -31,6 +32,10 @@ public:
   void add(String id, String value);
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
+  void add(String id, float value, uint16_t loc);
+  void add(String id, String value, uint16_t loc);
+  void add(String id, int32_t value, uint16_t loc);
+  void add(String id, uint32_t value, uint16_t loc);
   void stopclient();
   void mqttCallback(char *topic, byte *payload, unsigned int length);
   // ~SenderClass();
