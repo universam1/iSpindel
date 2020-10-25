@@ -656,6 +656,33 @@ bool uploadData(uint8_t service)
       return processResponse(response);
     }
   }
+  else if (service == DTBRUCONTROL)
+  {
+    char global_name[TKIDSIZE];
+
+    strcpy(global_name, my_name);
+    strcat(global_name, "_g");
+    sender.add("Name", global_name, 0);
+    sender.add("Value", Gravity, 0);
+
+    strcpy(global_name, my_name);
+    strcat(global_name, "_t");
+    sender.add("Name", global_name, 1);
+    sender.add("Value", scaleTemperature(Temperatur), 1);
+
+    strcpy(global_name, my_name);
+    strcat(global_name, "_b");
+    sender.add("Name", global_name, 2);
+    sender.add("Value", Volt, 2);
+
+    strcpy(global_name, my_name);
+    strcat(global_name, "_a");
+    sender.add("Name", global_name, 3);
+    sender.add("Value", Tilt, 3);
+
+    CONSOLELN(F("\ncalling BruControl"));
+    return sender.sendGenericPut(my_server, my_uri, my_port);
+  }
 #endif // DATABASESYSTEM
 
 #ifdef API_FHEM
