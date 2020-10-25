@@ -33,6 +33,22 @@ void SenderClass::add(String id, int32_t value)
 {
     _doc[id] = value;
 }
+void SenderClass::add(String id, float value, uint16_t loc)
+{
+    _doc[loc][id] = value;
+}
+void SenderClass::add(String id, String value, uint16_t loc)
+{
+    _doc[loc][id] = value;
+}
+void SenderClass::add(String id, uint32_t value, uint16_t loc)
+{
+    _doc[loc][id] = value;
+}
+void SenderClass::add(String id, int32_t value, uint16_t loc)
+{
+    _doc[loc][id] = value;
+}
 void SenderClass::stopclient()
 {
     _client.stop();
@@ -221,6 +237,43 @@ bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
     else
     {
         CONSOLE(F("[HTTP] POST... failed, error: "));
+        CONSOLELN(http.errorToString(httpCode));
+    }
+
+    http.end();
+    stopclient();
+    return true;
+}
+
+bool SenderClass::sendGenericPut(String server, String uri, uint16_t port)
+{
+    serializeJson(_doc, Serial);
+    HTTPClient http;
+
+    CONSOLELN(F("HTTPAPI: putting"));
+    // configure traged server and uri
+
+    http.begin(_client, server, port, uri);
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    http.addHeader("Content-Type", "application/json");
+
+    String json;
+	serializeJson(_doc, json);
+    auto httpCode = http.PUT(json);
+    CONSOLELN(String(F("code: ")) + httpCode);
+
+    // httpCode will be negative on error
+    if (httpCode > 0)
+    {
+        if (httpCode == HTTP_CODE_OK)
+        {
+            CONSOLELN(http.getString());
+        }
+    }
+    else
+    {
+        CONSOLE(F("[HTTP] PUT... failed, error: "));
         CONSOLELN(http.errorToString(httpCode));
     }
 
