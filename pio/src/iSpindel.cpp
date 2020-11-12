@@ -89,7 +89,6 @@ uint8_t my_tempscale = TEMP_CELSIUS;
 int8_t my_OWpin = -1;
 
 uint32_t DSreqTime = 0;
-float pitch, roll;
 
 int16_t ax, ay, az;
 float Volt, Temperatur, Tilt, Gravity; // , corrGravity;
@@ -1230,9 +1229,7 @@ void setup()
     float _ax = ax;
     float _ay = ay;
     float _az = az;
-    float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-    float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-    Tilt = sqrt(pitch * pitch + roll * roll);
+    Tilt = acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
   }
 #endif
 
