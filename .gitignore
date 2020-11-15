@@ -16,3 +16,6 @@ iSpindel/__vm/
 .vscode/.browse.c_cpp.db*
 .clang_complete
 .gcc-flags.json
+.cproject
+.project
+.settings

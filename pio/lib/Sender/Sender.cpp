@@ -39,8 +39,7 @@ void SenderClass::stopclient()
     delay(100); // allow gracefull session close
 }
 
-bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
-{
+bool SenderClass::mqttConnect(const String &server, uint16_t port, const String &name, const String &username, const String &password) {
     _mqttClient.setClient(_client);
     _mqttClient.setServer(server.c_str(), port);
     _mqttClient.setCallback([this](char *topic, byte *payload, unsigned int length) { this->mqttCallback(topic, payload, length); });
@@ -51,9 +50,17 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
     {
         CONSOLELN(F("Attempting MQTT connection"));
         // Attempt to connect
-        if (_mqttClient.connect(name.c_str(), username.c_str(), password.c_str()))
+        boolean ret;
+        if (username[0] == '\0')
+        {
+            ret = _mqttClient.connect(name.c_str());
+        } else {
+            ret = _mqttClient.connect(name.c_str(), username.c_str(), password.c_str());
+        }
+        if (ret)
         {
             CONSOLELN(F("Connected to MQTT"));
+            return true;
         }
         else
         {
@@ -105,20 +112,29 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
             delay(5000);
         }
     }
+    return false;
+}
 
-    //MQTT publish values
-    for (const auto &kv : _doc.as<JsonObject>())
+bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
     {
-        CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key().c_str() + "/" + kv.value().as<String>());
-        _mqttClient.publish(("ispindel/" + name + "/" + kv.key().c_str()).c_str(), kv.value().as<String>().c_str());
-        _mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+        //MQTT publish values
+        for (const auto &kv : _doc.as<JsonObject>())
+        {
+           CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key().c_str() + "/" + kv.value().as<String>());
+           _mqttClient.publish(("ispindel/" + name + "/" + kv.key().c_str()).c_str(), kv.value().as<String>().c_str());
+           _mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+        }
     }
 
     CONSOLELN(F("Closing MQTT connection"));
     _mqttClient.disconnect();
     stopclient();
-    return true;
+    return response;
 }
+
 void SenderClass::mqttCallback(char *topic, byte *payload, unsigned int length)
 {
     CONSOLELN(F("MQTT message arrived ["));
@@ -526,4 +542,20 @@ bool SenderClass::sendBlynk(char* token)
     
     delay(150);     //delay to allow last value to be sent;
     return true;
+}
+
+bool SenderClass::sendBrewblox(String server, uint16_t port, String topic, String username, String password, String name)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
+    {
+        String json;
+        serializeJson(_doc, json);
+        CONSOLELN("Brewblox MQTT publish: " + topic);
+        _mqttClient.publish(topic.c_str(), ("{\"key\":\"" + name + "\",\"data\":" + json  + "}").c_str());
+    }
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return response;
 }
