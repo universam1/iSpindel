@@ -108,7 +108,6 @@ const char JSON_TITLE_ATC_CUSTOM_OPERATION_TYPE[] = "atc_custom_opt";
 int8_t my_OWpin = -1;
 
 uint32_t DSreqTime = 0;
-float pitch, roll;
 
 int16_t ax, ay, az;
 float Volt, Temperatur, Tilt, Gravity; // , corrGravity;
@@ -191,7 +190,7 @@ bool readConfig()
       else
       {
         size_t size = configFile.size();
-        DynamicJsonDocument doc(size * 2);
+        DynamicJsonDocument doc(size * 3);
         DeserializationError error = deserializeJson(doc, configFile);
         if (error)
         {
@@ -401,7 +400,7 @@ bool startConfiguration()
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_channel("channel", "Channelnumber",
                                       String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
-  WiFiManagerParameter custom_url("uri", "Path / URI", my_uri, DNSSIZE);
+  WiFiManagerParameter custom_uri("uri", "Path / URI", my_uri, DNSSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
@@ -433,7 +432,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_channel);
-  wifiManager.addParameter(&custom_url);
+  wifiManager.addParameter(&custom_uri);
   wifiManager.addParameter(&custom_db);
   wifiManager.addParameter(&custom_username);
   wifiManager.addParameter(&custom_password);
@@ -541,7 +540,7 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   my_channel = String(custom_channel.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
-  validateInput(custom_url.getValue(), my_uri);
+  validateInput(custom_uri.getValue(), my_uri);
 
   // ATC section
   my_useATC = String(atc_enabled.getValue()).toInt();
@@ -558,7 +557,7 @@ bool startConfiguration()
   tmp.trim();
   tmp.replace(',', '.');
   my_vfact = tmp.toFloat();
-  if (my_vfact < ADCDIVISOR * 0.8 || my_vfact > ADCDIVISOR * 1.2)
+  if (my_vfact < ADCDIVISOR * 0.8 || my_vfact > ADCDIVISOR * 1.25)
     my_vfact = ADCDIVISOR;
 
   // save the custom parameters to FS
@@ -833,6 +832,38 @@ bool uploadData(uint8_t service)
     return sender.sendTCONTROL(my_server, 4968);
   }
 #endif // DATABASESYSTEM ==
+
+#ifdef API_BLYNK
+  if (service == DTBLYNK)
+  {
+    String tempToSend = String( scaleTemperature( Temperatur ), 1 );
+    sender.add("20", tempToSend);           //send temperature without the unit to the graph first
+    String voltToSend = String(Volt, 2);
+    sender.add("30", voltToSend);           //send temperature without the unit to the graph first
+
+    tempToSend += "°";
+    tempToSend += tempScaleLabel();         // Add temperature unit to the String
+
+    sender.add("1", String(Tilt, 1)+"°");
+    sender.add("2", tempToSend);
+    sender.add("3", voltToSend+"V");
+    sender.add("4", String(Gravity, 2));
+    return sender.sendBlynk(my_token);
+  }
+#endif
+
+#ifdef API_BREWBLOX
+  if (service == DTBREWBLOX)
+  {
+    sender.add("Tilt[deg]", Tilt);
+    sender.add("Temperature[deg" + tempScaleLabel() + "]", scaleTemperature(Temperatur));
+    sender.add("Battery[V]", Volt);
+    sender.add("Gravity", Gravity);
+    sender.add("Rssi[dBm]", WiFi.RSSI());
+    CONSOLELN(F("\ncalling BREWBLOX"));
+    return sender.sendBrewblox(my_server, my_port, my_uri, my_username, my_password, my_name);
+  }
+#endif
   return false;
 }
 
@@ -976,9 +1007,7 @@ float calculateTilt()
   float _ax = ax;
   float _ay = ay;
   float _az = az;
-  float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-  float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-  return sqrt(pitch * pitch + roll * roll);
+  return acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
 }
 
 bool testAccel()
@@ -1229,12 +1258,32 @@ bool isSafeMode(float _volt)
     return false;
 }
 
-void connectBackupCredentials()
+bool connectBackupCredentials()
 {
   WiFi.disconnect();
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
-  CONSOLELN(F("Rescue Wifi credentials"));
-  delay(100);
+  CONSOLELN(F("Rescued Wifi credentials"));
+
+  CONSOLE(F("   -> waited for "));
+  unsigned long startedAt = millis();
+  // int connRes = WiFi.waitForConnectResult();
+  uint8_t wait = 0;
+  while (WiFi.status() == WL_DISCONNECTED)
+  {
+    delay(200);
+    wait++;
+    if (wait > 50)
+      break;
+  }
+  auto waited = (millis() - startedAt);
+  CONSOLE(waited);
+  CONSOLE(F("ms, result "));
+  CONSOLELN(WiFi.status());
+
+  if (WiFi.status() == WL_DISCONNECTED)
+    return false;
+  else
+    return true;
 }
 
 void setup()
@@ -1350,9 +1399,7 @@ void setup()
     float _ax = ax;
     float _ay = ay;
     float _az = az;
-    float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-    float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-    Tilt = sqrt(pitch * pitch + roll * roll);
+    Tilt = acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
   }
 #endif
 
@@ -1398,7 +1445,7 @@ void setup()
     uint8_t wait = 0;
     while (WiFi.status() == WL_DISCONNECTED)
     {
-      delay(100);
+      delay(200);
       wait++;
       if (wait > 50)
         break;
@@ -1416,13 +1463,20 @@ void setup()
   }
   else
   {
-    connectBackupCredentials();
-    CONSOLELN(F("failed to connect"));
+    CONSOLELN(F("Failed to connect -> trying to restore connection..."));
+
+    if (connectBackupCredentials())
+      CONSOLE(F("   -> Connection restored!"));
+    else
+      CONSOLE(F("   -> Failed to restore connection..."));
   }
 
   // survive - 60min sleep time
   if (isSafeMode(Volt))
+  {
     my_sleeptime = EMERGENCYSLEEP;
+  }
+
   goodNight(my_sleeptime);
 }
 

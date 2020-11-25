@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 
 <head>
     <title>iSpindel Calibration</title>
@@ -259,7 +259,15 @@ Vito Tai. 2017.
             var sgn = BrewMath.plato2sg(bx);
             setSg(sgn, bx);
         }
-
+        function formatEquation(equ){
+            str="" + equ[0];
+            for(var i=1;i< equ.length;i++){
+                var term="";
+                for(var x=0;x<i;x++) term += "*tilt";
+                str += ((equ[i]>0)? " + ":"") + equ[i] +" " + term;
+            }
+            return str;
+        }
         var TiltPoints = {
             points: [],
             clear: function() {
@@ -298,30 +306,39 @@ Vito Tai. 2017.
                 var td4 = document.createElement("td");
                 td4.className = "pl_sg";
                 td4.innerHTML = this.points[i][1].toFixed(precision);
+
+                var tdfi = document.createElement("td");
+                tdfi.className = "pl_1stvalue";
+                tdfi.innerHTML = (typeof window.firstValue != "undefined")? window.firstValue[i].toFixed(precision):"-";
+                
+
+                var tdf = document.createElement("td");
+                tdf.className = "pl_1sterror";
+                tdf.innerHTML =(typeof window.firstError != "undefined")? window.firstError[i].toFixed(precision):"-";
+
+
                 var td5i = document.createElement("td");
                 td5i.className = "pl_2ndvalue";
-                if (typeof window.secValue != "undefined")
-                    td5i.innerHTML = window.secValue[i].toFixed(precision);
+                td5i.innerHTML = (typeof window.secValue != "undefined")? window.secValue[i].toFixed(precision):"-";
 
                 var td5 = document.createElement("td");
                 td5.className = "pl_2nderror";
-                if (typeof window.secondError != "undefined")
-                    td5.innerHTML = window.secondError[i].toFixed(precision);
+                td5.innerHTML =(typeof window.secondError != "undefined")? window.secondError[i].toFixed(precision):"-";
 
                 var td6i = document.createElement("td");
                 td6i.className = "pl_3rdvalue";
-                if (typeof window.thirdValue != "undefined")
-                    td6i.innerHTML = window.thirdValue[i].toFixed(precision);
+                td6i.innerHTML =(typeof window.thirdValue != "undefined")? window.thirdValue[i].toFixed(precision):"-";
 
 
                 var td6 = document.createElement("td");
                 td6.className = "pl_3rderror";
-                if (typeof window.thirdError != "undefined")
-                    td6.innerHTML = window.thirdError[i].toFixed(precision);
+                td6.innerHTML =(typeof window.thirdError != "undefined")? window.thirdError[i].toFixed(precision):"-";
 
                 tr.appendChild(td1);
                 tr.appendChild(td2);
                 tr.appendChild(td4);
+                tr.appendChild(tdfi);
+                tr.appendChild(tdf);
                 tr.appendChild(td5i);
                 tr.appendChild(td5);
                 tr.appendChild(td6i);
@@ -336,22 +353,32 @@ Vito Tai. 2017.
                 }
             },
             regression: function() {
-                if (this.points.length < 2) return;
+                $("#firstpoly").html("");
+                $("#secondpoly").html("");
+                $("#thirdpoly").html("");
 
-                var thirdRegression = regression('polynomial', this.points, 3, {
+                if (this.points.length < 2) return;
+                var firstRegression =regression('polynomial', this.points, 1, {
                     precision: 9
                 });
-                var secondRegression = regression('polynomial', this.points, 2, {
+                var secondRegression,thirdRegression;
+                if(this.points.length > 2){
+                    secondRegression = regression('polynomial', this.points, 2, {
                     precision: 9
                 });
+                }
+                if(this.points.length > 3){
+                    thirdRegression = regression('polynomial', this.points, 3, {
+                    precision: 9
+                });
+                }
+
                 // Plot the result
-                $.plot($('#graph'), [{
-                    data: thirdRegression.points,
-                    label: '3rd'
-                }, {
-                    data: secondRegression.points,
-                    label: '2nd'
-                }, {
+                var lines=[ {
+                        data: firstRegression.points,
+                        label: '1st'
+                        },
+                    {
                     data: this.points,
                     lines: {
                         show: false
@@ -359,34 +386,90 @@ Vito Tai. 2017.
                     points: {
                         show: true
                     }
-                }, ]);
-                $("#secondpoly").html(secondRegression.string);
-                $("#thirdpoly").html(thirdRegression.string);
+                } ];
+                if(this.points.length > 2){
+                   lines.push({
+                        data: secondRegression.points,
+                        label: '2nd'
+                    });
+                }
+                if(this.points.length > 3){
+                   lines.push( {
+                    data: thirdRegression.points,
+                    label: '3rd'
+                    });
+                }
+
+                $.plot($('#graph'), lines);
+                /*
+                $("#firstpoly").html(toTilt(firstRegression.string));
+                if(this.points.length > 2) $("#secondpoly").html(toTilt(secondRegression.string));
+                if(this.points.length > 3) $("#thirdpoly").html(toTilt(thirdRegression.string));
+                */
+                $("#firstpoly").html(formatEquation(firstRegression.equation));
+                if(this.points.length > 2) $("#secondpoly").html(formatEquation(secondRegression.equation));
+                if(this.points.length > 3) $("#thirdpoly").html(formatEquation(thirdRegression.equation));
                 // caluate errors
+
+                var secoe, thridoe;
+
+                var first_error = [];
+                var first_value = [];
+                var firstoe = firstRegression.equation;
+
                 var sec_error = [];
                 var sec_value = [];
-                var secoe = secondRegression.equation;
+                if(this.points.length > 2) secoe = secondRegression.equation;
+
                 var third_error = [];
                 var third_value = [];
-                var thirdcoe = thirdRegression.equation;
+                if(this.points.length > 3) thirdcoe = thirdRegression.equation;
+
                 for (var i = 0; i < this.points.length; i++) {
                     var x = this.points[i][0];
                     var x2 = x * x;
                     var x3 = x2 * x;
                     var y = this.points[i][1]
-                    var s = secoe[0] + secoe[1] * x + secoe[2] * x2;
-                    var t = thirdcoe[0] + thirdcoe[1] * x + thirdcoe[2] * x2 + thirdcoe[3] * x3;
-                    sec_error.push(s - y);
-                    third_error.push(t - y);
-                    sec_value.push(s);
-                    third_value.push(t);
+
+                    var f = firstoe[0] + firstoe[1] * x;
+                    first_error.push(f - y);
+                    first_value.push(f);
+
+                    if(this.points.length > 2){
+                        var s = secoe[0] + secoe[1] * x + secoe[2] * x2;
+                        sec_error.push(s - y);
+                        sec_value.push(s);
+                    }
+    
+                    if(this.points.length > 3){
+                        var t = thirdcoe[0] + thirdcoe[1] * x + thirdcoe[2] * x2 + thirdcoe[3] * x3;
+                        third_error.push(t - y);
+                        third_value.push(t);
+                    }
                 }
-                window.secondError = sec_error;
-                window.thirdError = third_error;
-                window.equation2nd = secoe;
-                window.equation3rd = thirdcoe;
-                window.secValue = sec_value;
-                window.thirdValue = third_value;
+                window.firstError = first_error;
+                window.equation1st = firstoe;
+                window.firstValue = first_value;
+                if(this.points.length > 2){
+                    window.secondError = sec_error;
+                    window.equation2nd = secoe;
+                    window.secValue = sec_value;
+                }else if (typeof  window.secondError != "undefined"){
+                    delete( window.secondError);
+                    delete( window.equation2nd);
+                    delete( window.secValue);
+                }
+
+                if(this.points.length > 3){
+                    window.equation3rd = thirdcoe;
+                    window.thirdValue = third_value;
+                    window.thirdError = third_error;
+                }else if (typeof  window.equation3rd != "undefined"){
+                    delete( window.equation3rd);
+                    delete( window.thirdValue);
+                    delete( window.thirdError);
+                }
+
             },
             adddata: function() {
                 var tilt = parseFloat($("#tiltinput").val());
@@ -583,6 +666,8 @@ Vito Tai. 2017.
                             <th></th>
                             <th>Tilt</th>
                             <th><span class="plato-row">Plato</span> <span class="sg-row">SG</span> </th>
+                            <th>Degree 1 Value</th>
+                            <th>Degree 1 Error</th>
                             <th>Degree 2 Value</th>
                             <th>Degree 2 Error</th>
                             <th>Degree 3 Value</th>
@@ -595,10 +680,13 @@ Vito Tai. 2017.
                 </td>
                 <tr>
                     <tr>
-                        <td colspan="2">Degree 2:<span id="secondpoly"></span></td>
+                        <td colspan="2">Degree 1: <span id="firstpoly"></span></td>
                     </tr>
                     <tr>
-                        <td colspan="2">Degree 3:<span id="thirdpoly"></span></td>
+                        <td colspan="2">Degree 2: <span id="secondpoly"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Degree 3: <span id="thirdpoly"></span></td>
                     </tr>
         </table>
     </div>
