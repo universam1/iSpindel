@@ -1103,16 +1103,16 @@ float calculateGravity()
   return _gravity;
 }
 
-double calculateTemp(double _temp, char _poly[1000]/*, uint8_t _tempscale*/)
+double calculateTemp(double _temp, char _poly[1000])
 {
-  double _t = _temp; //Poly nomminal should be done on the scaled temp;
+  double _t = _temp;
   int _err;
   double _output = 0.0;
   te_variable vars[] = {"temp", &_t};
   te_expr *expr = te_compile(_poly, vars, 1, &_err);
   if (expr!=0)
   {
-    _output = te_eval(expr); //Do calc and set temp back into Celcius
+    _output = te_eval(expr);
     te_free(expr);
   }
   else
