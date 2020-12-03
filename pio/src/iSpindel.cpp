@@ -76,6 +76,7 @@ char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
 char my_polynominal[100] = "-0.00031*tilt^2+0.557*tilt-14.054";
+char my_tempadjust[100] = "temp+0";
 
 String my_ssid;
 String my_psk;
@@ -103,6 +104,25 @@ float scaleTemperature(float t)
     return t + 273.15f;
   else
     return t; // Invalid value for my_tempscale => default to celsius
+}
+
+float scaleTemperatureToC(float t, uint8_t tempscale)
+{
+  float _t;
+  switch(my_tempscale){
+    case TEMP_CELSIUS:
+      _t = t;
+      break;
+    case TEMP_FAHRENHEIT:
+      _t = (t - 32) / 1.8f;
+      break;
+    case TEMP_KELVIN:
+      _t = t - 273.15f;
+      break;
+    default:
+      _t = t; // Invalid value for my_tempscale => default to no conversion
+  }
+  return _t;
 }
 
 String tempScaleLabel(void)
@@ -218,7 +238,8 @@ bool readConfig()
             my_psk = (const char *)doc["PSK"];
           if (doc.containsKey("POLY"))
             strcpy(my_polynominal, doc["POLY"]);
-
+          if (doc.containsKey("TADJ"))
+            strcpy(my_tempadjust, doc["TADJ"]);
           if (doc.containsKey("Offset"))
           {
             for (size_t i = 0; i < (sizeof(my_Offset) / sizeof(*my_Offset)); i++)
@@ -389,7 +410,10 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_polynom_lbl);
   WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100 * 2, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
-
+  WiFiManagerParameter custom_tempadjust_lbl("<hr><label for=\"TCALC\">Temperature Adjustment<br/>ex. \"temp\"</label>");
+  wifiManager.addParameter(&custom_tempadjust_lbl);
+  WiFiManagerParameter custom_tempadjust("TADJ", "Adjustment Calc", htmlencode(my_tempadjust).c_str(), sizeof(my_tempadjust) * 2, WFM_NO_LABEL);
+  wifiManager.addParameter(&custom_tempadjust);
   wifiManager.setConfSSID(htmlencode(my_ssid));
   wifiManager.setConfPSK(htmlencode(my_psk));
 
@@ -397,7 +421,8 @@ bool startConfiguration()
   wifiManager.startConfigPortal("iSpindel");
 
   strcpy(my_polynominal, custom_polynom.getValue());
-
+  strcpy(my_tempadjust, custom_tempadjust.getValue());
+  
   validateInput(custom_name.getValue(), my_name);
   validateInput(custom_token.getValue(), my_token);
   validateInput(custom_server.getValue(), my_server);
@@ -487,6 +512,7 @@ bool saveConfig()
   doc["TS"] = my_tempscale;
   doc["OWpin"] = my_OWpin;
   doc["POLY"] = my_polynominal;
+  doc["TADJ"] = my_tempadjust;
   doc["SSID"] = WiFi.SSID();
   doc["PSK"] = WiFi.psk();
 
@@ -1077,6 +1103,25 @@ float calculateGravity()
   return _gravity;
 }
 
+double calculateTemp(double _temp, char _poly[1000]/*, uint8_t _tempscale*/)
+{
+    double _t = _temp; //Poly nomminal should be done on the scaled temp;
+    int _err;
+    double _output = 0.0;
+    te_variable vars[] = {"temp", &_t};
+    te_expr *expr = te_compile(_poly, vars, 1, &_err);
+    if (expr!=0)
+    {
+      _output = te_eval(expr); //Do calc and set temp back into Celcius
+      te_free(expr);
+  }
+  else
+  {
+    CONSOLELN(String(F("Temp Calc Parse error at ")) + _err);
+  }
+  return _output;
+}
+
 void flash()
 {
   // triggers the LED
@@ -1084,7 +1129,7 @@ void flash()
   if (testAccel())
     getAccSample();
   Tilt = calculateTilt();
-  Temperatur = getTemperature(false);
+  Temperatur = scaleTemperatureToC(calculateTemp(scaleTemperature(getTemperature(false)), my_tempadjust),my_tempscale);
   Gravity = calculateGravity();
   requestTemp();
 }
@@ -1263,7 +1308,7 @@ void setup()
   CONSOLELN(Volt);
 
   // call as late as possible since DS needs converge time
-  Temperatur = getTemperature(true);
+  Temperatur = scaleTemperatureToC(calculateTemp(scaleTemperature(getTemperature(true)), my_tempadjust),my_tempscale);
   CONSOLE("Temp: ");
   CONSOLELN(Temperatur);
 
