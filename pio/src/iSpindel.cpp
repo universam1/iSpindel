@@ -696,7 +696,7 @@ bool uploadData(uint8_t service)
     sender.add("1", String(Tilt, 1)+"°");
     sender.add("2", tempToSend);
     sender.add("3", voltToSend+"V");
-    sender.add("4", String(Gravity, 2));
+    sender.add("4", String(Gravity, 3));
     return sender.sendBlynk(my_token);
   }
 #endif
