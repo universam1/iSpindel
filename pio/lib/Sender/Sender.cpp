@@ -59,6 +59,7 @@ bool SenderClass::RTCSyncToNTP()
     struct tm timeinfo;
     gmtime_r(&now, &timeinfo);
     CONSOLELN(""); CONSOLE(F("Current time set to: ")); CONSOLELN(asctime(&timeinfo));
+    _doc["time"] = time(nullptr);
     if (now > TIMECHECK){
         return true;
     }
@@ -202,7 +203,8 @@ bool SenderClass::sendSecureMQTT(char CACert[], char deviceCert[], char deviceKe
         String json;
         serializeJson(_doc, json);
         CONSOLELN("MQTT publish: " + topic);
-        _mqttClient.publish(topic.c_str(), ("{\"key\":\"" + name + "\",\"data\":" + json  + "}").c_str());
+        CONSOLELN(("{\"state\":{\"reported\":" + json  + "}, \"key\":\"" + name + "\"}").c_str());
+        _mqttClient.publish(topic.c_str(), ("{\"state\":{\"reported\":" + json  + "}, \"key\":\"" + name + "\"}").c_str());
     }
     CONSOLELN(F("Closing MQTT connection"));
     _mqttClient.disconnect();

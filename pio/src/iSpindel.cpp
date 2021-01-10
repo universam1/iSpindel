@@ -23,6 +23,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
 #include "tinyexpr.h"
+#include "secrets.h"                          //AWS - Currently a file for Keys, Certs, etc - Need to make this a captured variable for iSpindle
 
 #include "Sender.h"
 // !DEBUG 1
@@ -335,20 +336,20 @@ bool startConfiguration()
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
                                   20, TYPE_HIDDEN, WFM_NO_LABEL);
 
-  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
+  WiFiManagerParameter custom_name("name", "iSpindel Name (AWS ThingName)", htmlencode(my_name).c_str(),
                                    TKIDSIZE * 2);
   WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE * 2 * 2);
-  WiFiManagerParameter custom_server("server", "Server Address",
+  WiFiManagerParameter custom_server("server", "Server Address (AWS Endpoint)",
                                      my_server, DNSSIZE);
-  WiFiManagerParameter custom_port("port", "Server Port",
+  WiFiManagerParameter custom_port("port", "Server Port (AWS 8883)",
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_channel("channel", "Channelnumber",
                                       String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
-  WiFiManagerParameter custom_uri("uri", "Path / URI", my_uri, DNSSIZE);
+  WiFiManagerParameter custom_uri("uri", "Path / URI (Publish Topic)", my_uri, DNSSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
@@ -554,6 +555,22 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
+  }
+#endif
+
+#ifdef API_AWSIOTMQTT             //AWS
+  if (service == DTAWSIOTMQTT)
+  {
+    sender.add("name", my_name);
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN("Calling AWSIOTMQTT Sender");
+    return sender.sendSecureMQTT(AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, my_server, my_port, my_name, my_uri);
+    //AWS - NOTE - Need to replace secrets.h with the relevant parameters
   }
 #endif
 
@@ -1103,6 +1120,7 @@ bool isSafeMode(float _volt)
 bool connectBackupCredentials()
 {
   WiFi.disconnect();
+  WiFi.mode(WIFI_STA);  //suggestion that MQTT connection failures can happen if WIFI mode isn't STA.
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
   CONSOLELN(F("Rescued Wifi credentials"));
 
