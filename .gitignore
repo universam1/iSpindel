@@ -19,3 +19,4 @@ iSpindel/__vm/
 .cproject
 .project
 .settings
+pio/src/secrets.h
