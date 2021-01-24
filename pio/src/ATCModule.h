@@ -38,7 +38,10 @@ class ATCModule
 
     private:
         static double_t applyInternalFormula(double_t);
-        static double_t calcCorrectedSG(double_t);
+        static double_t applyCustomFormula(double_t);
+        
+        static double_t calcCorrectedSGInternal(double_t);
+        static double_t calcCorrectedSGCustom(double_t);
 
         static float_t C2F(float_t); 
         static double_t sgToPlato(double_t);

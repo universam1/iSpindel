@@ -92,7 +92,7 @@ uint8_t my_tempscale = TEMP_CELSIUS;
 uint8_t my_useATC = 0;
 ATC_FORMULA_TYPE my_atcFormulaType = ATC_FORMULA_INTERNAL;
 GRAVITY_UNITS my_gravityUnits = GRAVITY_UNITS_SG;
-int16_t my_atcCalibrationTemp = 20; // always in deg C, will be converted when/if needed
+int16_t my_atcCalibrationTemp = 20; // in deg C, will be converted when/if needed
 ATC_CUSTOM_OP_TYPE my_atcOpt = ATC_OPT_ADD;
 char my_custom_atc_formula[ATC_CUSTOM_FORMULA_LENGTH] = "";
 
@@ -462,6 +462,15 @@ bool startConfiguration()
                                         5, TYPE_HIDDEN, WFM_NO_LABEL);
   wifiManager.addParameter(&atc_formula_type);
 
+
+  WiFiManagerParameter caltemp_visual(HTML_ATC_CALIBRATION_TEMP_VISUAL);
+  wifiManager.addParameter(&caltemp_visual);
+  
+  WiFiManagerParameter calibration_temp("caltemp", "caltemp",
+                                        String(my_atcCalibrationTemp).c_str(),
+                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  wifiManager.addParameter(&calibration_temp);
+
   // internal formula type --------------------------------------->>>
   WiFiManagerParameter atc_formula_internal_div(HTML_DIV_BEGIN_FORMULATYPE_INTERNAL);
   wifiManager.addParameter(&atc_formula_internal_div);
@@ -476,14 +485,6 @@ bool startConfiguration()
                                         String(my_gravityUnits).c_str(),
                                         5, TYPE_HIDDEN, WFM_NO_LABEL);
   wifiManager.addParameter(&gravity_unit);
-
-  WiFiManagerParameter caltemp_visual(HTML_ATC_CALIBRATION_TEMP_VISUAL);
-  wifiManager.addParameter(&caltemp_visual);
-  
-  WiFiManagerParameter calibration_temp("caltemp", "caltemp",
-                                        String(my_atcCalibrationTemp).c_str(),
-                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
-  wifiManager.addParameter(&calibration_temp);
 
   WiFiManagerParameter internal_formula_div_end(HTML_DIV_END);
   wifiManager.addParameter(&internal_formula_div_end); // end of internal formula type div
@@ -1007,7 +1008,7 @@ float calculateTilt()
   float _ax = ax;
   float _ay = ay;
   float _az = az;
-  return acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
+  return acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / PI;
 }
 
 bool testAccel()

@@ -241,7 +241,6 @@ const char HTML_GU_LIST[] PROGMEM = R"ATC(
 const char HTML_ATC_CALIBRATION_TEMP_VISUAL[] PROGMEM = R"ATC(
 <label for="CALTEMPVISUAL" style="margin-top:10px;margin-bottom:10px;display:block;">Calibration Temperature</label>
 <input id="CALTEMPVISUAL" length=5 placeholder="" value="20" type="number" step="any" onchange = "validateUpdateCaltemp(value)">
-<! –– caltemp is always in celsius --->
 )ATC";
 
 const char HTML_DIV_BEGIN_FORMULATYPE_CUSTOM[] PROGMEM = R"ATC(
@@ -250,7 +249,7 @@ const char HTML_DIV_BEGIN_FORMULATYPE_CUSTOM[] PROGMEM = R"ATC(
 
 const char HTML_ATC_CUSTOM_FORMULA_LABEL[] PROGMEM = R"ATC(
 <label for="custom_formula" style="margin-top:10px;margin-bottom:10px;display:block;">ATC formula (max. 100 chars)<br/>ex. "1.313454-0.132674*t+0.00205779*t^2-0.000002627634*t^3"
-<br/>Variables:<br/>t - temperature<br/>ct - calibration temperature<br/>g - gravity</label>
+<br/>Variables:<br/>temp - temperature<br/>caltemp - calibration temperature<br/>grav - wort gravity</label>
 )ATC";
 
 const char HTML_ATC_CUSTOM_OPERATION_TYPE_LABEL[] PROGMEM = R"ATC(
