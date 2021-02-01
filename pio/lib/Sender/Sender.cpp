@@ -423,7 +423,7 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
         String msg = String("GET /fhem?cmd.Test=set%20");
         msg += name;
 
-        for (const auto &kv : _doc.to<JsonObject>())
+        for (const auto &kv : _doc.as<JsonObject>())
         {
             msg += "%20";
             msg += kv.value().as<String>();
