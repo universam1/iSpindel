@@ -1008,7 +1008,7 @@ float calculateTilt()
   float _ax = ax;
   float _ay = ay;
   float _az = az;
-  return acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / PI;
+  return acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
 }
 
 bool testAccel()
