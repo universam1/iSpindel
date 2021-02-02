@@ -336,20 +336,20 @@ bool startConfiguration()
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
                                   20, TYPE_HIDDEN, WFM_NO_LABEL);
 
-  WiFiManagerParameter custom_name("name", "iSpindel Name (AWS ThingName)", htmlencode(my_name).c_str(),
+  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
                                    TKIDSIZE * 2);
   WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
                                     TKIDSIZE * 2 * 2);
-  WiFiManagerParameter custom_server("server", "Server Address (AWS Endpoint)",
+  WiFiManagerParameter custom_server("server", "Server Address",
                                      my_server, DNSSIZE);
-  WiFiManagerParameter custom_port("port", "Server Port (AWS 8883)",
+  WiFiManagerParameter custom_port("port", "Server Port",
                                    String(my_port).c_str(), TKIDSIZE,
                                    TYPE_NUMBER);
   WiFiManagerParameter custom_channel("channel", "Channelnumber",
                                       String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
-  WiFiManagerParameter custom_uri("uri", "Path / URI (Publish Topic)", my_uri, DNSSIZE);
+  WiFiManagerParameter custom_uri("uri", "Path / URI", my_uri, DNSSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
@@ -361,6 +361,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
                                         String(my_tempscale).c_str(),
                                         5, TYPE_HIDDEN, WFM_NO_LABEL);
+  WiFiManagerParameter custom_warning1("warning1","WARNING! Secure MQTT has a big impact on battery usage.<BR>&nbsp;<BR>For AWS:<UL><LI>Name must be Thingname</LI><LI>Server must be Endpoint</LI><LI>Port must be 8883</LI><LI>Path/URI is Publish Topic</LI></UL>",
+                                        "<<<<< >>>>>",TKIDSIZE);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
@@ -376,6 +378,7 @@ bool startConfiguration()
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
 
+  wifiManager.addParameter(&custom_warning1);
   wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
