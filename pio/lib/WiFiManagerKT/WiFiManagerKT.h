@@ -248,7 +248,7 @@ const char HTML_DIV_BEGIN_FORMULATYPE_CUSTOM[] PROGMEM = R"ATC(
 )ATC";
 
 const char HTML_ATC_CUSTOM_FORMULA_LABEL[] PROGMEM = R"ATC(
-<label for="custom_formula" style="margin-top:10px;margin-bottom:10px;display:block;">ATC formula (max. 100 chars)<br/>ex. "1.313454-0.132674*t+0.00205779*t^2-0.000002627634*t^3"
+<label for="custom_formula" style="margin-top:10px;margin-bottom:10px;display:block;">ATC formula (max. 100 chars)<br/>ex. "1.313454-0.132674*temp+0.00205779*temp^2-0.000002627634*temp^3"
 <br/>Variables:<br/>temp - temperature<br/>caltemp - calibration temperature<br/>grav - wort gravity</label>
 )ATC";
 
