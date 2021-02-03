@@ -60,15 +60,6 @@ double_t ATCModule::applyInternalFormula(double_t measured_gravity)
     return corrected_gravity;
 }
 
-double_t ATCModule::applyCustomFormula(double_t measured_gravity)
-{
-    double_t corrected_gravity = measured_gravity;
-
-    corrected_gravity = calcCorrectedSGCustom(corrected_gravity);
-
-    return corrected_gravity;
-}
-
 double_t ATCModule::calcCorrectedSGInternal(double_t sg)
 {
     double_t temp_F = C2F(Temperatur);
@@ -89,7 +80,7 @@ double_t ATCModule::calcCorrectedSGInternal(double_t sg)
     return corrected_sg;
 }
 
-double_t ATCModule::calcCorrectedSGCustom(double_t gravity)
+double_t ATCModule::applyCustomFormula(double_t gravity)
 {
     double_t corrected_gravity = gravity;
 
