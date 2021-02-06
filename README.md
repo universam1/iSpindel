@@ -1,5 +1,6 @@
 # iSpindel - *DIY electronic Hydrometer*
-# [www.ispindel.de](http://www.ispindel.de)
+
+**[www.ispindel.de](http://www.ispindel.de)**
 
 ***
 ![Dashboard](/pics/blackedition.png)
@@ -10,7 +11,8 @@
 
 ***
 
-# Featured in german brewing magazine [Braumagazin.de](http://braumagazin.de/?issue=2018-01)
+## Featured in german brewing magazine [Braumagazin.de](http://braumagazin.de/?issue=2018-01)
+
 [![Braumagazin 1-18](/pics/Braumagazin.png)](http://braumagazin.de/?issue=2018-01)
 
 ***
@@ -23,9 +25,11 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 ## Documentation in other languages
 
-### [English Documentation (work in progress)](docs/README_en.md) :us:
-### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) :nl:
-### [Documentação em Português (trabalho em andamento)](docs/README_pt.md) :pt:
+### [English Documentation (work in progress)](docs/README_en.md) 🇺🇸
+
+### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) 🇳🇱
+
+### [Documentação em Português (trabalho em andamento)](docs/README_pt.md) 🇧🇷
 
 ***
 
@@ -43,6 +47,7 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 | Date       | Note                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 04.02.21   | Firmware 6.5.1: New tilt equation, support for Brewblox via MQTT, improved calibration tools - thanks for contributions @tomsykes @bdelbosc @vitotai @thegreatgunbantoad and many others                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | 17.11.19   | Firmware 6.2.0: New Calibration routine: The calibration procedure takes now less than 5s only to determine offsets that set the current position of the Accelerometer close as possible to level! Also this new implementation solves a few issues reported where the values have not been saved reliably.   Also, the configuration file routine has been improved to support larger strings that were clipped at some point                                                                                                                                                                                                                                                                                                                                                              |
 | 10.11.19   | Firmware 6.1.3: Extending the length of URL parameter to support API Gateway URLs. Fixes of incompatibilities from #308. Support for latest ESP8266 SDK solving naming collisions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | 8.11.19    | Firmware 6.1.2: hardening SPIFFS config save routine                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -103,13 +108,12 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 ## Inhaltverzeichnis
 
-- [iSpindel - *DIY electronic Hydrometer*](#ispindel---diy-electronic-hydrometer)
-- [www.ispindel.de](#wwwispindelde)
-- [Featured in german brewing magazine Braumagazin.de](#featured-in-german-brewing-magazine-braumagazinde)
+- [iSpindel - *DIY electronic Hydrometer*](#ispindel-diy-electronic-hydrometer)
+  - [Featured in german brewing magazine Braumagazin.de](#featured-in-german-brewing-magazine-braumagazinde)
   - [Documentation in other languages](#documentation-in-other-languages)
-    - [English Documentation (work in progress) :us:](#english-documentation-work-in-progress-us)
-    - [Nederlandse Vertaling (lopende werkzaamheden) :nl:](#nederlandse-vertaling-lopende-werkzaamheden-nl)
-    - [Documentação em Português (trabalho em andamento) :pt:](#documenta%c3%a7%c3%a3o-em-portugu%c3%aas-trabalho-em-andamento-pt)
+    - [English Documentation (work in progress) 🇺🇸](#english-documentation-work-in-progress-)
+    - [Nederlandse Vertaling (lopende werkzaamheden) 🇳🇱](#nederlandse-vertaling-lopende-werkzaamheden-)
+    - [Documentação em Português (trabalho em andamento) 🇧🇷](#documentação-em-português-trabalho-em-andamento-)
   - [Firmware download here](#firmware-download-here)
   - [ChangeLog](#changelog)
   - [Inhaltverzeichnis](#inhaltverzeichnis)

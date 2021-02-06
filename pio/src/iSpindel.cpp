@@ -76,7 +76,7 @@ char my_username[TKIDSIZE];
 char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
-char my_polynominal[100] = "-0.00031*tilt^2+0.557*tilt-14.054";
+char my_polynominal[250] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 String my_ssid;
 String my_psk;
@@ -391,7 +391,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_instance);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100 * 2, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 250 * 2, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
@@ -716,7 +716,7 @@ bool uploadData(uint8_t service)
     sender.add("1", String(Tilt, 1)+"°");
     sender.add("2", tempToSend);
     sender.add("3", voltToSend+"V");
-    sender.add("4", String(Gravity, 2));
+    sender.add("4", String(Gravity, 3));
     return sender.sendBlynk(my_token);
   }
 #endif
