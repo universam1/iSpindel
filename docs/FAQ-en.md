@@ -9,7 +9,7 @@ The best way to find out what the iSpindle is doing  is to read its log. This ca
 Here is a youtube how-to (in German): https://youtu.be/6xDW5GbIbUw
 
 - ***How get to the iSpindel - the portal***  
-Switch it on, press the reset button 3-4 times which sets up an access point. That means you will see a new Wifi network "iSpindel" where you connect to with your computer, smartphone or tablet. Now the browser should automatically redirect you to the page [http://192.168.4.1](http://192.168.4.1). If not, navigate there yourself.
+Switch it on, press the reset button 3-4 times which sets up an access point. That means you will see a new Wifi network "iSpindel_######" where you connect to with your computer, smartphone or tablet. Now the browser should automatically redirect you to the page [http://192.168.4.1](http://192.168.4.1). If not, navigate there yourself.
 If you are now on the portal page, under `Configuration` you can enter your token and the wifi password that you need for your network. Then click on `save` and it will send the data to Ubidots. This means that the **iSpindel is not reachable in normal operation**, until you manually start the portal again.
 
 - ***Why can't I access the iSpindle in normal operation***  
