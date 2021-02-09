@@ -8,7 +8,7 @@ Am Besten du liest mit was die Spindel als Informationen ausgiebt. Das geht übe
 Ein Youtube HowTo: https://youtu.be/6xDW5GbIbUw
 
 - ***Wie komme ich auf die iSpindel - das Portal***  
-Anschalten, 3-4 maliges drücken der Reset Taste stellt sie einen Access Point auf. D.h. du siehst ein neues WLAN "iSpindel" mit dem du dich verbindest. Jetzt wirst den Browser automatisch auf die Seite [http://192.168.4.1](http://192.168.4.1) dich weiterleiten. Falls nicht steuer sie selbst an.
+Anschalten, 3-4 maliges drücken der Reset Taste stellt sie einen Access Point auf. D.h. du siehst ein neues WLAN "iSpindel_######" mit dem du dich verbindest. Jetzt wirst den Browser automatisch auf die Seite [http://192.168.4.1](http://192.168.4.1) dich weiterleiten. Falls nicht steuer sie selbst an.
 Wenn du nun auf der Portalseite bist, unter `Configuration` dann kannst du deinen Token eingeben und das WLAN Passwort dass du für dein Netzwerk benötigst. dann klickst du auf `safe` und sie wird ihre Daten an Ubidots senden. Damit ist sie im Normalbetrieb und nicht mehr zu erreichen
 
 - ***mein Wlan-Passwort bleibt nicht gespeichert***  
