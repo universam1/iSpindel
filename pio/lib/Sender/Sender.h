@@ -31,7 +31,7 @@ public:
   bool sendBlynk(char* token);
   bool sendBrewblox(String server, uint16_t port, String topic, String username, String password, String name);
 #ifdef API_MQTT_HASSIO
-  bool sendHassioDiscovery(String server, uint16_t port, String username, String password, String name);
+  bool sendHassioDiscovery(String server, uint16_t port, String username, String password, String name, String unit);
 #endif
   void add(String id, float value);
   void add(String id, String value);

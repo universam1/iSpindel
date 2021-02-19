@@ -334,8 +334,7 @@ void postConfig()
     SenderClass sender;
     if (my_hassio)
     {
-      sender.add("temp_units", tempScaleLabel());
-      sender.sendHassioDiscovery(my_server, my_port, my_username, my_password, my_name);
+      sender.sendHassioDiscovery(my_server, my_port, my_username, my_password, my_name, tempScaleLabel());
     }
 #endif
 }

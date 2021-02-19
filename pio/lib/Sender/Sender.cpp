@@ -116,14 +116,12 @@ bool SenderClass::mqttConnect(const String &server, uint16_t port, const String 
 }
 
 #ifdef API_MQTT_HASSIO
-bool SenderClass::sendHassioDiscovery(String server, uint16_t port, String username, String password, String name)
+bool SenderClass::sendHassioDiscovery(String server, uint16_t port, String username, String password, String name, String unit)
 {
     bool response = mqttConnect(server, port, name, username, password);
     if (response)
     {
         _mqttClient.setBufferSize(512);
-        const auto kv = _doc.as<JsonObject>();
-        String unit = kv["temp_units"].as<String>();
         auto chipid = String(ESP.getChipId(), HEX);
         String device = "\"dev\": { \"name\": \"" + name + "\",\"mdl\": \"ispindel\",\"sw\": \"" + FIRMWAREVERSION + "\",\"mf\": \"iSpindel\",\"ids\": [\"" + chipid + "\"]}";
         String topic = "homeassistant/sensor/" + chipid;
