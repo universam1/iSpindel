@@ -8,6 +8,8 @@
 #ifndef _SENDER_H_
 #define _SENDER_H_
 
+#include "Globals.h"
+
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
@@ -28,6 +30,9 @@ public:
   bool sendTCONTROL(String server, uint16_t port);
   bool sendBlynk(char* token);
   bool sendBrewblox(String server, uint16_t port, String topic, String username, String password, String name);
+#ifdef API_MQTT_HASSIO
+  bool sendHassioDiscovery(String server, uint16_t port, String username, String password, String name);
+#endif
   void add(String id, float value);
   void add(String id, String value);
   void add(String id, int32_t value);
