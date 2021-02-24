@@ -75,7 +75,7 @@ char my_username[TKIDSIZE];
 char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
-char my_polynominal[100] = "-0.00031*tilt^2+0.557*tilt-14.054";
+char my_polynominal[250] = "-0.00031*tilt^2+0.557*tilt-14.054";
 char my_tempadjust[100] = "temp+0";
 
 String my_ssid;
@@ -357,11 +357,11 @@ bool startConfiguration()
                                   20, TYPE_HIDDEN, WFM_NO_LABEL);
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
-                                   TKIDSIZE * 2);
+                                   TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)",
                                     String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
-                                    TKIDSIZE * 2 * 2);
+                                    TKIDSIZE * 2);
   WiFiManagerParameter custom_server("server", "Server Address",
                                      my_server, DNSSIZE);
   WiFiManagerParameter custom_port("port", "Server Port",
@@ -408,7 +408,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_instance);
   WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100 * 2, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 250, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
   WiFiManagerParameter custom_tempadjust_lbl("<hr><label for=\"TCALC\">Temperature Adjustment<br/>ex. \"temp\"</label>");
   wifiManager.addParameter(&custom_tempadjust_lbl);
@@ -418,7 +418,9 @@ bool startConfiguration()
   wifiManager.setConfPSK(htmlencode(my_psk));
 
   CONSOLELN(F("started Portal"));
-  wifiManager.startConfigPortal("iSpindel");
+  char ssid[16]; //Exactly match size "iSpindel_123456\0"
+  snprintf(ssid, sizeof(ssid), "iSpindel_%06X", ESP.getChipId());
+  wifiManager.startConfigPortal(ssid);
 
   strcpy(my_polynominal, custom_polynom.getValue());
   strcpy(my_tempadjust, custom_tempadjust.getValue());
@@ -722,7 +724,7 @@ bool uploadData(uint8_t service)
     sender.add("1", String(Tilt, 1)+"°");
     sender.add("2", tempToSend);
     sender.add("3", voltToSend+"V");
-    sender.add("4", String(Gravity, 2));
+    sender.add("4", String(Gravity, 3));
     return sender.sendBlynk(my_token);
   }
 #endif
