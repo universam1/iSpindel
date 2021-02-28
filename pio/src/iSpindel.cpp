@@ -405,7 +405,7 @@ bool startConfiguration()
   else
     snprintf(ssid, sizeof ssid, "iSpindel_%s", myData.my_name);
 
-  wifiManager.startConfigPortal(ssid);
+  wifiManager.startConfigPortal(ssid, "iSpindel_BrewMe1$");
 
   strcpy(myData.my_polynominal, custom_polynom.getValue());
 
