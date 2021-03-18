@@ -855,10 +855,10 @@ void initAccel()
 
 float calculateTilt()
 {
-  float _ax = ax;
-  float _ay = ay;
-  float _az = az;
-  return acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
+  if ( ax==0 && ay == 0 && az == 0)
+        return 0.f;
+  
+  return acos(az / (sqrt(ax * ax + ay * ay + az * az))) * 180.0 / M_PI;
 }
 
 bool testAccel()
@@ -1240,10 +1240,7 @@ void setup()
     ay = euler[2];
     az = euler[1];
 
-    float _ax = ax;
-    float _ay = ay;
-    float _az = az;
-    Tilt = acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
+    Tilt = calculateTilt();
   }
 #endif
 
