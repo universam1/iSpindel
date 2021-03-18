@@ -11,7 +11,7 @@
 #include <ThingSpeak.h>
 #include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
 
-#define UBISERVER "things.ubidots.com"
+#define UBISERVER "industrial.api.ubidots.com"
 #define BLYNKSERVER "blynk-cloud.com"
 #define CONNTIMEOUT 2000
 
@@ -381,7 +381,9 @@ bool SenderClass::sendUbidots(String token, String name)
         msg += name;
         msg += "?token=";
         msg += token;
-        msg += F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
+        msg += F(" HTTP/1.1\r\nHost: ");
+        msg += UBISERVER;
+        msg += "\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
         msg += measureJson(_doc);
         msg += "\r\n";
 
