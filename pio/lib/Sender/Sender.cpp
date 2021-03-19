@@ -383,7 +383,11 @@ bool SenderClass::sendUbidots(String token, String name)
         msg += token;
         msg += F(" HTTP/1.1\r\nHost: ");
         msg += UBISERVER;
+<<<<<<< HEAD
         msg += F("\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
+=======
+        msg += "\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
+>>>>>>> upstream/master
         msg += measureJson(_doc);
         msg += "\r\n";
 
