@@ -78,6 +78,7 @@ char my_instance[TKIDSIZE] = "000";
 char my_polynominal[250] = "-0.00031*tilt^2+0.557*tilt-14.054";
 #ifdef API_MQTT_HASSIO
   bool my_hassio = false;
+  bool my_hassio_changed = false;
 #endif
 
 String my_ssid;
@@ -334,7 +335,11 @@ void postConfig()
     SenderClass sender;
     if (my_hassio)
     {
-      sender.sendHassioDiscovery(my_server, my_port, my_username, my_password, my_name, tempScaleLabel());
+        sender.enableHassioDiscovery(my_server, my_port, my_username, my_password, my_name, tempScaleLabel());
+    }
+    if (my_hassio_changed && !my_hassio)
+    {
+        sender.disableHassioDiscovery(my_server, my_port, my_username, my_password, my_name);
     }
 #endif
 }
@@ -438,7 +443,11 @@ bool startConfiguration()
   my_channel = String(custom_channel.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
 #ifdef API_MQTT_HASSIO
-  my_hassio = my_api == DTMQTT && String(custom_hassio.getValue()) == "checked";
+  {
+  auto hassio = my_api == DTMQTT && String(custom_hassio.getValue()) == "checked";
+  my_hassio_changed = my_hassio != hassio;
+  my_hassio = hassio;
+  }
 #endif
   validateInput(custom_uri.getValue(), my_uri);
 

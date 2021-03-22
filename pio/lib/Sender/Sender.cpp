@@ -116,7 +116,7 @@ bool SenderClass::mqttConnect(const String &server, uint16_t port, const String 
 }
 
 #ifdef API_MQTT_HASSIO
-bool SenderClass::sendHassioDiscovery(String server, uint16_t port, String username, String password, String name, String unit)
+bool SenderClass::enableHassioDiscovery(String server, uint16_t port, String username, String password, String name, String unit)
 {
     bool response = mqttConnect(server, port, name, username, password);
     if (response)
@@ -133,6 +133,26 @@ bool SenderClass::sendHassioDiscovery(String server, uint16_t port, String usern
         _mqttClient.loop();
     }
 
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return response;
+}
+
+bool SenderClass::disableHassioDiscovery(String server, uint16_t port, String username, String password, String name)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
+    {
+        auto chipid = String(ESP.getChipId(), HEX);
+        String topic = "homeassistant/sensor/iSpindel_" + chipid + "/";
+        _mqttClient.publish((topic + "temperature/config").c_str(), "");
+        _mqttClient.publish((topic + "tilt/config").c_str(), "");
+        _mqttClient.publish((topic + "battery/config").c_str(), "");
+        _mqttClient.publish((topic + "rssi/config").c_str(), "");
+        _mqttClient.publish((topic + "gravity/config").c_str(), "");
+        _mqttClient.loop();
+    }
     CONSOLELN(F("Closing MQTT connection"));
     _mqttClient.disconnect();
     stopclient();
