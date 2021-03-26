@@ -42,7 +42,6 @@ DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 int detectTempSensor(const uint8_t pins[]);
 bool testAccel();
-
 #ifdef USE_DMP
 #include "MPU6050.h"
 
@@ -87,6 +86,13 @@ float my_vfact = ADCDIVISOR;
 int16_t my_Offset[6];
 uint8_t my_tempscale = TEMP_CELSIUS;
 int8_t my_OWpin = -1;
+int tiltcommanded;
+
+// Tilt-commanded modes
+#define COMMANDANGLE  100.0   //"tilted above"; should never ever happen when being used.
+#define DEEPSLEEPANGLE 145.0  //Set on cap; don't wake radio just stay asleep.
+enum modes {normal, config, deepsleep};
+modes nextmode;
 
 uint32_t DSreqTime = 0;
 
@@ -278,7 +284,7 @@ bool shouldStartConfig(bool validConf)
   if (!_wifiCred)
     CONSOLELN(F("\nERROR no Wifi credentials"));
 
-  if (validConf && !_dblreset && _wifiCred && !_poweredOnOffOn)
+  if (validConf && !_dblreset && _wifiCred && !_poweredOnOffOn && nextmode==normal)
   {
     CONSOLELN(F("\nwoken from deepsleep, normal mode"));
     return false;
@@ -544,6 +550,9 @@ bool processResponse(String response)
 bool uploadData(uint8_t service)
 {
   SenderClass sender;
+  modes tiltcommand;
+  ESP.rtcUserMemoryRead(MODERTCSLOT, (uint32_t *)&tiltcommand, 1);
+
 
 #ifdef API_UBIDOTS
   if (service == DTUbiDots)
@@ -554,6 +563,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tiltcommand", tiltcommand);
     CONSOLELN(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
   }
@@ -569,6 +579,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tiltcommand", tiltcommand);
     CONSOLELN(F("\ncalling MQTT"));
     return sender.sendMQTT(my_server, my_port, my_username, my_password, my_name);
   }
@@ -584,6 +595,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tiltcommand", tiltcommand);
     CONSOLELN(F("\ncalling ThingSpeak"));
     return sender.sendThingSpeak(my_token, my_channel);
   }
@@ -599,6 +611,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tiltcommand", tiltcommand);
     CONSOLELN(F("\ncalling InfluxDB"));
     CONSOLELN(String(F("Sending to db: ")) + my_db + String(F(" w/ credentials: ")) + my_username + String(F(":")) + my_password);
     return sender.sendInfluxDB(my_server, my_port, my_db, my_name, my_username, my_password);
@@ -614,6 +627,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tiltcommand", tiltcommand);
     CONSOLELN(F("\ncalling Prometheus Pushgateway"));
     return sender.sendPrometheus(my_server, my_port, my_job, my_instance);
   }
@@ -634,6 +648,7 @@ bool uploadData(uint8_t service)
     sender.add("gravity", Gravity);
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
+    sender.add("tiltcommand", tiltcommand);
 
     if (service == DTHTTP)
     {
@@ -668,6 +683,7 @@ bool uploadData(uint8_t service)
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("ID", ESP.getChipId());
+    sender.add("tiltcommand", tiltcommand);
     CONSOLELN(F("\ncalling FHEM"));
     return sender.sendFHEM(my_server, my_port, my_name);
   }
@@ -679,6 +695,7 @@ bool uploadData(uint8_t service)
     sender.add("D", Tilt);
     sender.add("U", Volt);
     sender.add("G", Gravity);
+    sender.add("C", tiltcommand);
     CONSOLELN(F("\ncalling TCONTROL"));
     return sender.sendTCONTROL(my_server, 4968);
   }
@@ -699,6 +716,7 @@ bool uploadData(uint8_t service)
     sender.add("2", tempToSend);
     sender.add("3", voltToSend+"V");
     sender.add("4", String(Gravity, 3));
+    sender.add("5", String(tiltcommand, 1));
     return sender.sendBlynk(my_token);
   }
 #endif
@@ -711,6 +729,7 @@ bool uploadData(uint8_t service)
     sender.add("Battery[V]", Volt);
     sender.add("Gravity", Gravity);
     sender.add("Rssi[dBm]", WiFi.RSSI());
+    sender.add("tiltcommand", tiltcommand);
     CONSOLELN(F("\ncalling BREWBLOX"));
     return sender.sendBrewblox(my_server, my_port, my_uri, my_username, my_password, my_name);
   }
@@ -718,13 +737,13 @@ bool uploadData(uint8_t service)
   return false;
 }
 
-void goodNight(uint32_t seconds)
+void goodNight(uint32_t seconds, int emergency)
 {
 
   uint32_t _seconds = seconds;
   uint32_t left2sleep = 0;
   uint32_t validflag = RTCVALIDFLAG;
-
+  CONSOLELN(F("\n...nightnight..."));
   drd.stop();
 
   // workaround for DS not floating
@@ -732,7 +751,7 @@ void goodNight(uint32_t seconds)
   digitalWrite(my_OWpin, LOW);
 
   // we need another incarnation before work run
-  if (_seconds > MAXSLEEPTIME)
+  if (_seconds > MAXSLEEPTIME && !emergency)
   {
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
@@ -754,7 +773,7 @@ void goodNight(uint32_t seconds)
   // workaround proper power state init
   delay(500);
 }
-void sleepManager()
+int sleepManager()
 {
   uint32_t left2sleep, validflag;
   ESP.rtcUserMemoryRead(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
@@ -763,11 +782,12 @@ void sleepManager()
   // check if we have to incarnate again
   if (left2sleep != 0 && !drd.detectDoubleReset() && validflag == RTCVALIDFLAG)
   {
-    goodNight(left2sleep);
+    return left2sleep;//goodNight(left2sleep);
   }
   else
   {
     CONSOLELN(F("Worker run!"));
+    return 0;
   }
 }
 
@@ -858,7 +878,49 @@ float calculateTilt()
   float _ax = ax;
   float _ay = ay;
   float _az = az;
-  return acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
+  float angle=acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
+
+  modes curmode;
+  ESP.rtcUserMemoryRead(MODERTCSLOT, (uint32_t *)&curmode, 1);
+
+  //Override nextstart based on current tilt
+  tiltcommanded=0;
+  if (angle >= COMMANDANGLE) 
+  {
+    if(angle>= DEEPSLEEPANGLE)
+    {
+      if(curmode != deepsleep)
+      {
+        CONSOLELN(F("TILT>DeepSleep"));
+        tiltcommanded=1;
+        modes newmode = deepsleep;
+        ESP.rtcUserMemoryWrite(MODERTCSLOT, (uint32_t *)&newmode,1 );
+      }
+    }
+    else
+    {
+      if(curmode != config)  //Standing "up, but tilted; go into config mode"
+      {
+        CONSOLELN(F("TILT>CONFIG"));
+        tiltcommanded=1;
+        modes newmode = config;
+        ESP.rtcUserMemoryWrite(MODERTCSLOT, (uint32_t *)&newmode,1 );
+      }
+    }
+  }
+  else
+  {
+    //Not in a "command" tilt; use normal processing.
+    if(curmode != normal)
+    {
+        CONSOLELN(F("TILT>NORMAL"));
+        tiltcommanded=1;
+        modes newmode = normal;
+        ESP.rtcUserMemoryWrite(MODERTCSLOT, (uint32_t *)&newmode, 1);
+    }
+  }
+
+  return angle;
 }
 
 bool testAccel()
@@ -903,6 +965,7 @@ float getTilt()
   CONSOLE(samples.getHighest());
   CONSOLE(" time:");
   CONSOLELN(millis() - start);
+
   return samples.getAverage(MEDIANAVRG);
 }
 
@@ -1095,7 +1158,8 @@ bool isSafeMode(float _volt)
 {
   if (_volt < LOWBATT)
   {
-    CONSOLELN(F("\nWARNING: low Battery"));
+    CONSOLE(F("\nWARNING: low Battery: "));
+    CONSOLELN(_volt);
     return true;
   }
   else
@@ -1130,198 +1194,261 @@ bool connectBackupCredentials()
     return true;
 }
 
+/* Main Entrypoint */
 void setup()
 {
-
+  int32_t left2sleep;
   Serial.begin(115200);
+  left2sleep = sleepManager();       //Call ASAP; if we're supposed to be resting this puts us back to sleep.
 
-  CONSOLELN(F("\nFW " FIRMWAREVERSION));
-  CONSOLELN(ESP.getSdkVersion());
+  ESP.rtcUserMemoryRead(MODERTCSLOT, (uint32_t *)&nextmode, 1);
 
-  sleepManager();
-
-  bool validConf = readConfig();
-  if (!validConf)
-    CONSOLELN(F("\nERROR config corrupted"));
-  initDS18B20();
-  initAccel();
-
-  // decide whether we want configuration mode or normal mode
-  if (shouldStartConfig(validConf))
+  if(left2sleep > 0 || nextmode == deepsleep)
   {
-    uint32_t tmp;
-    ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
-
-    // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
-    if (tmp != RTCVALIDFLAG)
+    Volt = getBattery();
+    if (isSafeMode(Volt))
     {
-      drd.setRecentlyResetFlag();
-      tmp = RTCVALIDFLAG;
-      ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
-      CONSOLELN(F("reboot RFCAL"));
-      ESP.deepSleep(100000, WAKE_RFCAL);
-      delay(500);
+      //If we don't have power, don't check accelerometer, just stay dozing
+      goodNight(EMERGENCYSLEEP, 1);
     }
     else
     {
-      tmp = 0;
-      ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
-    }
-
-    flasher.attach(1, flash);
-
-    // rescue if wifi credentials lost because of power loss
-    if (!startConfiguration())
-    {
-      // test if ssid exists
-      if (WiFi.SSID() == "" &&
-          my_ssid != "" && my_psk != "")
+      //Wake up just enought to see if there's a tilt-command...
+      initAccel();
+      //We're only doing a couple of samples to save time and power.
+      for(int i=0;i<2;i++)
       {
-        connectBackupCredentials();
+        while (!accelgyro.getIntDataReadyStatus())
+          delay(2);
+        getAccSample();
+      }
+      float tilt=calculateTilt();
+      CONSOLE("\nTilt: ");
+      CONSOLELN(tilt);
+
+      accelgyro.setSleepEnabled(true);
+      if(tiltcommanded)
+      {
+        goodNight(2, 0);                     //React fast to a mode change
+      }
+      else
+      {
+        if(left2sleep == 0)
+          left2sleep=30;                     //Sleep with zero is bad...we've been tilted to DeepSleep and are staying there...
+        goodNight(left2sleep, 0);            //Or keep dozing.
       }
     }
-    uint32_t left2sleep = 0;
-    ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
-
-    flasher.detach();
-  }
-  // to make sure we wake up with STA but AP
-  WiFi.mode(WIFI_STA);
-  Volt = getBattery();
-  // we try to survive
-  if (isSafeMode(Volt))
-    WiFi.setOutputPower(0);
-  else
-    WiFi.setOutputPower(20.5);
-
-#ifndef USE_DMP
-  Tilt = getTilt();
-#else
-  while (fifoCount < packetSize)
-  {
-    //do stuff
-    CONSOLELN(F("wait DMP"));
-
-    fifoCount = accelgyro.getFIFOCount();
-  }
-  if (fifoCount == 1024)
-  {
-    CONSOLELN(F("FIFO overflow"));
-    accelgyro.resetFIFO();
   }
   else
   {
-    fifoCount = accelgyro.getFIFOCount();
+    //Full Worker Thread
+    CONSOLELN(F("\nFW " FIRMWAREVERSION));
+    CONSOLELN(ESP.getSdkVersion());
 
-    accelgyro.getFIFOBytes(fifoBuffer, packetSize);
+    ESP.rtcUserMemoryRead(MODERTCSLOT, (uint32_t *)&nextmode, 1);
+    CONSOLE(F("Read Start Mode:"));
+    CONSOLELN(nextmode);
+    if(nextmode>deepsleep)
+      {
+        CONSOLELN(F("StartMode Corrupt, resetting"));
+        nextmode=normal;
+        ESP.rtcUserMemoryWrite(MODERTCSLOT, (uint32_t *)&nextmode, 1);
+      }
 
-    accelgyro.resetFIFO();
 
-    fifoCount -= packetSize;
+    bool validConf = readConfig();
+    if (!validConf)
+      {
+        CONSOLELN(F("\nERROR config corrupted"));
+        nextmode=normal;  //Can't assume accelerometer data is working...
+      }
+    initDS18B20();
+    initAccel();
 
-    accelgyro.dmpGetQuaternion(&q, fifoBuffer);
-    accelgyro.dmpGetEuler(euler, &q);
-
-    /*
-    for (int i = 1; i < 64; i++) {
-    CONSOLE(fifoBuffer[i]);
-    CONSOLE(" ");
-    }
-    */
-
-    CONSOLE(F("euler\t"));
-    CONSOLE((euler[0] * 180 / M_PI));
-    CONSOLE("\t");
-    CONSOLE(euler[1] * 180 / M_PI);
-    CONSOLE("\t");
-    CONSOLELN(euler[2] * 180 / M_PI);
-
-    ax = euler[0];
-    ay = euler[2];
-    az = euler[1];
-
-    float _ax = ax;
-    float _ay = ay;
-    float _az = az;
-    Tilt = acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
-  }
-#endif
-
-  float accTemp = accelgyro.getTemperature() / 340.00 + 36.53;
-  accelgyro.setSleepEnabled(true);
-
-  CONSOLE("x: ");
-  CONSOLE(ax);
-  CONSOLE(" y: ");
-  CONSOLE(ay);
-  CONSOLE(" z: ");
-  CONSOLELN(az);
-
-  CONSOLE(F("Tilt: "));
-  CONSOLELN(Tilt);
-  CONSOLE("Tacc: ");
-  CONSOLELN(accTemp);
-  CONSOLE("Volt: ");
-  CONSOLELN(Volt);
-
-  // call as late as possible since DS needs converge time
-  Temperatur = getTemperature(true);
-  CONSOLE("Temp: ");
-  CONSOLELN(Temperatur);
-
-  // calc gravity on user defined polynominal
-  Gravity = calculateGravity();
-  CONSOLE(F("Gravity: "));
-  CONSOLELN(Gravity);
-
-  // water anomaly correction
-  // float _temp = Temperatur - 4; // polynominal at 4
-  // float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
-  // corrGravity = Gravity - (1 - wfact / 1000);
-  // CONSOLE(F("\tcorrGravity: "));
-  // CONSOLELN(corrGravity);
-
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    unsigned long startedAt = millis();
-    CONSOLE(F("After waiting "));
-    // int connRes = WiFi.waitForConnectResult();
-    uint8_t wait = 0;
-    while (WiFi.status() == WL_DISCONNECTED)
+    // decide whether we want configuration mode or normal mode
+    if (shouldStartConfig(validConf))
     {
-      delay(200);
-      wait++;
-      if (wait > 50)
-        break;
+      uint32_t tmp;
+      ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
+
+      // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
+      if (tmp != RTCVALIDFLAG)
+      {
+        drd.setRecentlyResetFlag();
+        tmp = RTCVALIDFLAG;
+        ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
+        CONSOLELN(F("reboot RFCAL"));
+        ESP.deepSleep(100000, WAKE_RFCAL);
+        delay(500);
+      }
+      else
+      {
+        CONSOLELN(F("TMJ>NoRebootRFCAL"));
+        tmp = 0;
+        ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
+      }
+
+      flasher.attach(1, flash);
+
+      // rescue if wifi credentials lost because of power loss
+      if (!startConfiguration())
+      {
+        // test if ssid exists
+        if (WiFi.SSID() == "" &&
+            my_ssid != "" && my_psk != "")
+        {
+          connectBackupCredentials();
+        }
+      }
+      uint32_t left2sleep = 0;
+      ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
+
+      flasher.detach();
     }
-    auto waited = (millis() - startedAt);
-    CONSOLE(waited);
-    CONSOLE(F("ms, result "));
-    CONSOLELN(WiFi.status());
-  }
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    CONSOLE(F("IP: "));
-    CONSOLELN(WiFi.localIP());
-    uploadData(my_api);
-  }
-  else
-  {
-    CONSOLELN(F("Failed to connect -> trying to restore connection..."));
 
-    if (connectBackupCredentials())
-      CONSOLE(F("   -> Connection restored!"));
+    Volt = getBattery();
+    // to make sure we wake up with STA but AP
+    WiFi.mode(WIFI_STA);
+    
+    // we try to survive
+    if (isSafeMode(Volt))
+      WiFi.setOutputPower(0);
     else
-      CONSOLE(F("   -> Failed to restore connection..."));
-  }
+      WiFi.setOutputPower(20.5);
 
-  // survive - 60min sleep time
-  if (isSafeMode(Volt))
-  {
-    my_sleeptime = EMERGENCYSLEEP;
-  }
+  #ifndef USE_DMP
+    Tilt = getTilt();
+  #else
+    while (fifoCount < packetSize)
+    {
+      //do stuff
+      CONSOLELN(F("wait DMP"));
 
-  goodNight(my_sleeptime);
+      fifoCount = accelgyro.getFIFOCount();
+    }
+    if (fifoCount == 1024)
+    {
+      CONSOLELN(F("FIFO overflow"));
+      accelgyro.resetFIFO();
+    }
+    else
+    {
+      fifoCount = accelgyro.getFIFOCount();
+
+      accelgyro.getFIFOBytes(fifoBuffer, packetSize);
+
+      accelgyro.resetFIFO();
+
+      fifoCount -= packetSize;
+
+      accelgyro.dmpGetQuaternion(&q, fifoBuffer);
+      accelgyro.dmpGetEuler(euler, &q);
+
+      /*
+      for (int i = 1; i < 64; i++) {
+      CONSOLE(fifoBuffer[i]);
+      CONSOLE(" ");
+      }
+      */
+
+      CONSOLE(F("euler\t"));
+      CONSOLE((euler[0] * 180 / M_PI));
+      CONSOLE("\t");
+      CONSOLE(euler[1] * 180 / M_PI);
+      CONSOLE("\t");
+      CONSOLELN(euler[2] * 180 / M_PI);
+
+      ax = euler[0];
+      ay = euler[2];
+      az = euler[1];
+
+      float _ax = ax;
+      float _ay = ay;
+      float _az = az;
+      Tilt = acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
+    }
+  #endif
+
+    float accTemp = accelgyro.getTemperature() / 340.00 + 36.53;
+    accelgyro.setSleepEnabled(true);
+
+    CONSOLE("x: ");
+    CONSOLE(ax);
+    CONSOLE(" y: ");
+    CONSOLE(ay);
+    CONSOLE(" z: ");
+    CONSOLELN(az);
+
+    CONSOLE(F("Tilt: "));
+    CONSOLELN(Tilt);
+    CONSOLE("Tacc: ");
+    CONSOLELN(accTemp);
+    CONSOLE("Volt: ");
+    CONSOLELN(Volt);
+
+    // call as late as possible since DS needs converge time
+    Temperatur = getTemperature(true);
+    CONSOLE("Temp: ");
+    CONSOLELN(Temperatur);
+
+    // calc gravity on user defined polynominal
+    Gravity = calculateGravity();
+    CONSOLE(F("Gravity: "));
+    CONSOLELN(Gravity);
+
+    // water anomaly correction
+    // float _temp = Temperatur - 4; // polynominal at 4
+    // float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
+    // corrGravity = Gravity - (1 - wfact / 1000);
+    // CONSOLE(F("\tcorrGravity: "));
+    // CONSOLELN(corrGravity);
+
+    if (WiFi.status() != WL_CONNECTED)
+    {
+      unsigned long startedAt = millis();
+      CONSOLE(F("After waiting "));
+      // int connRes = WiFi.waitForConnectResult();
+      uint8_t wait = 0;
+      while (WiFi.status() == WL_DISCONNECTED)
+      {
+        delay(200);
+        wait++;
+        if (wait > 50)
+          break;
+      }
+      auto waited = (millis() - startedAt);
+      CONSOLE(waited);
+      CONSOLE(F("ms, result "));
+      CONSOLELN(WiFi.status());
+    }
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      CONSOLE(F("IP: "));
+      CONSOLELN(WiFi.localIP());
+      uploadData(my_api);
+    }
+    else
+    {
+      CONSOLELN(F("Failed to connect -> trying to restore connection..."));
+
+      if (connectBackupCredentials())
+        CONSOLE(F("   -> Connection restored!"));
+      else
+        CONSOLE(F("   -> Failed to restore connection..."));
+    }
+
+    // survive - 60min sleep time
+    if (isSafeMode(Volt))
+    {
+      goodNight(EMERGENCYSLEEP,1);
+    }
+    else if(tiltcommanded)
+      {
+        goodNight(2, 0);                     //React fast to a mode change
+      }
+    else
+      goodNight(my_sleeptime, 0);
+  }
 }
 
 void loop()

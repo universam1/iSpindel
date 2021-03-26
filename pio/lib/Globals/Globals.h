@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.5.1"
+#define FIRMWAREVERSION "6.5.2"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -109,9 +109,12 @@ extern Ticker flasher;
 
 // sleep management
 #define RTCSLEEPADDR 5
-#define MAXSLEEPTIME 3600UL //TODO
+#define MAXSLEEPTIME 30UL //Check the accelerometer every 30 secs for a command   //3600UL //TODO
 #define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
 #define LOWBATT 3.3
+
+// tilt command
+#define MODERTCSLOT 20
 
 #define UNINIT 0
 

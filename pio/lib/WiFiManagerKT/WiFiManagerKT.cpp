@@ -957,6 +957,9 @@ void WiFiManager::handleInfo()
   DEBUG_WM(F("Sent info page"));
 }
 
+String tiltcommands[]={"Normal","Config","DeepSleep"};
+extern volatile String Pronk;
+
 /** Handle the info page */
 void WiFiManager::handleiSpindel()
 {
@@ -964,6 +967,8 @@ void WiFiManager::handleiSpindel()
 
   // we reset the timeout
   _configPortalStart = millis();
+  int tiltcommand;
+  ESP.rtcUserMemoryRead(MODERTCSLOT, (uint32_t *)&tiltcommand, 1);
 
   String page = FPSTR(HTTP_HEADER);
   page.replace("{v}", "Info");
@@ -987,6 +992,10 @@ void WiFiManager::handleiSpindel()
   page += F("V</td></tr>");
   page += F("<tr><td>Gravity:</td><td>");
   page += String(Gravity, 3);
+  page += F("</td></tr>");
+  page += F("<tr><td>TiltCommand:</td><td>");
+  page += tiltcommands[tiltcommand];
+  page += F("</td></tr>");
   page += F("</td></tr>");
   page += F("</table></h2>");
   page += F("<hr><dl>");
@@ -1028,7 +1037,7 @@ void WiFiManager::handleMnt()
   page += F("<dd>Date: ");
   page += __DATE__ " " __TIME__;
   page += F("</dd></dl><br>");
-  page += F("<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><br><input type='submit' class=\"btn\" value='update'></form>");
+  page += F("<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update' accept='.bin'><br><input type='submit' class=\"btn\" value='update'></form>");
   page += F("<hr><h2>Factory Reset</h2><br>All settings will be removed");
   page += F("<br><form action=\"/reset\" method=\"get\"><button class=\"btn\">factory reset</button></form><br/>");
   page += FPSTR(HTTP_END);
