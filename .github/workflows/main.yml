@@ -3,20 +3,18 @@ name: PlatformIO CI
 on: [push, pull_request]
 
 jobs:
-  #  lint:
-  #    runs-on: ubuntu-latest
-  #
-  #    steps:
-  #    - uses: actions/checkout@v2
-  #    - uses: DoozyX/clang-format-lint-action@v0.11
-  #      with:
-  #        source: './pio/src'
-  #        extensions: 'h,cpp'
-  #        clangFormatVersion: 11
-  #        style: llvm
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: DoozyX/clang-format-lint-action@v0.11
+      with:
+        source: './pio/src'
+        extensions: 'h,cpp'
+        clangFormatVersion: 11
 
   build:
-
     runs-on: ubuntu-latest
 
     steps:
