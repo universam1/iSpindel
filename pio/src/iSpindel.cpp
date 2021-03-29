@@ -23,6 +23,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
 #include "tinyexpr.h"
+#include "secrets.h"                          //AWS - Currently a file for Keys, Certs, etc - Need to make this a captured variable for iSpindle
 
 #include "Sender.h"
 // !DEBUG 1
@@ -360,6 +361,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
                                         String(my_tempscale).c_str(),
                                         5, TYPE_HIDDEN, WFM_NO_LABEL);
+  WiFiManagerParameter custom_warning1("warning1","WARNING! Secure MQTT has a big impact on battery usage.<BR>&nbsp;<BR>For AWS:<UL><LI>Name must be Thingname</LI><LI>Server must be Endpoint</LI><LI>Port must be 8883</LI><LI>Path/URI is Publish Topic</LI></UL>",
+                                        "<<<<< >>>>>",TKIDSIZE);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
@@ -375,6 +378,7 @@ bool startConfiguration()
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
 
+  wifiManager.addParameter(&custom_warning1);
   wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
@@ -556,6 +560,22 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
+  }
+#endif
+
+#ifdef API_AWSIOTMQTT             //AWS
+  if (service == DTAWSIOTMQTT)
+  {
+    sender.add("name", my_name);
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN("Calling AWSIOTMQTT Sender");
+    return sender.sendSecureMQTT(AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, my_server, my_port, my_name, my_uri);
+    //AWS - NOTE - Need to replace secrets.h with the relevant parameters
   }
 #endif
 
@@ -1105,6 +1125,7 @@ bool isSafeMode(float _volt)
 bool connectBackupCredentials()
 {
   WiFi.disconnect();
+  WiFi.mode(WIFI_STA);  //suggestion that MQTT connection failures can happen if WIFI mode isn't STA.
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
   CONSOLELN(F("Rescued Wifi credentials"));
 
