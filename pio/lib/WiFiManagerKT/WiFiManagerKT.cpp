@@ -150,7 +150,8 @@ void WiFiManager::setupConfigPortal()
       DEBUG_WM(F("Invalid AccessPoint password. Ignoring"));
       _apPassword = NULL;
     }
-    DEBUG_WM(_apPassword);
+    //Don't show ap password on the console
+    //DEBUG_WM(_apPassword);
   }
 
   //optional soft ip config
