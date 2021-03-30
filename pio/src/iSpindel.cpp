@@ -66,6 +66,7 @@ float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravit
 #endif
 
 bool shouldSaveConfig = false;
+bool dblreset = false;
 
 char my_token[TKIDSIZE * 2];
 char my_name[TKIDSIZE] = "iSpindel000";
@@ -260,10 +261,6 @@ bool shouldStartConfig(bool validConf)
   if (_poweredOnOffOn)
     CONSOLELN(F("power-cycle or reset detected, config mode"));
 
-  bool _dblreset = drd.detectDoubleReset();
-  if (_dblreset)
-    CONSOLELN(F("\nDouble Reset detected"));
-
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
   if (!_wifiCred)
@@ -280,7 +277,7 @@ bool shouldStartConfig(bool validConf)
   if (!_wifiCred)
     CONSOLELN(F("\nERROR no Wifi credentials"));
 
-  if (validConf && !_dblreset && _wifiCred && !_poweredOnOffOn)
+  if (validConf && !dblreset && _wifiCred && !_poweredOnOffOn)
   {
     CONSOLELN(F("\nwoken from deepsleep, normal mode"));
     return false;
@@ -289,6 +286,8 @@ bool shouldStartConfig(bool validConf)
   else
   {
     CONSOLELN(F("\ngoing to Config Mode"));
+    delay(500); // slight delay before drd reset
+    drd.stop();
     return true;
   }
 }
@@ -776,7 +775,7 @@ void sleepManager()
   ESP.rtcUserMemoryRead(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
 
   // check if we have to incarnate again
-  if (left2sleep != 0 && !drd.detectDoubleReset() && validflag == RTCVALIDFLAG)
+  if (left2sleep != 0 && validflag == RTCVALIDFLAG)
   {
     goodNight(left2sleep);
   }
@@ -1153,7 +1152,11 @@ void setup()
   CONSOLELN(F("\nFW " FIRMWAREVERSION));
   CONSOLELN(ESP.getSdkVersion());
 
-  sleepManager();
+  dblreset = drd.detectDoubleReset();
+  if (dblreset)
+    CONSOLELN(F("\nDouble Reset detected"));
+  else
+    sleepManager();
 
   bool validConf = readConfig();
   if (!validConf)
@@ -1170,7 +1173,6 @@ void setup()
     // DIRTY hack to keep track of WAKE_RF_DEFAULT --> find a way to read WAKE_RF_*
     if (tmp != RTCVALIDFLAG)
     {
-      drd.setRecentlyResetFlag();
       tmp = RTCVALIDFLAG;
       ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
       CONSOLELN(F("reboot RFCAL"));
