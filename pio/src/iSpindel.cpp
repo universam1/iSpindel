@@ -837,60 +837,38 @@ void sleepManager()
   }
 }
 
-void requestTemp()
-{
-  if (!DSreqTime)
-  {
-    DS18B20.requestTemperatures();
-    DSreqTime = millis();
-  }
-}
-
 void initDS18B20()
 {
-  if (my_OWpin == -1)
+  for (uint8_t p = 0; p < sizeof(OW_PINS); p++)
   {
-    my_OWpin = detectTempSensor(OW_PINS);
-    if (my_OWpin == -1)
+    const byte pin = OW_PINS[p];
+    CONSOLE(F("TempInit: scanning for OW device on pin: "));
+    CONSOLELN(pin);
+    oneWire = new OneWire(pin);
+    DS18B20 = DallasTemperature(oneWire);
+    if (DS18B20.getAddress(tempDeviceAddress, 0))
     {
-      CONSOLELN(F("ERROR: cannot find a OneWire Temperature Sensor!"));
-      return;
-    }
-  }
-  pinMode(my_OWpin, OUTPUT);
-  digitalWrite(my_OWpin, LOW);
-  delay(100);
-  oneWire = new OneWire(my_OWpin);
-  DS18B20 = DallasTemperature(oneWire);
-  DS18B20.begin();
+      CONSOLELN(F("Tempinit: OneWire sensor found!"));
 
-  bool device = DS18B20.getAddress(tempDeviceAddress, 0);
-  if (!device)
-  {
-    my_OWpin = detectTempSensor(OW_PINS);
-    if (my_OWpin == -1)
-    {
-      CONSOLELN(F("ERROR: cannot find a OneWire Temperature Sensor!"));
-      return;
+      if (DS18B20.isConnected(tempDeviceAddress))
+      {
+        CONSOLELN(F("Tempinit: sensor connected"));
+
+        if (DS18B20.validFamily(tempDeviceAddress))
+          CONSOLELN(F("Tempinit: temp sensor family VALID"));
+        else
+          CONSOLELN(F("Tempinit: temp sensor family INVALID"));
+      }
+      else
+        CONSOLELN(F("Tempinit: sensor NOT connected"));
     }
     else
-    {
-      delete oneWire;
-      oneWire = new OneWire(my_OWpin);
-      DS18B20 = DallasTemperature(oneWire);
-      DS18B20.begin();
-      DS18B20.getAddress(tempDeviceAddress, 0);
-    }
+      CONSOLELN(F("Tempinit: No OneWire sensor found"));
   }
 
   DS18B20.setWaitForConversion(false);
-  DS18B20.setResolution(tempDeviceAddress, RESOLUTION);
-  requestTemp();
-}
-
-bool isDS18B20ready()
-{
-  return millis() - DSreqTime > OWinterval;
+  DS18B20.setResolution(12);
+  DS18B20.requestTemperatures();
 }
 
 void initAccel()
@@ -958,7 +936,7 @@ float getTilt()
     float _tilt = calculateTilt();
     samples.add(_tilt);
 
-    if (i >= MEDIANROUNDSMIN && isDS18B20ready())
+    if (i >= MEDIANROUNDSMIN && DS18B20.isConversionComplete())
       break;
   }
   CONSOLE("Samples:");
@@ -974,147 +952,13 @@ float getTilt()
 
 float getTemperature(bool block = false)
 {
-  float t = Temperatur;
-
-  // we need to wait for DS18b20 to finish conversion
-  if (!DSreqTime || (!block && !isDS18B20ready()))
-    return t;
-
-  // if we need the result we have to block
-  while (!isDS18B20ready())
-    delay(10);
-  DSreqTime = 0;
-
-  t = DS18B20.getTempCByIndex(0);
-
-  if (t == DEVICE_DISCONNECTED_C || // DISCONNECTED
-      t == 85.0)                    // we read 85 uninitialized
+  unsigned long start = millis();
+  if (block)
   {
-    CONSOLELN(F("ERROR: OW DISCONNECTED"));
-    pinMode(my_OWpin, OUTPUT);
-    digitalWrite(my_OWpin, LOW);
-    delay(100);
-    oneWire->reset();
-
-    CONSOLELN(F("OW Retry"));
-    initDS18B20();
-    delay(OWinterval);
-    t = getTemperature(false);
+    while (!DS18B20.isConversionComplete() && (millis() - start < 750))
+      yield();
   }
-
-  return t;
-}
-
-int detectTempSensor(const uint8_t pins[])
-{
-
-  for (uint8_t p = 0; p < sizeof(pins); p++)
-  {
-    const byte pin = pins[p];
-    byte i;
-    byte present = 0;
-    byte type_s;
-    byte data[12];
-    byte addr[8];
-    float celsius;
-
-    CONSOLE(F("scanning for OW device on pin: "));
-    CONSOLELN(pin);
-    OneWire ds(pin);
-
-    if (!ds.search(addr))
-    {
-      CONSOLELN(F("No devices found!"));
-      ds.reset_search();
-      delay(250);
-      continue;
-    }
-
-    CONSOLE("Found device with ROM =");
-    for (i = 0; i < 8; i++)
-    {
-      CONSOLE(' ');
-      CONSOLE(addr[i], HEX);
-    }
-
-    if (OneWire::crc8(addr, 7) != addr[7])
-    {
-      CONSOLELN(" CRC is not valid!");
-      continue;
-    }
-    CONSOLELN();
-
-    // the first ROM byte indicates which chip
-    switch (addr[0])
-    {
-    case 0x10:
-      CONSOLELN("  Chip = DS18S20"); // or old DS1820
-      type_s = 1;
-      break;
-    case 0x28:
-      CONSOLELN("  Chip = DS18B20");
-      type_s = 0;
-      break;
-    case 0x22:
-      CONSOLELN("  Chip = DS1822");
-      type_s = 0;
-      break;
-    default:
-      CONSOLELN("Device is not a DS18x20 family device.");
-      continue;
-    }
-
-    ds.reset();
-    ds.select(addr);
-    ds.write(0x44, 1); // start conversion, with parasite power on at the end
-
-    delay(900); // maybe 750ms is enough, maybe not
-    present = ds.reset();
-    ds.select(addr);
-    ds.write(0xBE); // Read Scratchpad
-
-    CONSOLE("  Data = ");
-    CONSOLE(present, HEX);
-    CONSOLE(" ");
-    for (i = 0; i < 9; i++)
-    { // we need 9 bytes
-      data[i] = ds.read();
-      CONSOLE(data[i], HEX);
-      CONSOLE(" ");
-    }
-    CONSOLE(" CRC=");
-    CONSOLELN(OneWire::crc8(data, 8), HEX);
-
-    // Convert the data to actual temperature
-    int16_t raw = (data[1] << 8) | data[0];
-    if (type_s)
-    {
-      raw = raw << 3; // 9 bit resolution default
-      if (data[7] == 0x10)
-      {
-        // "count remain" gives full 12 bit resolution
-        raw = (raw & 0xFFF0) + 12 - data[6];
-      }
-    }
-    else
-    {
-      byte cfg = (data[4] & 0x60);
-      // at lower res, the low bits are undefined, so let's zero them
-      if (cfg == 0x00)
-        raw = raw & ~7; // 9 bit resolution, 93.75 ms
-      else if (cfg == 0x20)
-        raw = raw & ~3; // 10 bit res, 187.5 ms
-      else if (cfg == 0x40)
-        raw = raw & ~1; // 11 bit res, 375 ms
-      //// default is 12 bit resolution, 750 ms conversion time
-    }
-    celsius = (float)raw / 16.0;
-    CONSOLE(F("  Temperature = "));
-    CONSOLE(celsius);
-    CONSOLELN(F(" Celsius, "));
-    return pin;
-  }
-  return -1;
+  return DS18B20.getTempC(tempDeviceAddress);
 }
 
 float getBattery()
@@ -1151,9 +995,9 @@ void flash()
   if (testAccel())
     getAccSample();
   Tilt = calculateTilt();
-  Temperatur = getTemperature(false);
+  Temperatur = getTemperature(true);
   Gravity = calculateGravity();
-  requestTemp();
+  DS18B20.requestTemperatures();
 }
 
 bool isSafeMode(float _volt)
