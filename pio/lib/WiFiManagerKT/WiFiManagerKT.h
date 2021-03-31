@@ -41,20 +41,21 @@ const char HTTP_STYLE[] PROGMEM = "<style>body,textarea,input,select{background:
 const char HTTP_SCRIPT[] PROGMEM = R"V0G0N(
 <script>
 var lAPI = [
-{"name":"Ubidots",    "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"empty",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"CraftBeerPi","token":0,"server":1,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"HTTP",       "token":1,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"TControl",   "token":0,"server":1,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"FHEM",       "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"TCP",        "token":1,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"iSpindel.de","token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"InfluxDB",   "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":1,"username":1,"password":1,"job":0,"instance":0},
-{"name":"Prometheus", "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":1,"instance":1},
-{"name":"MQTT",       "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0},
-{"name":"ThingSpeak", "token":1,"server":0,"uri":0,"port":0,"channel":1,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"Blynk",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0},
-{"name":"Brewblox",   "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0}];
+{"name":"Ubidots",    "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"empty",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"CraftBeerPi","token":0,"server":1,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"HTTP",       "token":1,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"TControl",   "token":0,"server":1,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"FHEM",       "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"TCP",        "token":1,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"iSpindel.de","token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"InfluxDB",   "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":1,"username":1,"password":1,"job":0,"instance":0,"warning1":0},
+{"name":"Prometheus", "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":1,"instance":1,"warning1":0},
+{"name":"MQTT",       "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0,"warning1":0},
+{"name":"ThingSpeak", "token":1,"server":0,"uri":0,"port":0,"channel":1,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"Blynk",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
+{"name":"Brewblox",   "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0,"warning1":0},
+{"name":"AWSIOTMQTT", "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":1}];
 var $ = function (id) { return document.getElementById(id); };
 var labels = document.getElementsByTagName('LABEL');
 function set(id, show) {
