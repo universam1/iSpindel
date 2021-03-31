@@ -951,7 +951,11 @@ void initAccel()
 float calculateTilt()
 {
   if (ax == 0 && ay == 0 && az == 0)
-    return 0.f;modes curmode;
+    return 0.f;
+
+  float angle = acos(az / (sqrt(ax * ax + ay * ay + az * az))) * 180.0 / M_PI;
+
+  modes curmode;
   ESP.rtcUserMemoryRead(RTCMODE, (uint32_t *)&curmode, sizeof curmode);
 
   if(curmode != locknormal)
@@ -996,7 +1000,8 @@ float calculateTilt()
     }
   }
 
-  return angle;}
+  return angle;
+}
 
 bool testAccel()
 {
@@ -1377,7 +1382,6 @@ void setup()
     // decide whether we want configuration mode or normal mode
     if (shouldStartConfig(validConf))
     {
-does this make sense?
       {
         // test if ssid exists
         if (WiFi.SSID() == "" &&
@@ -1444,8 +1448,6 @@ does this make sense?
       CONSOLE(euler[1] * 180 / M_PI);
       CONSOLE("\t");
       CONSOLELN(euler[2] * 180 / M_PI);
-
-Does This Make Sense?
 
       float _ax = ax;
       float _ay = ay;
