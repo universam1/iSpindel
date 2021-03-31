@@ -108,13 +108,15 @@ extern Ticker flasher;
 #define RTCVALIDFLAG 0xCAFEBABE
 
 // sleep management
-#define RTCSLEEPADDR 5
-#define MAXSLEEPTIME 30UL //Check the accelerometer every 30 secs for a command   //3600UL //TODO
+#define RTCSLEEPADDR 5      //And +1 for the valid flag
+#define MAXSLEEPTIME 30UL   //Check the accelerometer every 30 secs for a command   //3600UL //TODO
 #define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
 #define LOWBATT 3.3
 
 // tilt command
-#define MODERTCSLOT 20
+#define RTCMODE 10
+enum modes {locknormal, normal, config, deepsleep};
+extern String tiltcommands[];
 
 #define UNINIT 0
 

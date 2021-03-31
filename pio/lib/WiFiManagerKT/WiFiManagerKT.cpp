@@ -957,9 +957,6 @@ void WiFiManager::handleInfo()
   DEBUG_WM(F("Sent info page"));
 }
 
-String tiltcommands[]={"Normal","Config","DeepSleep"};
-extern volatile String Pronk;
-
 /** Handle the info page */
 void WiFiManager::handleiSpindel()
 {
@@ -968,7 +965,7 @@ void WiFiManager::handleiSpindel()
   // we reset the timeout
   _configPortalStart = millis();
   int tiltcommand;
-  ESP.rtcUserMemoryRead(MODERTCSLOT, (uint32_t *)&tiltcommand, 1);
+  ESP.rtcUserMemoryRead(RTCMODE, (uint32_t *)&tiltcommand, 1);
 
   String page = FPSTR(HTTP_HEADER);
   page.replace("{v}", "Info");
