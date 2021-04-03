@@ -80,8 +80,8 @@ char my_polynominal[250] = "-0.00031*tilt^2+0.557*tilt-14.054";
 String my_ssid;
 String my_psk;
 uint8_t my_api;
-uint8_t my_tiltcmden=0;
-uint32_t my_updatefromdeepsleep= 60*60;
+uint8_t my_tiltcmden = 0;
+uint32_t my_updatefromdeepsleep = 60 * 60;
 uint32_t my_sleeptime = 15 * 60;
 uint16_t my_port = 80;
 uint32_t my_channel;
@@ -92,9 +92,9 @@ int8_t my_OWpin = -1;
 int usequicksleep;
 
 // Tilt-commanded modes
-#define COMMANDANGLE  100.0   //"tilted above"; should never ever happen when being used.
-#define DEEPSLEEPANGLE 145.0  //Set on cap; don't wake radio just stay asleep.
-String tiltcommands[]={"LockedNormal", "Normal","Config","DeepSleep"};
+#define COMMANDANGLE 100.0   //"tilted above"; should never ever happen when being used.
+#define DEEPSLEEPANGLE 145.0 //Set on cap; don't wake radio just stay asleep.
+String tiltcommands[] = {"LockedNormal", "Normal", "Config", "DeepSleep"};
 static modes nextmode;
 
 uint32_t DSreqTime = 0;
@@ -292,7 +292,7 @@ bool shouldStartConfig(bool validConf)
   if (!_wifiCred)
     CONSOLELN(F("\nERROR no Wifi credentials"));
 
-  if (validConf && !_dblreset && _wifiCred && !_poweredOnOffOn && nextmode!=config)
+  if (validConf && !_dblreset && _wifiCred && !_poweredOnOffOn && nextmode != config)
   {
     CONSOLELN(F("\nNormal Wake!"));
     return false;
@@ -369,12 +369,10 @@ bool startConfiguration()
       "WARNING! Secure MQTT has a big impact on battery usage.<BR>&nbsp;<BR>For AWS:<UL><LI>Name must be "
       "Thingname</LI><LI>Server must be Endpoint</LI><LI>Port must be 8883</LI><LI>Path/URI is Publish Topic</LI></UL>",
       "<<<<< >>>>>", TKIDSIZE);
-  WiFiManagerParameter custom_TiltCmdEn("TiltCmdEn", "Set Mode by Tilt (1=yes)",
-                                   String(my_tiltcmden).c_str(), TKIDSIZE,
-                                   TYPE_NUMBER);
+  WiFiManagerParameter custom_TiltCmdEn("TiltCmdEn", "Set Mode by Tilt (1=yes)", String(my_tiltcmden).c_str(), TKIDSIZE,
+                                        TYPE_NUMBER);
   WiFiManagerParameter custom_DeepSleepUpdates("DeepSleepUpdates", "Update interval when vertical (s)",
-                                   String(my_updatefromdeepsleep).c_str(), TKIDSIZE,
-                                   TYPE_NUMBER);
+                                               String(my_updatefromdeepsleep).c_str(), TKIDSIZE, TYPE_NUMBER);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
@@ -409,7 +407,6 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_TiltCmdEn);
   wifiManager.addParameter(&custom_DeepSleepUpdates);
 
-
   wifiManager.setConfSSID(htmlencode(my_ssid));
   wifiManager.setConfPSK(htmlencode(my_psk));
 
@@ -443,7 +440,7 @@ bool startConfiguration()
   if (my_vfact < ADCDIVISOR * 0.8 || my_vfact > ADCDIVISOR * 1.25)
     my_vfact = ADCDIVISOR;
 
-  my_tiltcmden = String(custom_TiltCmdEn.getValue()).toInt()!=0;
+  my_tiltcmden = String(custom_TiltCmdEn.getValue()).toInt() != 0;
   my_updatefromdeepsleep = String(custom_DeepSleepUpdates.getValue()).toInt();
 
   // save the custom parameters to FS
@@ -790,8 +787,8 @@ void goodNight(uint32_t seconds, int emergency)
     left2sleep = _seconds - MAXSLEEPTIME;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    validflag=0;  //We're not waking up wifi on next boot...
-    ESP.rtcUserMemoryWrite(WIFIENADDR, &validflag, sizeof(validflag));    
+    validflag = 0; //We're not waking up wifi on next boot...
+    ESP.rtcUserMemoryWrite(WIFIENADDR, &validflag, sizeof(validflag));
     CONSOLELN(String(F("\nStep-sleep: ")) + MAXSLEEPTIME + "s; left: " + left2sleep + "s; RT: " + millis());
     ESP.deepSleep(MAXSLEEPTIME * 1e6, WAKE_RF_DISABLED);
   }
@@ -802,19 +799,19 @@ void goodNight(uint32_t seconds, int emergency)
     left2sleep = 0;
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR, &left2sleep, sizeof(left2sleep));
     ESP.rtcUserMemoryWrite(RTCSLEEPADDR + 1, &validflag, sizeof(validflag));
-    if(emergency)
+    if (emergency)
     {
-      validflag=0;
+      validflag = 0;
       ESP.rtcUserMemoryWrite(WIFIENADDR, &validflag, sizeof(validflag));
       CONSOLELN(String(F("\nEmergency-sleep: ")) + _seconds + "s; RT: " + millis());
-      ESP.deepSleep(MAXSLEEPTIME * 1e6, WAKE_RF_DISABLED);  //Low battery... no radio for you!
+      ESP.deepSleep(MAXSLEEPTIME * 1e6, WAKE_RF_DISABLED); //Low battery... no radio for you!
     }
     else
     {
       ESP.rtcUserMemoryWrite(WIFIENADDR, &validflag, sizeof(validflag));
       CONSOLELN(String(F("\nFinal-sleep: ")) + _seconds + "s; RT: " + millis());
-      ESP.deepSleep(_seconds * 1e6, WAKE_RF_DEFAULT);       // WAKE_RF_DEFAULT --> auto reconnect after wakeup
-    }    
+      ESP.deepSleep(_seconds * 1e6, WAKE_RF_DEFAULT); // WAKE_RF_DEFAULT --> auto reconnect after wakeup
+    }
   }
   // workaround proper power state init
   delay(500);
@@ -830,23 +827,21 @@ void EnsureRadioOn()
   ESP.rtcUserMemoryRead(WIFIENADDR, &tmp, sizeof(tmp));
 
   if (tmp != RTCVALIDFLAG)
-    {
-      drd.setRecentlyResetFlag();
-      tmp = RTCVALIDFLAG;
-      ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
-      CONSOLELN(F("reboot with WakeRF"));
-      ESP.deepSleep(100000, WAKE_RFCAL);
-      delay(500);
-    }
-    else
-    {
-      CONSOLELN(F("WakeRF was set"));
-      tmp = 0;
-      ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
-    }
-
+  {
+    drd.setRecentlyResetFlag();
+    tmp = RTCVALIDFLAG;
+    ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
+    CONSOLELN(F("reboot with WakeRF"));
+    ESP.deepSleep(100000, WAKE_RFCAL);
+    delay(500);
+  }
+  else
+  {
+    CONSOLELN(F("WakeRF was set"));
+    tmp = 0;
+    ESP.rtcUserMemoryWrite(WIFIENADDR, &tmp, sizeof(tmp));
+  }
 }
-
 
 int sleepManager()
 {
@@ -857,7 +852,7 @@ int sleepManager()
   // check if we have to incarnate again
   if (left2sleep != 0 && !drd.detectDoubleReset() && validflag == RTCVALIDFLAG)
   {
-    return left2sleep;//goodNight(left2sleep);
+    return left2sleep; //goodNight(left2sleep);
   }
   else
   {
@@ -958,16 +953,16 @@ float calculateTilt()
   modes curmode;
   ESP.rtcUserMemoryRead(RTCMODE, (uint32_t *)&curmode, sizeof curmode);
 
-  if(curmode != locknormal)
+  if (curmode != locknormal)
   {
     //Override nextstart based on current tilt
-    uint32_t newmode=curmode;
+    uint32_t newmode = curmode;
 
-    if (angle >= COMMANDANGLE) 
+    if (angle >= COMMANDANGLE)
     {
-      if(angle>= DEEPSLEEPANGLE)
+      if (angle >= DEEPSLEEPANGLE)
       {
-        if(curmode != deepsleep)
+        if (curmode != deepsleep)
         {
           CONSOLELN(F("TILT>DeepSleep"));
           newmode = deepsleep;
@@ -975,7 +970,7 @@ float calculateTilt()
       }
       else
       {
-        if(curmode != config)  //Standing "up, but tilted; go into config mode"
+        if (curmode != config) //Standing "up, but tilted; go into config mode"
         {
           CONSOLELN(F("TILT>CONFIG"));
           newmode = config;
@@ -985,17 +980,17 @@ float calculateTilt()
     else
     {
       //Not in a "command" tilt; use normal processing.
-      if(curmode != normal)
+      if (curmode != normal)
       {
-          CONSOLELN(F("TILT>NORMAL"));
-          newmode = normal;
+        CONSOLELN(F("TILT>NORMAL"));
+        newmode = normal;
       }
     }
 
-    if(newmode != curmode)  //Write the change if we have a change
+    if (newmode != curmode) //Write the change if we have a change
     {
       CONSOLELN(F("TILT>commanded"));
-      usequicksleep=1;      //Tell goodNight to react faster to the change
+      usequicksleep = 1; //Tell goodNight to react faster to the change
       ESP.rtcUserMemoryWrite(RTCMODE, (uint32_t *)&newmode, sizeof(newmode));
     }
   }
@@ -1274,35 +1269,34 @@ bool connectBackupCredentials()
     return true;
 }
 
-
 /* Main Entrypoint */
 void setup()
 {
   uint32_t rtcvalid;
   int32_t left2sleep;
   bool isrtcvalid;
-  usequicksleep=0;
+  usequicksleep = 0;
 
   Serial.begin(115200);
 
   //First, see if the RTC signature is valid!
   ESP.rtcUserMemoryRead(RTCSLEEPADDR + 1, &rtcvalid, sizeof(rtcvalid));
   isrtcvalid = rtcvalid == RTCVALIDFLAG;
-    
-  if(!isrtcvalid)
+
+  if (!isrtcvalid)
   {
     CONSOLELN(F("We didn't come from goodNight."));
   }
   else
   {
-    left2sleep = sleepManager();  //if left2sleep=0, we have radio
+    left2sleep = sleepManager(); //if left2sleep=0, we have radio
 
     ESP.rtcUserMemoryRead(RTCMODE, (uint32_t *)&nextmode, sizeof(nextmode));
 
     CONSOLE(F("WakeMode: "));
     CONSOLELN(nextmode);
 
-    if(left2sleep > 0 || nextmode == deepsleep)
+    if (left2sleep > 0 || nextmode == deepsleep)
     {
       Volt = getBattery();
       if (isSafeMode(Volt))
@@ -1317,7 +1311,7 @@ void setup()
         //Wake up just enought to see if there's a tilt-command...
         initAccel();
         //We're only doing a couple of samples to save time and power.
-        for(int i=0;i<2;i++)
+        for (int i = 0; i < 2; i++)
         {
           while (!accelgyro.getIntDataReadyStatus())
             delay(2);
@@ -1325,19 +1319,19 @@ void setup()
         }
         accelgyro.setSleepEnabled(true);
 
-        float tilt=calculateTilt();
+        float tilt = calculateTilt();
         CONSOLE(F("\nCmdTilt: "));
         CONSOLELN(tilt);
 
-        if(usequicksleep)
+        if (usequicksleep)
         {
           CONSOLELN(F("Commanded."));
-          goodNight(2, 0);                     //React fast to a mode change
+          goodNight(2, 0); //React fast to a mode change
         }
         else
         {
           //No new command; resume my nap...
-          if(left2sleep > 0)
+          if (left2sleep > 0)
           {
             CONSOLELN(F("Going back to sleep"));
             goodNight(left2sleep, 0);
@@ -1360,7 +1354,7 @@ void setup()
       CONSOLELN(F("\nERROR config corrupted"));
     }
 
-    if(my_tiltcmden == 0)
+    if (my_tiltcmden == 0)
     {
       CONSOLELN(F("LOCKNORMAL"));
       nextmode = locknormal;
@@ -1368,10 +1362,10 @@ void setup()
     }
     else
     {
-      if(nextmode==locknormal || nextmode> deepsleep)
+      if (nextmode == locknormal || nextmode > deepsleep)
       {
         CONSOLELN(F("Unlocking TiltCommands..."));
-        nextmode=normal;
+        nextmode = normal;
         ESP.rtcUserMemoryWrite(RTCMODE, (uint32_t *)&nextmode, sizeof nextmode);
       }
     }
@@ -1384,8 +1378,7 @@ void setup()
     {
       {
         // test if ssid exists
-        if (WiFi.SSID() == "" &&
-            my_ssid != "" && my_psk != "")
+        if (WiFi.SSID() == "" && my_ssid != "" && my_psk != "")
         {
           connectBackupCredentials();
         }
@@ -1400,16 +1393,16 @@ void setup()
     WiFi.mode(WIFI_STA);
 
     Volt = getBattery();
-    
+
     // we try to survive
     if (isSafeMode(Volt))
       WiFi.setOutputPower(0);
     else
       WiFi.setOutputPower(20.5);
 
-  #ifndef USE_DMP
+#ifndef USE_DMP
     Tilt = getTilt();
-  #else
+#else
     while (fifoCount < packetSize)
     {
       //do stuff
@@ -1454,7 +1447,7 @@ void setup()
       float _az = az;
       Tilt = acos(_az / (sqrt(_ax * _ax + _ay * _ay + _az * _az))) * 180.0 / M_PI;
     }
-  #endif
+#endif
 
     float accTemp = accelgyro.getTemperature() / 340.00 + 36.53;
     accelgyro.setSleepEnabled(true);
@@ -1528,17 +1521,17 @@ void setup()
     // survive - 60min sleep time
     if (isSafeMode(Volt))
     {
-      goodNight(EMERGENCYSLEEP,1);
+      goodNight(EMERGENCYSLEEP, 1);
     }
-    else if(usequicksleep)
-      {
-        CONSOLELN(F("Commanded; quickrestart"));
-        goodNight(2, 0);                     //React fast to a mode change
-      }
+    else if (usequicksleep)
+    {
+      CONSOLELN(F("Commanded; quickrestart"));
+      goodNight(2, 0); //React fast to a mode change
+    }
     else
     {
       ESP.rtcUserMemoryRead(RTCMODE, (uint32_t *)&nextmode, sizeof nextmode);
-      if(nextmode == deepsleep)
+      if (nextmode == deepsleep)
       {
         CONSOLELN(F("Sleep Mode..."));
         goodNight(my_updatefromdeepsleep, 0);
