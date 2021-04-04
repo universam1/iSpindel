@@ -1,0 +1,58 @@
+name: PlatformIO CI
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: DoozyX/clang-format-lint-action@v0.11
+      with:
+        source: './pio/src'
+        extensions: 'h,cpp'
+        clangFormatVersion: 11
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Get versionname 
+      id: get-ver
+      run: |
+        echo ::set-output name=ver_name::$(git describe --tags)
+    - name: Print version
+      run: |
+        echo ${{ steps.get-ver.outputs.ver_name }}
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Cache PlatformIO
+      uses: actions/cache@v2
+      with:
+        path: ~/.platformio
+        key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+    - name: Install PlatformIO
+      run: |
+        python -m pip install --upgrade pip
+        pip install --upgrade platformio
+    - name: Install library dependencies
+      run: pio lib -g install 1
+    - name: Run PlatformIO
+      run: pio run -e d1_mini
+    - name: Save firmware
+      uses: actions/upload-artifact@v2
+      with:
+        name: firmware
+        path: .pio/build/d1_mini/firmware.bin
+

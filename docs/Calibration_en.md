@@ -35,7 +35,7 @@ It's recommended you connect the iSpindel with [Ubidots](https://ubidots.com/) f
 >***Measure the density or the degrees Plato and write it down with the tilt of the iSpindel***     
 
 6. Dilute the solution from the point above till it reaches approximately 5 degrees Plato, SG 1.020 or 5 degrees Brix
->*Example: Dilute the solution from point 5 with 333 ml of water*        
+>*Example: Dilute the solution from point 5 with 666 ml of water*        
 >***Measure the density or the degrees Plato and write it down with the tilt of the iSpindel***   
 
 7. Dilute the solution from the point above till it reaches approximately 2.5 degrees Plato, SG 1.010 or 2.5 degrees Brix.     
