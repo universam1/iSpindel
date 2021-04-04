@@ -92,7 +92,7 @@ int8_t my_OWpin = -1;
 int usequicksleep;
 
 // Tilt-commanded modes
-#define COMMANDANGLE 100.0   //"tilted above"; should never ever happen when being used.
+#define COMMANDANGLE 100.0 //"tilted above"; should never ever happen when being used.
 #define DEEPSLEEPANGLE 145.0 //Set on cap; don't wake radio just stay asleep.
 String tiltcommands[] = {"LockedNormal", "Normal", "Config", "DeepSleep"};
 static modes nextmode;
