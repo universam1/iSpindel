@@ -393,8 +393,12 @@ bool startConfiguration()
   wifiManager.setConfPSK(htmlencode(my_psk));
 
   CONSOLELN(F("started Portal"));
-  char ssid[16]; //Exactly match size "iSpindel_123456\0"
-  snprintf(ssid, sizeof(ssid), "iSpindel_%06X", ESP.getChipId());
+  static char ssid[33]={0}; //32 char max for SSIDs
+  if(strlen(my_name)==0)
+    snprintf(ssid, sizeof ssid, "iSpindel_%06X", ESP.getChipId());
+  else
+    snprintf(ssid, sizeof ssid, "iSpindel_%s", my_name);  
+  
   wifiManager.startConfigPortal(ssid);
 
   strcpy(my_polynominal, custom_polynom.getValue());
