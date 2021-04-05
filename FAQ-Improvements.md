@@ -18,4 +18,10 @@ can look at "cool new feature" and find what's known/been done before.
   It certainly does with the commercial version; if you think it's
   settled, rock/stir your wort and see what happens.
   
-3. Why use WiFi instead of BLE?
+3. Can the iSpindel be used in a pressurized fermenter?
+  You can try... the default PETling seal is "on the inside" so that it
+  makes a better seal as the pressure inside increases (sodas are 
+  carbonated), which is the wrong direction, but the screw theads do make
+  a seal, so...
+  
+4. Why use WiFi instead of BLE?
