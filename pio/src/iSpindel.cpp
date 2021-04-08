@@ -839,31 +839,54 @@ void sleepManager()
 
 void initDS18B20()
 {
-  for (uint8_t p = 0; p < sizeof(OW_PINS); p++)
+  //Try using old pin if set
+  if (my_OWpin != -1)
   {
-    const byte pin = OW_PINS[p];
-    CONSOLE(F("TempInit: scanning for OW device on pin: "));
-    CONSOLELN(pin);
-    oneWire = new OneWire(pin);
+    CONSOLE(F("TempInit: scanning for saved OW device on pin: "));
+    CONSOLELN(my_OWpin);
+    oneWire = new OneWire(my_OWpin);
     DS18B20 = DallasTemperature(oneWire);
-    if (DS18B20.getAddress(tempDeviceAddress, 0))
+    if (!DS18B20.getAddress(tempDeviceAddress, 0))
     {
-      CONSOLELN(F("Tempinit: OneWire sensor found!"));
-
-      if (DS18B20.isConnected(tempDeviceAddress))
+      CONSOLE(F("TempInit: not found on: "));
+      CONSOLELN(my_OWpin);
+      CONSOLELN(F(" -> Reset my_OWpin "));
+      my_OWpin = -1;
+    }
+  }
+  //Find pin
+  if (my_OWpin == -1)
+  {
+    for (uint8_t p = 0; p < sizeof(OW_PINS); p++)
+    {
+      const byte pin = OW_PINS[p];
+      CONSOLE(F("TempInit: scanning for OW device on pin: "));
+      CONSOLELN(pin);
+      oneWire = new OneWire(pin);
+      DS18B20 = DallasTemperature(oneWire);
+      if (DS18B20.getAddress(tempDeviceAddress, 0))
       {
-        CONSOLELN(F("Tempinit: sensor connected"));
+        CONSOLELN(F("Tempinit: OneWire sensor found!"));
 
-        if (DS18B20.validFamily(tempDeviceAddress))
-          CONSOLELN(F("Tempinit: temp sensor family VALID"));
+        if (DS18B20.isConnected(tempDeviceAddress))
+        {
+          CONSOLELN(F("Tempinit: sensor connected"));
+
+          if (DS18B20.validFamily(tempDeviceAddress))
+          {
+            CONSOLELN(F("Tempinit: temp sensor family VALID"));
+            my_OWpin = pin;
+            break;
+          }
+          else
+            CONSOLELN(F("Tempinit: temp sensor family INVALID"));
+        }
         else
-          CONSOLELN(F("Tempinit: temp sensor family INVALID"));
+          CONSOLELN(F("Tempinit: sensor NOT connected"));
       }
       else
-        CONSOLELN(F("Tempinit: sensor NOT connected"));
+        CONSOLELN(F("Tempinit: No OneWire sensor found"));
     }
-    else
-      CONSOLELN(F("Tempinit: No OneWire sensor found"));
   }
 
   DS18B20.setWaitForConversion(false);
