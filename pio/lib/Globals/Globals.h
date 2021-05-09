@@ -45,14 +45,6 @@ extern Ticker flasher;
 #define DEBUG true
 #endif
 
-#ifdef NO_CONSOLE
-#define CONSOLE(x) \
-    do             \
-    {              \
-    } while (0)
-#define CONSOLELN CONSOLE
-#define CONSOLEF CONSOLE
-#else
 #define CONSOLE(...)               \
     do                             \
     {                              \
@@ -63,7 +55,6 @@ extern Ticker flasher;
     {                                \
         Serial.println(__VA_ARGS__); \
     } while (0)
-#endif
 
 #define PORTALTIMEOUT 300
 
