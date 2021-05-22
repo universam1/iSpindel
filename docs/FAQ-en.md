@@ -2,6 +2,8 @@
 
 - ***Do I have to tare the iSpindle with weights?***  
 It is indispensable to enable the iSpindle functionality! Add weights such as nuts, lead balls etc. to the bottom  until the inclination is 25° from the vertical. See also example pictures in the documentation. Normally about 20g are sufficient. +/- 5° deviations are often still acceptable.
+If you're too close to 30deg, it will be too close to 90 deg at high sg measurements (your starting sg won't be accurate).
+If you're too close to 15deg, it will be too close to 0 deg at low sg measurements (you won't be able to read sg's below .95).
 
 - ***It doesn't work, I don't see anything***  
 The best way to find out what the iSpindle is doing  is to read its log. This can be done via a serial monitor like HTerm or Arduino IDE. Connect the spindle via Micro USB, then open the £COM Port with the serial monitor above and read it. Set baud rate to `115200`. It brings light into the dark.
@@ -76,3 +78,26 @@ Click Flash(E) and wait till the flashing is done
 It now should work properly.
 
 Source: https://www.homebrewtalk.com/forum/threads/ispindle-diy-electronic-hydrometer.598187/page-19#post-8366882
+
+-  ***Improvements that have issues***
+These are "frequently suggested improvements" that have issues that aren't obvious at first; feel free to try them, but
+keep watch for problems:
+
+1. "Let's seal it and use inductive charging!"
+  a)The Qi chargers are larger than the PETling so they have to be bent.  Some Qi chargers get very unhappy about 
+    that (overheating/fire), while others work but are *very* picky about placement on the Qi charging pad.
+    There are inductive chargers that fit inside the cap [not Qi] (eg: https://amzn.to/3wslaLO , but they haven't 
+    been tried yet).
+    *Try it, but watch for heat!*
+
+  b)The seal for the PETling is at the top/inside; yeast and bacteria  will get in the "threaded area" and will be 
+    impossible to wash out.  Right now, it's recommended to take the cap off and clean/sanitize the cap and the 
+    PETling separately.
+
+2. Doesn't krausen/CO2 affect the readings?
+  It certainly does with the commercial version; if you think it's settled prematurely, rock/stir your wort and 
+  see what happens.
+  
+3. Can the iSpindel be used in a pressurized fermenter?
+  You can try... the default PETling seal is "on the inside" so that it makes a better seal as the pressure inside 
+  increases (sodas are carbonated), which is the wrong direction, but the screw theads do make a seal, so...
