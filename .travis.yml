@@ -1,23 +1,28 @@
 language: python
 python:
-- '2.7'
+    - "3.7"
+
+# Cache PlatformIO packages using Travis CI container-based infrastructure
 sudo: false
 cache:
-  directories:
-  - "~/.platformio"
+    directories:
+        - "~/.platformio"
+        - $HOME/.cache/pip
+
 install:
-# - pip install -U https://github.com/platformio/platformio-core/archive/develop.zip || true
-- pip install -U platformio || true
-- pio settings set auto_update_libraries true
+    - pip install -U platformio
+    - pio update
+
 script:
-- platformio run -e d1_mini
+    - platformio run -e d1_mini
+
 deploy:
-  provider: releases
-  prerelease: false
-  api_key:
-    secure: bU4iotLTrslYAlXQmSoMaGfCsjpM96TrKKne/2gFTlg++EQwjD/Z/i6T59lO7YVwp1GTD3qp/E4vSXfgkEm559mFIKZkd1IT8Vx/hpjX5CU6/OinGNmj1hYJw5M9DI1kQtc0wFDpbyNDnjPpKqBpFmIpqFyJUC7b3vctk/BMPkiiI5ncuBGp2f35M4qN2FedpTWoZdSAVZms7hsKFP4qZcih6stSlncUNf/niLwf78B31r5Td3G1aYQtHkB0BzyGQSgCvVuZ+PBm6zD/EWqRUGo6OWBCgwykbIZlgu45J4q46yQ2uS1CvRf4DFzIWU79bPg26MmxpjFe3oZucITTUtvOSzHFn8b1nuJE8IajYdM1KHSREl8Piej3A446P+JDQPk6ki3jCRyQentaZofI2ePUuqrvsV3iL4qKXMWpX1cOGU2c6nx0vvl/oft4rEcccibGpGZr0RIL7Ebpp7D4DSQ+bM+2XkuFab3W3QdrqrB6A0DOJuJfu/MvxEgkLtlpypZ2Z3g/F/TDgJkLSNEvX9e6kGAAIiIgkKz/zuuy04eNX+jox22TldovjbNSMCDfeeD6ghfKm0Q1+mdZax2dhvldgKOiwcZFL+TozN3AdPkr5GG/9m+dVaUGdrMK/n6uEJ++FZeUmdT8Pa2u/m3w2A4zeqMUWLM4WZMaUDW4cnA=
-  file: ".pio/build/d1_mini/firmware.bin"
-  skip_cleanup: true
-  overwrite: true
-  on:
-    tags: true
+    provider: releases
+    prerelease: false
+    api_key:
+        secure: bU4iotLTrslYAlXQmSoMaGfCsjpM96TrKKne/2gFTlg++EQwjD/Z/i6T59lO7YVwp1GTD3qp/E4vSXfgkEm559mFIKZkd1IT8Vx/hpjX5CU6/OinGNmj1hYJw5M9DI1kQtc0wFDpbyNDnjPpKqBpFmIpqFyJUC7b3vctk/BMPkiiI5ncuBGp2f35M4qN2FedpTWoZdSAVZms7hsKFP4qZcih6stSlncUNf/niLwf78B31r5Td3G1aYQtHkB0BzyGQSgCvVuZ+PBm6zD/EWqRUGo6OWBCgwykbIZlgu45J4q46yQ2uS1CvRf4DFzIWU79bPg26MmxpjFe3oZucITTUtvOSzHFn8b1nuJE8IajYdM1KHSREl8Piej3A446P+JDQPk6ki3jCRyQentaZofI2ePUuqrvsV3iL4qKXMWpX1cOGU2c6nx0vvl/oft4rEcccibGpGZr0RIL7Ebpp7D4DSQ+bM+2XkuFab3W3QdrqrB6A0DOJuJfu/MvxEgkLtlpypZ2Z3g/F/TDgJkLSNEvX9e6kGAAIiIgkKz/zuuy04eNX+jox22TldovjbNSMCDfeeD6ghfKm0Q1+mdZax2dhvldgKOiwcZFL+TozN3AdPkr5GG/9m+dVaUGdrMK/n6uEJ++FZeUmdT8Pa2u/m3w2A4zeqMUWLM4WZMaUDW4cnA=
+    file: ".pio/build/d1_mini/firmware.bin"
+    skip_cleanup: true
+    overwrite: true
+    on:
+        tags: true

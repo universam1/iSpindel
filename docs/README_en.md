@@ -38,6 +38,7 @@ iSpindle (iSpindel) Documentation
 - [Configuration](#configuration)
   - [Ubidots](#ubidots)
   - [Portal](#portal)
+  - [Blynk](#blynk)
 - [Graphical User Interface](#graphical-user-interface)
   - [Calibrating the Spindle](#calibration)
   - [Ubidots Graphen](#ubidots-graphen)
@@ -56,7 +57,7 @@ iSpindle (iSpindel) Documentation
 
 ## Principle
 
-Powered by the thread [Alternative to the Spindle](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499), the idea was born to reproduce the commercially available electronic tildting spindle using low-cost components.
+Powered by the thread [Alternative to the Spindle](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499), the idea was born to reproduce the commercially available electronic tilting spindle using low-cost components.
 
 The system is based around the use of a heeling (or tilting) cylinder, an ingenious and easy concept - you do not need any external reference (except for gravity) and the cylinder is extremely easy to keep clean. The inclination angle changes in relation to the buoyancy and thus directly in relation to the sugar content. There is an angle formed between the center of mass and the center of bouyancy depending on the density of the fluid.
 
@@ -86,7 +87,7 @@ The software calculates the Euler angle for X and Y from the XYZ acceleration va
 
 ### see [Circuit Diagram](circuit_diagram_en.md)
 
-### see [iSpindel Breabboard Mounting](iSpindelbreadboard_en.md)
+### see [iSpindel Breadboard Mounting](iSpindelbreadboard_en.md)
 
 ***
 
@@ -128,6 +129,29 @@ By saving your settings or waiting timeout of 5min it will end the Portal thus A
 
 > In Ubidots you can monitor the update of data unders ```Sources``` where the iSpindel will create a new device itself.  
 In the ```Dashboard``` now you can create your nice graphs.
+
+### Blynk
+
+#### Cloning the Example
+
+* For this example you will need 1800 (4x200 + 100 + 900) energy points, which allows to use the free version;
+* Download Blynk App: [Android](http://j.mp/blynk_Android) [iOS](http://j.mp/blynk_iOS)
+* Touch the QR-code icon and point the camera to the code below
+<p><img src="https://image.ibb.co/gxZFDz/Untitled.png" height="95" /></p>
+
+<img src="/pics/BlynkApp.jpg" width="35%" />  <img src="/pics/BlynkQR.jpg" width="35%" />
+
+* Enjoy the app!
+
+#### Using your own App
+
+* If you want to use your own App or modify the example the Virtual Pins are defined as follows:
+1. V20 - Temperature withouth unit;
+2. V30 - Battery without unit;
+3. V1 - String Tilt in degress;
+4. V2 - String Temperature degress `C or F or K`;
+5. V3 - String Battery `Volts`;
+6. V4 - Gravity;
 
 ***
 ## Graphical User Interface
