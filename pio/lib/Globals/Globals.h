@@ -57,7 +57,12 @@ extern Ticker flasher;
 
 #define PORTALTIMEOUT 300
 
-#define ADCDIVISOR 191.8
+// 3.3V LiFePO4 cell, ESP12E + 230K:100K divisor to A0
+#define ADCDIVISOR 310.3
+
+// LiIon cell, Wemos D1 + 230K to A0
+// #define ADCDIVISOR 191.8
+
 #define ONE_WIRE_BUS D6 // DS18B20 on ESP pin12
 #define OW_PINS \
     (const uint8_t[]) { D1, D6 }
@@ -100,7 +105,9 @@ extern Ticker flasher;
 #define RTCSLEEPADDR 5
 #define MAXSLEEPTIME 3600UL //TODO
 #define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
-#define LOWBATT 3.3
+
+//#define LOWBATT 3.3 // Wemos D1 + Li-Ion
+#define LOWBATT 2.5 // LiFePO4
 
 #define UNINIT 0
 
