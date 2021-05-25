@@ -14,6 +14,7 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include <WiFiClientSecure.h>
 
 class SenderClass
 {
@@ -34,19 +35,22 @@ public:
   bool enableHassioDiscovery(String server, uint16_t port, String username, String password, String name, String unit);
   bool disableHassioDiscovery(String server, uint16_t port, String username, String password, String name);
 #endif
+  bool sendSecureMQTT(char CACert[], char deviceCert[], char deviceKey[], String server, uint16_t port, String name, String topic);    //AWS
   void add(String id, float value);
   void add(String id, String value);
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
   void stopclient();
+  bool RTCSyncToNTP();
   void mqttCallback(char *topic, byte *payload, unsigned int length);
-  bool mqttConnect(const String &server, uint16_t port, const String &name, const String &username, const String &password);
+  bool mqttConnect(const String &server, uint16_t port, const String &name, const String &username, const String &password, const bool secure = false, const char CACert[] = "", const char deviceCert[] = "", const char deviceKey[] = "");
   // ~SenderClass();
 
 private:
   WiFiClient _client;
   PubSubClient _mqttClient;
-  StaticJsonDocument<1024> _doc;
+  StaticJsonDocument<256> _doc;
+  WiFiClientSecure _secureClient;
 };
 
 #endif

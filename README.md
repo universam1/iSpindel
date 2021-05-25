@@ -21,7 +21,9 @@ If you like that project please vote for the [Hackaday.io *2017 Prize List*](htt
 
 Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017/03/01/iot-device-pulls-its-weight-in-home-brewing/)
 
-
+## There are FAQs:
+### [Deutsche FAQ] - docs/FAQ.md
+### [English FAQ] - docs/FAQ-en.md
 
 ## Documentation in other languages
 
