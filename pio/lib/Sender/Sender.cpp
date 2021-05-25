@@ -237,7 +237,7 @@ String SenderClass::sendTCP(String server, uint16_t port)
     }
     while (_client.available())
     {
-        response += _client.read();
+        response += (char)_client.read();
     }
     CONSOLELN(response);
     stopclient();
