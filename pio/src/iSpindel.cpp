@@ -78,8 +78,8 @@ char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
 char my_polynominal[250] = "-0.00031*tilt^2+0.557*tilt-14.054";
 #ifdef API_MQTT_HASSIO
-  bool my_hassio = false;
-  bool my_hassio_changed = false;
+bool my_hassio = false;
+bool my_hassio_changed = false;
 #endif
 
 String my_ssid;
@@ -334,15 +334,15 @@ String htmlencode(String str)
 void postConfig()
 {
 #ifdef API_MQTT_HASSIO
-    SenderClass sender;
-    if (my_hassio)
-    {
-        sender.enableHassioDiscovery(my_server, my_port, my_username, my_password, my_name, tempScaleLabel());
-    }
-    if (my_hassio_changed && !my_hassio)
-    {
-        sender.disableHassioDiscovery(my_server, my_port, my_username, my_password, my_name);
-    }
+  SenderClass sender;
+  if (my_hassio)
+  {
+    sender.enableHassioDiscovery(my_server, my_port, my_username, my_password, my_name, tempScaleLabel());
+  }
+  if (my_hassio_changed && !my_hassio)
+  {
+    sender.disableHassioDiscovery(my_server, my_port, my_username, my_password, my_name);
+  }
 #endif
 }
 
@@ -371,7 +371,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
 #ifdef API_MQTT_HASSIO
-  WiFiManagerParameter custom_hassio("hassio", "Home Assistant integration via MQTT", "checked", TKIDSIZE, my_hassio ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
+  WiFiManagerParameter custom_hassio("hassio", "Home Assistant integration via MQTT", "checked", TKIDSIZE,
+                                     my_hassio ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
 #endif
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(my_vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
@@ -447,9 +448,9 @@ bool startConfiguration()
   my_tempscale = String(custom_tempscale.getValue()).toInt();
 #ifdef API_MQTT_HASSIO
   {
-  auto hassio = my_api == DTMQTT && String(custom_hassio.getValue()) == "checked";
-  my_hassio_changed = my_hassio != hassio;
-  my_hassio = hassio;
+    auto hassio = my_api == DTMQTT && String(custom_hassio.getValue()) == "checked";
+    my_hassio_changed = my_hassio != hassio;
+    my_hassio = hassio;
   }
 #endif
   validateInput(custom_uri.getValue(), my_uri);
