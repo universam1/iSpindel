@@ -6,9 +6,9 @@ All rights reserverd by S.Lang <universam@web.de>
 **************************************************************/
 
 // includes go here
-#include <PubSubClient.h>
 #include "Globals.h"
 #include "MPUOffset.h"
+#include <PubSubClient.h>
 // #endif
 #include "OneWire.h"
 #include "Wire.h"
@@ -17,12 +17,13 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
 #include "RunningMedian.h"
 #include "WiFiManagerKT.h"
+#include "secrets.h" //AWS - Currently a file for Keys, Certs, etc - Need to make this a captured variable for iSpindle
+#include "tinyexpr.h"
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
-#include "tinyexpr.h"
 
 #include "Sender.h"
 // !DEBUG 1
@@ -75,7 +76,7 @@ char my_username[TKIDSIZE];
 char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
-char my_polynominal[100] = "-0.00031*tilt^2+0.557*tilt-14.054";
+char my_polynominal[250] = "-0.00031*tilt^2+0.557*tilt-14.054";
 
 String my_ssid;
 String my_psk;
@@ -89,7 +90,6 @@ uint8_t my_tempscale = TEMP_CELSIUS;
 int8_t my_OWpin = -1;
 
 uint32_t DSreqTime = 0;
-float pitch, roll;
 
 int16_t ax, ay, az;
 float Volt, Temperatur, Tilt, Gravity; // , corrGravity;
@@ -137,7 +137,8 @@ void applyOffset()
     accelgyro.setZGyroOffset(my_Offset[5]);
     delay(1);
 
-    CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
+    CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" +
+              accelgyro.getZAccelOffset());
   }
   else
     CONSOLELN(F("offsets not available"));
@@ -333,34 +334,29 @@ bool startConfiguration()
   wifiManager.setBreakAfterConfig(true);
 
   WiFiManagerParameter api_list(HTTP_API_LIST);
-  WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
-                                  20, TYPE_HIDDEN, WFM_NO_LABEL);
+  WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(), 20, TYPE_HIDDEN, WFM_NO_LABEL);
 
-  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
-                                   TKIDSIZE * 2);
-  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)",
-                                    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
-                                    TKIDSIZE * 2 * 2);
-  WiFiManagerParameter custom_server("server", "Server Address",
-                                     my_server, DNSSIZE);
-  WiFiManagerParameter custom_port("port", "Server Port",
-                                   String(my_port).c_str(), TKIDSIZE,
-                                   TYPE_NUMBER);
-  WiFiManagerParameter custom_channel("channel", "Channelnumber",
-                                      String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
+  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(), TKIDSIZE);
+  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
+  WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(), TKIDSIZE * 2);
+  WiFiManagerParameter custom_server("server", "Server Address", my_server, DNSSIZE);
+  WiFiManagerParameter custom_port("port", "Server Port", String(my_port).c_str(), TKIDSIZE, TYPE_NUMBER);
+  WiFiManagerParameter custom_channel("channel", "Channelnumber", String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
   WiFiManagerParameter custom_uri("uri", "Path / URI", my_uri, DNSSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
   WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
-  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
-                                    String(my_vfact).c_str(), 7, TYPE_NUMBER);
+  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(my_vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
-  WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
-                                        String(my_tempscale).c_str(),
-                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  WiFiManagerParameter custom_tempscale("tempscale", "tempscale", String(my_tempscale).c_str(), 5, TYPE_HIDDEN,
+                                        WFM_NO_LABEL);
+  WiFiManagerParameter custom_warning1(
+      "warning1",
+      "WARNING! Secure MQTT has a big impact on battery usage.<BR>&nbsp;<BR>For AWS:<UL><LI>Name must be "
+      "Thingname</LI><LI>Server must be Endpoint</LI><LI>Port must be 8883</LI><LI>Path/URI is Publish Topic</LI></UL>",
+      "<<<<< >>>>>", TKIDSIZE);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
@@ -376,6 +372,7 @@ bool startConfiguration()
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
 
+  wifiManager.addParameter(&custom_warning1);
   wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
@@ -386,16 +383,23 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_password);
   wifiManager.addParameter(&custom_job);
   wifiManager.addParameter(&custom_instance);
-  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
+  WiFiManagerParameter custom_polynom_lbl(
+      "<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100 * 2, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 250, WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
   wifiManager.setConfSSID(htmlencode(my_ssid));
   wifiManager.setConfPSK(htmlencode(my_psk));
 
   CONSOLELN(F("started Portal"));
-  wifiManager.startConfigPortal("iSpindel");
+  static char ssid[33] = {0}; //32 char max for SSIDs
+  if (strlen(my_name) == 0)
+    snprintf(ssid, sizeof ssid, "iSpindel_%06X", ESP.getChipId());
+  else
+    snprintf(ssid, sizeof ssid, "iSpindel_%s", my_name);
+
+  wifiManager.startConfigPortal(ssid);
 
   strcpy(my_polynominal, custom_polynom.getValue());
 
@@ -447,7 +451,8 @@ bool saveConfig(int16_t Offset[6])
 {
   std::copy(Offset, Offset + 6, my_Offset);
   CONSOLELN(String("new offsets: ") + Offset[0] + ":" + Offset[1] + ":" + Offset[2]);
-  CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
+  CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" +
+            accelgyro.getZAccelOffset());
 
   return saveConfig();
 }
@@ -527,9 +532,7 @@ bool processResponse(String response)
   if (!error && doc.containsKey("interval"))
   {
     uint32_t interval = doc["interval"];
-    if (interval != my_sleeptime &&
-        interval < 24 * 60 * 60 &&
-        interval > 10)
+    if (interval != my_sleeptime && interval < 24 * 60 * 60 && interval > 10)
     {
       my_sleeptime = interval;
       CONSOLE(F("Received new Interval config: "));
@@ -555,6 +558,22 @@ bool uploadData(uint8_t service)
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling Ubidots"));
     return sender.sendUbidots(my_token, my_name);
+  }
+#endif
+
+#ifdef API_AWSIOTMQTT //AWS
+  if (service == DTAWSIOTMQTT)
+  {
+    sender.add("name", my_name);
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", my_sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN("Calling AWSIOTMQTT Sender");
+    return sender.sendSecureMQTT(AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, my_server, my_port, my_name, my_uri);
+    //AWS - NOTE - Need to replace secrets.h with the relevant parameters
   }
 #endif
 
@@ -599,7 +618,8 @@ bool uploadData(uint8_t service)
     sender.add("interval", my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling InfluxDB"));
-    CONSOLELN(String(F("Sending to db: ")) + my_db + String(F(" w/ credentials: ")) + my_username + String(F(":")) + my_password);
+    CONSOLELN(String(F("Sending to db: ")) + my_db + String(F(" w/ credentials: ")) + my_username + String(F(":")) +
+              my_password);
     return sender.sendInfluxDB(my_server, my_port, my_db, my_name, my_username, my_password);
   }
 #endif
@@ -713,22 +733,34 @@ bool uploadData(uint8_t service)
 #ifdef API_BLYNK
   if (service == DTBLYNK)
   {
-    String tempToSend = String( scaleTemperature( Temperatur ), 1 );
-    sender.add("20", tempToSend);           //send temperature without the unit to the graph first
+    String tempToSend = String(scaleTemperature(Temperatur), 1);
+    sender.add("20", tempToSend); //send temperature without the unit to the graph first
     String voltToSend = String(Volt, 2);
-    sender.add("30", voltToSend);           //send temperature without the unit to the graph first
+    sender.add("30", voltToSend); //send temperature without the unit to the graph first
 
     tempToSend += "°";
-    tempToSend += tempScaleLabel();         // Add temperature unit to the String
+    tempToSend += tempScaleLabel(); // Add temperature unit to the String
 
-    sender.add("1", String(Tilt, 1)+"°");
+    sender.add("1", String(Tilt, 1) + "°");
     sender.add("2", tempToSend);
-    sender.add("3", voltToSend+"V");
-    sender.add("4", String(Gravity, 2));
+    sender.add("3", voltToSend + "V");
+    sender.add("4", String(Gravity, 3));
     return sender.sendBlynk(my_token);
   }
 #endif
 
+#ifdef API_BREWBLOX
+  if (service == DTBREWBLOX)
+  {
+    sender.add("Tilt[deg]", Tilt);
+    sender.add("Temperature[deg" + tempScaleLabel() + "]", scaleTemperature(Temperatur));
+    sender.add("Battery[V]", Volt);
+    sender.add("Gravity", Gravity);
+    sender.add("Rssi[dBm]", WiFi.RSSI());
+    CONSOLELN(F("\ncalling BREWBLOX"));
+    return sender.sendBrewblox(my_server, my_port, my_uri, my_username, my_password, my_name);
+  }
+#endif
   return false;
 }
 
@@ -869,12 +901,10 @@ void initAccel()
 
 float calculateTilt()
 {
-  float _ax = ax;
-  float _ay = ay;
-  float _az = az;
-  float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-  float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-  return sqrt(pitch * pitch + roll * roll);
+  if (ax == 0 && ay == 0 && az == 0)
+    return 0.f;
+
+  return acos(az / (sqrt(ax * ax + ay * ay + az * az))) * 180.0 / M_PI;
 }
 
 bool testAccel()
@@ -927,8 +957,7 @@ float getTemperature(bool block = false)
   float t = Temperatur;
 
   // we need to wait for DS18b20 to finish conversion
-  if (!DSreqTime ||
-      (!block && !isDS18B20ready()))
+  if (!DSreqTime || (!block && !isDS18B20ready()))
     return t;
 
   // if we need the result we have to block
@@ -1121,6 +1150,7 @@ bool isSafeMode(float _volt)
 bool connectBackupCredentials()
 {
   WiFi.disconnect();
+  WiFi.mode(WIFI_STA); //suggestion that MQTT connection failures can happen if WIFI mode isn't STA.
   WiFi.begin(my_ssid.c_str(), my_psk.c_str());
   CONSOLELN(F("Rescued Wifi credentials"));
 
@@ -1190,8 +1220,7 @@ void setup()
     if (!startConfiguration())
     {
       // test if ssid exists
-      if (WiFi.SSID() == "" &&
-          my_ssid != "" && my_psk != "")
+      if (WiFi.SSID() == "" && my_ssid != "" && my_psk != "")
       {
         connectBackupCredentials();
       }
@@ -1256,12 +1285,7 @@ void setup()
     ay = euler[2];
     az = euler[1];
 
-    float _ax = ax;
-    float _ay = ay;
-    float _az = az;
-    float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-    float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-    Tilt = sqrt(pitch * pitch + roll * roll);
+    Tilt = calculateTilt();
   }
 #endif
 

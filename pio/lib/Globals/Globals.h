@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.3.1"
+#define FIRMWAREVERSION "6.5.1"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -31,6 +31,8 @@ extern Ticker flasher;
 #define API_MQTT true
 #define API_THINGSPEAK true
 #define API_BLYNK true
+#define API_BREWBLOX true
+#define API_AWSIOTMQTT true         //AWS
 
 //#define BLYNK_DEBUG
 //#define APP_DEBUG
@@ -43,14 +45,6 @@ extern Ticker flasher;
 #define DEBUG true
 #endif
 
-#ifdef NO_CONSOLE
-#define CONSOLE(x) \
-    do             \
-    {              \
-    } while (0)
-#define CONSOLELN CONSOLE
-#define CONSOLEF CONSOLE
-#else
 #define CONSOLE(...)               \
     do                             \
     {                              \
@@ -61,7 +55,6 @@ extern Ticker flasher;
     {                                \
         Serial.println(__VA_ARGS__); \
     } while (0)
-#endif
 
 #define PORTALTIMEOUT 300
 
@@ -95,7 +88,9 @@ extern Ticker flasher;
 #define DTMQTT 10
 #define DTTHINGSPEAK 11
 #define DTBLYNK 12
-#define DTBRUCONTROL 13
+#define DTBREWBLOX 13
+#define DTAWSIOTMQTT 14             //AWS
+#define DTBRUCONTROL 15
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.

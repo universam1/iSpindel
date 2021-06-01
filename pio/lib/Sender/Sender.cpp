@@ -10,10 +10,15 @@
 #include <PubSubClient.h>
 #include <ThingSpeak.h>
 #include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
+#include <WiFiClientSecure.h>
 
-#define UBISERVER "things.ubidots.com"
+#define UBISERVER "industrial.api.ubidots.com"
 #define BLYNKSERVER "blynk-cloud.com"
 #define CONNTIMEOUT 2000
+#define TIMECHECK 172800
 
 SenderClass::SenderClass() {}
 
@@ -52,12 +57,54 @@ void SenderClass::add(String id, int32_t value, uint16_t loc)
 void SenderClass::stopclient()
 {
     _client.stop();
+    _secureClient.stop();
     delay(100); // allow gracefull session close
 }
-
-bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
+bool SenderClass::RTCSyncToNTP()
 {
-    _mqttClient.setClient(_client);
+    CONSOLE(F("Starting NTP Sync: "));
+    time_t now = time(nullptr);
+    if (now < TIMECHECK) {
+        configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
+    }  
+    while (now < TIMECHECK) {
+        delay(500);
+        CONSOLE(".");
+        now = time(nullptr);
+    }
+    struct tm timeinfo;
+    gmtime_r(&now, &timeinfo);
+    CONSOLELN(""); CONSOLE(F("Current time set to: ")); CONSOLELN(asctime(&timeinfo));
+    _doc["time"] = time(nullptr);
+    if (now > TIMECHECK){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool SenderClass::mqttConnect(const String &server, uint16_t port, const String &name, const String &username, const String &password, const bool secure, const char CACert[], const char deviceCert[], const char deviceKey[]) {
+    
+    if (secure) {
+        if (!RTCSyncToNTP()){
+            CONSOLELN(F("ERROR - Time failed to be set. Secure connection will fail."));
+        }
+        // Configure the secure client
+        BearSSL::X509List cert(CACert);
+        _secureClient.setTrustAnchors(&cert);
+        BearSSL::X509List client_crt(deviceCert);
+        BearSSL::PrivateKey key(deviceKey);
+        _secureClient.setClientRSACert(&client_crt, &key);
+        _secureClient.setBufferSizes(512, 512);
+        _secureClient.connect(server,port);
+        // Allocate the Secure client to PubSubClient
+        _mqttClient.setClient(_secureClient);
+    }
+    else {
+        // Allocate the noraml WiFi client to the PubSubClient
+        _mqttClient.setClient(_client);
+    }
     _mqttClient.setServer(server.c_str(), port);
     _mqttClient.setCallback([this](char *topic, byte *payload, unsigned int length) { this->mqttCallback(topic, payload, length); });
 
@@ -67,9 +114,17 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
     {
         CONSOLELN(F("Attempting MQTT connection"));
         // Attempt to connect
-        if (_mqttClient.connect(name.c_str(), username.c_str(), password.c_str()))
+        boolean ret;
+        if (username[0] == '\0')
+        {
+            ret = _mqttClient.connect(name.c_str());
+        } else {
+            ret = _mqttClient.connect(name.c_str(), username.c_str(), password.c_str());
+        }
+        if (ret)
         {
             CONSOLELN(F("Connected to MQTT"));
+            return true;
         }
         else
         {
@@ -121,20 +176,29 @@ bool SenderClass::sendMQTT(String server, uint16_t port, String username, String
             delay(5000);
         }
     }
+    return false;
+}
 
-    //MQTT publish values
-    for (const auto &kv : _doc.as<JsonObject>())
+bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
     {
-        CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key().c_str() + "/" + kv.value().as<String>());
-        _mqttClient.publish(("ispindel/" + name + "/" + kv.key().c_str()).c_str(), kv.value().as<String>().c_str());
-        _mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+        //MQTT publish values
+        for (const auto &kv : _doc.as<JsonObject>())
+        {
+           CONSOLELN("MQTT publish: ispindel/" + name + "/" + kv.key().c_str() + "/" + kv.value().as<String>());
+           _mqttClient.publish(("ispindel/" + name + "/" + kv.key().c_str()).c_str(), kv.value().as<String>().c_str());
+           _mqttClient.loop(); //This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+        }
     }
 
     CONSOLELN(F("Closing MQTT connection"));
     _mqttClient.disconnect();
     stopclient();
-    return true;
+    return response;
 }
+
 void SenderClass::mqttCallback(char *topic, byte *payload, unsigned int length)
 {
     CONSOLELN(F("MQTT message arrived ["));
@@ -144,6 +208,25 @@ void SenderClass::mqttCallback(char *topic, byte *payload, unsigned int length)
     {
         CONSOLE((char)payload[i]);
     }
+}
+
+bool SenderClass::sendSecureMQTT(char CACert[], char deviceCert[], char deviceKey[], String server, uint16_t port, String name, String topic)    //AWS
+{
+    bool response = mqttConnect(server, port, name, "", "", true, CACert, deviceCert, deviceKey);
+
+    if (response)
+    {
+        String json;
+        serializeJson(_doc, json);
+        CONSOLELN("MQTT publish: " + topic);
+        CONSOLELN(("{\"state\":{\"reported\":" + json  + "}, \"key\":\"" + name + "\"}").c_str());
+        _mqttClient.publish(topic.c_str(), ("{\"state\":{\"reported\":" + json  + "}, \"key\":\"" + name + "\"}").c_str());
+    }
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return response;
+
 }
 
 String SenderClass::sendTCP(String server, uint16_t port)
@@ -207,7 +290,6 @@ bool SenderClass::sendThingSpeak(String token, long Channel)
     stopclient();
     return true;
     }
-
 
 bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
 {
@@ -418,7 +500,9 @@ bool SenderClass::sendUbidots(String token, String name)
         msg += name;
         msg += "?token=";
         msg += token;
-        msg += F(" HTTP/1.1\r\nHost: things.ubidots.com\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
+        msg += F(" HTTP/1.1\r\nHost: ");
+        msg += UBISERVER;
+        msg += F("\r\nUser-Agent: ESP8266\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ");
         msg += measureJson(_doc);
         msg += "\r\n";
 
@@ -460,7 +544,7 @@ bool SenderClass::sendFHEM(String server, uint16_t port, String name)
         String msg = String("GET /fhem?cmd.Test=set%20");
         msg += name;
 
-        for (const auto &kv : _doc.to<JsonObject>())
+        for (const auto &kv : _doc.as<JsonObject>())
         {
             msg += "%20";
             msg += kv.value().as<String>();
@@ -541,10 +625,11 @@ bool SenderClass::sendTCONTROL(String server, uint16_t port)
     return true;
 }
 
-//Blynk HTTP was taking 2 seconds longer and did not show in the App
-//when device was connected, therefore best to use their API.
 bool SenderClass::sendBlynk(char* token)
 {
+    //Blynk HTTP was taking 2 seconds longer and did not show in the App
+    //when device was connected, therefore best to use their API.
+
     serializeJson(_doc, Serial);
 
     Blynk.config(token);
@@ -579,4 +664,20 @@ bool SenderClass::sendBlynk(char* token)
     
     delay(150);     //delay to allow last value to be sent;
     return true;
+}
+
+bool SenderClass::sendBrewblox(String server, uint16_t port, String topic, String username, String password, String name)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
+    {
+        String json;
+        serializeJson(_doc, json);
+        CONSOLELN("Brewblox MQTT publish: " + topic);
+        _mqttClient.publish(topic.c_str(), ("{\"key\":\"" + name + "\",\"data\":" + json  + "}").c_str());
+    }
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return response;
 }

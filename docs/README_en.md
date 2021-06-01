@@ -57,7 +57,7 @@ iSpindle (iSpindel) Documentation
 
 ## Principle
 
-Powered by the thread [Alternative to the Spindle](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499), the idea was born to reproduce the commercially available electronic tildting spindle using low-cost components.
+Powered by the thread [Alternative to the Spindle](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499), the idea was born to reproduce the commercially available electronic tilting spindle using low-cost components.
 
 The system is based around the use of a heeling (or tilting) cylinder, an ingenious and easy concept - you do not need any external reference (except for gravity) and the cylinder is extremely easy to keep clean. The inclination angle changes in relation to the buoyancy and thus directly in relation to the sugar content. There is an angle formed between the center of mass and the center of bouyancy depending on the density of the fluid.
 
