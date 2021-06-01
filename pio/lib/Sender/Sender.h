@@ -30,6 +30,7 @@ public:
   bool sendBlynk(char* token);
   bool sendBrewblox(String server, uint16_t port, String topic, String username, String password, String name);
   bool sendSecureMQTT(char CACert[], char deviceCert[], char deviceKey[], String server, uint16_t port, String name, String topic);    //AWS
+  uint32_t sendBricks();
   void add(String id, float value);
   void add(String id, String value);
   void add(String id, int32_t value);

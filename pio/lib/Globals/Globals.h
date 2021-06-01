@@ -32,6 +32,7 @@ extern Ticker flasher;
 #define API_THINGSPEAK true
 #define API_BLYNK true
 #define API_BREWBLOX true
+#define API_BRICKS true
 #define API_AWSIOTMQTT true         //AWS
 
 //#define BLYNK_DEBUG
@@ -90,6 +91,7 @@ extern Ticker flasher;
 #define DTBLYNK 12
 #define DTBREWBLOX 13
 #define DTAWSIOTMQTT 14             //AWS
+#define DTBRICKS 15
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.

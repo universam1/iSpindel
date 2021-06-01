@@ -475,7 +475,7 @@ bool saveConfig()
   DynamicJsonDocument doc(2048);
 
   doc["Name"] = my_name;
-  doc["Token"] = my_token;
+  doc["Token/ API key"] = my_token;
   doc["Sleep"] = my_sleeptime;
   // first reboot is for test
   my_sleeptime = 1;
@@ -732,6 +732,32 @@ bool uploadData(uint8_t service)
     sender.add("Rssi[dBm]", WiFi.RSSI());
     CONSOLELN(F("\ncalling BREWBLOX"));
     return sender.sendBrewblox(my_server, my_port, my_uri, my_username, my_password, my_name);
+  }
+#endif
+
+#ifdef API_BRICKS
+  if (service == DTBRICKS)
+  {
+    sender.add("apikey", my_token); // use the token field as vessel for the api key
+    sender.add("chipid", ESP.getFlashChipId() + "_" + String(WiFi.macAddress()));
+    sender.add("s_number_tilt_0", Tilt);
+    sender.add("s_number_temp_0", Temperatur); // always transmit °C
+    sender.add("s_number_voltage_0", Volt);
+    sender.add("s_number_wort_0", Gravity);
+    sender.add("s_number_wifi_0", WiFi.RSSI());
+    CONSOLELN(F("\ncalling BRICKS"));
+
+    uint32_t my_sleeptime_candidate_s = sender.sendBricks();
+
+    if (my_sleeptime_candidate_s > 0)
+    {
+      my_sleeptime = my_sleeptime_candidate_s;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 #endif
   return false;

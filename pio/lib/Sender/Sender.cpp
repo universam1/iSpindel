@@ -628,3 +628,83 @@ bool SenderClass::sendBrewblox(String server, uint16_t port, String topic, Strin
     stopclient();
     return response;
 }
+
+uint32_t SenderClass::sendBricks()
+{
+  uint32_t next_sleeptime = 0;
+
+    // dump json
+    serializeJson(_doc, Serial);
+
+  // forge URL for GET request
+  String url = "https://bricks.bierbot.com/api/iot/v1?type=wemos_d1mini&brand=ispindel&version=";
+  url += FIRMWAREVERSION;
+
+  for (const auto &kv : _doc.to<JsonObject>())
+  {
+    url += "&";
+    url += kv.key().c_str();
+    url += "=";
+    url += kv.value().as<String>();
+    }
+
+    WiFiClientSecure client;
+    client.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
+    client.connect(url, 443);
+
+    HTTPClient http; //Declare an object of class HTTPClient
+    http.begin(client, url);
+    http.addHeader("User-Agent", "iSpindel");
+    http.addHeader("Connection", "close");
+    // http.addHeader("Content-Type", "application/json");
+
+
+    CONSOLELN("submitting GET to " + url);
+    auto httpCode = http.GET(); // GET has issues with 301 forwards
+    CONSOLELN(String(F("code: ")) + httpCode);
+
+    // httpCode will be negative on error
+    if (httpCode > 0)
+    {
+        if (httpCode == HTTP_CODE_OK)
+        {
+            CONSOLELN(http.getString());
+            String payload = http.getString(); //Get the request response payload
+
+            if (payload.length() != 0 && payload.indexOf("{") != -1) {
+
+                StaticJsonDocument<255> jsonDoc;
+
+                // Deserialize the JSON document
+                // doc should look like "{\"target_state\":0, \"next_request_ms\":10000,\"error\":1,\"error_text\":\"Your device will need an upgrade\",\"warning\":1,\"warning_text\":\"Your device will need an upgrade\"}";
+                DeserializationError error = deserializeJson(jsonDoc, payload);
+
+                // Test if parsing succeeds.
+                if (error)
+                {
+                    CONSOLELN(F("deserializeJson() failed: "));
+                    CONSOLELN(error.f_str());
+                }
+                else
+                {
+                    CONSOLELN("deserializeJson success");
+
+                    // main logic here
+                    if (jsonDoc.containsKey("next_request_ms"))
+                    {
+                      next_sleeptime = jsonDoc["next_request_ms"].as<unsigned int>();
+                    }
+                }
+            }
+            else
+            {
+            CONSOLE(F("[HTTP] GET... failed, error: "));
+            CONSOLELN(http.errorToString(httpCode));
+            }
+        }
+    }
+
+    http.end();
+    stopclient();
+    return next_sleeptime;
+}
