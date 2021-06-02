@@ -631,12 +631,79 @@ bool SenderClass::sendBrewblox(String server, uint16_t port, String topic, Strin
 
 uint32_t SenderClass::sendBricks()
 {
-     uint32_t next_sleeptime = 0;
+  uint32_t next_request_ms = 0;
 
-    // dump json
-    CONSOLELN(F("sendBricks called"));
-    //serializeJson(_doc, Serial);
-    //CONSOLELN("serializing done");
+  // dump json
+  CONSOLELN(F("sendBricks called"));
+
+  serializeJson(_doc, Serial);
+  WiFiClientSecure client;
+
+  CONSOLELN(F("setting insecure"));
+  client.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
+  String url = "https://bricks.bierbot.com/api/iot/v1";
+  //String url = "http://192.168.2.108:5001/bierbot-cloud/us-central1/iot_v1";
+  client.connect(url, 443);
+  CONSOLELN("adding headers");
+  HTTPClient http; //Declare an object of class HTTPClient
+
+  // configure traged server and uri
+  http.begin(client, url);
+  http.addHeader("User-Agent", "iSpindel");
+  http.addHeader("Connection", "close");
+  http.addHeader("Content-Type", "application/json");
+
+  String json;
+  serializeJson(_doc, json);
+  auto httpCode = http.POST(json);
+  CONSOLELN(String(F("code: ")) + httpCode);
+
+  // httpCode will be negative on error
+  if (httpCode > 0)
+  {
+    if (httpCode == HTTP_CODE_OK)
+    {
+
+      String payload = http.getString(); //Get the request response payload
+      CONSOLE(F("Received response: "));
+      CONSOLELN(payload);
+
+      uint8 startIdx = payload.indexOf("next_request_ms") + 17;
+      String nrmSubstring = payload.substring(startIdx);
+      uint8 endIdx = -1;
+
+      if (nrmSubstring.indexOf("}") != -1)
+      {
+        CONSOLE("limited by }");
+        // end based on bracket
+        endIdx = nrmSubstring.indexOf("}") + startIdx;
+      }
+      else if (nrmSubstring.indexOf(",") != -1)
+      {
+        endIdx = nrmSubstring.indexOf(",") + startIdx;
+      }
+
+      if (startIdx > 0 && endIdx > startIdx)
+      {
+        CONSOLE(F("next request string in "));
+        String next_request_str = payload.substring(startIdx, endIdx);
+        CONSOLE(next_request_str);
+        CONSOLE(F("ms"));
+        next_request_ms = next_request_str.toInt();
+      }
+    }
+    }
+    else
+    {
+      CONSOLE(F("[HTTP] POST... failed, error: "));
+      CONSOLELN(http.errorToString(httpCode));
+    }
+
+    http.end();
+    stopclient();
+    return next_request_ms;
+
+    /*
 
     // forge URL for GET request
     // 192.168.2.108
@@ -658,7 +725,7 @@ uint32_t SenderClass::sendBricks()
     url += String("&s_number_wort_0=") + s_number_wort_0;
     String s_number_wifi_0 = _doc["s_number_wifi_0"]; // RSSI());
     url += String("&s_number_wifi_0=") + s_number_wifi_0;
-    /* 
+    
     for (const auto &kv : _doc.to<JsonObject>())
     {
         CONSOLELN("found param");
@@ -667,7 +734,7 @@ uint32_t SenderClass::sendBricks()
         url += "=";
         url += kv.value().as<String>();
     }
-    */
+    
     CONSOLELN("url after");
     CONSOLELN(url);
 
@@ -732,5 +799,5 @@ uint32_t SenderClass::sendBricks()
     CONSOLELN(F("returning..."));
     http.end();
     stopclient();
-    return next_sleeptime;
+    return next_sleeptime;*/
 }

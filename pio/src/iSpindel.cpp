@@ -751,20 +751,27 @@ bool uploadData(uint8_t service)
 
     CONSOLELN(F("adding chip id"));
     String chipid = String(ESP.getFlashChipId()) + "_" + String(WiFi.macAddress());
+
+    CONSOLELN(F("adding type"));
+    sender.add("type", "ispindel");
+    CONSOLELN(F("adding brand"));
+    sender.add("brand", "wemos_d1_mini");
+    CONSOLELN(F("adding version"));
+    sender.add("version", FIRMWAREVERSION);
     sender.add("chipid", chipid);
-    CONSOLELN(F("adding tilt"));
-    sender.add("s_number_tilt_0", Tilt);
-    CONSOLELN(F("adding temperatur"));
-    sender.add("s_number_temp_0", Temperatur); // always transmit °C
-    CONSOLELN(F("adding volt"));
-    sender.add("s_number_voltage_0", Volt);
     CONSOLELN(F("adding gravity"));
     sender.add("s_number_wort_0", Gravity);
+    CONSOLELN(F("adding temperatur"));
+    sender.add("s_number_temp_0", Temperatur); // always transmit °C
+    CONSOLELN(F("adding tilt"));
+    sender.add("s_number_tilt_0", Tilt);
+    CONSOLELN(F("adding volt"));
+    sender.add("s_number_voltage_0", Volt);
     CONSOLELN(F("adding wifi"));
     sender.add("s_number_wifi_0", WiFi.RSSI());
     CONSOLELN(F("\ncalling BRICKS"));
 
-    uint32_t my_sleeptime_candidate_s = sender.sendBricks();
+    uint32_t my_sleeptime_candidate_s = sender.sendBricks() / 1000;
 
     if (my_sleeptime_candidate_s > 0)
     {
