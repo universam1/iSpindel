@@ -338,7 +338,7 @@ bool startConfiguration()
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(), TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(), TKIDSIZE * 2);
+  WiFiManagerParameter custom_token("token", "Token/ API key", htmlencode(my_token).c_str(), TKIDSIZE * 2);
   WiFiManagerParameter custom_server("server", "Server Address", my_server, DNSSIZE);
   WiFiManagerParameter custom_port("port", "Server Port", String(my_port).c_str(), TKIDSIZE, TYPE_NUMBER);
   WiFiManagerParameter custom_channel("channel", "Channelnumber", String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
@@ -475,7 +475,7 @@ bool saveConfig()
   DynamicJsonDocument doc(2048);
 
   doc["Name"] = my_name;
-  doc["Token/ API key"] = my_token;
+  doc["Token"] = my_token;
   doc["Sleep"] = my_sleeptime;
   // first reboot is for test
   my_sleeptime = 1;
@@ -738,12 +738,29 @@ bool uploadData(uint8_t service)
 #ifdef API_BRICKS
   if (service == DTBRICKS)
   {
-    sender.add("apikey", my_token); // use the token field as vessel for the api key
-    sender.add("chipid", ESP.getFlashChipId() + "_" + String(WiFi.macAddress()));
+    CONSOLELN(F("adding BRICKS params"));
+
+    if (my_token[0] != 0) {
+      CONSOLELN(F("found token"));
+      sender.add("apikey", my_token); // use the token field as vessel for the api key
+    }
+    else {
+
+      CONSOLELN(F("missing token in params"));
+    }
+
+    CONSOLELN(F("adding chip id"));
+    String chipid = String(ESP.getFlashChipId()) + "_" + String(WiFi.macAddress());
+    sender.add("chipid", chipid);
+    CONSOLELN(F("adding tilt"));
     sender.add("s_number_tilt_0", Tilt);
+    CONSOLELN(F("adding temperatur"));
     sender.add("s_number_temp_0", Temperatur); // always transmit °C
+    CONSOLELN(F("adding volt"));
     sender.add("s_number_voltage_0", Volt);
+    CONSOLELN(F("adding gravity"));
     sender.add("s_number_wort_0", Gravity);
+    CONSOLELN(F("adding wifi"));
     sender.add("s_number_wifi_0", WiFi.RSSI());
     CONSOLELN(F("\ncalling BRICKS"));
 

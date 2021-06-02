@@ -55,7 +55,8 @@ var lAPI = [
 {"name":"ThingSpeak", "token":1,"server":0,"uri":0,"port":0,"channel":1,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
 {"name":"Blynk",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
 {"name":"Brewblox",   "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0,"warning1":0},
-{"name":"AWSIOTMQTT", "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":1}];
+{"name":"AWSIOTMQTT", "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":1},
+{"name":"Bricks",     "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0}];
 var $ = function (id) { return document.getElementById(id); };
 var labels = document.getElementsByTagName('LABEL');
 function set(id, show) {
