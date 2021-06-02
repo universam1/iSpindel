@@ -644,7 +644,7 @@ uint32_t SenderClass::sendBricks()
   String url = "https://bricks.bierbot.com/api/iot/v1";
   //String url = "http://192.168.2.108:5001/bierbot-cloud/us-central1/iot_v1";
   client.connect(url, 443);
-  CONSOLELN("adding headers");
+  CONSOLELN(F("adding headers"));
   HTTPClient http; //Declare an object of class HTTPClient
 
   // configure traged server and uri
@@ -663,34 +663,33 @@ uint32_t SenderClass::sendBricks()
   {
     if (httpCode == HTTP_CODE_OK)
     {
+        String payload = http.getString(); //Get the request response payload
+        CONSOLE(F("Received response: "));
+        CONSOLELN(payload);
 
-      String payload = http.getString(); //Get the request response payload
-      CONSOLE(F("Received response: "));
-      CONSOLELN(payload);
+        // this whole section below is to spare the JSON parser
+        uint8 startIdx = payload.indexOf("next_request_ms") + 17;
+        String nrmSubstring = payload.substring(startIdx);
+        uint8 endIdx = -1;
+        if (nrmSubstring.indexOf("}") != -1)
+        {
+            // end based on bracket
+            endIdx = nrmSubstring.indexOf("}") + startIdx;
+        }
+        else if (nrmSubstring.indexOf(",") != -1)
+        {
+            // end based on comma, other value following
+            endIdx = nrmSubstring.indexOf(",") + startIdx;
+        }
 
-      uint8 startIdx = payload.indexOf("next_request_ms") + 17;
-      String nrmSubstring = payload.substring(startIdx);
-      uint8 endIdx = -1;
-
-      if (nrmSubstring.indexOf("}") != -1)
-      {
-        CONSOLE("limited by }");
-        // end based on bracket
-        endIdx = nrmSubstring.indexOf("}") + startIdx;
-      }
-      else if (nrmSubstring.indexOf(",") != -1)
-      {
-        endIdx = nrmSubstring.indexOf(",") + startIdx;
-      }
-
-      if (startIdx > 0 && endIdx > startIdx)
-      {
-        CONSOLE(F("next request string in "));
-        String next_request_str = payload.substring(startIdx, endIdx);
-        CONSOLE(next_request_str);
-        CONSOLE(F("ms"));
-        next_request_ms = next_request_str.toInt();
-      }
+        if (startIdx > 0 && endIdx > startIdx)
+        {
+            CONSOLE(F("next request string in "));
+            String next_request_str = payload.substring(startIdx, endIdx);
+            CONSOLE(next_request_str);
+            CONSOLE(F("ms"));
+            next_request_ms = next_request_str.toInt();
+        }
     }
     }
     else
