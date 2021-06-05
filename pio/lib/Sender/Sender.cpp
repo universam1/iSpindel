@@ -14,6 +14,7 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
+#include <WiFiClientSecureBearSSL.h>
 
 #define UBISERVER "industrial.api.ubidots.com"
 #define BLYNKSERVER "blynk-cloud.com"
@@ -282,7 +283,7 @@ String SenderClass::sendTCP(String server, uint16_t port)
     }
     while (_client.available())
     {
-        response += _client.read();
+        response += (char)_client.read();
     }
     CONSOLELN(response);
     stopclient();
@@ -319,6 +320,53 @@ bool SenderClass::sendThingSpeak(String token, long Channel)
     stopclient();
     return true;
     }
+
+bool SenderClass::sendHTTPSPost(String server, String uri)
+{
+    String url = server + uri;   
+    serializeJson(_doc, Serial);
+
+    String json;
+    serializeJson(_doc, json);
+    
+    std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
+    client->setInsecure();
+
+    HTTPClient https;
+    if(https.begin(*client, url) )
+    {   
+        // CONSOLELN(json);
+        https.addHeader("Content-Type", "application/json");
+        int httpCode = https.POST(json);
+        
+
+        if (httpCode > 0) 
+        {
+            if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY)
+            {
+            CONSOLELN(F("Should be connected..."));
+            String payload = https.getString();
+            CONSOLELN(payload);
+            
+            }
+        
+            else
+            {
+            CONSOLE(F("Connection failed Code ") );
+            CONSOLELN(httpCode);
+            }
+        }
+      https.end();
+    }
+    else
+    {
+        CONSOLELN(F("Connection failed"));
+    }
+
+    
+    stopclient();
+    return true;
+}
 
 bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
 {

@@ -23,6 +23,7 @@ public:
   String sendTCP(String server, uint16_t port = 80);
   bool sendThingSpeak(String token, long Channel);
   bool sendGenericPost(String server, String uri, uint16_t port = 80);
+  bool sendHTTPSPost(String server, String uri);
   bool sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password);
   bool sendPrometheus(String server, uint16_t port, String job, String instance);
   bool sendUbidots(String token, String name);
@@ -49,7 +50,7 @@ public:
 private:
   WiFiClient _client;
   PubSubClient _mqttClient;
-  StaticJsonDocument<256> _doc;
+  StaticJsonDocument<1024> _doc;
   WiFiClientSecure _secureClient;
 };
 

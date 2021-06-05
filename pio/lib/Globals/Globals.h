@@ -91,6 +91,7 @@ extern Ticker flasher;
 #define DTBLYNK 12
 #define DTBREWBLOX 13
 #define DTAWSIOTMQTT 14             //AWS
+#define DTHTTPS 15
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
