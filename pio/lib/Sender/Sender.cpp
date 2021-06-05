@@ -60,7 +60,6 @@ bool SenderClass::RTCSyncToNTP()
     struct tm timeinfo;
     gmtime_r(&now, &timeinfo);
     CONSOLELN(""); CONSOLE(F("Current time set to: ")); CONSOLELN(asctime(&timeinfo));
-    _doc["time"] = time(nullptr);
     if (now > TIMECHECK){
         return true;
     }

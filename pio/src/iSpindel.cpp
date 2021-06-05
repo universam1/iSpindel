@@ -708,7 +708,7 @@ bool uploadData(uint8_t service)
     else if (service == DTiSPINDELde)
     {
       CONSOLELN(F("\ncalling iSPINDELde"));
-      return sender.sendTCP("ispindle.de", 9501);
+      return sender.sendTCP("ispindle.de", 9501).length() > 0;
     }
     else if (service == DTTCP)
     {
