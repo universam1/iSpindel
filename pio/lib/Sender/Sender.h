@@ -43,7 +43,7 @@ public:
 private:
   WiFiClient _client;
   PubSubClient _mqttClient;
-  StaticJsonDocument<256> _doc;
+  StaticJsonDocument<1024> _doc;
   WiFiClientSecure _secureClient;
 };
 
