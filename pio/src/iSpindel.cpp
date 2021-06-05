@@ -680,7 +680,8 @@ bool uploadData(uint8_t service)
 #endif
 
 #ifdef API_GENERIC
-  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP) || (service == DTHTTPS))
+  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP) ||
+      (service == DTHTTPS))
   {
 
     sender.add("name", my_name);
@@ -716,7 +717,7 @@ bool uploadData(uint8_t service)
       String response = sender.sendTCP(my_server, my_port);
       return processResponse(response);
     }
-  	else if (service == DTHTTPS)
+    else if (service == DTHTTPS)
     {
       CONSOLELN(F("\ncalling HTTPS"));
       return sender.sendHTTPSPost(my_server, my_uri);
