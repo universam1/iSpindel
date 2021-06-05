@@ -16,6 +16,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "DallasTemperature.h"
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
 #include "RunningMedian.h"
+#include "Sender.h"
 #include "WiFiManagerKT.h"
 #include "secrets.h" //AWS - Currently a file for Keys, Certs, etc - Need to make this a captured variable for iSpindle
 #include "tinyexpr.h"
@@ -24,8 +25,7 @@ All rights reserverd by S.Lang <universam@web.de>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
-
-#include "Sender.h"
+#include <LittleFS.h>
 // !DEBUG 1
 
 // definitions go here
@@ -152,7 +152,7 @@ bool readConfig()
 {
   CONSOLE(F("mounting FS..."));
 
-  if (!SPIFFS.begin())
+  if (!LittleFS.begin())
   {
     CONSOLELN(F(" ERROR: failed to mount FS!"));
     return false;
@@ -160,7 +160,7 @@ bool readConfig()
   else
   {
     CONSOLELN(F(" mounted!"));
-    if (!SPIFFS.exists(CFGFILE))
+    if (!LittleFS.exists(CFGFILE))
     {
       CONSOLELN(F("ERROR: failed to load json config"));
       return false;
@@ -169,7 +169,7 @@ bool readConfig()
     {
       // file exists, reading and loading
       CONSOLELN(F("reading config file"));
-      File configFile = SPIFFS.open(CFGFILE, "r");
+      File configFile = LittleFS.open(CFGFILE, "r");
       if (!configFile)
       {
         CONSOLELN(F("ERROR: unable to open config file"));
@@ -476,13 +476,13 @@ bool startConfiguration()
   return false;
 }
 
-bool formatSpiffs()
+bool formatLittleFS()
 {
-  CONSOLE(F("\nneed to format SPIFFS: "));
-  SPIFFS.end();
-  SPIFFS.begin();
-  CONSOLELN(SPIFFS.format());
-  return SPIFFS.begin();
+  CONSOLE(F("\nneed to format LittleFS: "));
+  LittleFS.end();
+  LittleFS.begin();
+  CONSOLELN(LittleFS.format());
+  return LittleFS.begin();
 }
 
 bool saveConfig(int16_t Offset[6])
@@ -499,11 +499,11 @@ bool saveConfig()
 {
   CONSOLE(F("saving config...\n"));
 
-  // if SPIFFS is not usable
-  if (!SPIFFS.begin())
+  // if LittleFS is not usable
+  if (!LittleFS.begin())
   {
     Serial.println("Failed to mount file system");
-    if (!formatSpiffs())
+    if (!formatLittleFS())
     {
       Serial.println("Failed to format file system - hardware issues!");
       return false;
@@ -543,11 +543,11 @@ bool saveConfig()
     array.add(i);
   }
 
-  File configFile = SPIFFS.open(CFGFILE, "w");
+  File configFile = LittleFS.open(CFGFILE, "w");
   if (!configFile)
   {
     CONSOLELN(F("failed to open config file for writing"));
-    SPIFFS.end();
+    LittleFS.end();
     return false;
   }
   else
@@ -558,8 +558,8 @@ bool saveConfig()
 #endif
     configFile.flush();
     configFile.close();
-    SPIFFS.gc();
-    SPIFFS.end();
+    LittleFS.gc();
+    LittleFS.end();
     CONSOLELN(F("\nsaved successfully"));
     return true;
   }
