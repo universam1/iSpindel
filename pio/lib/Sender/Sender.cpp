@@ -164,6 +164,51 @@ bool SenderClass::mqttConnect(const String &server, uint16_t port, const String 
     return false;
 }
 
+#ifdef API_MQTT_HASSIO
+bool SenderClass::enableHassioDiscovery(String server, uint16_t port, String username, String password, String name, String unit)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
+    {
+        _mqttClient.setBufferSize(512);
+        auto chipid = String(ESP.getChipId(), HEX);
+        String device = "\"dev\": { \"name\": \"" + name + "\",\"mdl\": \"ispindel\",\"sw\": \"" + FIRMWAREVERSION + "\",\"mf\": \"iSpindel\",\"ids\": [\"" + chipid + "\"]}";
+        String topic = "homeassistant/sensor/iSpindel_" + chipid + "/";
+        _mqttClient.publish((topic + "temperature/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_temp\", \"dev_cla\": \"temperature\", \"name\": \"Temperature\", \"unit_of_meas\": \"°" + unit + "\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/temperature\"," + device + "}").c_str(), true);
+        _mqttClient.publish((topic + "tilt/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_tilt\", \"name\": \"Tilt\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/tilt\"," + device + "}").c_str(), true);
+        _mqttClient.publish((topic + "battery/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_battery\", \"dev_cla\": \"voltage\", \"name\": \"Battery voltage\", \"unit_of_meas\": \"V\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/battery\"," + device + "}").c_str(), true);
+        _mqttClient.publish((topic + "rssi/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_rssi\", \"dev_cla\": \"signal_strength\", \"name\": \"Signal Strength\", \"unit_of_meas\": \"dB\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/RSSI\"," + device + "}").c_str(), true);
+        _mqttClient.publish((topic + "gravity/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_gravity\", \"name\": \"Gravity\", \"unit_of_meas\": \"°P\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/gravity\"," + device + "}").c_str(), true);
+        _mqttClient.loop();
+    }
+
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return response;
+}
+
+bool SenderClass::disableHassioDiscovery(String server, uint16_t port, String username, String password, String name)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
+    {
+        auto chipid = String(ESP.getChipId(), HEX);
+        String topic = "homeassistant/sensor/iSpindel_" + chipid + "/";
+        _mqttClient.publish((topic + "temperature/config").c_str(), "");
+        _mqttClient.publish((topic + "tilt/config").c_str(), "");
+        _mqttClient.publish((topic + "battery/config").c_str(), "");
+        _mqttClient.publish((topic + "rssi/config").c_str(), "");
+        _mqttClient.publish((topic + "gravity/config").c_str(), "");
+        _mqttClient.loop();
+    }
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return response;
+}
+#endif
+
 bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
 {
     bool response = mqttConnect(server, port, name, username, password);
@@ -248,20 +293,20 @@ String SenderClass::sendTCP(String server, uint16_t port)
 bool SenderClass::sendThingSpeak(String token, long Channel)
 {
     int field = 0;
-    unsigned long channelNumber = Channel; 
+    unsigned long channelNumber = Channel;
     const char * writeAPIKey = token.c_str();
-    
+
     serializeJson(_doc, Serial);
     ThingSpeak.begin(_client);
 
     CONSOLELN(F("\nSender: ThingSpeak posting"));
-   
+
     for (const auto &kv : _doc.as<JsonObject>())
-    {   
-        field++;  
+    {
+        field++;
         ThingSpeak.setField(field, kv.value().as<String>());
     }
-    // write to the ThingSpeak channel 
+    // write to the ThingSpeak channel
     int x = ThingSpeak.writeFields(channelNumber, writeAPIKey);
 
     if(x == 200){
@@ -639,7 +684,7 @@ bool SenderClass::sendBlynk(char* token)
       i++;
       delay(50);
     }
-        
+
     if (Blynk.connected())
     {
         CONSOLELN(F("\nConnected to the Blynk server, sending data"));
@@ -656,7 +701,7 @@ bool SenderClass::sendBlynk(char* token)
         CONSOLELN(F("\nFailed to connect to Blynk, going to sleep"));
         return false;
     }
-    
+
     delay(150);     //delay to allow last value to be sent;
     return true;
 }

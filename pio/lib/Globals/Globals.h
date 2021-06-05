@@ -32,6 +32,7 @@ extern Ticker flasher;
 #define API_THINGSPEAK true
 #define API_BLYNK true
 #define API_BREWBLOX true
+#define API_MQTT_HASSIO true
 #define API_AWSIOTMQTT true         //AWS
 
 //#define BLYNK_DEBUG

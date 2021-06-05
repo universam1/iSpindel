@@ -77,6 +77,10 @@ char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
 char my_polynominal[250] = "-0.00031*tilt^2+0.557*tilt-14.054";
+#ifdef API_MQTT_HASSIO
+bool my_hassio = false;
+bool my_hassio_changed = false;
+#endif
 
 String my_ssid;
 String my_psk;
@@ -220,7 +224,10 @@ bool readConfig()
             my_psk = (const char *)doc["PSK"];
           if (doc.containsKey("POLY"))
             strcpy(my_polynominal, doc["POLY"]);
-
+#ifdef API_MQTT_HASSIO
+          if (doc.containsKey("Hassio"))
+            my_hassio = doc["Hassio"];
+#endif
           if (doc.containsKey("Offset"))
           {
             for (size_t i = 0; i < (sizeof(my_Offset) / sizeof(*my_Offset)); i++)
@@ -324,6 +331,21 @@ String htmlencode(String str)
   return encodedstr;
 }
 
+void postConfig()
+{
+#ifdef API_MQTT_HASSIO
+  SenderClass sender;
+  if (my_hassio)
+  {
+    sender.enableHassioDiscovery(my_server, my_port, my_username, my_password, my_name, tempScaleLabel());
+  }
+  if (my_hassio_changed && !my_hassio)
+  {
+    sender.disableHassioDiscovery(my_server, my_port, my_username, my_password, my_name);
+  }
+#endif
+}
+
 bool startConfiguration()
 {
 
@@ -348,6 +370,10 @@ bool startConfiguration()
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
   WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
+#ifdef API_MQTT_HASSIO
+  WiFiManagerParameter custom_hassio("hassio", "Home Assistant integration via MQTT", "checked", TKIDSIZE,
+                                     my_hassio ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
+#endif
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(my_vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale", String(my_tempscale).c_str(), 5, TYPE_HIDDEN,
@@ -383,6 +409,9 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_password);
   wifiManager.addParameter(&custom_job);
   wifiManager.addParameter(&custom_instance);
+#ifdef API_MQTT_HASSIO
+  wifiManager.addParameter(&custom_hassio);
+#endif
   WiFiManagerParameter custom_polynom_lbl(
       "<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
@@ -417,6 +446,13 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   my_channel = String(custom_channel.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
+#ifdef API_MQTT_HASSIO
+  {
+    auto hassio = my_api == DTMQTT && String(custom_hassio.getValue()) == "checked";
+    my_hassio_changed = my_hassio != hassio;
+    my_hassio = hassio;
+  }
+#endif
   validateInput(custom_uri.getValue(), my_uri);
 
   String tmp = custom_vfact.getValue();
@@ -432,6 +468,8 @@ bool startConfiguration()
     // Wifi config
     WiFi.setAutoConnect(true);
     WiFi.setAutoReconnect(true);
+
+    postConfig();
 
     return saveConfig();
   }
@@ -489,6 +527,9 @@ bool saveConfig()
   doc["Password"] = my_password;
   doc["Job"] = my_job;
   doc["Instance"] = my_instance;
+#ifdef API_MQTT_HASSIO
+  doc["Hassio"] = my_hassio;
+#endif
   doc["Vfact"] = my_vfact;
   doc["TS"] = my_tempscale;
   doc["OWpin"] = my_OWpin;
