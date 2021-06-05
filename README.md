@@ -24,6 +24,7 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 ## There are FAQs:
 ### [Deutsche FAQ] - docs/FAQ.md
 ### [English FAQ] - docs/FAQ-en.md
+### [中文 FAQ] - docs/FAQ-zh.md
 
 ## Documentation in other languages
 
@@ -32,6 +33,8 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 ### [Nederlandse Vertaling (lopende werkzaamheden)](docs/README_nl.md) 🇳🇱
 
 ### [Documentação em Português (trabalho em andamento)](docs/README_pt.md) 🇧🇷
+
+### [中文文档 (完善中)](docs/README_zh.md) CN
 
 ***
 
@@ -110,12 +113,17 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 ## Inhaltverzeichnis
 
-- [iSpindel - *DIY electronic Hydrometer*](#ispindel-diy-electronic-hydrometer)
+- [iSpindel - *DIY electronic Hydrometer*](#ispindel---diy-electronic-hydrometer)
   - [Featured in german brewing magazine Braumagazin.de](#featured-in-german-brewing-magazine-braumagazinde)
+  - [There are FAQs:](#there-are-faqs)
+    - [[Deutsche FAQ] - docs/FAQ.md](#deutsche-faq---docsfaqmd)
+    - [[English FAQ] - docs/FAQ-en.md](#english-faq---docsfaq-enmd)
+    - [[中文 FAQ] - docs/FAQ-zh.md](#中文-faq---docsfaq-zhmd)
   - [Documentation in other languages](#documentation-in-other-languages)
     - [English Documentation (work in progress) 🇺🇸](#english-documentation-work-in-progress-)
     - [Nederlandse Vertaling (lopende werkzaamheden) 🇳🇱](#nederlandse-vertaling-lopende-werkzaamheden-)
     - [Documentação em Português (trabalho em andamento) 🇧🇷](#documentação-em-português-trabalho-em-andamento-)
+    - [中文文档 (完善中) CN](#中文文档-完善中-cn)
   - [Firmware download here](#firmware-download-here)
   - [ChangeLog](#changelog)
   - [Inhaltverzeichnis](#inhaltverzeichnis)
