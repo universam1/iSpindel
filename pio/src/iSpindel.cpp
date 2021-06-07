@@ -864,28 +864,29 @@ void initDS18B20()
       CONSOLELN(pin);
       oneWire = new OneWire(pin);
       DS18B20 = DallasTemperature(oneWire);
-      if (DS18B20.getAddress(tempDeviceAddress, 0))
+
+      if (!DS18B20.getAddress(tempDeviceAddress, 0))
       {
-        CONSOLELN(F("Tempinit: OneWire sensor found!"));
-
-        if (DS18B20.isConnected(tempDeviceAddress))
-        {
-          CONSOLELN(F("Tempinit: sensor connected"));
-
-          if (DS18B20.validFamily(tempDeviceAddress))
-          {
-            CONSOLELN(F("Tempinit: temp sensor family VALID"));
-            my_OWpin = pin;
-            break;
-          }
-          else
-            CONSOLELN(F("Tempinit: temp sensor family INVALID"));
-        }
-        else
-          CONSOLELN(F("Tempinit: sensor NOT connected"));
-      }
-      else
         CONSOLELN(F("Tempinit: No OneWire sensor found"));
+        break;
+      }
+      CONSOLELN(F("Tempinit: OneWire sensor found!"));
+
+      if (!DS18B20.isConnected(tempDeviceAddress))
+      {
+        CONSOLELN(F("Tempinit: sensor NOT connected"));
+        break;
+      }
+      CONSOLELN(F("Tempinit: sensor connected"));
+
+      if (!DS18B20.validFamily(tempDeviceAddress))
+      {
+        CONSOLELN(F("Tempinit: temp sensor family INVALID"));
+        break;
+      }
+      CONSOLELN(F("Tempinit: temp sensor family VALID"));
+
+      my_OWpin = pin;
     }
   }
 
