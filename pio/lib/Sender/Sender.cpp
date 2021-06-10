@@ -733,8 +733,7 @@ uint32_t SenderClass::sendBricks()
 
   CONSOLELN(F("setting insecure"));
   client.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
-  String url = "https://bricks.bierbot.com/api/iot/v1";
-  //String url = "http://192.168.2.108:5001/bierbot-cloud/us-central1/iot_v1";
+  String url = "https://brewbricks.com/api/iot/v1";
   client.connect(url, 443);
   CONSOLELN(F("adding headers"));
   HTTPClient http; //Declare an object of class HTTPClient
@@ -793,102 +792,4 @@ uint32_t SenderClass::sendBricks()
     http.end();
     stopclient();
     return next_request_ms;
-
-    /*
-
-    // forge URL for GET request
-    // 192.168.2.108
-    String url = "https://bricks.bierbot.com/api/iot/v1?type=wemos_d1mini&brand=ispindel&version=";
-    // String url = "http://192.168.2.108:5001/bierbot-cloud/us-central1/iot_v1?type=wemos_d1mini&brand=ispindel&version=";
-    url += FIRMWAREVERSION;
-    CONSOLELN("url before");
-    CONSOLELN(url);
-
-    String chipid = _doc["chipid"]; //
-    url += String("&chipid=") + chipid;
-    String s_number_tilt_0 = _doc["s_number_tilt_0"]; //
-    url += String("&s_number_tilt_0=") + s_number_tilt_0;
-    String s_number_temp_0 = _doc["s_number_temp_0"]; // // always transmit °C
-    url += String("&s_number_temp_0=") + s_number_temp_0;
-    String s_number_voltage_0 = _doc["s_number_voltage_0"]; //
-    url += String("&s_number_voltage_0=") + s_number_voltage_0;
-    String s_number_wort_0 = _doc["s_number_wort_0"];       //
-    url += String("&s_number_wort_0=") + s_number_wort_0;
-    String s_number_wifi_0 = _doc["s_number_wifi_0"]; // RSSI());
-    url += String("&s_number_wifi_0=") + s_number_wifi_0;
-    
-    for (const auto &kv : _doc.to<JsonObject>())
-    {
-        CONSOLELN("found param");
-        url += "&";
-        url += kv.key().c_str();
-        url += "=";
-        url += kv.value().as<String>();
-    }
-    
-    CONSOLELN("url after");
-    CONSOLELN(url);
-
-    CONSOLELN("setting up client");
-    WiFiClientSecure client;
-    client.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
-    client.connect(url, 443);
-
-    CONSOLELN("adding headers");
-    HTTPClient http; //Declare an object of class HTTPClient
-    http.begin(client, url);
-    http.addHeader("User-Agent", "iSpindel");
-    http.addHeader("Connection", "close");
-    // http.addHeader("Content-Type", "application/json");
-
-
-    CONSOLELN("submitting GET");
-    auto httpCode = http.GET(); // GET has issues with 301 forwards
-    CONSOLELN(String(F("code: ")) + httpCode);
-
-    // httpCode will be negative on error
-    if (httpCode > 0)
-    {
-        if (httpCode == HTTP_CODE_OK)
-        {
-            CONSOLELN(http.getString());
-            String payload = http.getString(); //Get the request response payload
-
-            if (payload.length() != 0 && payload.indexOf("{") != -1) {
-
-                StaticJsonDocument<255> jsonDoc;
-
-                // Deserialize the JSON document
-                // doc should look like "{\"target_state\":0, \"next_request_ms\":10000,\"error\":1,\"error_text\":\"Your device will need an upgrade\",\"warning\":1,\"warning_text\":\"Your device will need an upgrade\"}";
-                DeserializationError error = deserializeJson(jsonDoc, payload);
-
-                // Test if parsing succeeds.
-                if (error)
-                {
-                    CONSOLELN(F("deserializeJson() failed: "));
-                    CONSOLELN(error.f_str());
-                }
-                else
-                {
-                    CONSOLELN("deserializeJson success");
-
-                    // main logic here
-                    if (jsonDoc.containsKey("next_request_ms"))
-                    {
-                      next_sleeptime = jsonDoc["next_request_ms"].as<unsigned int>() / 1000;
-                    }
-                }
-            }
-            else
-            {
-            CONSOLE(F("[HTTP] GET... failed, error: "));
-            CONSOLELN(http.errorToString(httpCode));
-            }
-        }
-    }
-
-    CONSOLELN(F("returning..."));
-    http.end();
-    stopclient();
-    return next_sleeptime;*/
 }
