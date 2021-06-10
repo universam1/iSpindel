@@ -38,6 +38,7 @@ iSpindle (iSpindel) Documentation
 - [Configuration](#configuration)
   - [Ubidots](#ubidots)
   - [Portal](#portal)
+  - [BierBot Bricks](#bierbot-bricks)
   - [Blynk](#blynk)
 - [Graphical User Interface](#graphical-user-interface)
   - [Calibrating the Spindle](#calibration)
@@ -106,6 +107,32 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
 ## Configuration
 
+### Ubidots
+
+- To start, you must create a free account at [Ubidots.com](https://ubidots.com)
+- Next, you must go to the menu  ```API Credentials``` to get a ```Token``` to be used by the iSpindle to authorize writing data to the Ubidots account.
+***Write this down.***  
+![Token](/pics/UbiToken.jpg)  
+
+#### Portal
+
+By pressing the  ```Reset Button``` the Wemos creates an access point, which allows you to make the necessary settings to configure the device. **In `operation mode` this portal is not active or accessible because the principle of this design is based on shorted possible acitve time. Basically it will wake up, send its data and deep sleep again. This takes now less than 3s which is directly related to its long life run time.
+
+> The ```iSpindel``` signals the `config mode` by blinking the LED at a 1s interval.  
+By saving your settings or waiting timeout of 5min it will end the Portal thus AccessPoint and try to go into `operation mode`.
+
+
+   ![Setup](/pics/configuration.png)
+
+   ![AccessPoint](/pics/AP.png)![Portal](/pics/Portal.png)
+
+  ![Info](/pics/info.png)
+
+> In Ubidots you can monitor the update of data unders ```Sources``` where the iSpindel will create a new device itself.  
+In the ```Dashboard``` now you can create your nice graphs.
+
+### BierBot Bricks
+
 The setup with BierBot Bricks is easy and for free. You will need the iSpindle Firmware  `7.1.0` or later. 
 
 1. Create a free BierBot Bricks account [here](https://bricks.bierbot.com/#/register).
@@ -123,31 +150,7 @@ The setup with BierBot Bricks is easy and for free. You will need the iSpindle F
 
 **Done!**
 
-![Token](../pics/ispindle_bricks_tutorial.png)
-
-### Ubidots
-
-- To start, you must create a free account at [Ubidots.com](https://ubidots.com)
-- Next, you must go to the menu  ```API Credentials``` to get a ```Token``` to be used by the iSpindle to authorize writing data to the Ubidots account.
-***Write this down.***  
-![Token](/pics/UbiToken.jpg)  
-
-### Portal
-
-By pressing the  ```Reset Button``` the Wemos creates an access point, which allows you to make the necessary settings to configure the device. **In `operation mode` this portal is not active or accessible because the principle of this design is based on shorted possible acitve time. Basically it will wake up, send its data and deep sleep again. This takes now less than 3s which is directly related to its long life run time.
-
-> The ```iSpindel``` signals the `config mode` by blinking the LED at a 1s interval.  
-By saving your settings or waiting timeout of 5min it will end the Portal thus AccessPoint and try to go into `operation mode`.
-
-
-   ![Setup](/pics/configuration.png)
-
-   ![AccessPoint](/pics/AP.png)![Portal](/pics/Portal.png)
-
-  ![Info](/pics/info.png)
-
-> In Ubidots you can monitor the update of data unders ```Sources``` where the iSpindel will create a new device itself.  
-In the ```Dashboard``` now you can create your nice graphs.
+![Bricks tutorial](../pics/ispindle_bricks_tutorial.png)
 
 ### Blynk
 
