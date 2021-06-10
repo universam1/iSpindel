@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.6.0"
+#define FIRMWAREVERSION "7.0.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -32,8 +32,10 @@ extern Ticker flasher;
 #define API_THINGSPEAK true
 #define API_BLYNK true
 #define API_BREWBLOX true
-#define API_BRICKS true
+#define API_MQTT_HASSIO true
 #define API_AWSIOTMQTT true         //AWS
+#define API_BRICKS true
+
 
 //#define BLYNK_DEBUG
 //#define APP_DEBUG
@@ -46,23 +48,26 @@ extern Ticker flasher;
 #define DEBUG true
 #endif
 
-#define CONSOLE(...)               \
-    do                             \
-    {                              \
-        Serial.print(__VA_ARGS__); \
-    } while (0)
-#define CONSOLELN(...)               \
-    do                               \
-    {                                \
-        Serial.println(__VA_ARGS__); \
-    } while (0)
+#define CONSOLE(...)                                                                                                   \
+  do                                                                                                                   \
+  {                                                                                                                    \
+    Serial.print(__VA_ARGS__);                                                                                         \
+  } while (0)
+#define CONSOLELN(...)                                                                                                 \
+  do                                                                                                                   \
+  {                                                                                                                    \
+    Serial.println(__VA_ARGS__);                                                                                       \
+  } while (0)
 
 #define PORTALTIMEOUT 300
 
 #define ADCDIVISOR 191.8
 #define ONE_WIRE_BUS D6 // DS18B20 on ESP pin12
-#define OW_PINS \
-    (const uint8_t[]) { D1, D6 }
+#define OW_PINS                                                                                                        \
+  (const uint8_t[])                                                                                                    \
+  {                                                                                                                    \
+    D1, D6                                                                                                             \
+  }
 #define RESOLUTION 12 // 12bit resolution == 750ms update rate
 #define OWinterval (760 / (1 << (12 - RESOLUTION)))
 #define CFGFILE "/config.json"
@@ -90,8 +95,9 @@ extern Ticker flasher;
 #define DTTHINGSPEAK 11
 #define DTBLYNK 12
 #define DTBREWBLOX 13
-#define DTAWSIOTMQTT 14             //AWS
-#define DTBRICKS 15
+#define DTAWSIOTMQTT 14 //AWS
+#define DTHTTPS 15
+#define DTBRICKS 16
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
@@ -116,7 +122,7 @@ extern float Volt, Temperatur, Tilt, Gravity;
 extern MPU6050 accelgyro;
 extern bool saveConfig();
 extern bool saveConfig(int16_t Offset[6]);
-extern bool formatSpiffs();
+extern bool formatLittleFS();
 extern void flash();
 
 float scaleTemperature(float t);
