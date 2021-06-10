@@ -106,6 +106,25 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
 ## Configuration
 
+The setup with BierBot Bricks is easy and for free. You will need the iSpindle Firmware  `7.1.0` or later. 
+
+1. Create a free BierBot Bricks account [here](https://bricks.bierbot.com/#/register).
+2. After Registration, select "Bricks" in the menu on the left (see 1 in the picture).
+3. Hit the blue "Add Brick" button in the top right corner.
+4. Select "iSpindel" in the popup and copy the displayed API key into your clipboard.
+5. Now open the configuration portal of your iSpindel (by pressing reset multiple times, see [portal](#portal) for more info).
+6. Select "Bricks (free & easy)" as service (see 2 in the image).
+7. Paste the api key from your clipboard into the "Token/ API key" field and hit the blue save bottom at the bottom.
+8. Now go back to [bricks.bierbot.com](https://bricks.bierbot.com/#/) and select "Equipment" in the menu on the left (see 3 in the image).
+9. Create a new device (blue button, top right corner), select "**Fermenter**" in the popup.
+10. Now assign the gravity sensor from the iSpindle to the respective field of your fermeter by **drag & dropping** - the respective target dropzone on your fermenter will be highlighted green to guide you. You can do the same for your temperature sensor, but this is optional.
+11. Hite "Save".
+12. To start recording, we will also need a recipe. Go to "Recipes" on the left and create a recipe. You only need to setup one (dummy) fermentation step. Save the recipe and go back to the list of recipes. Start your recipe by clicking the orange play button.
+
+**Done!**
+
+![Token](../pics/ispindle_bricks_tutorial.png)
+
 ### Ubidots
 
 - To start, you must create a free account at [Ubidots.com](https://ubidots.com)

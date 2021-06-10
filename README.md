@@ -211,6 +211,27 @@ Die obige Platine kann (über Trenn-Schnitt) mit dem Kunstoff Schlitten in Kombi
 
 ## Konfiguration
 
+### BierBot Bricks
+
+Die Einrichtung mit BierBot Bricks ist einfach und kostenlos. Ihr benötigt hierfür die iSpindel Firmware > `7.1.0`. 
+
+1. Zunächst müsst ihr einen kostenlosen Account erstellen. [Zur Registrierung](https://bricks.bierbot.com/#/register).
+2. Nach der Registrierung links im Menü auf "Bricks" (siehe 1. im Bild).
+3. Dort klickt ihr nun auf den blauen "Add Brick" / "Brick hinzufügen" oben rechts.
+4. Wählt den "iSpindel"-Tab im Popup und kopiert den API key in die Zwischenablage.
+5. Ruft nun das Konfigurationsportal eurer iSpindel auf (die iSpindel erstellt einen Accesspoint durch mehrmaliges Drücken der Reset-Taste, s. [hier](#portal))
+6. Wählt als Service "Bricks (free & easy)" aus (siehe 2 im Bild).
+7. Fügt nun unter "Token/ API key" den API key aus euer Zwischenablage ein und klickt ganz unten auf den blauen Speichern-Button.
+8. Geht nun zurück auf [bricks.bierbot.com](https://bricks.bierbot.com/#/) und wählt "Equipment" bzw. "Brauanlagen" auf der linken Seite aus (3 im Bild).
+9. Erstellt nun ein neues Gerät (blauber Button rechts oben) vom Typ "**Fermenter**".
+10. Weißt nun durch **Drag & Drop** von der iSpindel auf den entsprechenden Platz (grün markiert) des Fermenters den Würzesensor zu (optional könnt ihr dies nun auch für die Temperatur machen).
+11. Klickt "Save" / "Speichern".
+12. Um die Aufzeichnung zu starten, benötigen wir nun noch ein Rezept. Erstellt dieses unter Rezepte (es reicht eine Fermentationsrast), speichert es, und startet es über den oragenen Knopf in der Rezeptübersicht. 
+
+**Fertig!**
+
+![Token](pics/ispindle_bricks_tutorial.png)
+
 ### Ubidots
 
 - Zu Beginn muss ein kostenloser Account bei [Ubidots.com](https://ubidots.com) erstellt werden
