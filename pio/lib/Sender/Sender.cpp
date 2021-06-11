@@ -7,12 +7,13 @@
 
 #include "Sender.h"
 #include "Globals.h"
+#include <ArduinoJson.h>
+#include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <MD5Builder.h>
 #include <PubSubClient.h>
 #include <ThingSpeak.h>
-#include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
 #include <WiFiClientSecureBearSSL.h>
 
@@ -38,6 +39,13 @@ void SenderClass::add(String id, uint32_t value)
 void SenderClass::add(String id, int32_t value)
 {
     _doc[id] = value;
+}
+String SenderClass::createMd5Hash(String str)
+{
+  _md5.begin();
+  _md5.add(String(str));
+  _md5.calculate();
+  return _md5.toString();
 }
 void SenderClass::stopclient()
 {

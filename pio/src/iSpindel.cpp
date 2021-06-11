@@ -797,10 +797,11 @@ bool uploadData(uint8_t service)
 
     CONSOLELN(F("adding payload..."));
     String chipid = String(ESP.getFlashChipId()) + "_" + String(WiFi.macAddress());
+    String chipidHashed = sender.createMd5Hash(chipid);
     sender.add("type", "ispindel");
     sender.add("brand", "wemos_d1_mini");
     sender.add("version", FIRMWAREVERSION);
-    sender.add("chipid", chipid);
+    sender.add("chipid", chipidHashed);
     sender.add("s_number_wort_0", Gravity);
     sender.add("s_number_temp_0", Temperatur); // always transmit °C
     sender.add("s_number_voltage_0", Volt);

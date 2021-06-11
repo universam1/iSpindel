@@ -10,9 +10,10 @@
 
 #include "Globals.h"
 
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <MD5Builder.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 
@@ -42,6 +43,7 @@ public:
   void add(String id, String value);
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
+  String createMd5Hash(String input);
   void stopclient();
   bool RTCSyncToNTP();
   void mqttCallback(char *topic, byte *payload, unsigned int length);
@@ -53,6 +55,7 @@ private:
   PubSubClient _mqttClient;
   StaticJsonDocument<1024> _doc;
   WiFiClientSecure _secureClient;
+  MD5Builder _md5;
 };
 
 #endif
