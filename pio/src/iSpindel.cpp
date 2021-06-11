@@ -77,7 +77,7 @@ char my_password[TKIDSIZE];
 char my_job[TKIDSIZE] = "ispindel";
 char my_instance[TKIDSIZE] = "000";
 char my_polynominal[250] = "-0.00031*tilt^2+0.557*tilt-14.054";
-#ifdef API_MQTT_HASSIO
+#if API_MQTT_HASSIO
 bool my_hassio = false;
 bool my_hassio_changed = false;
 #endif
@@ -224,7 +224,7 @@ bool readConfig()
             my_psk = (const char *)doc["PSK"];
           if (doc.containsKey("POLY"))
             strcpy(my_polynominal, doc["POLY"]);
-#ifdef API_MQTT_HASSIO
+#if API_MQTT_HASSIO
           if (doc.containsKey("Hassio"))
             my_hassio = doc["Hassio"];
 #endif
@@ -333,7 +333,7 @@ String htmlencode(String str)
 
 void postConfig()
 {
-#ifdef API_MQTT_HASSIO
+#if API_MQTT_HASSIO
   SenderClass sender;
   if (my_hassio)
   {
@@ -370,7 +370,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
   WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
-#ifdef API_MQTT_HASSIO
+#if API_MQTT_HASSIO
   WiFiManagerParameter custom_hassio("hassio", "Home Assistant integration via MQTT", "checked", TKIDSIZE,
                                      my_hassio ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
 #endif
@@ -409,7 +409,7 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_password);
   wifiManager.addParameter(&custom_job);
   wifiManager.addParameter(&custom_instance);
-#ifdef API_MQTT_HASSIO
+#if API_MQTT_HASSIO
   wifiManager.addParameter(&custom_hassio);
 #endif
   WiFiManagerParameter custom_polynom_lbl(
@@ -446,7 +446,7 @@ bool startConfiguration()
   my_port = String(custom_port.getValue()).toInt();
   my_channel = String(custom_channel.getValue()).toInt();
   my_tempscale = String(custom_tempscale.getValue()).toInt();
-#ifdef API_MQTT_HASSIO
+#if API_MQTT_HASSIO
   {
     auto hassio = my_api == DTMQTT && String(custom_hassio.getValue()) == "checked";
     my_hassio_changed = my_hassio != hassio;
@@ -527,7 +527,7 @@ bool saveConfig()
   doc["Password"] = my_password;
   doc["Job"] = my_job;
   doc["Instance"] = my_instance;
-#ifdef API_MQTT_HASSIO
+#if API_MQTT_HASSIO
   doc["Hassio"] = my_hassio;
 #endif
   doc["Vfact"] = my_vfact;
@@ -588,7 +588,7 @@ bool uploadData(uint8_t service)
 {
   SenderClass sender;
 
-#ifdef API_UBIDOTS
+#if API_UBIDOTS
   if (service == DTUbiDots)
   {
     sender.add("tilt", Tilt);
@@ -602,7 +602,7 @@ bool uploadData(uint8_t service)
   }
 #endif
 
-#ifdef API_AWSIOTMQTT //AWS
+#if API_AWSIOTMQTT //AWS
   if (service == DTAWSIOTMQTT)
   {
     sender.add("name", my_name);
@@ -618,7 +618,7 @@ bool uploadData(uint8_t service)
   }
 #endif
 
-#ifdef API_MQTT
+#if API_MQTT
   if (service == DTMQTT)
   {
     sender.add("tilt", Tilt);
@@ -633,7 +633,7 @@ bool uploadData(uint8_t service)
   }
 #endif
 
-#ifdef API_THINGSPEAK
+#if API_THINGSPEAK
   if (service == DTTHINGSPEAK)
   {
     sender.add("tilt", Tilt);
@@ -648,7 +648,7 @@ bool uploadData(uint8_t service)
   }
 #endif
 
-#ifdef API_INFLUXDB
+#if API_INFLUXDB
   if (service == DTInfluxDB)
   {
     sender.add("tilt", Tilt);
@@ -665,7 +665,7 @@ bool uploadData(uint8_t service)
   }
 #endif
 
-#ifdef API_PROMETHEUS
+#if API_PROMETHEUS
   if (service == DTPrometheus)
   {
     sender.add("tilt", Tilt);
@@ -679,7 +679,7 @@ bool uploadData(uint8_t service)
   }
 #endif
 
-#ifdef API_GENERIC
+#if API_GENERIC
   if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP) ||
       (service == DTHTTPS))
   {
@@ -725,7 +725,7 @@ bool uploadData(uint8_t service)
   }
 #endif // DATABASESYSTEM
 
-#ifdef API_FHEM
+#if API_FHEM
   if (service == DTFHEM)
   {
     sender.add("angle", Tilt);
@@ -738,7 +738,7 @@ bool uploadData(uint8_t service)
     return sender.sendFHEM(my_server, my_port, my_name);
   }
 #endif // DATABASESYSTEM ==
-#ifdef API_TCONTROL
+#if API_TCONTROL
   if (service == DTTcontrol)
   {
     sender.add("T", scaleTemperature(Temperatur));
@@ -750,7 +750,7 @@ bool uploadData(uint8_t service)
   }
 #endif // DATABASESYSTEM ==
 
-#ifdef API_BLYNK
+#if API_BLYNK
   if (service == DTBLYNK)
   {
     String tempToSend = String(scaleTemperature(Temperatur), 1);
@@ -769,7 +769,7 @@ bool uploadData(uint8_t service)
   }
 #endif
 
-#ifdef API_BREWBLOX
+#if API_BREWBLOX
   if (service == DTBREWBLOX)
   {
     sender.add("Tilt[deg]", Tilt);
