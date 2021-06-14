@@ -731,23 +731,22 @@ bool SenderClass::sendBrewblox(String server, uint16_t port, String topic, Strin
 
 uint32_t SenderClass::sendBricks()
 {
-  uint32_t next_request_ms = 0;
+  uint32_t next_request_ms = 60 * 1000;
 
   // dump json
   CONSOLELN(F("sendBricks called"));
 
   serializeJson(_doc, Serial);
-  WiFiClientSecure client;
 
   CONSOLELN(F("setting insecure"));
-  client.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
+  _client.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
   String url = "https://brewbricks.com/api/iot/v1";
-  client.connect(url, 443);
+  _client.connect(url, 443);
   CONSOLELN(F("adding headers"));
   HTTPClient http; //Declare an object of class HTTPClient
 
   // configure traged server and uri
-  http.begin(client, url);
+  http.begin(_client, url);
   http.addHeader("User-Agent", "iSpindel");
   http.addHeader("Connection", "close");
   http.addHeader("Content-Type", "application/json");
