@@ -739,14 +739,14 @@ uint32_t SenderClass::sendBricks()
   serializeJson(_doc, Serial);
 
   CONSOLELN(F("setting insecure"));
-  _client.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
+  _secureClient.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
   String url = "https://brewbricks.com/api/iot/v1";
-  _client.connect(url, 443);
+  _secureClient.connect(url, 443);
   CONSOLELN(F("adding headers"));
   HTTPClient http; //Declare an object of class HTTPClient
 
   // configure traged server and uri
-  http.begin(_client, url);
+  http.begin(_secureClient, url);
   http.addHeader("User-Agent", "iSpindel");
   http.addHeader("Connection", "close");
   http.addHeader("Content-Type", "application/json");
