@@ -753,7 +753,11 @@ uint32_t SenderClass::sendBricks()
   http.addHeader("Content-Type", "application/json");
 
   String json;
+  CONSOLELN(F("serializing json"));
   serializeJson(_doc, json);
+  CONSOLE(F("starting POST, payload: "));
+  CONSOLELN(json);
+
   auto httpCode = http.POST(json);
   CONSOLELN(String(F("code: ")) + httpCode);
 
