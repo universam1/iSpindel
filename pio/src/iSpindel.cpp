@@ -798,15 +798,15 @@ bool uploadData(uint8_t service)
     CONSOLELN(F("adding payload..."));
     String chipid = String(ESP.getFlashChipId()) + "_" + String(WiFi.macAddress());
     String chipidHashed = sender.createMd5Hash(chipid).substring(0, 16);
-    //sender.add("type", "ispindel");
-    //sender.add("brand", "wemos_d1_mini");
-    //sender.add("version", FIRMWAREVERSION);
-    //sender.add("chipid", chipidHashed);
-    //sender.add("s_number_wort_0", (float)(round(Gravity * 10) / 10));
-    //sender.add("s_number_temp_0", (float)(round(Temperatur * 10) / 10)); // always transmit °C
-    //sender.add("s_number_voltage_0", Volt);
-    //sender.add("s_number_wifi_0", WiFi.RSSI());
-    //sender.add("s_number_tilt_0", (float)(round(Tilt * 10) / 10));
+    sender.add("type", "ispindel");
+    sender.add("brand", "wemos_d1_mini");
+    sender.add("version", FIRMWAREVERSION);
+    sender.add("chipid", chipidHashed);
+    sender.add("s_number_wort_0", (float)(round(Gravity * 10) / 10));
+    sender.add("s_number_temp_0", (float)(round(Temperatur * 10) / 10)); // always transmit °C
+    sender.add("s_number_voltage_0", (float)round(Volt * 100 ) / 100 );
+    sender.add("s_number_wifi_0", WiFi.RSSI());
+    sender.add("s_number_tilt_0", (float)(round(Tilt * 100) / 100));
 
     CONSOLELN(F("\ncalling BRICKS"));
 
