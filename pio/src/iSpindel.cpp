@@ -1212,6 +1212,12 @@ void setup()
   initDS18B20();
   initAccel();
 
+  #ifdef WIFI_IS_OFF_AT_BOOT
+    // persistence is disabled by default and WiFi does not start automatically at boot
+    // source: https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/generic-class.html#persistent
+    enableWiFiAtBootTime();
+  #endif
+
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig(validConf))
   {
