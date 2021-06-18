@@ -171,7 +171,7 @@ bool SenderClass::mqttConnect(const String &server, uint16_t port, const String 
     return false;
 }
 
-#ifdef API_MQTT_HASSIO
+#if API_MQTT_HASSIO
 bool SenderClass::enableHassioDiscovery(String server, uint16_t port, String username, String password, String name, String unit)
 {
     bool response = mqttConnect(server, port, name, username, password);

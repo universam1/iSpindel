@@ -49,10 +49,10 @@ jobs:
     - name: Install library dependencies
       run: pio lib -g install 1
     - name: Run PlatformIO
-      run: pio run -e d1_mini
+      run: pio run -e d1_mini_git
     - name: Save firmware
       uses: actions/upload-artifact@v2
       with:
         name: firmware
-        path: .pio/build/d1_mini/firmware.bin
+        path: .pio/build/d1_mini_git/firmware.bin
 
