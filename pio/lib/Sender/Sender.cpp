@@ -7,12 +7,13 @@
 
 #include "Sender.h"
 #include "Globals.h"
+#include <ArduinoJson.h>
+#include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <MD5Builder.h>
 #include <PubSubClient.h>
 #include <ThingSpeak.h>
-#include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
 #include <WiFiClientSecureBearSSL.h>
 
@@ -38,6 +39,13 @@ void SenderClass::add(String id, uint32_t value)
 void SenderClass::add(String id, int32_t value)
 {
     _doc[id] = value;
+}
+String SenderClass::createMd5Hash(String str)
+{
+  _md5.begin();
+  _md5.add(String(str));
+  _md5.calculate();
+  return _md5.toString();
 }
 void SenderClass::stopclient()
 {
@@ -719,4 +727,80 @@ bool SenderClass::sendBrewblox(String server, uint16_t port, String topic, Strin
     _mqttClient.disconnect();
     stopclient();
     return response;
+}
+
+uint32_t SenderClass::sendBricks()
+{
+  uint32_t next_request_ms = 60 * 1000;
+
+  // dump json
+  CONSOLELN(F("sendBricks called"));
+
+  serializeJson(_doc, Serial);
+
+  CONSOLELN(F("setting insecure"));
+  _secureClient.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
+  String url = "https://brewbricks.com/api/iot/v1";
+  _secureClient.connect(url, 443);
+  CONSOLELN(F("adding headers"));
+  HTTPClient http; //Declare an object of class HTTPClient
+
+  // configure traged server and uri
+  http.begin(_secureClient, url);
+  http.addHeader("User-Agent", "iSpindel");
+  http.addHeader("Connection", "close");
+  http.addHeader("Content-Type", "application/json");
+
+  String json;
+  CONSOLELN(F("serializing json"));
+  serializeJson(_doc, json);
+  CONSOLE(F("starting POST, payload: "));
+  CONSOLELN(json);
+
+  auto httpCode = http.POST(json);
+  CONSOLELN(String(F("code: ")) + httpCode);
+
+  // httpCode will be negative on error
+  if (httpCode > 0)
+  {
+    if (httpCode == HTTP_CODE_OK)
+    {
+        String payload = http.getString(); //Get the request response payload
+        CONSOLE(F("Received response: "));
+        CONSOLELN(payload);
+
+        // this whole section below is to spare the JSON parser
+        uint8 startIdx = payload.indexOf("next_request_ms") + 17;
+        String nrmSubstring = payload.substring(startIdx);
+        uint8 endIdx = -1;
+        if (nrmSubstring.indexOf("}") != -1)
+        {
+            // end based on bracket
+            endIdx = nrmSubstring.indexOf("}") + startIdx;
+        }
+        else if (nrmSubstring.indexOf(",") != -1)
+        {
+            // end based on comma, other value following
+            endIdx = nrmSubstring.indexOf(",") + startIdx;
+        }
+
+        if (startIdx > 0 && endIdx > startIdx)
+        {
+            CONSOLE(F("next request string in "));
+            String next_request_str = payload.substring(startIdx, endIdx);
+            CONSOLE(next_request_str);
+            CONSOLE(F("ms"));
+            next_request_ms = next_request_str.toInt();
+        }
+    }
+    }
+    else
+    {
+      CONSOLE(F("[HTTP] POST... failed, error: "));
+      CONSOLELN(http.errorToString(httpCode));
+    }
+
+    http.end();
+    stopclient();
+    return next_request_ms;
 }

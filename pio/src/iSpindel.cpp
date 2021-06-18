@@ -360,7 +360,7 @@ bool startConfiguration()
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(), TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(), TKIDSIZE * 2);
+  WiFiManagerParameter custom_token("token", "Token/ API key", htmlencode(my_token).c_str(), TKIDSIZE * 2);
   WiFiManagerParameter custom_server("server", "Server Address", my_server, DNSSIZE);
   WiFiManagerParameter custom_port("port", "Server Port", String(my_port).c_str(), TKIDSIZE, TYPE_NUMBER);
   WiFiManagerParameter custom_channel("channel", "Channelnumber", String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
@@ -779,6 +779,48 @@ bool uploadData(uint8_t service)
     sender.add("Rssi[dBm]", WiFi.RSSI());
     CONSOLELN(F("\ncalling BREWBLOX"));
     return sender.sendBrewblox(my_server, my_port, my_uri, my_username, my_password, my_name);
+  }
+#endif
+
+#ifdef API_BRICKS
+  if (service == DTBRICKS)
+  {
+    CONSOLELN(F("adding BRICKS params"));
+
+    if (my_token[0] != 0) {
+      CONSOLELN(F("found token"));
+      sender.add("apikey", my_token); // use the token field as vessel for the api key
+    }
+    else {
+      CONSOLELN(F("missing token in params"));
+    }
+
+    CONSOLELN(F("adding payload..."));
+    String chipid = String(ESP.getFlashChipId()) + "_" + String(WiFi.macAddress());
+    String chipidHashed = sender.createMd5Hash(chipid).substring(0, 16);
+    sender.add("type", "ispindel");
+    sender.add("brand", "wemos_d1_mini");
+    sender.add("version", FIRMWAREVERSION);
+    sender.add("chipid", chipidHashed);
+    sender.add("s_number_wort_0", (float)(round(Gravity * 10) / 10));
+    sender.add("s_number_temp_0", (float)(round(Temperatur * 10) / 10)); // always transmit °C
+    sender.add("s_number_voltage_0", (float)round(Volt * 100 ) / 100 );
+    sender.add("s_number_wifi_0", WiFi.RSSI());
+    sender.add("s_number_tilt_0", (float)(round(Tilt * 100) / 100));
+
+    CONSOLELN(F("\ncalling BRICKS"));
+
+    uint32_t my_sleeptime_candidate_s = sender.sendBricks() / 1000;
+
+    if (my_sleeptime_candidate_s > 0)
+    {
+      my_sleeptime = my_sleeptime_candidate_s;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 #endif
   return false;

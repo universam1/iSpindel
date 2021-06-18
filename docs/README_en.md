@@ -38,6 +38,7 @@ iSpindle (iSpindel) Documentation
 - [Configuration](#configuration)
   - [Ubidots](#ubidots)
   - [Portal](#portal)
+  - [BierBot Bricks](#bierbot-bricks)
   - [Blynk](#blynk)
 - [Graphical User Interface](#graphical-user-interface)
   - [Calibrating the Spindle](#calibration)
@@ -113,7 +114,7 @@ alt="Druck" width="240" height="180" border="10" /></a>
 ***Write this down.***  
 ![Token](/pics/UbiToken.jpg)  
 
-### Portal
+#### Portal
 
 By pressing the  ```Reset Button``` the Wemos creates an access point, which allows you to make the necessary settings to configure the device. **In `operation mode` this portal is not active or accessible because the principle of this design is based on shorted possible acitve time. Basically it will wake up, send its data and deep sleep again. This takes now less than 3s which is directly related to its long life run time.
 
@@ -129,6 +130,27 @@ By saving your settings or waiting timeout of 5min it will end the Portal thus A
 
 > In Ubidots you can monitor the update of data unders ```Sources``` where the iSpindel will create a new device itself.  
 In the ```Dashboard``` now you can create your nice graphs.
+
+### BierBot Bricks
+
+The setup with BierBot Bricks is easy and for free. You will need the iSpindle Firmware  `7.1.0` or later. 
+
+1. Create a free BierBot Bricks account [here](https://bricks.bierbot.com/#/register).
+2. After Registration, select "Bricks" in the menu on the left (see 1 in the picture).
+3. Hit the blue "Add Brick" button in the top right corner.
+4. Select "iSpindel" in the popup and copy the displayed API key into your clipboard.
+5. Now open the configuration portal of your iSpindel (by pressing reset multiple times, see [portal](#portal) for more info).
+6. Select "Bricks (free & easy)" as service (see 2 in the image).
+7. Paste the api key from your clipboard into the "Token/ API key" field and hit the blue save bottom at the bottom.
+8. Now go back to [bricks.bierbot.com](https://bricks.bierbot.com/#/) and select "Equipment" in the menu on the left (see 3 in the image).
+9. Create a new device (blue button, top right corner), select "**Fermenter**" in the popup.
+10. Now assign the gravity sensor from the iSpindle to the respective field of your fermeter by **drag & dropping** - the respective target dropzone on your fermenter will be highlighted green to guide you. You can do the same for your temperature sensor, but this is optional.
+11. Hite "Save".
+12. To start recording, we will also need a recipe. Go to "Recipes" on the left and create a recipe. You only need to setup one (dummy) fermentation step. Save the recipe and go back to the list of recipes. Start your recipe by clicking the orange play button.
+
+**Done!**
+
+![Bricks tutorial](../pics/ispindle_bricks_tutorial.png)
 
 ### Blynk
 

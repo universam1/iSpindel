@@ -10,9 +10,10 @@
 
 #include "Globals.h"
 
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <MD5Builder.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 
@@ -37,10 +38,12 @@ public:
   bool disableHassioDiscovery(String server, uint16_t port, String username, String password, String name);
 #endif
   bool sendSecureMQTT(char CACert[], char deviceCert[], char deviceKey[], String server, uint16_t port, String name, String topic);    //AWS
+  uint32_t sendBricks();
   void add(String id, float value);
   void add(String id, String value);
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
+  String createMd5Hash(String input);
   void stopclient();
   bool RTCSyncToNTP();
   void mqttCallback(char *topic, byte *payload, unsigned int length);
@@ -50,8 +53,9 @@ public:
 private:
   WiFiClient _client;
   PubSubClient _mqttClient;
-  StaticJsonDocument<1024> _doc;
+  StaticJsonDocument<512> _doc;
   WiFiClientSecure _secureClient;
+  MD5Builder _md5;
 };
 
 #endif

@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "7.0.0"
+#define FIRMWAREVERSION "7.1.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -33,7 +33,9 @@ extern Ticker flasher;
 #define API_BLYNK true
 #define API_BREWBLOX true
 #define API_MQTT_HASSIO true
-#define API_AWSIOTMQTT true //AWS
+#define API_AWSIOTMQTT true         //AWS
+#define API_BRICKS true
+
 
 //#define BLYNK_DEBUG
 //#define APP_DEBUG
@@ -95,6 +97,7 @@ extern Ticker flasher;
 #define DTBREWBLOX 13
 #define DTAWSIOTMQTT 14 //AWS
 #define DTHTTPS 15
+#define DTBRICKS 16
 
 // Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
