@@ -44,7 +44,7 @@ Following parts are required:
 - [rechelt.de](https://www.reichelt.de/my/1848159) (Note: select the correct battery holder depending on the used board)
 
 ## GY-521 (Gyro & Acceleration Sensor)
-There are several 'dogy' copy sensors available. So make sure to buy them from a relyable sorce, e.g. the one linked in the above liked wemos documentation.
+There are several clone sensors available that can be of poor quality. So make sure to buy them from a reliable source, e.g. the one linked in the above liked Wemos documentation.
 
 Other then that, it can be helpful to order not just one sensor and test them before soldering them onto the board.
 
