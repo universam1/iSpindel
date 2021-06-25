@@ -44,7 +44,7 @@ Dieser wird dann benötigt, wenn keine Leiterplatte (PCB) verwendet wird.
 # Zusätzliche Informationen
 
 ## Shopping Liste:
-- [rechelt.de](https://www.reichelt.de/my/1848159) (Hinweis: Abängig von der Platine einen der beiden Batteriehalter wählen)
+- [reichelt.de](https://www.reichelt.de/my/1848159) (Hinweis: Abängig von der Platine einen der beiden Batteriehalter wählen)
 
 ## GY-521 (Gyro & Beschleunigungssensor)
 Es gibt einige Klone des Sensors auf dem Markt. Diese können von schlechter Qualität sein und funktionieren ggf. nicht korrekt. Daher den Sensor am besten bei einem vertrauenswürdigen Händler kaufen – z.B. über den Link in der oben verlinkten Wemos Dokumentation.

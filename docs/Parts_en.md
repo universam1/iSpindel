@@ -33,9 +33,9 @@ Only needed if you are not using a printed circuit board.
   - [iSpindel PCB 4.0](https://www.pcbway.com/project/shareproject/iSpndel_4_0.html)
   - [iSpindel The Jeffrey 2.69](https://www.pcbway.com/project/shareproject/iSpindel_The_Jeffrey_2_69___Open_Source_Distilling.html)
 - Resistors
-  - 4k7 ohms
-  - 220k ohms
-  - 330 ohms or BAT43 diode
+  - 4k7 ohms
+  - 220k ohms
+  - 330 ohms or BAT43 diode
 - [Microswitches](http://www.reichelt.de/Schiebeschalter/SS-ESP201/3/index.html) or at the PCB [Reed Wechsler](http://www.reichelt.de/Reedrelais/KSK-1C90/3/index.html)
 - Lipo charger `TP4056` (6 pin recommended)
 
@@ -44,7 +44,7 @@ Only needed if you are not using a printed circuit board.
 # Additional information
 
 ## Shopping lists:
-- [rechelt.de](https://www.reichelt.de/my/1848159) (Note: select the correct battery holder depending on the used board)
+- [reichelt.de](https://www.reichelt.de/my/1848159) (Note: select the correct battery holder depending on the used board)
 
 ## GY-521 (Gyro & Acceleration Sensor)
 There are several clone sensors available that can be of poor quality. So make sure to buy them from a reliable source, e.g. the one linked in the above liked Wemos documentation.
