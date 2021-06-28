@@ -23,7 +23,7 @@
 
 ## 零部件
 
-- [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini) 开发板
+- [Wemos D1 mini](https://www.wemos.cc/en/latest/d1/d1_mini.html) 开发板
 - `GY-521`  陀螺仪和加速传感器 ( MPU-6050 在适合的分线板上)
 - [DS18B20 温度传感器](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html)
 - 3x4cm 方形网格或印制电路板
