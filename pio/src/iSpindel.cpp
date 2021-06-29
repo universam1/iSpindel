@@ -787,11 +787,13 @@ bool uploadData(uint8_t service)
   {
     CONSOLELN(F("adding BRICKS params"));
 
-    if (my_token[0] != 0) {
+    if (my_token[0] != 0)
+    {
       CONSOLELN(F("found token"));
       sender.add("apikey", my_token); // use the token field as vessel for the api key
     }
-    else {
+    else
+    {
       CONSOLELN(F("missing token in params"));
     }
 
@@ -804,7 +806,7 @@ bool uploadData(uint8_t service)
     sender.add("chipid", chipidHashed);
     sender.add("s_number_wort_0", (float)(round(Gravity * 10) / 10));
     sender.add("s_number_temp_0", (float)(round(Temperatur * 10) / 10)); // always transmit °C
-    sender.add("s_number_voltage_0", (float)round(Volt * 100 ) / 100 );
+    sender.add("s_number_voltage_0", (float)round(Volt * 100) / 100);
     sender.add("s_number_wifi_0", WiFi.RSSI());
     sender.add("s_number_tilt_0", (float)(round(Tilt * 100) / 100));
 
@@ -1254,11 +1256,11 @@ void setup()
   initDS18B20();
   initAccel();
 
-  #ifdef WIFI_IS_OFF_AT_BOOT
-    // persistence is disabled by default and WiFi does not start automatically at boot
-    // source: https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/generic-class.html#persistent
-    enableWiFiAtBootTime();
-  #endif
+#ifdef WIFI_IS_OFF_AT_BOOT
+  // persistence is disabled by default and WiFi does not start automatically at boot
+  // source: https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/generic-class.html#persistent
+  enableWiFiAtBootTime();
+#endif
 
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig(validConf))

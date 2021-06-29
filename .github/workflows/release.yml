@@ -1,0 +1,56 @@
+on:
+  push:
+    tags:
+      - '*'
+
+name: Create Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+        with:
+          fetch-depth: '0'
+      - name: Get versionname 
+        id: get-ver
+        run: |
+          echo ::set-output name=ver_name::$(git describe --tags)
+      - name: Print version
+        run: |
+          echo ${{ steps.get-ver.outputs.ver_name }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Cache PlatformIO
+        uses: actions/cache@v2
+        with:
+          path: ~/.platformio
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      - name: Set up Python
+        uses: actions/setup-python@v2
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade platformio
+      - name: Install library dependencies
+        run: pio lib -g install 1
+      - name: Run PlatformIO
+        run: pio run -e d1_mini_git
+      - name: Save firmware
+        uses: actions/upload-artifact@v2
+        with:
+          name: firmware
+          path: .pio/build/d1_mini_git/firmware.bin
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            .pio/build/d1_mini_git/firmware.bin
