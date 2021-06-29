@@ -6,8 +6,7 @@
 ![Dashboard](/pics/blackedition.png)
 ***
 
-
-[![Build Status](https://travis-ci.org/universam1/iSpindel.svg?branch=master)](https://travis-ci.org/universam1/iSpindel)
+[![PlatformIO CI](https://github.com/universam1/iSpindel/actions/workflows/main.yml/badge.svg)](https://github.com/universam1/iSpindel/actions/workflows/main.yml)
 
 ***
 
@@ -52,8 +51,8 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 | Date       | Note                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 10.06.21   | Firmware 7.1.0: Added  support for [BierBot Bricks](https://bierbot.com/#/site/). |
-| 05.06.21   | Firmware 7.0.0: migrate to LittleFS (SPIFFS is replaced in favor of LittleFS being its successor) |
+| 10.06.21   | Firmware 7.1.0: Added  support for [BierBot Bricks](https://bierbot.com/#/site/).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 05.06.21   | Firmware 7.0.0: migrate to LittleFS (SPIFFS is replaced in favor of LittleFS being its successor)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | 04.02.21   | Firmware 6.5.1: New tilt equation, support for Brewblox via MQTT, improved calibration tools - thanks for contributions @tomsykes @bdelbosc @vitotai @thegreatgunbantoad and many others                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | 17.11.19   | Firmware 6.2.0: New Calibration routine: The calibration procedure takes now less than 5s only to determine offsets that set the current position of the Accelerometer close as possible to level! Also this new implementation solves a few issues reported where the values have not been saved reliably.   Also, the configuration file routine has been improved to support larger strings that were clipped at some point                                                                                                                                                                                                                                                                                                                                                              |
 | 10.11.19   | Firmware 6.1.3: Extending the length of URL parameter to support API Gateway URLs. Fixes of incompatibilities from #308. Support for latest ESP8266 SDK solving naming collisions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -115,12 +114,12 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
 
 ## Inhaltverzeichnis
 
-- [iSpindel - *DIY electronic Hydrometer*](#ispindel---diy-electronic-hydrometer)
+- [iSpindel - *DIY electronic Hydrometer*](#ispindel-diy-electronic-hydrometer)
   - [Featured in german brewing magazine Braumagazin.de](#featured-in-german-brewing-magazine-braumagazinde)
   - [There are FAQs:](#there-are-faqs)
-    - [[Deutsche FAQ] - docs/FAQ.md](#deutsche-faq---docsfaqmd)
-    - [[English FAQ] - docs/FAQ-en.md](#english-faq---docsfaq-enmd)
-    - [[中文 FAQ] - docs/FAQ-zh.md](#中文-faq---docsfaq-zhmd)
+    - [[Deutsche FAQ] - docs/FAQ.md](#deutsche-faq-docsfaqmd)
+    - [[English FAQ] - docs/FAQ-en.md](#english-faq-docsfaq-enmd)
+    - [[中文 FAQ] - docs/FAQ-zh.md](#中文-faq-docsfaq-zhmd)
   - [Documentation in other languages](#documentation-in-other-languages)
     - [English Documentation (work in progress) 🇺🇸](#english-documentation-work-in-progress-)
     - [Nederlandse Vertaling (lopende werkzaamheden) 🇳🇱](#nederlandse-vertaling-lopende-werkzaamheden-)
@@ -139,7 +138,7 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
     - [Schlitten](#schlitten)
   - [Konfiguration](#konfiguration)
     - [Ubidots](#ubidots)
-    - [Portal](#portal)
+      - [Portal](#portal)
     - [BierBot Bricks](#bierbot-bricks)
     - [Scripting](#scripting)
   - [Anzeige](#anzeige)
