@@ -3,7 +3,7 @@
 ## I'm submitting a ...
   - [ ] bug report
   - [ ] feature request
-  - [ ] support request => Please note that this repositories issues are intended for feature requests and bug reports.
+  - [ ] support request => Please use the [Discussion](https://github.com/universam1/iSpindel/discussions) board instead!
 
 ## Did you follow the general troubleshooting steps first:
 
