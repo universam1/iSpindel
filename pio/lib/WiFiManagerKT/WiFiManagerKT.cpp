@@ -692,8 +692,7 @@ void WiFiManager::handleWifi()
   page += FPSTR(HTTP_FORM_START1);
   page += _ssid;
   page += FPSTR(HTTP_FORM_START2);
-  // don't send existing password to web
-  //page += _pass;
+  page += _pass;
   page += FPSTR(HTTP_FORM_START3);
 
   char parLength[2];
