@@ -64,7 +64,6 @@ float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravit
 bool shouldSaveConfig = false;
 
 iData myData;
-
 #if API_MQTT_HASSIO
 //myData.my_hassio = false;
 bool my_hassio_changed = false;
@@ -163,6 +162,8 @@ bool readConfig()
         }
         else
         {
+          if (doc.containsKey("apPW"))
+            strcpy(myData.my_ap_pw, doc["apPW"]);
           if (doc.containsKey("Name"))
             strcpy(myData.my_name, doc["Name"]);
           if (doc.containsKey("Token"))
@@ -335,6 +336,7 @@ bool startConfiguration()
   WiFiManagerParameter api_list(HTTP_API_LIST);
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(myData.my_api).c_str(), 20, TYPE_HIDDEN, WFM_NO_LABEL);
 
+  WiFiManagerParameter custom_ap_pw("apPW", "AP Mode PW", htmlencode(myData.my_ap_pw).c_str(), TKIDSIZE, "type=\"password\"");
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(myData.my_name).c_str(), TKIDSIZE);
   WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(myData.my_sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token/ API key", htmlencode(myData.my_token).c_str(), TKIDSIZE * 2);
@@ -361,6 +363,7 @@ bool startConfiguration()
       "Thingname</LI><LI>Server must be Endpoint</LI><LI>Port must be 8883</LI><LI>Path/URI is Publish Topic</LI></UL>",
       "<<<<< >>>>>", TKIDSIZE);
 
+  wifiManager.addParameter(&custom_ap_pw);
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
   wifiManager.addParameter(&custom_vfact);
@@ -405,10 +408,14 @@ bool startConfiguration()
   else
     snprintf(ssid, sizeof ssid, "iSpindel_%s", myData.my_name);
 
-  wifiManager.startConfigPortal(ssid);
+  if (strlen(myData.my_ap_pw) == 0)
+    wifiManager.startConfigPortal(ssid);
+  else
+    wifiManager.startConfigPortal(ssid, myData.my_ap_pw);
 
   strcpy(myData.my_polynominal, custom_polynom.getValue());
 
+  validateInput(custom_ap_pw.getValue(), myData.my_ap_pw);
   validateInput(custom_name.getValue(), myData.my_name);
   validateInput(custom_token.getValue(), myData.my_token);
   validateInput(custom_server.getValue(), myData.my_server);
@@ -489,6 +496,7 @@ bool saveConfig()
 
   DynamicJsonDocument doc(2048);
 
+  doc["apPW"] = myData.my_ap_pw;
   doc["Name"] = myData.my_name;
   doc["Token"] = myData.my_token;
   doc["Sleep"] = myData.my_sleeptime;

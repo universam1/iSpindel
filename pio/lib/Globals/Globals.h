@@ -156,6 +156,7 @@ struct iData
   #if API_MQTT_HASSIO
   bool my_hassio = false;
   #endif
+  char my_ap_pw[TKIDSIZE];
 };
 
 extern iData myData;
