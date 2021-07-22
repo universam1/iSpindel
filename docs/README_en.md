@@ -175,6 +175,20 @@ The setup with BierBot Bricks is easy and for free. You will need the iSpindle F
 5. V3 - String Battery `Volts`;
 6. V4 - Gravity;
 
+### MQTT
+* You can configure the MQTT broker (server) in the configuration page.
+
+#### Home Assistant
+* There is a check box to make iSpindel integration automatically in HomeAssistant using Mosquitto
+#### Other MQTT broker
+Each value transmitted bu iSplindle is sent on its own topic.
+Topics are : 
+* ispindel/```Devices' name```/temperature
+* ispindel/```Devices' name```/tilt
+* ispindel/```Devices' name```/battery
+* ispindel/```Devices' name```/RSSI
+* ispindel/```Devices' name```/gravity
+
 ***
 ## Graphical User Interface
 
