@@ -75,25 +75,25 @@ uint32_t DSreqTime = 0;
 int16_t ax, ay, az;
 float Volt, Temperatur, Tilt, Gravity;
 
-float scaleTemperature(float t)
+float scaleTemperature(float t, uint8_t tempscale)
 {
-  if (myData.my_tempscale == TEMP_CELSIUS)
+  if (tempscale == TEMP_CELSIUS)
     return t;
-  else if (myData.my_tempscale == TEMP_FAHRENHEIT)
+  else if (tempscale == TEMP_FAHRENHEIT)
     return (1.8f * t + 32);
-  else if (myData.my_tempscale == TEMP_KELVIN)
+  else if (tempscale == TEMP_KELVIN)
     return t + 273.15f;
   else
     return t; // Invalid value for myData.my_tempscale => default to celsius
 }
 
-String tempScaleLabel(void)
+String tempScaleLabel(uint8_t tempscale)
 {
-  if (myData.my_tempscale == TEMP_CELSIUS)
+  if (tempscale == TEMP_CELSIUS)
     return "C";
-  else if (myData.my_tempscale == TEMP_FAHRENHEIT)
+  else if (tempscale == TEMP_FAHRENHEIT)
     return "F";
-  else if (myData.my_tempscale == TEMP_KELVIN)
+  else if (tempscale == TEMP_KELVIN)
     return "K";
   else
     return "C"; // Invalid value for myData.my_tempscale => default to celsius
@@ -314,7 +314,7 @@ void postConfig()
   SenderClass sender;
   if (myData.my_hassio)
   {
-    sender.enableHassioDiscovery(myData.my_server, myData.my_port, myData.my_username, myData.my_password, myData.my_name, tempScaleLabel());
+    sender.enableHassioDiscovery(myData.my_server, myData.my_port, myData.my_username, myData.my_password, myData.my_name, tempScaleLabel(myData.my_tempscale));
   }
   if (my_hassio_changed && !myData.my_hassio)
   {
@@ -569,7 +569,7 @@ bool uploadData(uint8_t service)
   if (service == DTUbiDots)
   {
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temperature", scaleTemperature(Temperatur, myData.my_tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", myData.my_sleeptime);
@@ -584,7 +584,7 @@ bool uploadData(uint8_t service)
   {
     sender.add("name", myData.my_name);
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temperature", scaleTemperature(Temperatur, myData.my_tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", myData.my_sleeptime);
@@ -599,8 +599,8 @@ bool uploadData(uint8_t service)
   if (service == DTMQTT)
   {
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperature(Temperatur, myData.my_tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.my_tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", myData.my_sleeptime);
@@ -614,8 +614,8 @@ bool uploadData(uint8_t service)
   if (service == DTTHINGSPEAK)
   {
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperature(Temperatur, myData.my_tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.my_tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", myData.my_sleeptime);
@@ -629,8 +629,8 @@ bool uploadData(uint8_t service)
   if (service == DTInfluxDB)
   {
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperature(Temperatur, myData.my_tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.my_tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", myData.my_sleeptime);
@@ -666,8 +666,8 @@ bool uploadData(uint8_t service)
     if (myData.my_token[0] != 0)
       sender.add("token", myData.my_token);
     sender.add("angle", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperature(Temperatur, myData.my_tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.my_tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("interval", myData.my_sleeptime);
@@ -706,8 +706,8 @@ bool uploadData(uint8_t service)
   if (service == DTFHEM)
   {
     sender.add("angle", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperature(Temperatur, myData.my_tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.my_tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("ID", ESP.getChipId());
@@ -718,7 +718,7 @@ bool uploadData(uint8_t service)
 #if API_TCONTROL
   if (service == DTTcontrol)
   {
-    sender.add("T", scaleTemperature(Temperatur));
+    sender.add("T", scaleTemperature(Temperatur, myData.my_tempscale));
     sender.add("D", Tilt);
     sender.add("U", Volt);
     sender.add("G", Gravity);
@@ -730,13 +730,13 @@ bool uploadData(uint8_t service)
 #if API_BLYNK
   if (service == DTBLYNK)
   {
-    String tempToSend = String(scaleTemperature(Temperatur), 1);
+    String tempToSend = String(scaleTemperature(Temperatur, myData.my_tempscale), 1);
     sender.add("20", tempToSend); //send temperature without the unit to the graph first
     String voltToSend = String(Volt, 2);
     sender.add("30", voltToSend); //send temperature without the unit to the graph first
 
     tempToSend += "°";
-    tempToSend += tempScaleLabel(); // Add temperature unit to the String
+    tempToSend += tempScaleLabel(myData.my_tempscale); // Add temperature unit to the String
 
     sender.add("1", String(Tilt, 1) + "°");
     sender.add("2", tempToSend);
@@ -750,7 +750,7 @@ bool uploadData(uint8_t service)
   if (service == DTBREWBLOX)
   {
     sender.add("Tilt[deg]", Tilt);
-    sender.add("Temperature[deg" + tempScaleLabel() + "]", scaleTemperature(Temperatur));
+    sender.add("Temperature[deg" + tempScaleLabel(myData.my_tempscale) + "]", scaleTemperature(Temperatur, myData.my_tempscale));
     sender.add("Battery[V]", Volt);
     sender.add("Gravity", Gravity);
     sender.add("Rssi[dBm]", WiFi.RSSI());

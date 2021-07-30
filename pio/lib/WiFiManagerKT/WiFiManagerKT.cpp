@@ -985,9 +985,9 @@ void WiFiManager::handleiSpindel()
   page += Tilt;
   page += F("&deg;</td></tr>");
   page += F("<tr><td>Temperature:</td><td>");
-  page += scaleTemperature(Temperatur);
+  page += scaleTemperature(Temperatur, myData.my_tempscale);
   page += F("&deg;");
-  page += tempScaleLabel();
+  page += tempScaleLabel(myData.my_tempscale);
   page += F("</td></tr>");
   page += F("<tr><td>Battery:</td><td>");
   page += Volt;

@@ -128,8 +128,8 @@ extern bool saveConfig(int16_t Offset[6]);
 extern bool formatLittleFS();
 extern void flash();
 
-float scaleTemperature(float t);
-String tempScaleLabel(void);
+float scaleTemperature(float t, uint8_t);
+String tempScaleLabel(uint8_t);
 
 struct iData
 {
