@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "7.1.0"
+#define FIRMWAREVERSION "7.1.3"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -36,13 +36,16 @@ extern Ticker flasher;
 #define API_AWSIOTMQTT true         //AWS
 #define API_BRICKS true
 
-
 //#define BLYNK_DEBUG
 //#define APP_DEBUG
 //#define BLYNK_PRINT Serial
 #define BLYNK_NO_BUILTIN
 #define BLYNK_NO_FANCY_LOGO
 #define BLYNK_MAX_SENDBYTES 1200
+
+#define TEMP_CELSIUS 0
+#define TEMP_FAHRENHEIT 1
+#define TEMP_KELVIN 2
 
 #ifndef DEBUG
 #define DEBUG true
@@ -111,7 +114,7 @@ extern Ticker flasher;
 // sleep management
 #define RTCSLEEPADDR 5
 #define MAXSLEEPTIME 3600UL //TODO
-#define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
+#define EMERGENCYSLEEP (myData.my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : myData.my_sleeptime * 3)
 #define LOWBATT 3.3
 
 #define UNINIT 0
@@ -127,5 +130,34 @@ extern void flash();
 
 float scaleTemperature(float t);
 String tempScaleLabel(void);
+
+struct iData
+{
+  char my_token[TKIDSIZE * 2];
+  char my_name[TKIDSIZE] = "iSpindel000";
+  char my_server[DNSSIZE];
+  char my_uri[DNSSIZE];
+  char my_db[TKIDSIZE] = "ispindel";
+  char my_username[TKIDSIZE];
+  char my_password[TKIDSIZE];
+  char my_job[TKIDSIZE] = "ispindel";
+  char my_instance[TKIDSIZE] = "000";
+  char my_polynominal[1000] = "-0.00031*tilt^2+0.557*tilt-14.054";
+  String my_ssid;
+  String my_psk;
+  uint8_t my_api;
+  uint32_t my_sleeptime = 15 * 60;
+  uint16_t my_port = 80;
+  uint32_t my_channel;
+  float my_vfact = ADCDIVISOR;
+  int16_t my_Offset[6];
+  uint8_t my_tempscale = TEMP_CELSIUS;
+  int8_t my_OWpin = -1;
+  #if API_MQTT_HASSIO
+  bool my_hassio = false;
+  #endif
+};
+
+extern iData myData;
 
 #endif
