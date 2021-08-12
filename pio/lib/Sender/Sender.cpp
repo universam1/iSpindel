@@ -7,13 +7,15 @@
 
 #include "Sender.h"
 #include "Globals.h"
+#include <ArduinoJson.h>
+#include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <MD5Builder.h>
 #include <PubSubClient.h>
 #include <ThingSpeak.h>
-#include <BlynkSimpleEsp8266.h> //https://github.com/blynkkk/blynk-library
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
+#include <WiFiClientSecureBearSSL.h>
 
 #define UBISERVER "industrial.api.ubidots.com"
 #define BLYNKSERVER "blynk-cloud.com"
@@ -38,6 +40,13 @@ void SenderClass::add(String id, int32_t value)
 {
     _doc[id] = value;
 }
+String SenderClass::createMd5Hash(String str)
+{
+  _md5.begin();
+  _md5.add(String(str));
+  _md5.calculate();
+  return _md5.toString();
+}
 void SenderClass::stopclient()
 {
     _client.stop();
@@ -59,7 +68,6 @@ bool SenderClass::RTCSyncToNTP()
     struct tm timeinfo;
     gmtime_r(&now, &timeinfo);
     CONSOLELN(""); CONSOLE(F("Current time set to: ")); CONSOLELN(asctime(&timeinfo));
-    _doc["time"] = time(nullptr);
     if (now > TIMECHECK){
         return true;
     }
@@ -163,6 +171,51 @@ bool SenderClass::mqttConnect(const String &server, uint16_t port, const String 
     return false;
 }
 
+#if API_MQTT_HASSIO
+bool SenderClass::enableHassioDiscovery(String server, uint16_t port, String username, String password, String name, String unit)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
+    {
+        _mqttClient.setBufferSize(512);
+        auto chipid = String(ESP.getChipId(), HEX);
+        String device = "\"dev\": { \"name\": \"" + name + "\",\"mdl\": \"ispindel\",\"sw\": \"" + FIRMWAREVERSION + "\",\"mf\": \"iSpindel\",\"ids\": [\"" + chipid + "\"]}";
+        String topic = "homeassistant/sensor/iSpindel_" + chipid + "/";
+        _mqttClient.publish((topic + "temperature/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_temp\", \"dev_cla\": \"temperature\", \"name\": \"Temperature\", \"unit_of_meas\": \"°" + unit + "\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/temperature\"," + device + "}").c_str(), true);
+        _mqttClient.publish((topic + "tilt/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_tilt\", \"name\": \"Tilt\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/tilt\"," + device + "}").c_str(), true);
+        _mqttClient.publish((topic + "battery/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_battery\", \"dev_cla\": \"voltage\", \"name\": \"Battery voltage\", \"unit_of_meas\": \"V\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/battery\"," + device + "}").c_str(), true);
+        _mqttClient.publish((topic + "rssi/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_rssi\", \"dev_cla\": \"signal_strength\", \"name\": \"Signal Strength\", \"unit_of_meas\": \"dB\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/RSSI\"," + device + "}").c_str(), true);
+        _mqttClient.publish((topic + "gravity/config").c_str(), ("{ \"uniq_id\": \"" + chipid + "_gravity\", \"name\": \"Gravity\", \"unit_of_meas\": \"°P\", \"val_tpl\": \"{{ value_json }}\", \"stat_t\": \"ispindel/" + name + "/gravity\"," + device + "}").c_str(), true);
+        _mqttClient.loop();
+    }
+
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return response;
+}
+
+bool SenderClass::disableHassioDiscovery(String server, uint16_t port, String username, String password, String name)
+{
+    bool response = mqttConnect(server, port, name, username, password);
+    if (response)
+    {
+        auto chipid = String(ESP.getChipId(), HEX);
+        String topic = "homeassistant/sensor/iSpindel_" + chipid + "/";
+        _mqttClient.publish((topic + "temperature/config").c_str(), "");
+        _mqttClient.publish((topic + "tilt/config").c_str(), "");
+        _mqttClient.publish((topic + "battery/config").c_str(), "");
+        _mqttClient.publish((topic + "rssi/config").c_str(), "");
+        _mqttClient.publish((topic + "gravity/config").c_str(), "");
+        _mqttClient.loop();
+    }
+    CONSOLELN(F("Closing MQTT connection"));
+    _mqttClient.disconnect();
+    stopclient();
+    return response;
+}
+#endif
+
 bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name)
 {
     bool response = mqttConnect(server, port, name, username, password);
@@ -237,7 +290,7 @@ String SenderClass::sendTCP(String server, uint16_t port)
     }
     while (_client.available())
     {
-        response += _client.read();
+        response += (char)_client.read();
     }
     CONSOLELN(response);
     stopclient();
@@ -247,20 +300,20 @@ String SenderClass::sendTCP(String server, uint16_t port)
 bool SenderClass::sendThingSpeak(String token, long Channel)
 {
     int field = 0;
-    unsigned long channelNumber = Channel; 
+    unsigned long channelNumber = Channel;
     const char * writeAPIKey = token.c_str();
-    
+
     serializeJson(_doc, Serial);
     ThingSpeak.begin(_client);
 
     CONSOLELN(F("\nSender: ThingSpeak posting"));
-   
+
     for (const auto &kv : _doc.as<JsonObject>())
-    {   
-        field++;  
+    {
+        field++;
         ThingSpeak.setField(field, kv.value().as<String>());
     }
-    // write to the ThingSpeak channel 
+    // write to the ThingSpeak channel
     int x = ThingSpeak.writeFields(channelNumber, writeAPIKey);
 
     if(x == 200){
@@ -274,6 +327,53 @@ bool SenderClass::sendThingSpeak(String token, long Channel)
     stopclient();
     return true;
     }
+
+bool SenderClass::sendHTTPSPost(String server, String uri)
+{
+    String url = server + uri;   
+    serializeJson(_doc, Serial);
+
+    String json;
+    serializeJson(_doc, json);
+    
+    std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
+    client->setInsecure();
+
+    HTTPClient https;
+    if(https.begin(*client, url) )
+    {   
+        // CONSOLELN(json);
+        https.addHeader("Content-Type", "application/json");
+        int httpCode = https.POST(json);
+        
+
+        if (httpCode > 0) 
+        {
+            if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY)
+            {
+            CONSOLELN(F("Should be connected..."));
+            String payload = https.getString();
+            CONSOLELN(payload);
+            
+            }
+        
+            else
+            {
+            CONSOLE(F("Connection failed Code ") );
+            CONSOLELN(httpCode);
+            }
+        }
+      https.end();
+    }
+    else
+    {
+        CONSOLELN(F("Connection failed"));
+    }
+
+    
+    stopclient();
+    return true;
+}
 
 bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
 {
@@ -591,7 +691,7 @@ bool SenderClass::sendBlynk(char* token)
       i++;
       delay(50);
     }
-        
+
     if (Blynk.connected())
     {
         CONSOLELN(F("\nConnected to the Blynk server, sending data"));
@@ -608,7 +708,7 @@ bool SenderClass::sendBlynk(char* token)
         CONSOLELN(F("\nFailed to connect to Blynk, going to sleep"));
         return false;
     }
-    
+
     delay(150);     //delay to allow last value to be sent;
     return true;
 }
@@ -627,4 +727,80 @@ bool SenderClass::sendBrewblox(String server, uint16_t port, String topic, Strin
     _mqttClient.disconnect();
     stopclient();
     return response;
+}
+
+uint32_t SenderClass::sendBricks()
+{
+  uint32_t next_request_ms = 60 * 1000;
+
+  // dump json
+  CONSOLELN(F("sendBricks called"));
+
+  serializeJson(_doc, Serial);
+
+  CONSOLELN(F("setting insecure"));
+  _secureClient.setInsecure(); // unfortunately necessary, ESP8266 does not support SSL without hard coding certificates
+  String url = "https://brewbricks.com/api/iot/v1";
+  _secureClient.connect(url, 443);
+  CONSOLELN(F("adding headers"));
+  HTTPClient http; //Declare an object of class HTTPClient
+
+  // configure traged server and uri
+  http.begin(_secureClient, url);
+  http.addHeader("User-Agent", "iSpindel");
+  http.addHeader("Connection", "close");
+  http.addHeader("Content-Type", "application/json");
+
+  String json;
+  CONSOLELN(F("serializing json"));
+  serializeJson(_doc, json);
+  CONSOLE(F("starting POST, payload: "));
+  CONSOLELN(json);
+
+  auto httpCode = http.POST(json);
+  CONSOLELN(String(F("code: ")) + httpCode);
+
+  // httpCode will be negative on error
+  if (httpCode > 0)
+  {
+    if (httpCode == HTTP_CODE_OK)
+    {
+        String payload = http.getString(); //Get the request response payload
+        CONSOLE(F("Received response: "));
+        CONSOLELN(payload);
+
+        // this whole section below is to spare the JSON parser
+        uint8 startIdx = payload.indexOf("next_request_ms") + 17;
+        String nrmSubstring = payload.substring(startIdx);
+        uint8 endIdx = -1;
+        if (nrmSubstring.indexOf("}") != -1)
+        {
+            // end based on bracket
+            endIdx = nrmSubstring.indexOf("}") + startIdx;
+        }
+        else if (nrmSubstring.indexOf(",") != -1)
+        {
+            // end based on comma, other value following
+            endIdx = nrmSubstring.indexOf(",") + startIdx;
+        }
+
+        if (startIdx > 0 && endIdx > startIdx)
+        {
+            CONSOLE(F("next request string in "));
+            String next_request_str = payload.substring(startIdx, endIdx);
+            CONSOLE(next_request_str);
+            CONSOLE(F("ms"));
+            next_request_ms = next_request_str.toInt();
+        }
+    }
+    }
+    else
+    {
+      CONSOLE(F("[HTTP] POST... failed, error: "));
+      CONSOLELN(http.errorToString(httpCode));
+    }
+
+    http.end();
+    stopclient();
+    return next_request_ms;
 }

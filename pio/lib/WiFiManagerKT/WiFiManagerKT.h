@@ -36,26 +36,30 @@ const char HTTP_ISPINDEL_IMG[] PROGMEM = "<img src=\"data:image/jpeg;base64,/9j/
 const char HTTP_200[] PROGMEM = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 const char HTTP_HEADER[] PROGMEM = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" charset=\"utf-8\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/><title>{v}</title>";
 
-const char HTTP_STYLE[] PROGMEM = "<style>body,textarea,input,select{background: 0;border-radius: 0;font: 16px sans-serif;margin: 0}textarea,input,select{outline: 0;font-size: 14px;border: 1px solid #ccc;padding: 8px;width: 90%}.btn a{text-decoration: none}.container{margin: auto;width: 90%}@media(min-width:1200px){.container{margin: auto;width: 30%}}@media(min-width:768px) and (max-width:1200px){.container{margin: auto;width: 50%}}.btn,h2{font-size: 2em}h1{font-size: 3em}.btn{background: #0ae;border-radius: 4px;border: 0;color: #fff;cursor: pointer;display: inline-block;margin: 2px 0;padding: 10px 14px 11px;width: 100%}.btn:hover{background: #09d}.btn:active,.btn:focus{background: #08b}label>*{display: inline}form>*{display: block;margin-bottom: 10px}textarea:focus,input:focus,select:focus{border-color: #5ab}.msg{background: #def;border-left: 5px solid #59d;padding: 1.5em}.q{float: right;width: 64px;text-align: right}.l{background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAALVBMVEX///8EBwfBwsLw8PAzNjaCg4NTVVUjJiZDRUUUFxdiZGSho6OSk5Pg4eFydHTCjaf3AAAAZElEQVQ4je2NSw7AIAhEBamKn97/uMXEGBvozkWb9C2Zx4xzWykBhFAeYp9gkLyZE0zIMno9n4g19hmdY39scwqVkOXaxph0ZCXQcqxSpgQpONa59wkRDOL93eAXvimwlbPbwwVAegLS1HGfZAAAAABJRU5ErkJggg==') no-repeat left center;background-size: 1em}input[type='checkbox']{float: left;width: 20px}.table td{padding:.5em;text-align:left}.table tbody>:nth-child(2n-1){background:#ddd}</style>";
+const char HTTP_STYLE[] PROGMEM = "<style>body,textarea,input,select{background: 0;border-radius: 0;font: 16px sans-serif;margin: 0}textarea,input,select{outline: 0;font-size: 14px;border: 1px solid #ccc;padding: 8px;width: 90%}.btn a{text-decoration: none}.container{margin: auto;width: 90%}@media(min-width:1200px){.container{margin: auto;width: 30%}}@media(min-width:768px) and (max-width:1200px){.container{margin: auto;width: 50%}}.btn,h2{font-size: 2em}h1{font-size: 3em}.btn{background: #0ae;border-radius: 4px;border: 0;color: #fff;cursor: pointer;display: inline-block;margin: 2px 0;padding: 10px 14px 11px;width: 100%}.btn:hover{background: #09d}.btn:active,.btn:focus{background: #08b}label>*{display: inline}form>*{display: block;margin-bottom: 10px}textarea:focus,input:focus,select:focus{border-color: #5ab}.msg{background: #def;border-left: 5px solid #59d;padding: 1.5em}.q{float: right;width: 64px;text-align: right}.l{background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAALVBMVEX///8EBwfBwsLw8PAzNjaCg4NTVVUjJiZDRUUUFxdiZGSho6OSk5Pg4eFydHTCjaf3AAAAZElEQVQ4je2NSw7AIAhEBamKn97/uMXEGBvozkWb9C2Zx4xzWykBhFAeYp9gkLyZE0zIMno9n4g19hmdY39scwqVkOXaxph0ZCXQcqxSpgQpONa59wkRDOL93eAXvimwlbPbwwVAegLS1HGfZAAAAABJRU5ErkJggg==') no-repeat left center;background-size: 1em}input[type='checkbox']{width: 20px}.table td{padding:.5em;text-align:left}.table tbody>:nth-child(2n-1){background:#ddd}</style>";
 
 const char HTTP_SCRIPT[] PROGMEM = R"V0G0N(
 <script>
 var lAPI = [
-{"name":"Ubidots",    "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"empty",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"CraftBeerPi","token":0,"server":1,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"HTTP",       "token":1,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"TControl",   "token":0,"server":1,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"FHEM",       "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"TCP",        "token":1,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"iSpindel.de","token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"InfluxDB",   "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":1,"username":1,"password":1,"job":0,"instance":0,"warning1":0},
-{"name":"Prometheus", "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":1,"instance":1,"warning1":0},
-{"name":"MQTT",       "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0,"warning1":0},
-{"name":"ThingSpeak", "token":1,"server":0,"uri":0,"port":0,"channel":1,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"Blynk",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0},
-{"name":"Brewblox",   "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0,"warning1":0},
-{"name":"AWSIOTMQTT", "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":1}];
+{"name":"Ubidots",    "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"empty",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"CraftBeerPi","token":0,"server":1,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"HTTP",       "token":1,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"TControl",   "token":0,"server":1,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"FHEM",       "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"TCP",        "token":1,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"iSpindel.de","token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"InfluxDB",   "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":1,"username":1,"password":1,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"Prometheus", "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":1,"instance":1,"warning1":0,"hassio":0},
+{"name":"MQTT",       "token":0,"server":1,"uri":0,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0,"warning1":0,"hassio":1},
+{"name":"ThingSpeak", "token":1,"server":0,"uri":0,"port":0,"channel":1,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"Blynk",      "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"Brewblox",   "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":1,"password":1,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"AWSIOTMQTT", "token":0,"server":1,"uri":1,"port":1,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":1,"hassio":0},
+{"name":"HTTPS Post", "token":1,"server":1,"uri":1,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0},
+{"name":"BierBot Bricks", "token":1,"server":0,"uri":0,"port":0,"channel":0,"db":0,"username":0,"password":0,"job":0,"instance":0,"warning1":0,"hassio":0}
+];
+
 var $ = function (id) { return document.getElementById(id); };
 var labels = document.getElementsByTagName('LABEL');
 function set(id, show) {
@@ -111,6 +115,8 @@ const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";
 const char TYPE_NUMBER[] = "type=\"number\" step=\"any\"";
+const char TYPE_CHECKBOX[] = "type=\"checkbox\"";
+const char TYPE_CHECKBOX_CHECKED[] = "type=\"checkbox\" checked";
 
 const char HTTP_HEADER_END[] PROGMEM = "</head><body><div class=\"container\">";
 const char HTTP_PORTAL_OPTIONS[] PROGMEM = "<form action=\"/iSpindel\" method=\"get\"><button class=\"btn\">iSpindel Info</button></form><br/><form action=\"/wifi\" method=\"get\"><button class=\"btn\">Configuration</button></form><br/><form action=\"/mnt\" method=\"get\"><button class=\"btn\">Maintenance</button></form><br/><form action=\"/i\" method=\"get\"><button class=\"btn\">Information</button></form><br/><form action=\"/close\" method=\"get\"><button class=\"btn\">Exit Portal</button></form><br/>";

@@ -1,0 +1,10 @@
+# Description: Local linter
+# run "docker-compose -f docker-compose-lint.yml up" locally
+version: '3'
+services:
+  linter:
+    build: github.com/DoozyX/clang-format-lint-action
+    command: --clang-format-executable /clang-format/clang-format11 -r --exclude .git .
+    working_dir: /src
+    volumes:
+      - $PWD/pio/src:/src
