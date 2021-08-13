@@ -124,7 +124,7 @@ const char HTTP_ITEM[] PROGMEM = "<div><a href=\"#p\" onclick=\"c(this)\">{v}</a
 const char JSON_ITEM[] PROGMEM = "{\"SSID\":\"{v}\", \"Encryption\":{i}, \"Quality\":\"{r}\"}";
 // const char HTTP_FORM_START[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" length=32 placeholder=\"SSID\"><label>Password</label><input id=\"p\" name=\"p\" length=64 placeholder=\"password\">";
 const char HTTP_FORM_START1[] PROGMEM = "<form method=\"get\" action=\"wifisave\"><label>SSID</label><input id=\"s\" name=\"s\" length=32 placeholder=\"SSID\" value=\"";
-const char HTTP_FORM_START2[] PROGMEM = "\"><label>Password</label><input id=\"p\" name=\"p\" length=64 placeholder=\"password\" value=\"";
+const char HTTP_FORM_START2[] PROGMEM = "\"><label>Password</label><input id=\"p\" name=\"p\" type=\"password\" length=64 placeholder=\"password\" value=\"";
 const char HTTP_FORM_START3[] PROGMEM = "\">";
 
 const char HTTP_FORM_LABEL[] PROGMEM = "<label for=\"{i}\">{p}</label>";
