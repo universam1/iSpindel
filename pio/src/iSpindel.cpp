@@ -75,7 +75,7 @@ uint32_t DSreqTime = 0;
 int16_t ax, ay, az;
 float Volt, Temperatur, Tilt, Gravity;
 
-float scaleTemperatif(service == DTBREWBLOX) ureFromC(float t, uint8_t tempscale)
+float scaleTemperatureFromC(float t, uint8_t tempscale)
 {
   if (tempscale == TEMP_CELSIUS)
     return t;
