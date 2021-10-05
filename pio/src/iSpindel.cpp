@@ -109,7 +109,9 @@ void applyOffset()
 {
   if (myData.my_Offset[0] != UNINIT && myData.my_Offset[1] != UNINIT && myData.my_Offset[2] != UNINIT)
   {
-    CONSOLELN(String("applying offsets: ") + myData.my_Offset[0] + ":" + myData.my_Offset[1] + ":" + myData.my_Offset[2]);
+    CONSOLELN(String("applying offsets: ") + myData.my_Offset[0] + ":" + myData.my_Offset[1] + ":" +
+              myData.my_Offset[2]);
+
     accelgyro.setXAccelOffset(myData.my_Offset[0]);
     accelgyro.setYAccelOffset(myData.my_Offset[1]);
     accelgyro.setZAccelOffset(myData.my_Offset[2]);
@@ -314,11 +316,13 @@ void postConfig()
   SenderClass sender;
   if (myData.my_hassio)
   {
-    sender.enableHassioDiscovery(myData.my_server, myData.my_port, myData.my_username, myData.my_password, myData.my_name, tempScaleLabel());
+    sender.enableHassioDiscovery(myData.my_server, myData.my_port, myData.my_username, myData.my_password,
+                                 myData.my_name, tempScaleLabel());
   }
   if (my_hassio_changed && !myData.my_hassio)
   {
-    sender.disableHassioDiscovery(myData.my_server, myData.my_port, myData.my_username, myData.my_password, myData.my_name);
+    sender.disableHassioDiscovery(myData.my_server, myData.my_port, myData.my_username, myData.my_password,
+                                  myData.my_name);
   }
 #endif
 }
@@ -336,11 +340,13 @@ bool startConfiguration()
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(myData.my_api).c_str(), 20, TYPE_HIDDEN, WFM_NO_LABEL);
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(myData.my_name).c_str(), TKIDSIZE);
-  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(myData.my_sleeptime).c_str(), 6, TYPE_NUMBER);
+  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(myData.my_sleeptime).c_str(), 6,
+                                    TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token/ API key", htmlencode(myData.my_token).c_str(), TKIDSIZE * 2);
   WiFiManagerParameter custom_server("server", "Server Address", myData.my_server, DNSSIZE);
   WiFiManagerParameter custom_port("port", "Server Port", String(myData.my_port).c_str(), TKIDSIZE, TYPE_NUMBER);
-  WiFiManagerParameter custom_channel("channel", "Channelnumber", String(myData.my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
+  WiFiManagerParameter custom_channel("channel", "Channelnumber", String(myData.my_channel).c_str(), TKIDSIZE,
+                                      TYPE_NUMBER);
   WiFiManagerParameter custom_uri("uri", "Path / URI", myData.my_uri, DNSSIZE);
   WiFiManagerParameter custom_db("db", "InfluxDB db", myData.my_db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", myData.my_username, TKIDSIZE);
@@ -351,7 +357,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_hassio("hassio", "Home Assistant integration via MQTT", "checked", TKIDSIZE,
                                      myData.my_hassio ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
 #endif
-  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(myData.my_vfact).c_str(), 7, TYPE_NUMBER);
+  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(myData.my_vfact).c_str(), 7,
+                                    TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale", String(myData.my_tempscale).c_str(), 5, TYPE_HIDDEN,
                                         WFM_NO_LABEL);
@@ -392,7 +399,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_polynom_lbl(
       "<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(myData.my_polynominal).c_str(), 250, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(myData.my_polynominal).c_str(), 250,
+                                      WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
   wifiManager.setConfSSID(htmlencode(myData.my_ssid));
@@ -590,7 +598,8 @@ bool uploadData(uint8_t service)
     sender.add("interval", myData.my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN("Calling AWSIOTMQTT Sender");
-    return sender.sendSecureMQTT(AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, myData.my_server, myData.my_port, myData.my_name, myData.my_uri);
+    return sender.sendSecureMQTT(AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, myData.my_server, myData.my_port,
+                                 myData.my_name, myData.my_uri);
     //AWS - NOTE - Need to replace secrets.h with the relevant parameters
   }
 #endif
@@ -636,9 +645,11 @@ bool uploadData(uint8_t service)
     sender.add("interval", myData.my_sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling InfluxDB"));
-    CONSOLELN(String(F("Sending to db: ")) + myData.my_db + String(F(" w/ credentials: ")) + myData.my_username + String(F(":")) +
-              myData.my_password);
-    return sender.sendInfluxDB(myData.my_server, myData.my_port, myData.my_db, myData.my_name, myData.my_username, myData.my_password);
+    CONSOLELN(String(F("Sending to db: ")) + myData.my_db + String(F(" w/ credentials: ")) + myData.my_username +
+              String(F(":")) + myData.my_password);
+
+    return sender.sendInfluxDB(myData.my_server, myData.my_port, myData.my_db, myData.my_name, myData.my_username,
+                               myData.my_password);
   }
 #endif
 
@@ -755,7 +766,8 @@ bool uploadData(uint8_t service)
     sender.add("Gravity", Gravity);
     sender.add("Rssi[dBm]", WiFi.RSSI());
     CONSOLELN(F("\ncalling BREWBLOX"));
-    return sender.sendBrewblox(myData.my_server, myData.my_port, myData.my_uri, myData.my_username, myData.my_password, myData.my_name);
+    return sender.sendBrewblox(myData.my_server, myData.my_port, myData.my_uri, myData.my_username, myData.my_password,
+                               myData.my_name);
   }
 #endif
 
@@ -945,7 +957,7 @@ float calculateTilt()
   if (ax == 0 && ay == 0 && az == 0)
     return 0.f;
 
-  return acos(az / (sqrt(ax * ax + ay * ay + az * az))) * 180.0 / M_PI;
+  return acos(abs(az) / (sqrt(ax * ax + ay * ay + az * az))) * 180.0 / M_PI;
 }
 
 bool testAccel()
