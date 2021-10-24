@@ -7,7 +7,7 @@ It can be run simply with `Golang` build environment installed via `go run .`
 Configure the iSpindel with the following settings:
 
 * Method: 'HTTP'
-* Host: <your workstation IP>
+* Host: your workstation IP
 * Port: 8080
 * Path: anything (e.g. /test)
 

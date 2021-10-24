@@ -137,6 +137,7 @@ Check out [IOT DEVICE PULLS ITS WEIGHT IN HOME BREWING](http://hackaday.com/2017
     - [Schaltplan](#schaltplan)
     - [Schlitten](#schlitten)
   - [Konfiguration](#konfiguration)
+    - [Test Server](#test-server)
     - [Ubidots](#ubidots)
       - [Portal](#portal)
     - [BierBot Bricks](#bierbot-bricks)
@@ -210,6 +211,10 @@ Die obige Platine kann (über Trenn-Schnitt) mit dem Kunstoff Schlitten in Kombi
 ***
 
 ## Konfiguration
+
+### Test Server
+
+[simple test server](tools/TestServer/Readme.md)
 
 ### Ubidots
 

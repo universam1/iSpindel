@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "7.1.3"
+#define FIRMWAREVERSION "7.1.4"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -114,7 +114,7 @@ extern Ticker flasher;
 // sleep management
 #define RTCSLEEPADDR 5
 #define MAXSLEEPTIME 3600UL //TODO
-#define EMERGENCYSLEEP (myData.my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : myData.my_sleeptime * 3)
+#define EMERGENCYSLEEP (myData.sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : myData.sleeptime * 3)
 #define LOWBATT 3.3
 
 #define UNINIT 0
@@ -133,28 +133,28 @@ String tempScaleLabel(uint8_t);
 
 struct iData
 {
-  char my_token[TKIDSIZE * 2];
-  char my_name[TKIDSIZE] = "iSpindel000";
-  char my_server[DNSSIZE];
-  char my_uri[DNSSIZE];
-  char my_db[TKIDSIZE] = "ispindel";
-  char my_username[TKIDSIZE];
-  char my_password[TKIDSIZE];
-  char my_job[TKIDSIZE] = "ispindel";
-  char my_instance[TKIDSIZE] = "000";
-  char my_polynominal[1000] = "-0.00031*tilt^2+0.557*tilt-14.054";
-  String my_ssid;
-  String my_psk;
-  uint8_t my_api;
-  uint32_t my_sleeptime = 15 * 60;
-  uint16_t my_port = 80;
-  uint32_t my_channel;
-  float my_vfact = ADCDIVISOR;
-  int16_t my_Offset[6];
-  uint8_t my_tempscale = TEMP_CELSIUS;
-  int8_t my_OWpin = -1;
+  char token[TKIDSIZE * 2];
+  char name[TKIDSIZE] = "iSpindel000";
+  char server[DNSSIZE];
+  char uri[DNSSIZE];
+  char db[TKIDSIZE] = "ispindel";
+  char username[TKIDSIZE];
+  char password[TKIDSIZE];
+  char job[TKIDSIZE] = "ispindel";
+  char instance[TKIDSIZE] = "000";
+  char polynominal[1000] = "-0.00031*tilt^2+0.557*tilt-14.054";
+  String ssid;
+  String psk;
+  uint8_t api;
+  uint32_t sleeptime = 15 * 60;
+  uint16_t port = 80;
+  uint32_t channel;
+  float vfact = ADCDIVISOR;
+  int16_t Offset[6];
+  uint8_t tempscale = TEMP_CELSIUS;
+  int8_t OWpin = -1;
   #if API_MQTT_HASSIO
-  bool my_hassio = false;
+  bool hassio = false;
   #endif
 };
 

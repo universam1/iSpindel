@@ -28,23 +28,35 @@ iSpindle (iSpindel) Documentation
 - [Ubidots scripting](ubidotsscripting_en.md)
 
 
-- [License](#license)
-- [Principle](#principle)
-  - [Metacentric Height](#metacentric-height)
-- [Construction](#construction)
-  - [Components](#components)
-  - [Circuit Diagram](#circuit-diagram)
-  - [Sled](#sled)
-- [Configuration](#configuration)
-  - [Ubidots](#ubidots)
-  - [Portal](#portal)
-  - [BierBot Bricks](#bierbot-bricks)
-  - [Blynk](#blynk)
-- [Graphical User Interface](#graphical-user-interface)
-  - [Calibrating the Spindle](#calibration)
-  - [Ubidots Graphen](#ubidots-graphen)
-  - [CraftBeerPi](#craftbeerpi)
-- [Software](#software)
+- [iSpindle Documentation](#ispindle-documentation)
+- [iSpindle (iSpindel) Documentation](#ispindle-ispindel-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [License](#license)
+  - [Principle](#principle)
+    - [*Metacentric Height*](#metacentric-height)
+  - [Construction](#construction)
+    - [see Parts](#see-parts)
+    - [see Sourcing](#see-sourcing)
+    - [see Circuit Diagram](#see-circuit-diagram)
+    - [see iSpindel Breadboard Mounting](#see-ispindel-breadboard-mounting)
+    - [Drawer](#drawer)
+  - [Configuration](#configuration)
+    - [Test Server](#test-server)
+    - [Ubidots](#ubidots)
+      - [Portal](#portal)
+    - [BierBot Bricks](#bierbot-bricks)
+    - [Blynk](#blynk)
+      - [Cloning the Example](#cloning-the-example)
+      - [Using your own App](#using-your-own-app)
+    - [MQTT](#mqtt)
+      - [Home Assistant](#home-assistant)
+      - [Other MQTT broker](#other-mqtt-broker)
+  - [Graphical User Interface](#graphical-user-interface)
+    - [Calibration](#calibration)
+    - [Ubidots Graphen](#ubidots-graphen)
+    - [CraftBeerPi](#craftbeerpi)
+  - [Software](#software)
+    - [Firmware flashing](#firmware-flashing)
 
 
 ***
@@ -106,6 +118,10 @@ alt="Druck" width="240" height="180" border="10" /></a>
 ***
 
 ## Configuration
+
+### Test Server
+
+[simple test server](tools/TestServer/Readme.md)
 
 ### Ubidots
 
