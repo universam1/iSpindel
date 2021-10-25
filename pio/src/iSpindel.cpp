@@ -109,8 +109,7 @@ void applyOffset()
 {
   if (myData.Offset[0] != UNINIT && myData.Offset[1] != UNINIT && myData.Offset[2] != UNINIT)
   {
-    CONSOLELN(String("applying offsets: ") + myData.Offset[0] + ":" + myData.Offset[1] + ":" +
-              myData.Offset[2]);
+    CONSOLELN(String("applying offsets: ") + myData.Offset[0] + ":" + myData.Offset[1] + ":" + myData.Offset[2]);
 
     accelgyro.setXAccelOffset(myData.Offset[0]);
     accelgyro.setYAccelOffset(myData.Offset[1]);
@@ -316,13 +315,12 @@ void postConfig()
   SenderClass sender;
   if (myData.hassio)
   {
-    sender.enableHassioDiscovery(myData.server, myData.port, myData.username, myData.password,
-                                 myData.name, tempScaleLabel(myData.tempscale));
+    sender.enableHassioDiscovery(myData.server, myData.port, myData.username, myData.password, myData.name,
+                                 tempScaleLabel(myData.tempscale));
   }
   if (hassio_changed && !myData.hassio)
   {
-    sender.disableHassioDiscovery(myData.server, myData.port, myData.username, myData.password,
-                                  myData.name);
+    sender.disableHassioDiscovery(myData.server, myData.port, myData.username, myData.password, myData.name);
   }
 #endif
 }
@@ -340,8 +338,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_api("selAPI", "selAPI", String(myData.api).c_str(), 20, TYPE_HIDDEN, WFM_NO_LABEL);
 
   WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(myData.name).c_str(), TKIDSIZE);
-  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(myData.sleeptime).c_str(), 6,
-                                    TYPE_NUMBER);
+  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(myData.sleeptime).c_str(), 6, TYPE_NUMBER);
   WiFiManagerParameter custom_token("token", "Token/ API key", htmlencode(myData.token).c_str(), TKIDSIZE * 2);
   WiFiManagerParameter custom_server("server", "Server Address", myData.server, DNSSIZE);
   WiFiManagerParameter custom_port("port", "Server Port", String(myData.port).c_str(), TKIDSIZE, TYPE_NUMBER);
@@ -357,8 +354,7 @@ bool startConfiguration()
   WiFiManagerParameter custom_hassio("hassio", "Home Assistant integration via MQTT", "checked", TKIDSIZE,
                                      myData.hassio ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
 #endif
-  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(myData.vfact).c_str(), 7,
-                                    TYPE_NUMBER);
+  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(myData.vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale", String(myData.tempscale).c_str(), 5, TYPE_HIDDEN,
                                         WFM_NO_LABEL);
@@ -598,8 +594,8 @@ bool uploadData(uint8_t service)
     sender.add("interval", myData.sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN("Calling AWSIOTMQTT Sender");
-    return sender.sendSecureMQTT(AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, myData.server, myData.port,
-                                 myData.name, myData.uri);
+    return sender.sendSecureMQTT(AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, myData.server, myData.port, myData.name,
+                                 myData.uri);
     //AWS - NOTE - Need to replace secrets.h with the relevant parameters
   }
 #endif
@@ -648,8 +644,7 @@ bool uploadData(uint8_t service)
     CONSOLELN(String(F("Sending to db: ")) + myData.db + String(F(" w/ credentials: ")) + myData.username +
               String(F(":")) + myData.password);
 
-    return sender.sendInfluxDB(myData.server, myData.port, myData.db, myData.name, myData.username,
-                               myData.password);
+    return sender.sendInfluxDB(myData.server, myData.port, myData.db, myData.name, myData.username, myData.password);
   }
 #endif
 
@@ -767,8 +762,7 @@ bool uploadData(uint8_t service)
     sender.add("Gravity", Gravity);
     sender.add("Rssi[dBm]", WiFi.RSSI());
     CONSOLELN(F("\ncalling BREWBLOX"));
-    return sender.sendBrewblox(myData.server, myData.port, myData.uri, myData.username, myData.password,
-                               myData.name);
+    return sender.sendBrewblox(myData.server, myData.port, myData.uri, myData.username, myData.password, myData.name);
   }
 #endif
 

@@ -33,7 +33,7 @@ extern Ticker flasher;
 #define API_BLYNK true
 #define API_BREWBLOX true
 #define API_MQTT_HASSIO true
-#define API_AWSIOTMQTT true         //AWS
+#define API_AWSIOTMQTT true //AWS
 #define API_BRICKS true
 
 //#define BLYNK_DEBUG
@@ -153,9 +153,9 @@ struct iData
   int16_t Offset[6];
   uint8_t tempscale = TEMP_CELSIUS;
   int8_t OWpin = -1;
-  #if API_MQTT_HASSIO
+#if API_MQTT_HASSIO
   bool hassio = false;
-  #endif
+#endif
 };
 
 extern iData myData;
