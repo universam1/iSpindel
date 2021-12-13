@@ -788,7 +788,7 @@ bool uploadData(uint8_t service)
     sender.add("brand", "wemos_d1_mini");
     sender.add("version", FIRMWAREVERSION);
     sender.add("chipid", chipidHashed);
-    sender.add("s_number_wort_0", (float)(round(Gravity * 1000) / 1000));
+    sender.add("s_number_wort_0", (float)(round(Gravity * 10000) / 10000));
     sender.add("s_number_temp_0", (float)(round(Temperatur * 10) / 10)); // always transmit °C
     sender.add("s_number_voltage_0", (float)round(Volt * 100) / 100);
     sender.add("s_number_wifi_0", WiFi.RSSI());
