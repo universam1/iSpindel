@@ -121,7 +121,7 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
 ### Test Server
 
-[simple test server](tools/TestServer/Readme.md)
+[simple test server](../tools/TestServer/Readme.md)
 
 ### Ubidots
 
