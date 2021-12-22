@@ -20,3 +20,5 @@ iSpindel/__vm/
 .project
 .settings
 pio/src/secrets.h
+/.idea/
+/Gemfile.lock
