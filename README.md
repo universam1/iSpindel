@@ -263,7 +263,7 @@ Die Einrichtung mit BierBot Bricks ist einfach und kostenlos. Ihr benötigt hier
 3. Dort klickt ihr nun auf den blauen "Add Brick" / "Brick hinzufügen" oben rechts.
 4. Wählt den "iSpindel"-Tab im Popup und kopiert den API key in die Zwischenablage.
 5. Ruft nun das Konfigurationsportal eurer iSpindel auf (die iSpindel erstellt einen Accesspoint durch mehrmaliges Drücken der Reset-Taste, s. [hier](#portal))
-6. Wählt als Service "Bricks (free & easy)" aus (siehe 2 im Bild).
+6. Wählt als Service "BierBot Bricks" aus (siehe 2 im Bild).
 7. Fügt nun unter "Token/ API key" den API key aus euer Zwischenablage ein und klickt ganz unten auf den blauen Speichern-Button.
 8. Geht nun zurück auf [bricks.bierbot.com](https://bricks.bierbot.com/#/) und wählt "Equipment" bzw. "Brauanlagen" auf der linken Seite aus (3 im Bild).
 9. Erstellt nun ein neues Gerät (blauber Button rechts oben) vom Typ "**Fermenter**".

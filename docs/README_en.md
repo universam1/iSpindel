@@ -156,7 +156,7 @@ The setup with BierBot Bricks is easy and for free. You will need the iSpindle F
 3. Hit the blue "Add Brick" button in the top right corner.
 4. Select "iSpindel" in the popup and copy the displayed API key into your clipboard.
 5. Now open the configuration portal of your iSpindel (by pressing reset multiple times, see [portal](#portal) for more info).
-6. Select "Bricks (free & easy)" as service (see 2 in the image).
+6. Select "BierBot Bricks" as service (see 2 in the image).
 7. Paste the api key from your clipboard into the "Token/ API key" field and hit the blue save bottom at the bottom.
 8. Now go back to [bricks.bierbot.com](https://bricks.bierbot.com/#/) and select "Equipment" in the menu on the left (see 3 in the image).
 9. Create a new device (blue button, top right corner), select "**Fermenter**" in the popup.
