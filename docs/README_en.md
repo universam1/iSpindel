@@ -28,22 +28,35 @@ iSpindle (iSpindel) Documentation
 - [Ubidots scripting](ubidotsscripting_en.md)
 
 
-- [License](#license)
-- [Principle](#principle)
-  - [Metacentric Height](#metacentric-height)
-- [Construction](#construction)
-  - [Components](#components)
-  - [Circuit Diagram](#circuit-diagram)
-  - [Sled](#sled)
-- [Configuration](#configuration)
-  - [Ubidots](#ubidots)
-  - [Portal](#portal)
-  - [Blynk](#blynk)
-- [Graphical User Interface](#graphical-user-interface)
-  - [Calibrating the Spindle](#calibration)
-  - [Ubidots Graphen](#ubidots-graphen)
-  - [CraftBeerPi](#craftbeerpi)
-- [Software](#software)
+- [iSpindle Documentation](#ispindle-documentation)
+- [iSpindle (iSpindel) Documentation](#ispindle-ispindel-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [License](#license)
+  - [Principle](#principle)
+    - [*Metacentric Height*](#metacentric-height)
+  - [Construction](#construction)
+    - [see Parts](#see-parts)
+    - [see Sourcing](#see-sourcing)
+    - [see Circuit Diagram](#see-circuit-diagram)
+    - [see iSpindel Breadboard Mounting](#see-ispindel-breadboard-mounting)
+    - [Drawer](#drawer)
+  - [Configuration](#configuration)
+    - [Test Server](#test-server)
+    - [Ubidots](#ubidots)
+      - [Portal](#portal)
+    - [BierBot Bricks](#bierbot-bricks)
+    - [Blynk](#blynk)
+      - [Cloning the Example](#cloning-the-example)
+      - [Using your own App](#using-your-own-app)
+    - [MQTT](#mqtt)
+      - [Home Assistant](#home-assistant)
+      - [Other MQTT broker](#other-mqtt-broker)
+  - [Graphical User Interface](#graphical-user-interface)
+    - [Calibration](#calibration)
+    - [Ubidots Graphen](#ubidots-graphen)
+    - [CraftBeerPi](#craftbeerpi)
+  - [Software](#software)
+    - [Firmware flashing](#firmware-flashing)
 
 
 ***
@@ -57,7 +70,7 @@ iSpindle (iSpindel) Documentation
 
 ## Principle
 
-Powered by the thread [Alternative to the Spindle](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499), the idea was born to reproduce the commercially available electronic tildting spindle using low-cost components.
+Powered by the thread [Alternative to the Spindle](http://hobbybrauer.de/forum/viewtopic.php?f=7&t=11157&view=unread#p170499), the idea was born to reproduce the commercially available electronic tilting spindle using low-cost components.
 
 The system is based around the use of a heeling (or tilting) cylinder, an ingenious and easy concept - you do not need any external reference (except for gravity) and the cylinder is extremely easy to keep clean. The inclination angle changes in relation to the buoyancy and thus directly in relation to the sugar content. There is an angle formed between the center of mass and the center of bouyancy depending on the density of the fluid.
 
@@ -106,6 +119,10 @@ alt="Druck" width="240" height="180" border="10" /></a>
 
 ## Configuration
 
+### Test Server
+
+[simple test server](../tools/TestServer/Readme.md)
+
 ### Ubidots
 
 - To start, you must create a free account at [Ubidots.com](https://ubidots.com)
@@ -113,7 +130,7 @@ alt="Druck" width="240" height="180" border="10" /></a>
 ***Write this down.***  
 ![Token](/pics/UbiToken.jpg)  
 
-### Portal
+#### Portal
 
 By pressing the  ```Reset Button``` the Wemos creates an access point, which allows you to make the necessary settings to configure the device. **In `operation mode` this portal is not active or accessible because the principle of this design is based on shorted possible acitve time. Basically it will wake up, send its data and deep sleep again. This takes now less than 3s which is directly related to its long life run time.
 
@@ -129,6 +146,27 @@ By saving your settings or waiting timeout of 5min it will end the Portal thus A
 
 > In Ubidots you can monitor the update of data unders ```Sources``` where the iSpindel will create a new device itself.  
 In the ```Dashboard``` now you can create your nice graphs.
+
+### BierBot Bricks
+
+The setup with BierBot Bricks is easy and for free. You will need the iSpindle Firmware  `7.1.0` or later. 
+
+1. Create a free BierBot Bricks account [here](https://bricks.bierbot.com/#/register).
+2. After Registration, select "Bricks" in the menu on the left (see 1 in the picture).
+3. Hit the blue "Add Brick" button in the top right corner.
+4. Select "iSpindel" in the popup and copy the displayed API key into your clipboard.
+5. Now open the configuration portal of your iSpindel (by pressing reset multiple times, see [portal](#portal) for more info).
+6. Select "BierBot Bricks" as service (see 2 in the image).
+7. Paste the api key from your clipboard into the "Token/ API key" field and hit the blue save bottom at the bottom.
+8. Now go back to [bricks.bierbot.com](https://bricks.bierbot.com/#/) and select "Equipment" in the menu on the left (see 3 in the image).
+9. Create a new device (blue button, top right corner), select "**Fermenter**" in the popup.
+10. Now assign the gravity sensor from the iSpindle to the respective field of your fermeter by **drag & dropping** - the respective target dropzone on your fermenter will be highlighted green to guide you. You can do the same for your temperature sensor, but this is optional.
+11. Hite "Save".
+12. To start recording, we will also need a recipe. Go to "Recipes" on the left and create a recipe. You only need to setup one (dummy) fermentation step. Save the recipe and go back to the list of recipes. Start your recipe by clicking the orange play button.
+
+**Done!**
+
+![Bricks tutorial](../pics/ispindle_bricks_tutorial.png)
 
 ### Blynk
 
@@ -152,6 +190,20 @@ In the ```Dashboard``` now you can create your nice graphs.
 4. V2 - String Temperature degress `C or F or K`;
 5. V3 - String Battery `Volts`;
 6. V4 - Gravity;
+
+### MQTT
+* You can configure the MQTT broker (server) in the configuration page.
+
+#### Home Assistant
+* There is a check box to make iSpindel integration automatically in HomeAssistant using Mosquitto
+#### Other MQTT broker
+Each value transmitted bu iSplindle is sent on its own topic.
+Topics are : 
+* ispindel/```Devices' name```/temperature
+* ispindel/```Devices' name```/tilt
+* ispindel/```Devices' name```/battery
+* ispindel/```Devices' name```/RSSI
+* ispindel/```Devices' name```/gravity
 
 ***
 ## Graphical User Interface

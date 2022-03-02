@@ -33,22 +33,26 @@ WiFiManagerParameter::WiFiManagerParameter(const char *custom)
   _customHTML = custom;
 }
 
-WiFiManagerParameter::WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue, int length)
+WiFiManagerParameter::WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue,
+                                           int length)
 {
   init(id, placeholder, defaultValue, length, "", WFM_LABEL_BEFORE);
 }
 
-WiFiManagerParameter::WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom)
+WiFiManagerParameter::WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue,
+                                           int length, const char *custom)
 {
   init(id, placeholder, defaultValue, length, custom, WFM_LABEL_BEFORE);
 }
 
-WiFiManagerParameter::WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement)
+WiFiManagerParameter::WiFiManagerParameter(const char *id, const char *placeholder, const char *defaultValue,
+                                           int length, const char *custom, int labelPlacement)
 {
   init(id, placeholder, defaultValue, length, custom, labelPlacement);
 }
 
-void WiFiManagerParameter::init(const char *id, const char *placeholder, const char *defaultValue, int length, const char *custom, int labelPlacement)
+void WiFiManagerParameter::init(const char *id, const char *placeholder, const char *defaultValue, int length,
+                                const char *custom, int labelPlacement)
 {
   _id = id;
   _placeholder = placeholder;
@@ -104,7 +108,7 @@ WiFiManager::~WiFiManager()
 
 void WiFiManager::addParameter(WiFiManagerParameter *p)
 {
- if(_paramsCount + 1 > WIFI_MANAGER_MAX_PARAMS)
+  if (_paramsCount + 1 > WIFI_MANAGER_MAX_PARAMS)
   {
     //Max parameters exceeded!
     DEBUG_WM("WIFI_MANAGER_MAX_PARAMS exceeded, increase number (in WiFiManager.h) before adding more parameters!");
@@ -150,7 +154,8 @@ void WiFiManager::setupConfigPortal()
       DEBUG_WM(F("Invalid AccessPoint password. Ignoring"));
       _apPassword = NULL;
     }
-    DEBUG_WM(_apPassword);
+    //Don't show ap password on the console
+    //DEBUG_WM(_apPassword);
   }
 
   //optional soft ip config
@@ -189,7 +194,8 @@ void WiFiManager::setupConfigPortal()
   server->on("/mnt", std::bind(&WiFiManager::handleMnt, this));
   server->on("/offset", std::bind(&WiFiManager::handleOffset, this));
   server->on("/reset", std::bind(&WiFiManager::handleReset, this));
-  server->on("/update", HTTP_POST, std::bind(&WiFiManager::handleUpdateDone, this), std::bind(&WiFiManager::handleUpdating, this));
+  server->on("/update", HTTP_POST, std::bind(&WiFiManager::handleUpdateDone, this),
+             std::bind(&WiFiManager::handleUpdating, this));
   server->onNotFound(std::bind(&WiFiManager::handleNotFound, this));
   server->begin(); // Web server start
   DEBUG_WM(F("HTTP server started"));
@@ -943,11 +949,13 @@ void WiFiManager::handleInfo()
   page += F("<tr><td><a href=\"/i\">/i</a></td>");
   page += F("<td>This page.</td></tr>");
   page += F("<tr><td><a href=\"/r\">/r</a></td>");
-  page += F("<td>Delete WiFi configuration and reboot. ESP device will not reconnect to a network until new WiFi configuration data is entered.</td></tr>");
+  page += F("<td>Delete WiFi configuration and reboot. ESP device will not reconnect to a network until new WiFi "
+            "configuration data is entered.</td></tr>");
   page += F("<tr><td><a href=\"/state\">/state</a></td>");
   page += F("<td>Current device state in JSON format. Interface for programmatic WiFi configuration.</td></tr>");
   page += F("<tr><td><a href=\"/scan\">/scan</a></td>");
-  page += F("<td>Run a WiFi scan and return results in JSON format. Interface for programmatic WiFi configuration.</td></tr>");
+  page += F("<td>Run a WiFi scan and return results in JSON format. Interface for programmatic WiFi "
+            "configuration.</td></tr>");
   page += F("</table>");
   page += F("<p/>");
   page += FPSTR(HTTP_END);
@@ -978,9 +986,9 @@ void WiFiManager::handleiSpindel()
   page += Tilt;
   page += F("&deg;</td></tr>");
   page += F("<tr><td>Temperature:</td><td>");
-  page += scaleTemperature(Temperatur);
+  page += scaleTemperatureFromC(Temperatur, myData.tempscale);
   page += F("&deg;");
-  page += tempScaleLabel();
+  page += tempScaleLabel(myData.tempscale);
   page += F("</td></tr>");
   page += F("<tr><td>Battery:</td><td>");
   page += Volt;
@@ -996,7 +1004,8 @@ void WiFiManager::handleiSpindel()
   page += F("</dd>");
   page += F("<dd>Date: ");
   page += __DATE__ " " __TIME__;
-  page += F("</dd></dl><br>Firmware update:<br><a href=\"https://github.com/universam1\">github.com/universam1</a><hr>");
+  page +=
+      F("</dd></dl><br>Firmware update:<br><a href=\"https://github.com/universam1\">github.com/universam1</a><hr>");
   page += F("</dl>");
   page += FPSTR(HTTP_END);
 
@@ -1017,10 +1026,12 @@ void WiFiManager::handleMnt()
   page += FPSTR(HTTP_SCRIPT);
   page += FPSTR(HTTP_STYLE);
   page += FPSTR(HTTP_HEADER_END);
-  page += F("<h2>Offset Calibration</h2><br>Before proceeding with calibration make sure the iSpindel is leveled flat, exactly at 0&deg; horizontally and vertically, according to this picture:<br>");
+  page += F("<h2>Offset Calibration</h2><br>Before proceeding with calibration make sure the iSpindel is leveled flat, "
+            "exactly at 0&deg; horizontally and vertically, according to this picture:<br>");
   page += FPSTR(HTTP_ISPINDEL_IMG);
   page += F("<br><form action=\"/offset\" method=\"get\"><button class=\"btn\">calibrate</button></form><br/>");
-  page += F("<hr><h2>Firmware Update</h2><br>Firmware updates:<br><a href=\"https://github.com/universam1\">github.com/universam1</a>");
+  page += F("<hr><h2>Firmware Update</h2><br>Firmware updates:<br><a "
+            "href=\"https://github.com/universam1\">github.com/universam1</a>");
   page += F("Current Firmware installed:<br><dl>");
   page += F("<dd>Version: ");
   page += FIRMWAREVERSION;
@@ -1028,7 +1039,8 @@ void WiFiManager::handleMnt()
   page += F("<dd>Date: ");
   page += __DATE__ " " __TIME__;
   page += F("</dd></dl><br>");
-  page += F("<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><br><input type='submit' class=\"btn\" value='update'></form>");
+  page += F("<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' "
+            "name='update'><br><input type='submit' class=\"btn\" value='update'></form>");
   page += F("<hr><h2>Factory Reset</h2><br>All settings will be removed");
   page += F("<br><form action=\"/reset\" method=\"get\"><button class=\"btn\">factory reset</button></form><br/>");
   page += FPSTR(HTTP_END);
@@ -1166,7 +1178,7 @@ void WiFiManager::handleReset()
   delay(1000);
   WiFi.disconnect(true); // Wipe out WiFi credentials.
   resetSettings();
-  formatSpiffs();
+  formatLittleFS();
   ESP.reset();
   delay(2000);
 }
@@ -1203,8 +1215,9 @@ boolean WiFiManager::captivePortal()
     DEBUG_WM(F("Request redirected to captive portal"));
     server->sendHeader("Location", ("http://") + String(myHostname), true);
     server->setContentLength(0);
-    server->send(302, "text/plain", ""); // Empty content inhibits Content-length header so we have to close the socket ourselves.
-                                         //    server->client().stop(); // Stop is needed because we sent no content length
+    server->send(302, "text/plain",
+                 ""); // Empty content inhibits Content-length header so we have to close the socket ourselves.
+                      //    server->client().stop(); // Stop is needed because we sent no content length
     return true;
   }
   return false;
@@ -1262,9 +1275,7 @@ int WiFiManager::scanWifiNetworks(int **indicesptr)
       indices[i] = i;
     }
 
-    std::sort(indices, indices + n, [](const int &a, const int &b) -> bool {
-      return WiFi.RSSI(a) > WiFi.RSSI(b);
-    });
+    std::sort(indices, indices + n, [](const int &a, const int &b) -> bool { return WiFi.RSSI(a) > WiFi.RSSI(b); });
     // remove duplicates ( must be RSSI sorted )
     if (_removeDuplicateAPs)
     {
@@ -1302,8 +1313,7 @@ int WiFiManager::scanWifiNetworks(int **indicesptr)
   }
 }
 
-template <typename Generic>
-void WiFiManager::DEBUG_WM(Generic text)
+template <typename Generic> void WiFiManager::DEBUG_WM(Generic text)
 {
   if (_debug)
   {

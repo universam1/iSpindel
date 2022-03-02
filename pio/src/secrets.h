@@ -1,0 +1,28 @@
+#include <pgmspace.h>
+
+// Amazon Root CA 1
+char AWS_CERT_CA[] PROGMEM = R"EOF(
+-----BEGIN CERTIFICATE-----
+MIIDQTCCAimgAwIBAgITBmyfz5m/jAo54vB4ikPmljZbyjANBgkqhkiG9w0BAQsF
+....
+rqXRfboQnoZsG4q5WTP468SQvvG5
+-----END CERTIFICATE-----
+)EOF";
+
+// Device Certificate
+char AWS_CERT_CRT[] PROGMEM = R"EOF(
+-----BEGIN CERTIFICATE-----
+MIIDWjCCAkKgAwIBAgIVAJWkLwCw4/J6kFdfGOc6Iy7oUdblMA0GCSqGSIb3DQEB
+...
+lO/ftnkLAtFdfdEYNRt4Pwnzz5dMzIy4BFjxIc9TEWUlQfYts+MKeXJZPN1R6Q==
+-----END CERTIFICATE-----
+)EOF";
+
+// Device Private Key
+char AWS_CERT_PRIVATE[] PROGMEM = R"KEY(
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpQIBAAKCAQEAzSJSdu9I/rp7x2SoIDwor+fANnwc77OY58I6Ayd74abqUP0x
+...
+yWtqFU/uV4LPITfESKnVUUYK39kPRwvuxtDN0pq/mHfD5xnzkLMNPCk=
+-----END RSA PRIVATE KEY-----
+)KEY";

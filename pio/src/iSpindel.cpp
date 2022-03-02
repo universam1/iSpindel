@@ -6,9 +6,9 @@ All rights reserverd by S.Lang <universam@web.de>
 **************************************************************/
 
 // includes go here
-#include <PubSubClient.h>
 #include "Globals.h"
 #include "MPUOffset.h"
+#include <PubSubClient.h>
 // #endif
 #include "OneWire.h"
 #include "Wire.h"
@@ -16,15 +16,16 @@ All rights reserverd by S.Lang <universam@web.de>
 #include "DallasTemperature.h"
 #include "DoubleResetDetector.h" // https://github.com/datacute/DoubleResetDetector
 #include "RunningMedian.h"
+#include "Sender.h"
 #include "WiFiManagerKT.h"
+#include "secrets.h" //AWS - Currently a file for Keys, Certs, etc - Need to make this a captured variable for iSpindle
+#include "tinyexpr.h"
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
 #include <FS.h>          //this needs to be first
-#include "tinyexpr.h"
-
-#include "Sender.h"
+#include <LittleFS.h>
 // !DEBUG 1
 
 // definitions go here
@@ -35,10 +36,6 @@ DeviceAddress tempDeviceAddress;
 Ticker flasher;
 RunningMedian samples = RunningMedian(MEDIANROUNDSMAX);
 DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
-
-#define TEMP_CELSIUS 0
-#define TEMP_FAHRENHEIT 1
-#define TEMP_KELVIN 2
 
 int detectTempSensor(const uint8_t pins[]);
 bool testAccel();
@@ -66,56 +63,40 @@ float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravit
 
 bool shouldSaveConfig = false;
 
-char my_token[TKIDSIZE * 2];
-char my_name[TKIDSIZE] = "iSpindel000";
-char my_server[DNSSIZE];
-char my_uri[DNSSIZE];
-char my_db[TKIDSIZE] = "ispindel";
-char my_username[TKIDSIZE];
-char my_password[TKIDSIZE];
-char my_job[TKIDSIZE] = "ispindel";
-char my_instance[TKIDSIZE] = "000";
-char my_polynominal[100] = "-0.00031*tilt^2+0.557*tilt-14.054";
+iData myData;
 
-String my_ssid;
-String my_psk;
-uint8_t my_api;
-uint32_t my_sleeptime = 15 * 60;
-uint16_t my_port = 80;
-uint32_t my_channel;
-float my_vfact = ADCDIVISOR;
-int16_t my_Offset[6];
-uint8_t my_tempscale = TEMP_CELSIUS;
-int8_t my_OWpin = -1;
+#if API_MQTT_HASSIO
+//myData.hassio = false;
+bool hassio_changed = false;
+#endif
 
 uint32_t DSreqTime = 0;
-float pitch, roll;
 
 int16_t ax, ay, az;
-float Volt, Temperatur, Tilt, Gravity; // , corrGravity;
+float Volt, Temperatur, Tilt, Gravity;
 
-float scaleTemperature(float t)
+float scaleTemperatureFromC(float t, uint8_t tempscale)
 {
-  if (my_tempscale == TEMP_CELSIUS)
+  if (tempscale == TEMP_CELSIUS)
     return t;
-  else if (my_tempscale == TEMP_FAHRENHEIT)
+  else if (tempscale == TEMP_FAHRENHEIT)
     return (1.8f * t + 32);
-  else if (my_tempscale == TEMP_KELVIN)
+  else if (tempscale == TEMP_KELVIN)
     return t + 273.15f;
   else
-    return t; // Invalid value for my_tempscale => default to celsius
+    return t; // Invalid value for myData.tempscale => default to celsius
 }
 
-String tempScaleLabel(void)
+String tempScaleLabel(uint8_t tempscale)
 {
-  if (my_tempscale == TEMP_CELSIUS)
+  if (tempscale == TEMP_CELSIUS)
     return "C";
-  else if (my_tempscale == TEMP_FAHRENHEIT)
+  else if (tempscale == TEMP_FAHRENHEIT)
     return "F";
-  else if (my_tempscale == TEMP_KELVIN)
+  else if (tempscale == TEMP_KELVIN)
     return "K";
   else
-    return "C"; // Invalid value for my_tempscale => default to celsius
+    return "C"; // Invalid value for myData.tempscale => default to celsius
 }
 
 // callback notifying us of the need to save config
@@ -126,18 +107,20 @@ void saveConfigCallback()
 
 void applyOffset()
 {
-  if (my_Offset[0] != UNINIT && my_Offset[1] != UNINIT && my_Offset[2] != UNINIT)
+  if (myData.Offset[0] != UNINIT && myData.Offset[1] != UNINIT && myData.Offset[2] != UNINIT)
   {
-    CONSOLELN(String("applying offsets: ") + my_Offset[0] + ":" + my_Offset[1] + ":" + my_Offset[2]);
-    accelgyro.setXAccelOffset(my_Offset[0]);
-    accelgyro.setYAccelOffset(my_Offset[1]);
-    accelgyro.setZAccelOffset(my_Offset[2]);
-    accelgyro.setXGyroOffset(my_Offset[3]);
-    accelgyro.setYGyroOffset(my_Offset[4]);
-    accelgyro.setZGyroOffset(my_Offset[5]);
+    CONSOLELN(String("applying offsets: ") + myData.Offset[0] + ":" + myData.Offset[1] + ":" + myData.Offset[2]);
+
+    accelgyro.setXAccelOffset(myData.Offset[0]);
+    accelgyro.setYAccelOffset(myData.Offset[1]);
+    accelgyro.setZAccelOffset(myData.Offset[2]);
+    accelgyro.setXGyroOffset(myData.Offset[3]);
+    accelgyro.setYGyroOffset(myData.Offset[4]);
+    accelgyro.setZGyroOffset(myData.Offset[5]);
     delay(1);
 
-    CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
+    CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" +
+              accelgyro.getZAccelOffset());
   }
   else
     CONSOLELN(F("offsets not available"));
@@ -147,7 +130,7 @@ bool readConfig()
 {
   CONSOLE(F("mounting FS..."));
 
-  if (!SPIFFS.begin())
+  if (!LittleFS.begin())
   {
     CONSOLELN(F(" ERROR: failed to mount FS!"));
     return false;
@@ -155,7 +138,7 @@ bool readConfig()
   else
   {
     CONSOLELN(F(" mounted!"));
-    if (!SPIFFS.exists(CFGFILE))
+    if (!LittleFS.exists(CFGFILE))
     {
       CONSOLELN(F("ERROR: failed to load json config"));
       return false;
@@ -164,7 +147,7 @@ bool readConfig()
     {
       // file exists, reading and loading
       CONSOLELN(F("reading config file"));
-      File configFile = SPIFFS.open(CFGFILE, "r");
+      File configFile = LittleFS.open(CFGFILE, "r");
       if (!configFile)
       {
         CONSOLELN(F("ERROR: unable to open config file"));
@@ -182,49 +165,52 @@ bool readConfig()
         else
         {
           if (doc.containsKey("Name"))
-            strcpy(my_name, doc["Name"]);
+            strcpy(myData.name, doc["Name"]);
           if (doc.containsKey("Token"))
-            strcpy(my_token, doc["Token"]);
+            strcpy(myData.token, doc["Token"]);
           if (doc.containsKey("Server"))
-            strcpy(my_server, doc["Server"]);
+            strcpy(myData.server, doc["Server"]);
           if (doc.containsKey("Sleep"))
-            my_sleeptime = doc["Sleep"];
+            myData.sleeptime = doc["Sleep"];
           if (doc.containsKey("API"))
-            my_api = doc["API"];
+            myData.api = doc["API"];
           if (doc.containsKey("Port"))
-            my_port = doc["Port"];
+            myData.port = doc["Port"];
           if (doc.containsKey("Channel"))
-            my_channel = doc["Channel"];
+            myData.channel = doc["Channel"];
           if (doc.containsKey("URI"))
-            strcpy(my_uri, doc["URI"]);
+            strcpy(myData.uri, doc["URI"]);
           if (doc.containsKey("DB"))
-            strcpy(my_db, doc["DB"]);
+            strcpy(myData.db, doc["DB"]);
           if (doc.containsKey("Username"))
-            strcpy(my_username, doc["Username"]);
+            strcpy(myData.username, doc["Username"]);
           if (doc.containsKey("Password"))
-            strcpy(my_password, doc["Password"]);
+            strcpy(myData.password, doc["Password"]);
           if (doc.containsKey("Job"))
-            strcpy(my_job, doc["Job"]);
+            strcpy(myData.job, doc["Job"]);
           if (doc.containsKey("Instance"))
-            strcpy(my_instance, doc["Instance"]);
+            strcpy(myData.instance, doc["Instance"]);
           if (doc.containsKey("Vfact"))
-            my_vfact = doc["Vfact"];
+            myData.vfact = doc["Vfact"];
           if (doc.containsKey("TS"))
-            my_tempscale = doc["TS"];
+            myData.tempscale = doc["TS"];
           if (doc.containsKey("OWpin"))
-            my_OWpin = doc["OWpin"];
+            myData.OWpin = doc["OWpin"];
           if (doc.containsKey("SSID"))
-            my_ssid = (const char *)doc["SSID"];
+            myData.ssid = (const char *)doc["SSID"];
           if (doc.containsKey("PSK"))
-            my_psk = (const char *)doc["PSK"];
+            myData.psk = (const char *)doc["PSK"];
           if (doc.containsKey("POLY"))
-            strcpy(my_polynominal, doc["POLY"]);
-
+            strcpy(myData.polynominal, doc["POLY"]);
+#if API_MQTT_HASSIO
+          if (doc.containsKey("Hassio"))
+            myData.hassio = doc["Hassio"];
+#endif
           if (doc.containsKey("Offset"))
           {
-            for (size_t i = 0; i < (sizeof(my_Offset) / sizeof(*my_Offset)); i++)
+            for (size_t i = 0; i < (sizeof(myData.Offset) / sizeof(*myData.Offset)); i++)
             {
-              my_Offset[i] = doc["Offset"][i];
+              myData.Offset[i] = doc["Offset"][i];
             }
           }
 
@@ -323,6 +309,22 @@ String htmlencode(String str)
   return encodedstr;
 }
 
+void postConfig()
+{
+#if API_MQTT_HASSIO
+  SenderClass sender;
+  if (myData.hassio)
+  {
+    sender.enableHassioDiscovery(myData.server, myData.port, myData.username, myData.password, myData.name,
+                                 tempScaleLabel(myData.tempscale));
+  }
+  if (hassio_changed && !myData.hassio)
+  {
+    sender.disableHassioDiscovery(myData.server, myData.port, myData.username, myData.password, myData.name);
+  }
+#endif
+}
+
 bool startConfiguration()
 {
 
@@ -333,34 +335,34 @@ bool startConfiguration()
   wifiManager.setBreakAfterConfig(true);
 
   WiFiManagerParameter api_list(HTTP_API_LIST);
-  WiFiManagerParameter custom_api("selAPI", "selAPI", String(my_api).c_str(),
-                                  20, TYPE_HIDDEN, WFM_NO_LABEL);
+  WiFiManagerParameter custom_api("selAPI", "selAPI", String(myData.api).c_str(), 20, TYPE_HIDDEN, WFM_NO_LABEL);
 
-  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(my_name).c_str(),
-                                   TKIDSIZE * 2);
-  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)",
-                                    String(my_sleeptime).c_str(), 6, TYPE_NUMBER);
-  WiFiManagerParameter custom_token("token", "Token", htmlencode(my_token).c_str(),
-                                    TKIDSIZE * 2 * 2);
-  WiFiManagerParameter custom_server("server", "Server Address",
-                                     my_server, DNSSIZE);
-  WiFiManagerParameter custom_port("port", "Server Port",
-                                   String(my_port).c_str(), TKIDSIZE,
-                                   TYPE_NUMBER);
-  WiFiManagerParameter custom_channel("channel", "Channelnumber",
-                                      String(my_channel).c_str(), TKIDSIZE, TYPE_NUMBER);
-  WiFiManagerParameter custom_url("uri", "Path / URI", my_uri, DNSSIZE);
-  WiFiManagerParameter custom_db("db", "InfluxDB db", my_db, TKIDSIZE);
-  WiFiManagerParameter custom_username("username", "Username", my_username, TKIDSIZE);
-  WiFiManagerParameter custom_password("password", "Password", my_password, TKIDSIZE);
-  WiFiManagerParameter custom_job("job", "Prometheus job", my_job, TKIDSIZE);
-  WiFiManagerParameter custom_instance("instance", "Prometheus instance", my_instance, TKIDSIZE);
-  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor",
-                                    String(my_vfact).c_str(), 7, TYPE_NUMBER);
+  WiFiManagerParameter custom_name("name", "iSpindel Name", htmlencode(myData.name).c_str(), TKIDSIZE);
+  WiFiManagerParameter custom_sleep("sleep", "Update Interval (s)", String(myData.sleeptime).c_str(), 6, TYPE_NUMBER);
+  WiFiManagerParameter custom_token("token", "Token/ API key", htmlencode(myData.token).c_str(), TKIDSIZE * 2);
+  WiFiManagerParameter custom_server("server", "Server Address", myData.server, DNSSIZE);
+  WiFiManagerParameter custom_port("port", "Server Port", String(myData.port).c_str(), TKIDSIZE, TYPE_NUMBER);
+  WiFiManagerParameter custom_channel("channel", "Channelnumber", String(myData.channel).c_str(), TKIDSIZE,
+                                      TYPE_NUMBER);
+  WiFiManagerParameter custom_uri("uri", "Path / URI", myData.uri, DNSSIZE);
+  WiFiManagerParameter custom_db("db", "InfluxDB db", myData.db, TKIDSIZE);
+  WiFiManagerParameter custom_username("username", "Username", myData.username, TKIDSIZE);
+  WiFiManagerParameter custom_password("password", "Password", myData.password, TKIDSIZE);
+  WiFiManagerParameter custom_job("job", "Prometheus job", myData.job, TKIDSIZE);
+  WiFiManagerParameter custom_instance("instance", "Prometheus instance", myData.instance, TKIDSIZE);
+#if API_MQTT_HASSIO
+  WiFiManagerParameter custom_hassio("hassio", "Home Assistant integration via MQTT", "checked", TKIDSIZE,
+                                     myData.hassio ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
+#endif
+  WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(myData.vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
-  WiFiManagerParameter custom_tempscale("tempscale", "tempscale",
-                                        String(my_tempscale).c_str(),
-                                        5, TYPE_HIDDEN, WFM_NO_LABEL);
+  WiFiManagerParameter custom_tempscale("tempscale", "tempscale", String(myData.tempscale).c_str(), 5, TYPE_HIDDEN,
+                                        WFM_NO_LABEL);
+  WiFiManagerParameter custom_warning1(
+      "warning1",
+      "WARNING! Secure MQTT has a big impact on battery usage.<BR>&nbsp;<BR>For AWS:<UL><LI>Name must be "
+      "Thingname</LI><LI>Server must be Endpoint</LI><LI>Port must be 8883</LI><LI>Path/URI is Publish Topic</LI></UL>",
+      "<<<<< >>>>>", TKIDSIZE);
 
   wifiManager.addParameter(&custom_name);
   wifiManager.addParameter(&custom_sleep);
@@ -376,51 +378,70 @@ bool startConfiguration()
   wifiManager.addParameter(&api_list);
   wifiManager.addParameter(&custom_api);
 
+  wifiManager.addParameter(&custom_warning1);
   wifiManager.addParameter(&custom_token);
   wifiManager.addParameter(&custom_server);
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_channel);
-  wifiManager.addParameter(&custom_url);
+  wifiManager.addParameter(&custom_uri);
   wifiManager.addParameter(&custom_db);
   wifiManager.addParameter(&custom_username);
   wifiManager.addParameter(&custom_password);
   wifiManager.addParameter(&custom_job);
   wifiManager.addParameter(&custom_instance);
-  WiFiManagerParameter custom_polynom_lbl("<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
+#if API_MQTT_HASSIO
+  wifiManager.addParameter(&custom_hassio);
+#endif
+  WiFiManagerParameter custom_polynom_lbl(
+      "<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
-  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(my_polynominal).c_str(), 100 * 2, WFM_NO_LABEL);
+  WiFiManagerParameter custom_polynom("POLYN", "Polynominal", htmlencode(myData.polynominal).c_str(), 250,
+                                      WFM_NO_LABEL);
   wifiManager.addParameter(&custom_polynom);
 
-  wifiManager.setConfSSID(htmlencode(my_ssid));
-  wifiManager.setConfPSK(htmlencode(my_psk));
+  wifiManager.setConfSSID(htmlencode(myData.ssid));
+  wifiManager.setConfPSK(htmlencode(myData.psk));
 
   CONSOLELN(F("started Portal"));
-  wifiManager.startConfigPortal("iSpindel");
+  static char ssid[33] = {0}; //32 char max for SSIDs
+  if (strlen(myData.name) == 0)
+    snprintf(ssid, sizeof ssid, "iSpindel_%06X", ESP.getChipId());
+  else
+    snprintf(ssid, sizeof ssid, "iSpindel_%s", myData.name);
 
-  strcpy(my_polynominal, custom_polynom.getValue());
+  wifiManager.startConfigPortal(ssid);
 
-  validateInput(custom_name.getValue(), my_name);
-  validateInput(custom_token.getValue(), my_token);
-  validateInput(custom_server.getValue(), my_server);
-  validateInput(custom_db.getValue(), my_db);
-  validateInput(custom_username.getValue(), my_username);
-  validateInput(custom_password.getValue(), my_password);
-  validateInput(custom_job.getValue(), my_job);
-  validateInput(custom_instance.getValue(), my_instance);
-  my_sleeptime = String(custom_sleep.getValue()).toInt();
+  strcpy(myData.polynominal, custom_polynom.getValue());
 
-  my_api = String(custom_api.getValue()).toInt();
-  my_port = String(custom_port.getValue()).toInt();
-  my_channel = String(custom_channel.getValue()).toInt();
-  my_tempscale = String(custom_tempscale.getValue()).toInt();
-  validateInput(custom_url.getValue(), my_uri);
+  validateInput(custom_name.getValue(), myData.name);
+  validateInput(custom_token.getValue(), myData.token);
+  validateInput(custom_server.getValue(), myData.server);
+  validateInput(custom_db.getValue(), myData.db);
+  validateInput(custom_username.getValue(), myData.username);
+  validateInput(custom_password.getValue(), myData.password);
+  validateInput(custom_job.getValue(), myData.job);
+  validateInput(custom_instance.getValue(), myData.instance);
+  myData.sleeptime = String(custom_sleep.getValue()).toInt();
+
+  myData.api = String(custom_api.getValue()).toInt();
+  myData.port = String(custom_port.getValue()).toInt();
+  myData.channel = String(custom_channel.getValue()).toInt();
+  myData.tempscale = String(custom_tempscale.getValue()).toInt();
+#if API_MQTT_HASSIO
+  {
+    auto hassio = myData.api == DTMQTT && String(custom_hassio.getValue()) == "checked";
+    hassio_changed = myData.hassio != hassio;
+    myData.hassio = hassio;
+  }
+#endif
+  validateInput(custom_uri.getValue(), myData.uri);
 
   String tmp = custom_vfact.getValue();
   tmp.trim();
   tmp.replace(',', '.');
-  my_vfact = tmp.toFloat();
-  if (my_vfact < ADCDIVISOR * 0.8 || my_vfact > ADCDIVISOR * 1.25)
-    my_vfact = ADCDIVISOR;
+  myData.vfact = tmp.toFloat();
+  if (myData.vfact < ADCDIVISOR * 0.8 || myData.vfact > ADCDIVISOR * 1.25)
+    myData.vfact = ADCDIVISOR;
 
   // save the custom parameters to FS
   if (shouldSaveConfig)
@@ -429,25 +450,28 @@ bool startConfiguration()
     WiFi.setAutoConnect(true);
     WiFi.setAutoReconnect(true);
 
+    postConfig();
+
     return saveConfig();
   }
   return false;
 }
 
-bool formatSpiffs()
+bool formatLittleFS()
 {
-  CONSOLE(F("\nneed to format SPIFFS: "));
-  SPIFFS.end();
-  SPIFFS.begin();
-  CONSOLELN(SPIFFS.format());
-  return SPIFFS.begin();
+  CONSOLE(F("\nneed to format LittleFS: "));
+  LittleFS.end();
+  LittleFS.begin();
+  CONSOLELN(LittleFS.format());
+  return LittleFS.begin();
 }
 
 bool saveConfig(int16_t Offset[6])
 {
-  std::copy(Offset, Offset + 6, my_Offset);
+  std::copy(Offset, Offset + 6, myData.Offset);
   CONSOLELN(String("new offsets: ") + Offset[0] + ":" + Offset[1] + ":" + Offset[2]);
-  CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" + accelgyro.getZAccelOffset());
+  CONSOLELN(String("confirming offsets: ") + accelgyro.getXAccelOffset() + ":" + accelgyro.getYAccelOffset() + ":" +
+            accelgyro.getZAccelOffset());
 
   return saveConfig();
 }
@@ -456,11 +480,11 @@ bool saveConfig()
 {
   CONSOLE(F("saving config...\n"));
 
-  // if SPIFFS is not usable
-  if (!SPIFFS.begin())
+  // if LittleFS is not usable
+  if (!LittleFS.begin())
   {
     Serial.println("Failed to mount file system");
-    if (!formatSpiffs())
+    if (!formatLittleFS())
     {
       Serial.println("Failed to format file system - hardware issues!");
       return false;
@@ -469,39 +493,42 @@ bool saveConfig()
 
   DynamicJsonDocument doc(2048);
 
-  doc["Name"] = my_name;
-  doc["Token"] = my_token;
-  doc["Sleep"] = my_sleeptime;
+  doc["Name"] = myData.name;
+  doc["Token"] = myData.token;
+  doc["Sleep"] = myData.sleeptime;
   // first reboot is for test
-  my_sleeptime = 1;
-  doc["Server"] = my_server;
-  doc["API"] = my_api;
-  doc["Port"] = my_port;
-  doc["Channel"] = my_channel;
-  doc["URI"] = my_uri;
-  doc["DB"] = my_db;
-  doc["Username"] = my_username;
-  doc["Password"] = my_password;
-  doc["Job"] = my_job;
-  doc["Instance"] = my_instance;
-  doc["Vfact"] = my_vfact;
-  doc["TS"] = my_tempscale;
-  doc["OWpin"] = my_OWpin;
-  doc["POLY"] = my_polynominal;
+  myData.sleeptime = 1;
+  doc["Server"] = myData.server;
+  doc["API"] = myData.api;
+  doc["Port"] = myData.port;
+  doc["Channel"] = myData.channel;
+  doc["URI"] = myData.uri;
+  doc["DB"] = myData.db;
+  doc["Username"] = myData.username;
+  doc["Password"] = myData.password;
+  doc["Job"] = myData.job;
+  doc["Instance"] = myData.instance;
+#if API_MQTT_HASSIO
+  doc["Hassio"] = myData.hassio;
+#endif
+  doc["Vfact"] = myData.vfact;
+  doc["TS"] = myData.tempscale;
+  doc["OWpin"] = myData.OWpin;
+  doc["POLY"] = myData.polynominal;
   doc["SSID"] = WiFi.SSID();
   doc["PSK"] = WiFi.psk();
 
   JsonArray array = doc.createNestedArray("Offset");
-  for (auto &&i : my_Offset)
+  for (auto &&i : myData.Offset)
   {
     array.add(i);
   }
 
-  File configFile = SPIFFS.open(CFGFILE, "w");
+  File configFile = LittleFS.open(CFGFILE, "w");
   if (!configFile)
   {
     CONSOLELN(F("failed to open config file for writing"));
-    SPIFFS.end();
+    LittleFS.end();
     return false;
   }
   else
@@ -512,8 +539,8 @@ bool saveConfig()
 #endif
     configFile.flush();
     configFile.close();
-    SPIFFS.gc();
-    SPIFFS.end();
+    LittleFS.gc();
+    LittleFS.end();
     CONSOLELN(F("\nsaved successfully"));
     return true;
   }
@@ -527,11 +554,9 @@ bool processResponse(String response)
   if (!error && doc.containsKey("interval"))
   {
     uint32_t interval = doc["interval"];
-    if (interval != my_sleeptime &&
-        interval < 24 * 60 * 60 &&
-        interval > 10)
+    if (interval != myData.sleeptime && interval < 24 * 60 * 60 && interval > 10)
     {
-      my_sleeptime = interval;
+      myData.sleeptime = interval;
       CONSOLE(F("Received new Interval config: "));
       CONSOLELN(interval);
       return saveConfig();
@@ -544,164 +569,246 @@ bool uploadData(uint8_t service)
 {
   SenderClass sender;
 
-#ifdef API_UBIDOTS
+#if API_UBIDOTS
   if (service == DTUbiDots)
   {
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
+    sender.add("temperature", scaleTemperatureFromC(Temperatur, myData.tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    sender.add("interval", my_sleeptime);
+    sender.add("interval", myData.sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling Ubidots"));
-    return sender.sendUbidots(my_token, my_name);
+    return sender.sendUbidots(myData.token, myData.name);
   }
 #endif
 
-#ifdef API_MQTT
+#if API_AWSIOTMQTT //AWS
+  if (service == DTAWSIOTMQTT)
+  {
+    sender.add("name", myData.name);
+    sender.add("tilt", Tilt);
+    sender.add("temperature", scaleTemperatureFromC(Temperatur, myData.tempscale));
+    sender.add("battery", Volt);
+    sender.add("gravity", Gravity);
+    sender.add("interval", myData.sleeptime);
+    sender.add("RSSI", WiFi.RSSI());
+    CONSOLELN("Calling AWSIOTMQTT Sender");
+    return sender.sendSecureMQTT(AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, myData.server, myData.port, myData.name,
+                                 myData.uri);
+    //AWS - NOTE - Need to replace secrets.h with the relevant parameters
+  }
+#endif
+
+#if API_MQTT
   if (service == DTMQTT)
   {
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperatureFromC(Temperatur, myData.tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    sender.add("interval", my_sleeptime);
+    sender.add("interval", myData.sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling MQTT"));
-    return sender.sendMQTT(my_server, my_port, my_username, my_password, my_name);
+    return sender.sendMQTT(myData.server, myData.port, myData.username, myData.password, myData.name);
   }
 #endif
 
-#ifdef API_THINGSPEAK
+#if API_THINGSPEAK
   if (service == DTTHINGSPEAK)
   {
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperatureFromC(Temperatur, myData.tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    sender.add("interval", my_sleeptime);
+    sender.add("interval", myData.sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling ThingSpeak"));
-    return sender.sendThingSpeak(my_token, my_channel);
+    return sender.sendThingSpeak(myData.token, myData.channel);
   }
 #endif
 
-#ifdef API_INFLUXDB
+#if API_INFLUXDB
   if (service == DTInfluxDB)
   {
     sender.add("tilt", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperatureFromC(Temperatur, myData.tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    sender.add("interval", my_sleeptime);
+    sender.add("interval", myData.sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling InfluxDB"));
-    CONSOLELN(String(F("Sending to db: ")) + my_db + String(F(" w/ credentials: ")) + my_username + String(F(":")) + my_password);
-    return sender.sendInfluxDB(my_server, my_port, my_db, my_name, my_username, my_password);
+    CONSOLELN(String(F("Sending to db: ")) + myData.db + String(F(" w/ credentials: ")) + myData.username +
+              String(F(":")) + myData.password);
+
+    return sender.sendInfluxDB(myData.server, myData.port, myData.db, myData.name, myData.username, myData.password);
   }
 #endif
 
-#ifdef API_PROMETHEUS
+#if API_PROMETHEUS
   if (service == DTPrometheus)
   {
     sender.add("tilt", Tilt);
     sender.add("temperature", Temperatur);
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    sender.add("interval", my_sleeptime);
+    sender.add("interval", myData.sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling Prometheus Pushgateway"));
-    return sender.sendPrometheus(my_server, my_port, my_job, my_instance);
+    return sender.sendPrometheus(myData.server, myData.port, myData.job, myData.instance);
   }
 #endif
 
-#ifdef API_GENERIC
-  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP))
+#if API_GENERIC
+  if ((service == DTHTTP) || (service == DTCraftBeerPi) || (service == DTiSPINDELde) || (service == DTTCP) ||
+      (service == DTHTTPS))
   {
 
-    sender.add("name", my_name);
+    sender.add("name", myData.name);
     sender.add("ID", ESP.getChipId());
-    if (my_token[0] != 0)
-      sender.add("token", my_token);
+    if (myData.token[0] != 0)
+      sender.add("token", myData.token);
     sender.add("angle", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperatureFromC(Temperatur, myData.tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
-    sender.add("interval", my_sleeptime);
+    sender.add("interval", myData.sleeptime);
     sender.add("RSSI", WiFi.RSSI());
 
     if (service == DTHTTP)
     {
       CONSOLELN(F("\ncalling HTTP"));
-      return sender.sendGenericPost(my_server, my_uri, my_port);
+      return sender.sendGenericPost(myData.server, myData.uri, myData.port);
     }
     else if (service == DTCraftBeerPi)
     {
       CONSOLELN(F("\ncalling CraftbeerPi"));
-      return sender.sendGenericPost(my_server, CBP_ENDPOINT, 5000);
+      return sender.sendGenericPost(myData.server, CBP_ENDPOINT, 5000);
     }
     else if (service == DTiSPINDELde)
     {
       CONSOLELN(F("\ncalling iSPINDELde"));
-      return sender.sendTCP("ispindle.de", 9501);
+      return sender.sendTCP("ispindle.de", 9501).length() > 0;
     }
     else if (service == DTTCP)
     {
       CONSOLELN(F("\ncalling TCP"));
-      String response = sender.sendTCP(my_server, my_port);
+      String response = sender.sendTCP(myData.server, myData.port);
       return processResponse(response);
+    }
+    else if (service == DTHTTPS)
+    {
+      CONSOLELN(F("\ncalling HTTPS"));
+      return sender.sendHTTPSPost(myData.server, myData.uri);
     }
   }
 #endif // DATABASESYSTEM
 
-#ifdef API_FHEM
+#if API_FHEM
   if (service == DTFHEM)
   {
     sender.add("angle", Tilt);
-    sender.add("temperature", scaleTemperature(Temperatur));
-    sender.add("temp_units", tempScaleLabel());
+    sender.add("temperature", scaleTemperatureFromC(Temperatur, myData.tempscale));
+    sender.add("temp_units", tempScaleLabel(myData.tempscale));
     sender.add("battery", Volt);
     sender.add("gravity", Gravity);
     sender.add("ID", ESP.getChipId());
     CONSOLELN(F("\ncalling FHEM"));
-    return sender.sendFHEM(my_server, my_port, my_name);
+    return sender.sendFHEM(myData.server, myData.port, myData.name);
   }
 #endif // DATABASESYSTEM ==
-#ifdef API_TCONTROL
+#if API_TCONTROL
   if (service == DTTcontrol)
   {
-    sender.add("T", scaleTemperature(Temperatur));
+    sender.add("T", scaleTemperatureFromC(Temperatur, myData.tempscale));
     sender.add("D", Tilt);
     sender.add("U", Volt);
     sender.add("G", Gravity);
     CONSOLELN(F("\ncalling TCONTROL"));
-    return sender.sendTCONTROL(my_server, 4968);
+    return sender.sendTCONTROL(myData.server, 4968);
   }
 #endif // DATABASESYSTEM ==
 
-#ifdef API_BLYNK
+#if API_BLYNK
   if (service == DTBLYNK)
   {
-    String tempToSend = String( scaleTemperature( Temperatur ), 1 );
-    sender.add("20", tempToSend);           //send temperature without the unit to the graph first
+    String tempToSend = String(scaleTemperatureFromC(Temperatur, myData.tempscale), 1);
+    sender.add("20", tempToSend); //send temperature without the unit to the graph first
     String voltToSend = String(Volt, 2);
-    sender.add("30", voltToSend);           //send temperature without the unit to the graph first
+    sender.add("30", voltToSend); //send temperature without the unit to the graph first
 
     tempToSend += "°";
-    tempToSend += tempScaleLabel();         // Add temperature unit to the String
+    tempToSend += tempScaleLabel(myData.tempscale); // Add temperature unit to the String
 
-    sender.add("1", String(Tilt, 1)+"°");
+    sender.add("1", String(Tilt, 1) + "°");
     sender.add("2", tempToSend);
-    sender.add("3", voltToSend+"V");
-    sender.add("4", String(Gravity, 2));
-    return sender.sendBlynk(my_token);
+    sender.add("3", voltToSend + "V");
+    sender.add("4", String(Gravity, 3));
+    return sender.sendBlynk(myData.token);
   }
 #endif
 
+#if API_BREWBLOX
+  if (service == DTBREWBLOX)
+  {
+    sender.add("Tilt[deg]", Tilt);
+    sender.add("Temperature[deg" + tempScaleLabel(myData.tempscale) + "]",
+               scaleTemperatureFromC(Temperatur, myData.tempscale));
+    sender.add("Battery[V]", Volt);
+    sender.add("Gravity", Gravity);
+    sender.add("Rssi[dBm]", WiFi.RSSI());
+    CONSOLELN(F("\ncalling BREWBLOX"));
+    return sender.sendBrewblox(myData.server, myData.port, myData.uri, myData.username, myData.password, myData.name);
+  }
+#endif
+
+#ifdef API_BRICKS
+  if (service == DTBRICKS)
+  {
+    CONSOLELN(F("adding BRICKS params"));
+
+    if (myData.token[0] != 0)
+    {
+      CONSOLELN(F("found token"));
+      sender.add("apikey", myData.token); // use the token field as vessel for the api key
+    }
+    else
+    {
+      CONSOLELN(F("missing token in params"));
+    }
+
+    CONSOLELN(F("adding payload..."));
+    String chipid = String(ESP.getFlashChipId()) + "_" + String(WiFi.macAddress());
+    String chipidHashed = sender.createMd5Hash(chipid).substring(0, 16);
+    sender.add("type", "ispindel");
+    sender.add("brand", "wemos_d1_mini");
+    sender.add("version", FIRMWAREVERSION);
+    sender.add("chipid", chipidHashed);
+    sender.add("s_number_wort_0", Gravity);    // gravity can be in SG or °P, depending on user setting
+    sender.add("s_number_temp_0", Temperatur); // always transmit °C
+    sender.add("s_number_voltage_0", Volt);
+    sender.add("s_number_wifi_0", WiFi.RSSI());
+    sender.add("s_number_tilt_0", Tilt);
+
+    CONSOLELN(F("\ncalling BRICKS"));
+
+    uint32_t sleeptime_candidate_s = sender.sendBricks() / 1000;
+
+    if (sleeptime_candidate_s > 0)
+    {
+      myData.sleeptime = sleeptime_candidate_s;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+#endif
   return false;
 }
 
@@ -715,8 +822,8 @@ void goodNight(uint32_t seconds)
   drd.stop();
 
   // workaround for DS not floating
-  pinMode(my_OWpin, OUTPUT);
-  digitalWrite(my_OWpin, LOW);
+  pinMode(myData.OWpin, OUTPUT);
+  digitalWrite(myData.OWpin, LOW);
 
   // we need another incarnation before work run
   if (_seconds > MAXSLEEPTIME)
@@ -769,27 +876,27 @@ void requestTemp()
 
 void initDS18B20()
 {
-  if (my_OWpin == -1)
+  if (myData.OWpin == -1)
   {
-    my_OWpin = detectTempSensor(OW_PINS);
-    if (my_OWpin == -1)
+    myData.OWpin = detectTempSensor(OW_PINS);
+    if (myData.OWpin == -1)
     {
       CONSOLELN(F("ERROR: cannot find a OneWire Temperature Sensor!"));
       return;
     }
   }
-  pinMode(my_OWpin, OUTPUT);
-  digitalWrite(my_OWpin, LOW);
+  pinMode(myData.OWpin, OUTPUT);
+  digitalWrite(myData.OWpin, LOW);
   delay(100);
-  oneWire = new OneWire(my_OWpin);
+  oneWire = new OneWire(myData.OWpin);
   DS18B20 = DallasTemperature(oneWire);
   DS18B20.begin();
 
   bool device = DS18B20.getAddress(tempDeviceAddress, 0);
   if (!device)
   {
-    my_OWpin = detectTempSensor(OW_PINS);
-    if (my_OWpin == -1)
+    myData.OWpin = detectTempSensor(OW_PINS);
+    if (myData.OWpin == -1)
     {
       CONSOLELN(F("ERROR: cannot find a OneWire Temperature Sensor!"));
       return;
@@ -797,7 +904,7 @@ void initDS18B20()
     else
     {
       delete oneWire;
-      oneWire = new OneWire(my_OWpin);
+      oneWire = new OneWire(myData.OWpin);
       DS18B20 = DallasTemperature(oneWire);
       DS18B20.begin();
       DS18B20.getAddress(tempDeviceAddress, 0);
@@ -842,12 +949,10 @@ void initAccel()
 
 float calculateTilt()
 {
-  float _ax = ax;
-  float _ay = ay;
-  float _az = az;
-  float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-  float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-  return sqrt(pitch * pitch + roll * roll);
+  if (ax == 0 && ay == 0 && az == 0)
+    return 0.f;
+
+  return acos(abs(az) / (sqrt(ax * ax + ay * ay + az * az))) * 180.0 / M_PI;
 }
 
 bool testAccel()
@@ -900,8 +1005,7 @@ float getTemperature(bool block = false)
   float t = Temperatur;
 
   // we need to wait for DS18b20 to finish conversion
-  if (!DSreqTime ||
-      (!block && !isDS18B20ready()))
+  if (!DSreqTime || (!block && !isDS18B20ready()))
     return t;
 
   // if we need the result we have to block
@@ -915,8 +1019,8 @@ float getTemperature(bool block = false)
       t == 85.0)                    // we read 85 uninitialized
   {
     CONSOLELN(F("ERROR: OW DISCONNECTED"));
-    pinMode(my_OWpin, OUTPUT);
-    digitalWrite(my_OWpin, LOW);
+    pinMode(myData.OWpin, OUTPUT);
+    digitalWrite(myData.OWpin, LOW);
     delay(100);
     oneWire->reset();
 
@@ -1044,7 +1148,7 @@ int detectTempSensor(const uint8_t pins[])
 float getBattery()
 {
   analogRead(A0); // drop first read
-  return analogRead(A0) / my_vfact;
+  return analogRead(A0) / myData.vfact;
 }
 
 float calculateGravity()
@@ -1054,7 +1158,7 @@ float calculateGravity()
   float _gravity = 0;
   int err;
   te_variable vars[] = {{"tilt", &_tilt}, {"temp", &_temp}};
-  te_expr *expr = te_compile(my_polynominal, vars, 2, &err);
+  te_expr *expr = te_compile(myData.polynominal, vars, 2, &err);
 
   if (expr)
   {
@@ -1094,7 +1198,8 @@ bool isSafeMode(float _volt)
 bool connectBackupCredentials()
 {
   WiFi.disconnect();
-  WiFi.begin(my_ssid.c_str(), my_psk.c_str());
+  WiFi.mode(WIFI_STA); //suggestion that MQTT connection failures can happen if WIFI mode isn't STA.
+  WiFi.begin(myData.ssid.c_str(), myData.psk.c_str());
   CONSOLELN(F("Rescued Wifi credentials"));
 
   CONSOLE(F("   -> waited for "));
@@ -1135,6 +1240,12 @@ void setup()
   initDS18B20();
   initAccel();
 
+#ifdef WIFI_IS_OFF_AT_BOOT
+  // persistence is disabled by default and WiFi does not start automatically at boot
+  // source: https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/generic-class.html#persistent
+  enableWiFiAtBootTime();
+#endif
+
   // decide whether we want configuration mode or normal mode
   if (shouldStartConfig(validConf))
   {
@@ -1163,8 +1274,7 @@ void setup()
     if (!startConfiguration())
     {
       // test if ssid exists
-      if (WiFi.SSID() == "" &&
-          my_ssid != "" && my_psk != "")
+      if (WiFi.SSID() == "" && myData.ssid != "" && myData.psk != "")
       {
         connectBackupCredentials();
       }
@@ -1229,12 +1339,7 @@ void setup()
     ay = euler[2];
     az = euler[1];
 
-    float _ax = ax;
-    float _ay = ay;
-    float _az = az;
-    float pitch = (atan2(_ay, sqrt(_ax * _ax + _az * _az))) * 180.0 / M_PI;
-    float roll = (atan2(_ax, sqrt(_ay * _ay + _az * _az))) * 180.0 / M_PI;
-    Tilt = sqrt(pitch * pitch + roll * roll);
+    Tilt = calculateTilt();
   }
 #endif
 
@@ -1294,7 +1399,7 @@ void setup()
   {
     CONSOLE(F("IP: "));
     CONSOLELN(WiFi.localIP());
-    uploadData(my_api);
+    uploadData(myData.api);
   }
   else
   {
@@ -1309,10 +1414,10 @@ void setup()
   // survive - 60min sleep time
   if (isSafeMode(Volt))
   {
-    my_sleeptime = EMERGENCYSLEEP;
+    myData.sleeptime = EMERGENCYSLEEP;
   }
 
-  goodNight(my_sleeptime);
+  goodNight(myData.sleeptime);
 }
 
 void loop()
