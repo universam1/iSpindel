@@ -31,7 +31,7 @@ The new factor should be between current factor more or less 20% (191.8*0.8 - 19
 To achieve a sufficient WLAN signal strength you can do the following things:
 
   - Break open the faradic cage. This is possible by electrically separating the lid from the pot. Can be achieved by applying a silicone sealant between the two parts.
-  - Use a passive antenna. Use a shielded cable that is stripped from both ends (i. e. Lambda/4), where one side ends in the pot, exactly 3.2mm. This is transmitted passively from the inside to the outside and vice versa. A good example can be found here: http://hobbybrauer.de/forum/viewtopic.php?p=208782#p208782
+  - Use a passive antenna. Use a shielded cable that is stripped from both ends (i. e. Lambda/4), where one side ends in the pot, exactly 32mm. This is transmitted passively from the inside to the outside and vice versa. A good example can be found here: http://hobbybrauer.de/forum/viewtopic.php?p=208782#p208782
   - Install a wifi range extender next to the barrel to increase the signal level.
 
 -  ***What should I do if my iSpindel isn't working properly after flashing it with the firmware?***
