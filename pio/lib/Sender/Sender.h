@@ -25,7 +25,7 @@ public:
   bool sendThingSpeak(String token, long Channel);
   bool sendGenericPost(String server, String uri, uint16_t port = 80);
   bool sendHTTPSPost(String server, String uri);
-  bool sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password);
+  bool sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password, bool usehttps);
   bool sendPrometheus(String server, uint16_t port, String job, String instance);
   bool sendUbidots(String token, String name);
   bool sendMQTT(String server, uint16_t port, String username, String password, String name);

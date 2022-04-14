@@ -459,7 +459,7 @@ bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
   return true;
 }
 
-bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password)
+bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password, bool usehttps)
 {
   HTTPClient http;
 
@@ -468,7 +468,16 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String n
 
   CONSOLELN(String(F("INFLUXDB: posting to db: ")) + uri);
   // configure traged server and uri
-  http.begin(_client, server, port, uri);
+
+  if (usehttps == true)
+  {
+    _secureClient.setInsecure();
+    http.begin(_secureClient, server, port, uri);
+  }
+  else
+  {
+    http.begin(_client, server, port, uri);
+  }
 
   if (username.length() > 0)
   {

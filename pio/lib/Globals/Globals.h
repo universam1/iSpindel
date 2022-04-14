@@ -156,6 +156,7 @@ struct iData
 #if API_MQTT_HASSIO
   bool hassio = false;
 #endif
+  bool usehttps = false;
 };
 
 extern iData myData;
