@@ -69,6 +69,7 @@ iData myData;
 //myData.hassio = false;
 bool hassio_changed = false;
 #endif
+bool usehttps_changed = false;
 
 uint32_t DSreqTime = 0;
 
@@ -206,6 +207,8 @@ bool readConfig()
           if (doc.containsKey("Hassio"))
             myData.hassio = doc["Hassio"];
 #endif
+          if (doc.containsKey("UseHTTPS"))
+            myData.usehttps = doc["UseHTTPS"];
           if (doc.containsKey("Offset"))
           {
             for (size_t i = 0; i < (sizeof(myData.Offset) / sizeof(*myData.Offset)); i++)
@@ -354,6 +357,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_hassio("hassio", "Home Assistant integration via MQTT", "checked", TKIDSIZE,
                                      myData.hassio ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
 #endif
+  WiFiManagerParameter custom_usehttps("usehttps", "Connect to server via HTTPS", "checked", TKIDSIZE,
+                                       myData.usehttps ? TYPE_CHECKBOX_CHECKED : TYPE_CHECKBOX);
   WiFiManagerParameter custom_vfact("vfact", "Battery conversion factor", String(myData.vfact).c_str(), 7, TYPE_NUMBER);
   WiFiManagerParameter tempscale_list(HTTP_TEMPSCALE_LIST);
   WiFiManagerParameter custom_tempscale("tempscale", "tempscale", String(myData.tempscale).c_str(), 5, TYPE_HIDDEN,
@@ -392,6 +397,7 @@ bool startConfiguration()
 #if API_MQTT_HASSIO
   wifiManager.addParameter(&custom_hassio);
 #endif
+  wifiManager.addParameter(&custom_usehttps);
   WiFiManagerParameter custom_polynom_lbl(
       "<hr><label for=\"POLYN\">Gravity conversion<br/>ex. \"-0.00031*tilt^2+0.557*tilt-14.054\"</label>");
   wifiManager.addParameter(&custom_polynom_lbl);
@@ -434,6 +440,11 @@ bool startConfiguration()
     myData.hassio = hassio;
   }
 #endif
+  {
+    auto usehttps = myData.api == DTInfluxDB && String(custom_usehttps.getValue()) == "checked";
+    usehttps_changed = myData.usehttps != usehttps;
+    myData.usehttps = usehttps;
+  }
   validateInput(custom_uri.getValue(), myData.uri);
 
   String tmp = custom_vfact.getValue();
@@ -511,6 +522,7 @@ bool saveConfig()
 #if API_MQTT_HASSIO
   doc["Hassio"] = myData.hassio;
 #endif
+  doc["UseHTTPS"] = myData.usehttps;
   doc["Vfact"] = myData.vfact;
   doc["TS"] = myData.tempscale;
   doc["OWpin"] = myData.OWpin;
@@ -644,7 +656,8 @@ bool uploadData(uint8_t service)
     CONSOLELN(String(F("Sending to db: ")) + myData.db + String(F(" w/ credentials: ")) + myData.username +
               String(F(":")) + myData.password);
 
-    return sender.sendInfluxDB(myData.server, myData.port, myData.db, myData.name, myData.username, myData.password);
+    return sender.sendInfluxDB(myData.server, myData.port, myData.db, myData.name, myData.username, myData.password,
+                               myData.usehttps);
   }
 #endif
 
