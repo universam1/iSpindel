@@ -484,6 +484,20 @@ Vito Tai. 2017.
                 });
                 this.list();
             },
+            load:function(data){
+                try{
+                    var list=JSON.parse(data);
+                    this.points = list;
+                    this.list();
+                }catch(e){
+                    return false;
+                }
+                return true;
+            },
+            export:function(){
+                if(this.points.length>0) return JSON.stringify(this.points);
+                return false;
+            },
             change_gu: function() {
 
                 for (var i = 0; i < this.points.length; i++) {
@@ -539,7 +553,43 @@ Vito Tai. 2017.
             //default to sg
             using_plato(false);
             instrument(true);
+
+            $('#fileinput').change(function(evt) {
+                //Retrieve the first (and only!) File from the FileList object
+                var f = evt.target.files[0];
+                if (f) {
+                    var r = new FileReader();
+                    r.onload = function(e) {
+                        window.file = f;
+                        //chart.clear();
+                        if(! TiltPoints.load(e.target.result)){
+                            alert("File not reconized!");
+                        }
+                    };
+                    r.readAsText(f);
+                } else {
+                    alert("File not opened!");
+                }
+            });
+            $("#savetofile").click(function(){
+                var json=TiltPoints.export();
+                if(json) download(json,'calibration.dat');
+                else alert("no data to be exported!");
+            });
         }
+        function download(text,filename) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
     </script>
     <style>
         .sectitle {
@@ -608,6 +658,11 @@ Vito Tai. 2017.
             width: 500px;
             height: 600px;
         }
+        #savetofile {
+            margin:1em;
+            background: rgb(33, 136, 50);
+            color:white;
+        }
     </style>
 </head>
 
@@ -658,6 +713,17 @@ Vito Tai. 2017.
                     </fieldset>
 
                     <td>
+            </tr>
+            <tr>
+                <td>
+                    <span>
+                        <button id="savetofile">Save</Button>
+                    </span>
+
+                    <span  id="fileinputgrp">
+                         Load:   <input type="file" id="fileinput" />
+                    </span>
+                </td>
             </tr>
             <tr>
                 <td class="topcell">
