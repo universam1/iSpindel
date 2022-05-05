@@ -971,13 +971,23 @@ float calculateTilt()
 bool testAccel()
 {
   uint8_t res = Wire.status();
-  if (res != I2C_OK)
+    if (res != I2C_OK)
     CONSOLELN(String(F("I2C ERROR: ")) + res);
-
-  bool con = accelgyro.testConnection();
+  
+  bool con = false;
+  if (accelgyro.getDeviceID()==0x34)
+  {
+    con = true;
+  }
+  
+  if (accelgyro.getDeviceID()==0x38)
+  {
+    con = true;
+  }
+  
   if (!con)
     CONSOLELN(F("Acc Test Connection ERROR!"));
-
+      
   return res == I2C_OK && con == true;
 }
 
