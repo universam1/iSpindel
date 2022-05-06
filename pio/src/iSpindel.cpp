@@ -975,15 +975,9 @@ bool testAccel()
     CONSOLELN(String(F("I2C ERROR: ")) + res);
   
   bool con = false;
-  if (accelgyro.getDeviceID()==0x34)
-  {
+  auto id = accelgyro.getDeviceID();
+  if ( id ==0x34|| id ==0x38 ) //0x34 = MPU6050 | 0x38 = MPU6500
     con = true;
-  }
-  
-  if (accelgyro.getDeviceID()==0x38)
-  {
-    con = true;
-  }
   
   if (!con)
     CONSOLELN(F("Acc Test Connection ERROR!"));
