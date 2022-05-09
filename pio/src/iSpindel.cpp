@@ -971,17 +971,17 @@ float calculateTilt()
 bool testAccel()
 {
   uint8_t res = Wire.status();
-    if (res != I2C_OK)
+   if (res != I2C_OK)
     CONSOLELN(String(F("I2C ERROR: ")) + res);
   
   bool con = false;
   auto id = accelgyro.getDeviceID();
-  if ( id ==0x34|| id ==0x38 ) //0x34 = MPU6050 | 0x38 = MPU6500
+  if ( id ==0x34 || id ==0x38 ) //0x34 = MPU6050 | 0x38 = MPU6500
     con = true;
   
   if (!con)
     CONSOLELN(F("Acc Test Connection ERROR!"));
-      
+
   return res == I2C_OK && con == true;
 }
 
