@@ -976,7 +976,7 @@ bool testAccel()
 
   bool con = false;
   auto id = accelgyro.getDeviceID();
-  if (id ==0x34 || id ==0x38) //0x34 = MPU6050 | 0x38 = MPU6500
+  if (id == 0x34 || id == 0x38) //0x34 = MPU6050 | 0x38 = MPU6500
     con = true;
 
   if (!con)
