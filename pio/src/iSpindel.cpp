@@ -997,8 +997,18 @@ float getTilt()
 
   for (; i < MEDIANROUNDSMAX; i++)
   {
+    uint8_t wait = 0;
     while (!accelgyro.getIntDataReadyStatus())
+    {
       delay(2);
+
+      if (++wait > 50)
+      {
+        CONSOLELN(F("Error: timed out waiting for gyro!"));
+        break;
+      }
+    }
+
     getAccSample();
     float _tilt = calculateTilt();
     samples.add(_tilt);
