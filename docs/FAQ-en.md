@@ -102,6 +102,9 @@ keep watch for problems:
   You can try... the default PETling seal is "on the inside" so that it makes a better seal as the pressure inside 
   increases (sodas are carbonated), which is the wrong direction, but the screw theads do make a seal, so...
 
+- ***Why do I get a connection error with HTTPS POST?***  
+Unlike HTTP, the HTTPS POST method requires using the full URL to the server for the Server Address setting. e.g. `https://example.com` instead of just the hostname `example.com`.
+
 ## AWS IoT Conectivity
 
 ADVANCED USERS ONLY
