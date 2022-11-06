@@ -280,6 +280,7 @@ private:
   void handleOffset();
   void handleUpdating();
   void handleUpdateDone();
+  void handleCalibrateVref();
   boolean captivePortal();
   void reportStatus(String &page);
 

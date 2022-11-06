@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "7.2.1"
+#define FIRMWAREVERSION "7.3.0"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -127,6 +127,7 @@ extern bool saveConfig();
 extern bool saveConfig(int16_t Offset[6]);
 extern bool formatLittleFS();
 extern void flash();
+extern float calibrateToVref(float);
 
 float scaleTemperatureFromC(float t, uint8_t);
 String tempScaleLabel(uint8_t);
@@ -134,7 +135,7 @@ String tempScaleLabel(uint8_t);
 struct iData
 {
   char token[TKIDSIZE * 2];
-  char name[TKIDSIZE] = "iSpindel000";
+  char name[33] = "";
   char server[DNSSIZE];
   char uri[DNSSIZE];
   char db[TKIDSIZE] = "ispindel";

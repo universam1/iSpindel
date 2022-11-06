@@ -40,27 +40,6 @@ DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
 int detectTempSensor(const uint8_t pins[]);
 bool testAccel();
 
-#ifdef USE_DMP
-#include "MPU6050.h"
-
-// MPU control/status vars
-bool dmpReady = false;  // set true if DMP init was successful
-uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
-uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
-uint16_t fifoCount;     // count of all bytes currently in FIFO
-uint8_t fifoBuffer[64]; // FIFO storage buffer
-
-// orientation/motion vars
-Quaternion q;        // [w, x, y, z]         quaternion container
-VectorInt16 aa;      // [x, y, z]            accel sensor measurements
-VectorInt16 aaReal;  // [x, y, z]            gravity-free accel sensor measurements
-VectorInt16 aaWorld; // [x, y, z]            world-frame accel sensor measurements
-VectorFloat gravity; // [x, y, z]            gravity vector
-float euler[3];      // [psi, theta, phi]    Euler angle container
-float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-#endif
-
 bool shouldSaveConfig = false;
 
 iData myData;
@@ -485,6 +464,19 @@ bool saveConfig(int16_t Offset[6])
             accelgyro.getZAccelOffset());
 
   return saveConfig();
+}
+
+float calibrateToVref(float measuredVref)
+{
+  analogRead(A0);
+  float A0value = analogRead(A0);
+  float factor = A0value / measuredVref;
+  CONSOLELN(String("A0: ") + A0value);
+  CONSOLELN(String("Vref: ") + measuredVref);
+  CONSOLELN(String("Factor: ") + factor);
+  myData.vfact = factor;
+  saveConfig();
+  return factor;
 }
 
 bool saveConfig()
@@ -1320,55 +1312,7 @@ void setup()
   else
     WiFi.setOutputPower(20.5);
 
-#ifndef USE_DMP
   Tilt = getTilt();
-#else
-  while (fifoCount < packetSize)
-  {
-    //do stuff
-    CONSOLELN(F("wait DMP"));
-
-    fifoCount = accelgyro.getFIFOCount();
-  }
-  if (fifoCount == 1024)
-  {
-    CONSOLELN(F("FIFO overflow"));
-    accelgyro.resetFIFO();
-  }
-  else
-  {
-    fifoCount = accelgyro.getFIFOCount();
-
-    accelgyro.getFIFOBytes(fifoBuffer, packetSize);
-
-    accelgyro.resetFIFO();
-
-    fifoCount -= packetSize;
-
-    accelgyro.dmpGetQuaternion(&q, fifoBuffer);
-    accelgyro.dmpGetEuler(euler, &q);
-
-    /*
-    for (int i = 1; i < 64; i++) {
-    CONSOLE(fifoBuffer[i]);
-    CONSOLE(" ");
-    }
-    */
-
-    CONSOLE(F("euler\t"));
-    CONSOLE((euler[0] * 180 / M_PI));
-    CONSOLE("\t");
-    CONSOLE(euler[1] * 180 / M_PI);
-    CONSOLE("\t");
-    CONSOLELN(euler[2] * 180 / M_PI);
-
-    ax = euler[0];
-    ay = euler[2];
-    az = euler[1];
-
-    Tilt = calculateTilt();
-  }
-#endif
 
   float accTemp = accelgyro.getTemperature() / 340.00 + 36.53;
   accelgyro.setSleepEnabled(true);
@@ -1397,18 +1341,10 @@ void setup()
   CONSOLE(F("Gravity: "));
   CONSOLELN(Gravity);
 
-  // water anomaly correction
-  // float _temp = Temperatur - 4; // polynominal at 4
-  // float wfact = 0.00005759 * _temp * _temp * _temp - 0.00783198 * _temp * _temp - 0.00011688 * _temp + 999.97;
-  // corrGravity = Gravity - (1 - wfact / 1000);
-  // CONSOLE(F("\tcorrGravity: "));
-  // CONSOLELN(corrGravity);
-
   if (WiFi.status() != WL_CONNECTED)
   {
     unsigned long startedAt = millis();
     CONSOLE(F("After waiting "));
-    // int connRes = WiFi.waitForConnectResult();
     uint8_t wait = 0;
     while (WiFi.status() == WL_DISCONNECTED)
     {

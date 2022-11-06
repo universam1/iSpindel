@@ -194,6 +194,7 @@ void WiFiManager::setupConfigPortal()
   server->on("/mnt", std::bind(&WiFiManager::handleMnt, this));
   server->on("/offset", std::bind(&WiFiManager::handleOffset, this));
   server->on("/reset", std::bind(&WiFiManager::handleReset, this));
+  server->on("/calibrateVref", std::bind(&WiFiManager::handleCalibrateVref, this));
   server->on("/update", HTTP_POST, std::bind(&WiFiManager::handleUpdateDone, this),
              std::bind(&WiFiManager::handleUpdating, this));
   server->onNotFound(std::bind(&WiFiManager::handleNotFound, this));
@@ -587,9 +588,9 @@ void WiFiManager::reportStatus(String &page)
     page += WiFi.SSID();
     if (WiFi.status() == WL_CONNECTED)
     {
-      page += F(" and <strong>currently connected</strong> on IP <a href=\"http://");
+      page += F(" and <strong>currently connected</strong> on IP <a href='http://");
       page += WiFi.localIP().toString();
-      page += F("/\">");
+      page += F("/'>");
       page += WiFi.localIP().toString();
       page += F("</a>");
     }
@@ -637,7 +638,7 @@ void WiFiManager::handleRoot()
   }
   page += "</h2>";
   page += FPSTR(HTTP_PORTAL_OPTIONS);
-  page += F("<div class=\"msg\">");
+  page += F("<div class='msg'>");
   reportStatus(page);
   page += F("</div>");
   page += FPSTR(HTTP_END);
@@ -867,7 +868,7 @@ void WiFiManager::handleServerClose()
   page += FPSTR(HTTP_STYLE);
   page += _customHeadElement;
   page += FPSTR(HTTP_HEADER_END);
-  page += F("<div class=\"msg\">");
+  page += F("<div class='msg'>");
   page += F("My network is <strong>");
   page += WiFi.SSID();
   page += F("</strong><br>");
@@ -893,10 +894,9 @@ void WiFiManager::handleInfo()
   page += _customHeadElement;
   page += FPSTR(HTTP_HEADER_END);
   page += F("<h2>WiFi Information</h2>");
-  // page += F("Android app from <a href=\"https://play.google.com/store/apps/details?id=au.com.umranium.espconnect\">https://play.google.com/store/apps/details?id=au.com.umranium.espconnect</a> provides easier ESP WiFi configuration.<p/>");
   reportStatus(page);
   page += F("<h3>Device Data</h3>");
-  page += F("<table class=\"table\">");
+  page += F("<table class='table'>");
   page += F("<thead><tr><th>Name</th><th>Value</th></tr></thead><tbody><tr><td>Chip ID</td><td>");
   page += ESP.getChipId();
   page += F("</td></tr>");
@@ -936,24 +936,24 @@ void WiFiManager::handleInfo()
   page += F("</tbody></table>");
 
   page += F("<h3>Available Pages</h3>");
-  page += F("<table class=\"table\">");
+  page += F("<table class='table'>");
   page += F("<thead><tr><th>Page</th><th>Function</th></tr></thead><tbody>");
-  page += F("<tr><td><a href=\"/\">/</a></td>");
+  page += F("<tr><td><a href='/'>/</a></td>");
   page += F("<td>Menu page.</td></tr>");
-  page += F("<tr><td><a href=\"/wifi\">/wifi</a></td>");
+  page += F("<tr><td><a href='/wifi'>/wifi</a></td>");
   page += F("<td>Show WiFi scan results and enter WiFi configuration.</td></tr>");
-  page += F("<tr><td><a href=\"/wifisave\">/wifisave</a></td>");
+  page += F("<tr><td><a href='/wifisave'>/wifisave</a></td>");
   page += F("<td>Save WiFi configuration information and configure device. Needs variables supplied.</td></tr>");
-  page += F("<tr><td><a href=\"/close\">/close</a></td>");
+  page += F("<tr><td><a href='/close'>/close</a></td>");
   page += F("<td>Close the configuration server and configuration WiFi network.</td></tr>");
-  page += F("<tr><td><a href=\"/i\">/i</a></td>");
+  page += F("<tr><td><a href='/i'>/i</a></td>");
   page += F("<td>This page.</td></tr>");
-  page += F("<tr><td><a href=\"/r\">/r</a></td>");
+  page += F("<tr><td><a href='/r'>/r</a></td>");
   page += F("<td>Delete WiFi configuration and reboot. ESP device will not reconnect to a network until new WiFi "
             "configuration data is entered.</td></tr>");
-  page += F("<tr><td><a href=\"/state\">/state</a></td>");
+  page += F("<tr><td><a href='/state'>/state</a></td>");
   page += F("<td>Current device state in JSON format. Interface for programmatic WiFi configuration.</td></tr>");
-  page += F("<tr><td><a href=\"/scan\">/scan</a></td>");
+  page += F("<tr><td><a href='/scan'>/scan</a></td>");
   page += F("<td>Run a WiFi scan and return results in JSON format. Interface for programmatic WiFi "
             "configuration.</td></tr>");
   page += F("</table>");
@@ -978,7 +978,7 @@ void WiFiManager::handleiSpindel()
   page += FPSTR(HTTP_SCRIPT);
   page += FPSTR(HTTP_STYLE);
   page += _customHeadElement;
-  page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"2\">");
+  page += F("<META HTTP-EQUIV='refresh' CONTENT='2'>");
   page += FPSTR(HTTP_HEADER_END);
   page += F("<h1>Info</h1><hr>");
   page += F("<h2><table>");
@@ -1005,7 +1005,7 @@ void WiFiManager::handleiSpindel()
   page += F("<dd>Date: ");
   page += __DATE__ " " __TIME__;
   page +=
-      F("</dd></dl><br>Firmware update:<br><a href=\"https://github.com/universam1\">github.com/universam1</a><hr>");
+      F("</dd></dl><br>Firmware update:<br><a href='https://github.com/universam1'>github.com/universam1</a><hr>");
   page += F("</dl>");
   page += FPSTR(HTTP_END);
 
@@ -1029,9 +1029,9 @@ void WiFiManager::handleMnt()
   page += F("<h2>Offset Calibration</h2><br>Before proceeding with calibration make sure the iSpindel is leveled flat, "
             "exactly at 0&deg; horizontally and vertically, according to this picture:<br>");
   page += FPSTR(HTTP_ISPINDEL_IMG);
-  page += F("<br><form action=\"/offset\" method=\"get\"><button class=\"btn\">calibrate</button></form><br/>");
+  page += F("<br><form action='/offset' method='get'><button class='btn'>calibrate</button></form><br/>");
   page += F("<hr><h2>Firmware Update</h2><br>Firmware updates:<br><a "
-            "href=\"https://github.com/universam1\">github.com/universam1</a>");
+            "href='https://github.com/universam1'>github.com/universam1</a>");
   page += F("Current Firmware installed:<br><dl>");
   page += F("<dd>Version: ");
   page += FIRMWAREVERSION;
@@ -1039,10 +1039,19 @@ void WiFiManager::handleMnt()
   page += F("<dd>Date: ");
   page += __DATE__ " " __TIME__;
   page += F("</dd></dl><br>");
-  page += F("<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' "
-            "name='update'><br><input type='submit' class=\"btn\" value='update'></form>");
+  page += F("<form method='POST' action='/update' enctype='multipart/form-data'>"
+            "<input type='file' name='update'><br>"
+            "<input type='submit' class='btn' value='update'></form>");
+
   page += F("<hr><h2>Factory Reset</h2><br>All settings will be removed");
-  page += F("<br><form action=\"/reset\" method=\"get\"><button class=\"btn\">factory reset</button></form><br/>");
+  page += F("<br><form action='/reset' method='get'><button class='btn'>factory reset</button></form><br/>");
+
+  page += F("<hr><h2>Calibrate Battery Voltage</h2><br>"
+            "Measure current Battery voltage to calculate the conversion factor<br><dl>");
+  page += F("<form method='POST' action='/calibrateVref'>"
+            "<div style='display:flex justify-content: flex-end, center, space-between, space-around'>"
+            "currently:<input type=number step=0.01 min=2.50 max=4.30 value=3.70 name='Vref'>Volt</div><br>"
+            "<input type='submit' class='btn' value='set voltage'></form>");
   page += FPSTR(HTTP_END);
 
   server->send(200, "text/html", page);
@@ -1069,7 +1078,7 @@ void WiFiManager::handleOffset()
   page += _customHeadElement;
 
   page += FPSTR(HTTP_HEADER_END);
-  page += F("<META HTTP-EQUIV=\"refresh\" CONTENT=\"6;url=/iSpindel\"> \
+  page += F("<META HTTP-EQUIV='refresh' CONTENT='6;url=/iSpindel'> \
   <h1>calibrate Offset</h1><hr> \
   <table><tr><td> \
   ...calibration in progress...<br><h2>DO NOT MOVE OR SHAKE!</h2><br> \
@@ -1088,26 +1097,26 @@ void WiFiManager::handleState()
 {
   DEBUG_WM(F("State - json"));
   header();
-  String page = F("{\"Soft_AP_IP\":\"");
+  String page = F("{'Soft_AP_IP':'");
   page += WiFi.softAPIP().toString();
-  page += F("\",\"Soft_AP_MAC\":\"");
+  page += F("','Soft_AP_MAC':'");
   page += WiFi.softAPmacAddress();
-  page += F("\",\"Station_IP\":\"");
+  page += F("','Station_IP':'");
   page += WiFi.localIP().toString();
-  page += F("\",\"Station_MAC\":\"");
+  page += F("','Station_MAC':'");
   page += WiFi.macAddress();
-  page += F("\",");
+  page += F("',");
   if (WiFi.psk() != "")
   {
-    page += F("\"Password\":true,");
+    page += F("'Password':true,");
   }
   else
   {
-    page += F("\"Password\":false,");
+    page += F("'Password':false,");
   }
-  page += F("\"SSID\":\"");
+  page += F("'SSID':'");
   page += WiFi.SSID();
-  page += F("\"}");
+  page += F("'}");
   server->send(200, "application/json", page);
   DEBUG_WM(F("Sent state page in json format"));
 }
@@ -1125,7 +1134,7 @@ void WiFiManager::handleScan()
   //and should be freed when indices no longer required.
   n = scanWifiNetworks(indicesptr);
   DEBUG_WM(F("In handleScan, scanWifiNetworks done"));
-  String page = F("{\"Access_Points\":[");
+  String page = F("{'Access_Points':[");
   //display networks in page
   for (int i = 0; i < n; i++)
   {
@@ -1181,6 +1190,36 @@ void WiFiManager::handleReset()
   formatLittleFS();
   ESP.reset();
   delay(2000);
+}
+
+/** Handle the reset page */
+void WiFiManager::handleCalibrateVref()
+{
+  DEBUG_WM(F("handling Calibrate Vref"));
+
+  String tmp = server->arg("Vref");
+  tmp.trim();
+  tmp.replace(',', '.');
+  float measuredVref = tmp.toFloat();
+  float factor = calibrateToVref(measuredVref);
+
+  header();
+  String page = FPSTR(HTTP_HEADER);
+  page.replace("{v}", "Voltage Reference");
+  page += FPSTR(HTTP_SCRIPT);
+  page += FPSTR(HTTP_STYLE);
+  page += _customHeadElement;
+  page += FPSTR(HTTP_HEADER_END);
+  page += F("<div class='msg'>");
+  page += F("Calculated conversion factor for<br>");
+  page += F("Voltage: <strong>");
+  page += measuredVref;
+  page += F("V</strong><br>");
+  page += F("Factor: <strong>");
+  page += factor;
+  page += F("</strong><br><br>");
+  page += FPSTR(HTTP_END);
+  server->send(200, "text/html", page);
 }
 
 void WiFiManager::handleNotFound()
