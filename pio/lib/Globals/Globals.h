@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "7.3.0"
+#define FIRMWAREVERSION "7.3.1"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -138,9 +138,8 @@ struct iData
   char name[33] = "";
   char server[DNSSIZE];
   char uri[DNSSIZE];
-  char db[TKIDSIZE] = "ispindel";
   char username[TKIDSIZE];
-  char password[TKIDSIZE];
+  char password[DNSSIZE];
   char job[TKIDSIZE] = "ispindel";
   char instance[TKIDSIZE] = "000";
   char polynominal[1000] = "-0.00031*tilt^2+0.557*tilt-14.054";

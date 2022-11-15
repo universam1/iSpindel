@@ -160,8 +160,6 @@ bool readConfig()
             myData.channel = doc["Channel"];
           if (doc.containsKey("URI"))
             strcpy(myData.uri, doc["URI"]);
-          if (doc.containsKey("DB"))
-            strcpy(myData.db, doc["DB"]);
           if (doc.containsKey("Username"))
             strcpy(myData.username, doc["Username"]);
           if (doc.containsKey("Password"))
@@ -327,9 +325,8 @@ bool startConfiguration()
   WiFiManagerParameter custom_channel("channel", "Channelnumber", String(myData.channel).c_str(), TKIDSIZE,
                                       TYPE_NUMBER);
   WiFiManagerParameter custom_uri("uri", "Path / URI", myData.uri, DNSSIZE);
-  WiFiManagerParameter custom_db("db", "InfluxDB db", myData.db, TKIDSIZE);
   WiFiManagerParameter custom_username("username", "Username", myData.username, TKIDSIZE);
-  WiFiManagerParameter custom_password("password", "Password", myData.password, TKIDSIZE);
+  WiFiManagerParameter custom_password("password", "Password", myData.password, DNSSIZE);
   WiFiManagerParameter custom_job("job", "Prometheus job", myData.job, TKIDSIZE);
   WiFiManagerParameter custom_instance("instance", "Prometheus instance", myData.instance, TKIDSIZE);
 #if API_MQTT_HASSIO
@@ -368,7 +365,6 @@ bool startConfiguration()
   wifiManager.addParameter(&custom_port);
   wifiManager.addParameter(&custom_channel);
   wifiManager.addParameter(&custom_uri);
-  wifiManager.addParameter(&custom_db);
   wifiManager.addParameter(&custom_username);
   wifiManager.addParameter(&custom_password);
   wifiManager.addParameter(&custom_job);
@@ -401,7 +397,6 @@ bool startConfiguration()
   validateInput(custom_name.getValue(), myData.name);
   validateInput(custom_token.getValue(), myData.token);
   validateInput(custom_server.getValue(), myData.server);
-  validateInput(custom_db.getValue(), myData.db);
   validateInput(custom_username.getValue(), myData.username);
   validateInput(custom_password.getValue(), myData.password);
   validateInput(custom_job.getValue(), myData.job);
@@ -506,7 +501,6 @@ bool saveConfig()
   doc["Port"] = myData.port;
   doc["Channel"] = myData.channel;
   doc["URI"] = myData.uri;
-  doc["DB"] = myData.db;
   doc["Username"] = myData.username;
   doc["Password"] = myData.password;
   doc["Job"] = myData.job;
@@ -645,10 +639,8 @@ bool uploadData(uint8_t service)
     sender.add("interval", myData.sleeptime);
     sender.add("RSSI", WiFi.RSSI());
     CONSOLELN(F("\ncalling InfluxDB"));
-    CONSOLELN(String(F("Sending to db: ")) + myData.db + String(F(" w/ credentials: ")) + myData.username +
-              String(F(":")) + myData.password);
 
-    return sender.sendInfluxDB(myData.server, myData.port, myData.db, myData.name, myData.username, myData.password,
+    return sender.sendInfluxDB(myData.server, myData.port, myData.uri, myData.name, myData.username, myData.password,
                                myData.usehttps);
   }
 #endif

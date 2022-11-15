@@ -209,7 +209,7 @@ bool SenderClass::enableHassioDiscovery(String server, uint16_t port, String use
                         true);
     _mqttClient.publish((topic + "tilt/config").c_str(),
                         ("{ \"uniq_id\": \"" + chipid +
-                         "_tilt\", \"name\": \"Tilt\",  \"unit_of_meas\": \"°\", \"val_tpl\": \"{{ value_json }}\"" + 
+                         "_tilt\", \"name\": \"Tilt\",  \"unit_of_meas\": \"°\", \"val_tpl\": \"{{ value_json }}\"" +
                          ", \"stat_t\": \"ispindel/" + name + "/tilt\"," + device + "}")
                             .c_str(),
                         true);
@@ -459,14 +459,12 @@ bool SenderClass::sendGenericPost(String server, String uri, uint16_t port)
   return true;
 }
 
-bool SenderClass::sendInfluxDB(String server, uint16_t port, String db, String name, String username, String password, bool usehttps)
+bool SenderClass::sendInfluxDB(String server, uint16_t port, String uri, String name, String username, String password,
+                               bool usehttps)
 {
   HTTPClient http;
 
-  String uri = "/write?db=";
-  uri += db;
-
-  CONSOLELN(String(F("INFLUXDB: posting to db: ")) + uri);
+  CONSOLELN(String(F("INFLUXDB: posting to ")) + server + ":" + port + uri);
   // configure traged server and uri
 
   if (usehttps == true)
