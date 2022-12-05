@@ -232,7 +232,12 @@ bool shouldStartConfig(bool validConf)
   bool _wifiCred = (WiFi.SSID() != "");
   uint8_t c = 0;
   if (!_wifiCred)
+  {
+    if (strlen(myData.name) != 0)
+      WiFi.hostname(myData.name); //Set DNS hostname
+
     WiFi.begin();
+  }
   while (!_wifiCred)
   {
     if (c > 10)
@@ -388,7 +393,10 @@ bool startConfiguration()
   if (strlen(myData.name) == 0)
     snprintf(ssid, sizeof ssid, "iSpindel_%06X", ESP.getChipId());
   else
+  {
     snprintf(ssid, sizeof ssid, "iSpindel_%s", myData.name);
+    WiFi.hostname(myData.name); //Set DNS hostname
+  }
 
   wifiManager.startConfigPortal(ssid);
 
@@ -1210,6 +1218,9 @@ bool connectBackupCredentials()
 {
   WiFi.disconnect();
   WiFi.mode(WIFI_STA); //suggestion that MQTT connection failures can happen if WIFI mode isn't STA.
+  if (strlen(myData.name) != 0)
+    WiFi.hostname(myData.name); //Set DNS hostname
+
   WiFi.begin(myData.ssid.c_str(), myData.psk.c_str());
   CONSOLELN(F("Rescued Wifi credentials"));
 

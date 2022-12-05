@@ -493,12 +493,6 @@ uint8_t WiFiManager::waitForConnectResult()
   }
 }
 
-void WiFiManager::startWPS()
-{
-  DEBUG_WM(F("START WPS"));
-  WiFi.beginWPSConfig();
-  DEBUG_WM(F("END WPS"));
-}
 //Convenient for debugging but wasteful of program space.
 //Remove if short of space
 char *WiFiManager::getStatus(int status)
