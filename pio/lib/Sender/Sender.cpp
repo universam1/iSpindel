@@ -496,7 +496,7 @@ bool SenderClass::sendInfluxDB(String server, uint16_t port, String uri, String 
     msg += kv.key().c_str();
     msg += "=";
     // check if value is of type char, if so set value in double quotes
-    if (kv.value().is<char *>())
+    if (kv.value().is<const char *>())
     {
       msg += '"' + kv.value().as<String>() + '"';
     }
