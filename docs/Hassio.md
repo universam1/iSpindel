@@ -3,7 +3,7 @@ Die iSpindel unterstützt den Datentransfer per MQTT-Protokoll, das Hausautomati
 
 Ab der iSpindel Firmware Version 7.2 unterstützt iSpindel die Discovery Funktion für MQTT Daten des **<em>Home Assistant</em>**. Damit entfällt die manuelle MQTT-Sensor Konfiguration in **<em>Home Assistant</em>** und die Daten können sehr einfach verwendet werden.
 
-Bei der Suche nach **<em>Home Assistant</em>** und iSpindel findet man eine weitere Implentierung auf der Basis von ESPHome. Bei dieser wird nicht die Standard-iSpindel Firmware eingesetzt. ESPHome verwendet yaml-Code um die Logik des Microcontrolers zu beschreiben und generiert hieraus dann die Firmware.
+Bei der Suche nach **<em>Home Assistant</em>** und iSpindel findet man eine weitere Implementierung auf der Basis von ESPHome. Bei dieser wird nicht die Standard-iSpindel Firmware eingesetzt. ESPHome verwendet yaml-Code um die Logik der Firmware zu beschreiben und generiert hieraus dann die Firmware für den Microcontroller.
 
 ## Home Assistant vorbereiten
 
@@ -21,6 +21,9 @@ Falls der MQTT-Broker in **<em>Home Assistant</em>** noch nicht installiert und 
 
 ## iSpindel für den **<em>Home Assistant</em>** konfigurieren
 
+In der iSpindel Konfiguration wird als Service Type MQTT gewählt, die Felder Server Address, Server Port, Username, Password mit den zuvor ermittelten Werte gefüllt und nicht zuletzt <em>Home Assistant Integration via MQTT</em> gesetzt.
+
+<img src="/pics/iSpindelHAMQTTConfig.png" width="500"/>
 
 ## iSpindel Daten in **<em>Home Assistant</em>** nutzen
 
