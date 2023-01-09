@@ -234,6 +234,14 @@ bool SenderClass::enableHassioDiscovery(String server, uint16_t port, String use
                          name + "/gravity\"," + device + "}")
                             .c_str(),
                         true);
+    _mqttClient.publish((topic + "interval/config").c_str(),
+                        ("{ \"uniq_id\": \"" + chipid +
+                         "_interval\", \"name\": \"Interval\", \"unit_of_meas\": \"s\", \"val_tpl\": \"{{ value_json "
+                         "}}\", \"stat_t\": \"ispindel/" +
+                         name + "/interval\"," + device + "}")
+                            .c_str(),
+                        true);
+
     _mqttClient.loop();
   }
 
