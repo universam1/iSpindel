@@ -21,9 +21,11 @@ Falls der MQTT-Broker in **<em>Home Assistant</em>** noch nicht installiert und 
 
 ## iSpindel für den **<em>Home Assistant</em>** konfigurieren
 
-In der iSpindel Konfiguration wird als <em>Service Type</em> **MQTT** gewählt, die Felder <em>Server Address, Server Port, Username, Password</em> mit den zuvor ermittelten Werte gefüllt und nicht <em>Home Assistant Integration via MQTT</em> gesetzt.
+In der iSpindel Konfiguration wird als <em>Service Type</em> **MQTT** gewählt, die Felder <em>Server Address, Server Port, Username, Password</em> mit den zuvor ermittelten Werte gefüllt und der Haken <em>Home Assistant Integration via MQTT</em> gesetzt.
 
-<img src="/pics/iSpindelHAMQTTConfig.png" width="500" alt="Auszug aus der Configuration Form"/>
+<img src="/pics/iSpindelHAMQTTConfig.png" width="400" align="center" alt="Auszug aus der Configuration Form"/>
+
+Nach dem Sichern der Configuration Form startet die iSpindel neu und wir
 
 ## iSpindel Daten in **<em>Home Assistant</em>** nutzen
 
