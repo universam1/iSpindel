@@ -942,9 +942,9 @@ void WiFiManager::handleInfo()
   page += F("<td>Close the configuration server and configuration WiFi network.</td></tr>");
   page += F("<tr><td><a href='/i'>/i</a></td>");
   page += F("<td>This page.</td></tr>");
-  page += F("<tr><td><a href='/r'>/r</a></td>");
+  page += F("<tr><td><a href='/reset'>/r</a></td>");
   page += F("<td>Delete WiFi configuration and reboot. ESP device will not reconnect to a network until new WiFi "
-            "configuration data is entered.</td></tr>");
+            "configuration data is entered (factory reset).</td></tr>");
   page += F("<tr><td><a href='/state'>/state</a></td>");
   page += F("<td>Current device state in JSON format. Interface for programmatic WiFi configuration.</td></tr>");
   page += F("<tr><td><a href='/scan'>/scan</a></td>");
