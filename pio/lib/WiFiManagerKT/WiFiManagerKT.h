@@ -67,6 +67,9 @@ function c(l) { s.value = l.innerText || l.textContent; p.focus(); };
 function sTS() {
   $('tempscale').value = parseInt($('TS').options[$('TS').selectedIndex].value);
 };
+function sTC() {
+  $('tempcomp').value = parseInt($('TCOMP').options[$('TCOMP').selectedIndex].value);
+};
 function sAPI(val) {
   $('selAPI').value = val;
   var obj = lAPI[parseInt(val)];
@@ -93,9 +96,11 @@ window.onload = function (e) {
   $('TS').value = $('tempscale').value;
   fillopt();
   $('API').querySelector('option[value="'+value+'"]').selected = true;
+  $('TCOMP').value = $('tempcomp').value;
 }
 window.onchange = function (e) {
   sTS();
+  sTC();
 };</script>)V0G0N";
 
 const char HTTP_API_LIST[] PROGMEM = R"V0G0N(
@@ -106,6 +111,13 @@ const char HTTP_TEMPSCALE_LIST[] PROGMEM = R"V0G0N(
 <option value=0>Celsius</option>
 <option value=1>Fahrenheit</option>
 <option value=2>Kelvin</option>
+</select>)V0G0N";
+
+const char HTTP_TEMPCOMPENSATION_LIST[] PROGMEM = R"V0G0N(
+<select id="TCOMP" onclick="sTC()">
+<option value=0>No</option>
+<option value=1>Yes</option>
+<option value=7>EraseJSON</option>
 </select>)V0G0N";
 
 const char TYPE_HIDDEN[] = "type=\"hidden\"";

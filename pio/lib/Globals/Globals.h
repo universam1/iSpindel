@@ -20,7 +20,7 @@
 extern Ticker flasher;
 
 // defines go here
-#define FIRMWAREVERSION "6.5.0"
+#define FIRMWAREVERSION "6.5.0_TGGT"
 
 #define API_FHEM true
 #define API_UBIDOTS true
@@ -110,13 +110,27 @@ extern Ticker flasher;
 // sleep management
 #define RTCSLEEPADDR 5
 #define MAXSLEEPTIME 3600UL //TODO
-#define EMERGENCYSLEEP (my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : my_sleeptime * 3)
+#define EMERGENCYSLEEP (myData.my_sleeptime * 3 < MAXSLEEPTIME ? MAXSLEEPTIME : myData.my_sleeptime * 3)
 #define LOWBATT 3.3
 
 #define UNINIT 0
 
+#define TEMP_CELSIUS 0
+#define TEMP_FAHRENHEIT 1
+#define TEMP_KELVIN 2
+
+//BMP280
+#define PRESS_PA 0
+#define PRESS_KPA 1
+#define PRESS_BAR 2
+#define PRESS_FTLB 3
+//BMP280
+
 extern int16_t ax, ay, az;
-extern float Volt, Temperatur, Tilt, Gravity;
+extern float Volt, Temperatur, Tilt, Gravity, accTemp, TempAdjusted;
+extern float GComp;
+extern String strTComp;
+extern float CTemp;
 
 extern MPU6050 accelgyro;
 extern bool saveConfig();
@@ -124,7 +138,46 @@ extern bool saveConfig(int16_t Offset[6]);
 extern bool formatSpiffs();
 extern void flash();
 
-float scaleTemperature(float t);
-String tempScaleLabel(void);
+extern float scaleTemperatureFromC(float t, uint8_t tempscale);
+extern String tempScaleLabel(void);
+//extern uint8_t my_tempscale;
+
+#define TEMPCOMP_NO 0
+#define TEMPCOMP_YES 1
+#define TEMPCOMP_ERR 2
+
+struct iData
+{
+  char my_token[TKIDSIZE * 2];
+  char my_name[TKIDSIZE] = "iSpindelDH[SG]";            //TGGT
+  char my_server[DNSSIZE] = "log.brewfather.net";       //TGGT
+  char my_uri[DNSSIZE] = "/ispindel?id=VizLHF6c1JOvJB"; //TGGT
+  char my_db[TKIDSIZE] = "ispindel";
+  char my_username[TKIDSIZE];
+  char my_password[TKIDSIZE];
+  char my_job[TKIDSIZE] = "ispindel";
+  char my_instance[TKIDSIZE] = "000";
+  char my_polynominal[1000] = "(1.0000E-6*(tilt^3))+(-1.3137E-4*(tilt^2))+(6.9680E-3*tilt)+(9.0704E-1)";
+  uint8_t my_tcomp = TEMPCOMP_ERR;
+  String strTComp = "err";
+  float my_ctemp = 20.0;
+  String my_ssid = "noharmdone";    //TGGT
+  String my_psk = "dock-brief-odd"; //TGGT
+  uint8_t my_api = DTHTTP;          //TGGT
+  uint32_t my_sleeptime = 15 * 60;
+  uint16_t my_port = 80;
+  uint32_t my_channel;
+  float my_vfact = ADCDIVISOR;
+  int16_t my_Offset[6];
+  uint8_t my_tempscale = TEMP_CELSIUS;
+  int8_t my_OWpin = -1;
+  char my_tempcalc[1000] = "temp+0";
+};
+
+extern iData myData;
+
+//BMP280
+extern double Pressure;
+//BMP280
 
 #endif

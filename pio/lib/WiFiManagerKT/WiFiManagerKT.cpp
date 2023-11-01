@@ -978,7 +978,7 @@ void WiFiManager::handleiSpindel()
   page += Tilt;
   page += F("&deg;</td></tr>");
   page += F("<tr><td>Temperature:</td><td>");
-  page += scaleTemperature(Temperatur);
+  page += scaleTemperatureFromC(Temperatur, myData.my_tempscale);
   page += F("&deg;");
   page += tempScaleLabel();
   page += F("</td></tr>");
@@ -988,6 +988,37 @@ void WiFiManager::handleiSpindel()
   page += F("<tr><td>Gravity:</td><td>");
   page += String(Gravity, 3);
   page += F("</td></tr>");
+  page += F("<tr><td>Compensate Gravity?</td><td>");
+  page += strTComp;
+  page += F("</td></tr>");
+  
+  page += F("<tr><td>Base Temperature:</td><td>");
+  page += scaleTemperatureFromC(CTemp, myData.my_tempscale);
+  page += F("&deg;");
+  page += tempScaleLabel();
+  page += F("</td></tr>");
+
+  page += F("<tr><td>GY-521 Temp:</td><td>");
+  page += scaleTemperatureFromC(accTemp, myData.my_tempscale);
+  page += F("&deg;");
+  page += tempScaleLabel();
+  page += F("</td></tr>");
+
+  page += F("<tr><td>Compensated Gravity:</td><td>");
+  page += String(GComp, 4);
+  page += F("</td></tr>");
+
+  page += F("<tr><td>Adjusted Temperature:</td><td>");
+  page += String(TempAdjusted, 4);
+  page += F("</td></tr>");
+
+  //BMP280
+  page += F("<tr><td>Pressure:</td><td>");
+  page += String(Pressure, 4);
+  page += F(" Pa");
+  page += F("</td></tr>");
+  //BMP280
+
   page += F("</table></h2>");
   page += F("<hr><dl>");
   page += F("<dt><h3>Firmware</h3></dt>");
