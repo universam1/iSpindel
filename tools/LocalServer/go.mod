@@ -1,4 +1,4 @@
-module testserver
+module ispindelserver
 
 go 1.16
 

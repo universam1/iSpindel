@@ -20,6 +20,15 @@ Configure the iSpindel with the following settings:
 You can run this in a tmux, or as a service.
 
 Data collected are saved as `.csv` under `.../LocalServer/data/<ispindel_name>.csv`.
+
 Therefore changing the device name would start a new save file.
+
+Screenshots:
+
+Main Page:
+![LocalServer Main Page](screenshots/localserver_screenshot_main_page.png)
+
+Plot Page:
+![LocalServer Plot Page](screenshots/localserver_screenshot_plot_page.png)
 
 Author: kaihuang201

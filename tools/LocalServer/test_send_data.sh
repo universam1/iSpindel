@@ -13,7 +13,7 @@ curl --header "Content-Type: application/json" \
             "temperature": 26.875,
             "token": "myToken"
         }' \
-    http://localhost:9000/data
+    http://localhost:8080/data
 
 curl --header "Content-Type: application/json" \
     --request GET \
@@ -30,4 +30,4 @@ curl --header "Content-Type: application/json" \
             "temperature": 26.875,
             "token": "myToken"
         }' \
-    http://localhost:9000/data
+    http://localhost:8080/data
