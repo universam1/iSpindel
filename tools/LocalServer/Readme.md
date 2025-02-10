@@ -1,5 +1,11 @@
 # Local Server
 
+Main Page:
+![LocalServer Main Page](screenshots/localserver_screenshot_main_page.png)
+
+Plot Page:
+![LocalServer Plot Page](screenshots/localserver_screenshot_plot_page.png)
+
 This server collects and plot data for iSpindel on LAN.
 
 Since this simple server uses HTTP, do NOT expose it to the public network!
@@ -20,6 +26,8 @@ Configure the iSpindel with the following settings:
 You can run this in a tmux, or as a service.
 
 Data collected are saved as `.csv` under `.../LocalServer/data/<ispindel_name>.csv`.
+
 Therefore changing the device name would start a new save file.
+
 
 Author: kaihuang201

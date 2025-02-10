@@ -93,41 +93,41 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 	// HTML Template
 	tmpl := `
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<title>iSpindel Plots</title>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>iSpindel Plots</title>
         <meta http-equiv="refresh" content="60"> <!-- Auto-refresh every 60 seconds -->
-		<style>
-			table { width: 100%; }
-			th, td { border: 1px solid black; padding: 8px; text-align: center; }
-			th { background-color: #f2f2f2; }
-		</style>
-	</head>
-	<body>
-		<h2>iSpindel Plots</h2>
-		<table id="dataTable">
-	<tr>
-		<th>iSpindel Name</th>
-		<th>Earliest Timestamp</th>
-		<th>Latest Timestamp</th>
-		<th>CSV</th>
-		<th>Delete</th>
-	</tr>
-	{{range .IspindelData}}
-	<tr>
-		<td><a href="/plot?ispindel_name={{.name}}">{{.name}}</a></td>
-		<td>{{.earliestTimestamp}}</td>
-		<td>{{.latestTimestamp}}</td>
-		<td><a href="/csv/?filename={{.name}}.csv">CSV</a></td>
-		<td><a href="/delete?ispindel_name={{.name}}" onclick="return confirm('Are you sure you want to delete {{.name}}?')">❌ Delete</a></td>
-	</tr>
-	{{end}}
-	</table>
+        <style>
+            table { width: 100%; }
+            th, td { border: 1px solid black; padding: 8px; text-align: center; }
+            th { background-color: #f2f2f2; }
+        </style>
+    </head>
+    <body>
+        <h2>iSpindel Plots</h2>
+        <table id="dataTable">
+    <tr>
+        <th>iSpindel Name</th>
+        <th>Earliest Timestamp</th>
+        <th>Latest Timestamp</th>
+        <th>CSV</th>
+        <th>Delete</th>
+    </tr>
+    {{range .IspindelData}}
+    <tr>
+        <td><a href="/plot?ispindel_name={{.name}}">{{.name}}</a></td>
+        <td>{{.earliestTimestamp}}</td>
+        <td>{{.latestTimestamp}}</td>
+        <td><a href="/csv/?filename={{.name}}.csv">CSV</a></td>
+        <td><a href="/delete?ispindel_name={{.name}}" onclick="return confirm('Are you sure you want to delete {{.name}}?')">❌ Delete</a></td>
+    </tr>
+    {{end}}
+    </table>
 
-	</body>
-	</html>
-	`
+    </body>
+    </html>
+    `
 
 	// Parse & execute template
 	tmplParsed, err := template.New("home").Parse(tmpl)
@@ -176,7 +176,7 @@ func handlePlot(w http.ResponseWriter, r *http.Request) {
 	latestTempUnit := latestRow[4] // Temperature unit (C or F)
 
 	// **Step 2: Extract and convert data**
-	var timestamps, temperatures, gravities []string
+	var timestamps, temperatures, gravities, batteryVoltages []string
 	var lastRowData []string
 
 	for i, row := range rows[1:] { // Skip header row
@@ -186,6 +186,7 @@ func handlePlot(w http.ResponseWriter, r *http.Request) {
 
 		timestamps = append(timestamps, row[0]) // Timestamp
 		gravities = append(gravities, row[1])   // Gravity
+		batteryVoltages = append(batteryVoltages, row[5])
 
 		// Convert temperature
 		tempValue, err := strconv.ParseFloat(row[3], 64)
@@ -216,108 +217,136 @@ func handlePlot(w http.ResponseWriter, r *http.Request) {
 
 	// HTML Template
 	tmpl := `
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<title>Plot for {{.IspindelName}}</title>
-		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-		<meta id="refreshMeta" http-equiv="refresh" content="60"> <!-- Default 60s -->
-		<style>
-			body { font-family: Arial, sans-serif; }
-			.refresh-container { position: absolute; top: 10px; right: 20px; }
-			select { padding: 5px; font-size: 14px; }
-			table { border-collapse: collapse; width: 80%; margin: 20px auto; }
-			th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-			th { background-color: #f2f2f2; }
-		</style>
-	</head>
-	<body>
-		<h2>Plot for {{.IspindelName}}</h2>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Plot for {{.IspindelName}}</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <meta id="refreshMeta" http-equiv="refresh" content="60"> <!-- Default 60s -->
+        <style>
+            body { font-family: Arial, sans-serif; }
+            .refresh-container { position: absolute; top: 10px; right: 20px; }
+            select { padding: 5px; font-size: 14px; }
+            table { border-collapse: collapse; width: 80%; margin: 20px auto; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+        </style>
+    </head>
+    <body>
+        <h2>Plot for {{.IspindelName}}</h2>
 
-		<!-- Refresh Interval Dropdown -->
-		<div class="refresh-container">
-			<label for="refreshSelect">Auto Refresh:</label>
-			<select id="refreshSelect">
-				<option value="5">5s</option>
-				<option value="10">10s</option>
-				<option value="60">1min</option>
-				<option value="300">5min</option>
-				<option value="600">10min</option>
-				<option value="off">Off</option>
-			</select>
-		</div>
+        <!-- Refresh Interval Dropdown -->
+        <div class="refresh-container">
+            <label for="refreshSelect">Auto Refresh:</label>
+            <select id="refreshSelect">
+                <option value="5">5s</option>
+                <option value="10">10s</option>
+                <option value="60">1min</option>
+                <option value="300">5min</option>
+                <option value="600">10min</option>
+                <option value="off">Off</option>
+            </select>
+        </div>
 
-		<div id="plot"></div>
+        <div id="plot"></div>
 
-		<!-- Latest Data Table -->
-		<h3>Latest Data</h3>
-		<table>
-			<tr>
-				<th>Timestamp</th>
-				<th>Gravity</th>
-				<th>Angle</th>
-				<th>Temperature</th>
-				<th>Temperature Units</th>
-				<th>Battery</th>
-				<th>Interval</th>
-				<th>Name</th>
-				<th>ID</th>
-				<th>RSSI</th>
-				<th>Token</th>
-			</tr>
-			<tr>
-				{{range .LastRow}}
-					<td>{{.}}</td>
-				{{end}}
-			</tr>
-		</table>
+        <!-- Latest Data Table -->
+        <h3>Latest Data</h3>
+        <table>
+            <tr>
+                <th>Timestamp</th>
+                <th>Gravity</th>
+                <th>Angle</th>
+                <th>Temperature</th>
+                <th>Temperature Units</th>
+                <th>Battery</th>
+                <th>Interval</th>
+                <th>Name</th>
+                <th>ID</th>
+                <th>RSSI</th>
+                <th>Token</th>
+            </tr>
+            <tr>
+                {{range .LastRow}}
+                    <td>{{.}}</td>
+                {{end}}
+            </tr>
+        </table>
 
-		<script>
-			// Load stored refresh interval from localStorage (default: "off")
-			var refreshInterval = localStorage.getItem('refreshInterval') || "off";
-			document.getElementById("refreshSelect").value = refreshInterval;
+        <script>
+            // Load stored refresh interval from localStorage (default: "off")
+            var refreshInterval = localStorage.getItem('refreshInterval') || "off";
+            document.getElementById("refreshSelect").value = refreshInterval;
 
-			function setRefreshTimer(interval) {
-				clearTimeout(window.refreshTimer); // Clear any existing timer
-				if (interval !== "off") {
-					window.refreshTimer = setTimeout(() => location.reload(), interval * 1000);
-				}
-			}
+            function setRefreshTimer(interval) {
+                clearTimeout(window.refreshTimer); // Clear any existing timer
+                if (interval !== "off") {
+                    window.refreshTimer = setTimeout(() => location.reload(), interval * 1000);
+                }
+            }
 
-			// Apply stored refresh interval
-			setRefreshTimer(refreshInterval);
+            // Apply stored refresh interval
+            setRefreshTimer(refreshInterval);
 
-			// Event Listener for Dropdown Change
-			document.getElementById("refreshSelect").addEventListener("change", function() {
-				var newInterval = this.value;
-				localStorage.setItem('refreshInterval', newInterval); // Save choice
-				setRefreshTimer(newInterval); // Apply new interval
-			});
-			var trace1 = {
-				x: {{.Timestamps}},
-				y: {{.Temperatures}},
-				mode: 'lines+markers',
-				name: '{{.TempTraceName}}',
-				line: {color: 'red'}
-			};
-			var trace2 = {
-				x: {{.Timestamps}},
-				y: {{.Gravities}},
-				mode: 'lines+markers',
-				name: 'Gravity',
-				line: {color: 'blue'}
-			};
-			var layout = {
-				title: 'Temperature and Gravity Over Time',
-				xaxis: {title: 'Timestamp'},
-				yaxis: {title: 'Values'},
-				legend: {x: 1, y: 1}
-			};
-			Plotly.newPlot('plot', [trace1, trace2], layout);
-		</script>
-	</body>
-	</html>
-	`
+            // Event Listener for Dropdown Change
+            document.getElementById("refreshSelect").addEventListener("change", function() {
+                var newInterval = this.value;
+                localStorage.setItem('refreshInterval', newInterval); // Save choice
+                setRefreshTimer(newInterval); // Apply new interval
+            });
+            var sgTrace = {
+                x: {{.Timestamps}},
+                y: {{.Gravities}},
+                name: 'Specific Gravity',
+                mode: 'lines+markers',
+                line: {color: '#1076eb'},
+                yaxis: 'y1'
+            };
+            var tempTrace = {
+                x: {{.Timestamps}},
+                y: {{.Temperatures}},
+                mode: 'lines+markers',
+                name: '{{.TempTraceName}}',
+                line: {color: '#e66596'},
+                yaxis: 'y2'
+            };
+            var batteryTrace = {
+                x: {{.Timestamps}},
+                y: {{.Voltages}},
+                name: 'Battery Voltage',
+                yaxis: 'y3', // Attach to a third y-axis
+                mode: 'lines+markers',
+                line: { color: 'lightseagreen' },
+                visible: 'legendonly'
+            };
+            var layout = {
+                title: 'Gravity and Temperature Over Time',
+                xaxis: {title: 'Timestamp'},
+                yaxis: {
+                    title: 'Specific Gravity',
+                    side: 'right'
+                },
+                yaxis2: {
+                    title: '{{.TempTraceName}}',
+                    overlaying: 'y',
+                    side: 'left',
+                    showgrid: false
+                },
+                yaxis3: {
+                    title: 'Battery Voltage',
+                    overlaying: 'y', // Overlay on the same graph
+                    side: 'left',
+                    showgrid: false,
+                    position: 0.04, // Slightly offset to distinguish it
+                    range: [2.8, 4.3]
+                },
+                legend: {x: 0.5, y: 1.15, orientation: 'h', xanchcor: 'center'}
+            };
+            Plotly.newPlot('plot', [sgTrace, tempTrace, batteryTrace], layout);
+        </script>
+    </body>
+    </html>
+    `
 
 	// Parse & execute template
 	tmplParsed, err := template.New("plot").Parse(tmpl)
@@ -331,6 +360,7 @@ func handlePlot(w http.ResponseWriter, r *http.Request) {
 		"Timestamps":    timestamps,
 		"Temperatures":  temperatures,
 		"Gravities":     gravities,
+		"Voltages":      batteryVoltages,
 		"TempTraceName": tempTraceName,
 		"LastRow":       lastRowData,
 	})
@@ -449,8 +479,10 @@ func createOrAppendCSV(json map[string]interface{}) error {
 			// Convert specific fields to integers
 			if key == "ID" || key == "interval" || key == "RSSI" {
 				row = append(row, fmt.Sprintf("%d", int(v))) // Explicitly cast float64 to int
+			} else if key == "temperature" {
+				row = append(row, fmt.Sprintf("%.2f", v)) // Keeps float format for non-integer fields
 			} else {
-				row = append(row, fmt.Sprintf("%.3f", v)) // Keeps float format for non-integer fields
+				row = append(row, fmt.Sprintf("%.4f", v)) // Keeps float format for non-integer fields
 			}
 		default:
 			row = append(row, fmt.Sprintf("%v", v)) // Generic fallback
