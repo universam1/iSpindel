@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -18,6 +19,13 @@ import (
 
 	"github.com/TylerBrock/colorjson"
 )
+
+var dataDir string = "data"
+
+func cleanString(input string) string {
+	re := regexp.MustCompile(`[^a-zA-Z0-9.-_]`)
+	return re.ReplaceAllString(input, "")
+}
 
 func main() {
 	// Define a command-line flag for port with a default value of 8080
@@ -39,12 +47,11 @@ func main() {
 
 // homePage serves a hidden table with iSpindel names, timestamps, CSV links, and delete links.
 func homePage(w http.ResponseWriter, r *http.Request) {
-	logsDir := "logs"
 
-	// Read all CSV files in logs directory
-	files, err := os.ReadDir(logsDir)
+	// Read all CSV files in data/ directory
+	files, err := os.ReadDir(dataDir)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error reading logs directory: %v", err), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error reading data directory: %v", err), http.StatusInternalServerError)
 		return
 	}
 
@@ -55,7 +62,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	for _, file := range files {
 		if !file.IsDir() && strings.HasSuffix(file.Name(), ".csv") {
 			name := strings.TrimSuffix(file.Name(), ".csv")
-			filePath := filepath.Join(logsDir, file.Name())
+			filePath := filepath.Join(dataDir, file.Name())
 
 			// Open CSV file
 			csvFile, err := os.Open(filePath)
@@ -146,7 +153,7 @@ func handlePlot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Construct file path
-	filePath := filepath.Join("logs", ispindelName+".csv")
+	filePath := filepath.Join(dataDir, ispindelName+".csv")
 
 	// Open CSV file
 	csvFile, err := os.Open(filePath)
@@ -376,18 +383,20 @@ func handleData(w http.ResponseWriter, r *http.Request) {
 // createOrAppendCSV writes a map[string]interface{} to a CSV file based on the "name" field in the map,
 // adding a "timestamp" column with the current datetime.
 func createOrAppendCSV(json map[string]interface{}) error {
-	// Ensure logs directory exists
-	logsDir := "logs"
-	if err := os.MkdirAll(logsDir, os.ModePerm); err != nil {
-		return fmt.Errorf("failed to create logs directory: %w", err)
+	// Ensure data directory exists
+	if err := os.MkdirAll(dataDir, os.ModePerm); err != nil {
+		return fmt.Errorf("failed to create data directory: %w", err)
 	}
 
 	// Determine filename from "name" field
 	name, exists := json["name"].(string)
 	if !exists || name == "" {
-		name = "default"
+		name = "iSpindel"
 	}
-	fileName := filepath.Join(logsDir, name+".csv")
+
+	name = cleanString(name)
+
+	fileName := filepath.Join(dataDir, name+".csv")
 
 	// Define the order of the keys to maintain consistency
 	headers := []string{"timestamp", "gravity", "angle", "temperature", "temp_units", "battery", "interval", "name", "ID", "RSSI", "token"}
@@ -441,7 +450,7 @@ func createOrAppendCSV(json map[string]interface{}) error {
 			if key == "ID" || key == "interval" || key == "RSSI" {
 				row = append(row, fmt.Sprintf("%d", int(v))) // Explicitly cast float64 to int
 			} else {
-				row = append(row, fmt.Sprintf("%.2f", v)) // Keeps float format for non-integer fields
+				row = append(row, fmt.Sprintf("%.3f", v)) // Keeps float format for non-integer fields
 			}
 		default:
 			row = append(row, fmt.Sprintf("%v", v)) // Generic fallback
@@ -471,7 +480,7 @@ func handleCSV(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Construct file path
-	filePath := filepath.Join("logs", filename)
+	filePath := filepath.Join(dataDir, filename)
 
 	// Open file
 	csvFile, err := os.Open(filePath)
@@ -501,8 +510,10 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ispindelName = cleanString(ispindelName)
+
 	// Construct file path
-	filePath := filepath.Join("logs", ispindelName+".csv")
+	filePath := filepath.Join(dataDir, ispindelName+".csv")
 
 	// Delete the file
 	err := os.Remove(filePath)
