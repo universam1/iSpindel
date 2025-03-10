@@ -51,7 +51,7 @@ jobs:
     - name: Run PlatformIO
       run: pio run -e d1_mini_git
     - name: Save firmware
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: firmware
         path: .pio/build/d1_mini_git/firmware.bin
