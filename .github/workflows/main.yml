@@ -8,7 +8,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-    - uses: DoozyX/clang-format-lint-action@v0.11
+    - uses: DoozyX/clang-format-lint-action@v0.18
       with:
         source: './pio/src'
         extensions: 'h,cpp'
